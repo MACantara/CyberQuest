@@ -200,7 +200,7 @@
                             <span>Real-time progress tracking</span>
                         </div>
                     </div>
-                    <a href="{{ url_for('auth.register') if not current_user else '#' }}" class="inline-flex items-center px-6 py-3 bg-white text-indigo-600 font-semibold rounded-lg hover:bg-gray-100 transition-all duration-300 mt-6">
+                    <a href="{{ url_for('auth.signup') if not current_user else '#' }}" class="inline-flex items-center px-6 py-3 bg-white text-indigo-600 font-semibold rounded-lg hover:bg-gray-100 transition-all duration-300 mt-6">
                         <i class="bi bi-play-circle mr-2"></i>
                         {% if current_user %}Continue Learning{% else %}Start Learning{% endif %}
                     </a>
