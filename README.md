@@ -1,6 +1,6 @@
-# Flask Website Template
+# CyberQuest
 
-A modern, production-ready Flask website template featuring comprehensive authentication, admin panel, and responsive design.
+A Gamified Learning Platform for Digital Literacy and Cybersecurity Awareness.
 
 ## ✨ Key Features
 
