@@ -1,6 +1,6 @@
 # Deployment Documentation
 
-This guide covers deployment options for the Flask Website Template, including Vercel, traditional hosting, and production considerations.
+This guide covers deployment options for the CyberQuest platform, including Vercel, traditional hosting, and production considerations.
 
 ## 🚀 Vercel Deployment (Serverless)
 
