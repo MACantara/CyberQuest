@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}User Management - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 sm:py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {% include 'partials/admin/users/header.html' %}
+
+        {% include 'partials/admin/users/filters.html' %}
+
+        {% if users|length > 0 %}            
+            {% include 'partials/admin/users/table.html' %}
+        {% else %}
+            {% include 'partials/admin/users/empty-state.html' %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script type="module" src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}

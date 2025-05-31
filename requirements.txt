@@ -1,0 +1,38 @@
+# Core Flask dependencies
+Flask
+Flask-SQLAlchemy
+Flask-Migrate
+
+# Environment and configuration
+python-dotenv
+
+# Form handling and security
+Flask-WTF
+WTForms
+
+# Email support (for contact forms and password reset)
+Flask-Mail
+
+# Authentication and password hashing
+argon2-cffi
+
+# Development and debugging
+Flask-DebugToolbar
+
+# Database drivers
+# SQLite is included with Python, but for other databases:
+# psycopg2-binary  # For PostgreSQL
+# PyMySQL          # For MySQL
+
+# Production server
+gunicorn
+
+# Testing
+pytest
+pytest-flask
+
+# hCaptcha
+flask-hcaptcha
+
+# Password strength checking
+zxcvbn

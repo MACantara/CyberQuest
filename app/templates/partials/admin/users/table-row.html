@@ -1,0 +1,40 @@
+<!-- User Table Row -->
+<td class="px-6 py-4 whitespace-nowrap">
+    <div class="flex items-center">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
+            {{ user.username[0].upper() }}
+        </div>
+        <div class="ml-4">
+            <div class="text-sm font-medium text-gray-900 dark:text-white">{{ user.username }}</div>
+            <div class="text-sm text-gray-500 dark:text-gray-400">{{ user.email }}</div>
+        </div>
+    </div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap">
+    <div class="flex flex-col space-y-1">
+        {% if user.is_active %}
+            <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">Active</span>
+        {% else %}
+            <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">Inactive</span>
+        {% endif %}
+        {% if user.is_admin %}
+            <span class="px-2 py-1 text-xs rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400">Admin</span>
+        {% endif %}
+    </div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+    {{ user.created_at.strftime('%m/%d/%Y %H:%M') }}
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+    {% if user.last_login %}
+        {{ user.last_login.strftime('%m/%d/%Y %H:%M') }}
+    {% else %}
+        Never
+    {% endif %}
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+    <a href="{{ url_for('admin.user_detail', user_id=user.id) }}" 
+       class="text-blue-600 dark:text-blue-400 hover:underline mr-3">
+        View Details
+    </a>
+</td>

@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Flask Website{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+<style>
+    .hero-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .dark .hero-gradient {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-gradient min-h-screen flex items-center relative">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
+        <div class="text-center">
+            <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 opacity-0 animate-fade-in-up" style="animation-delay: 0.2s;">
+                Welcome to
+                <span class="bg-gradient-to-r from-yellow-400 to-pink-400 bg-clip-text text-transparent">
+                    Flask Template
+                </span>
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-100 mb-8 max-w-4xl mx-auto opacity-0 animate-fade-in-up leading-relaxed" style="animation-delay: 0.4s;">
+                A modern, responsive website template built with Flask, Tailwind CSS, and Bootstrap Icons.
+                Perfect for your next web project with stunning animations and smooth interactions.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4 opacity-0 animate-fade-in-up" style="animation-delay: 0.6s;">
+                <a href="{{ url_for('main.about') }}" class="group inline-flex items-center px-8 py-4 bg-white text-blue-600 font-semibold text-lg rounded-xl hover:bg-gray-100 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-white/25 shadow-xl hover:shadow-2xl hover:scale-105 transform">
+                    <span>Learn About Us</span>
+                    <i class="bi bi-arrow-right ml-2"></i>
+                </a>
+                <a href="{{ url_for('contact.contact_page') }}" class="group inline-flex items-center px-8 py-4 bg-transparent text-white font-semibold text-lg rounded-xl border-2 border-white/30 hover:bg-white/20 backdrop-blur-sm transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-white/25 hover:border-white/50 hover:scale-105 transform">
+                    <span>Contact Us</span>
+                    <i class="bi bi-envelope ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- Floating elements -->
+    <div class="absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full animate-bounce" style="animation-delay: 1s; animation-duration: 3s;"></div>
+    <div class="absolute bottom-20 right-10 w-16 h-16 bg-yellow-400/20 rounded-full animate-bounce" style="animation-delay: 2s; animation-duration: 4s;"></div>
+</section>
+
+<!-- Features Section -->
+<section class="py-20 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 opacity-0 animate-fade-in-up">Features</h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto opacity-0 animate-fade-in-up" style="animation-delay: 0.2s;">Everything you need to build a modern web application with style and performance</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="group text-center p-8 rounded-2xl bg-white dark:bg-gray-800 shadow-lg hover:shadow-2xl transition-all duration-500 opacity-0 animate-fade-in-up border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-600 hover:-translate-y-2 transform" style="animation-delay: 0.1s;">
+                <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center text-white text-3xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+                    <i class="bi bi-lightning-charge"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Fast & Modern</h3>
+                <p class="text-gray-600 dark:text-gray-300 leading-relaxed">Built with cutting-edge technologies for optimal performance and exceptional user experience across all devices.</p>
+            </div>
+            <div class="group text-center p-8 rounded-2xl bg-white dark:bg-gray-800 shadow-lg hover:shadow-2xl transition-all duration-500 opacity-0 animate-fade-in-up border border-gray-100 dark:border-gray-700 hover:border-green-200 dark:hover:border-green-600 hover:-translate-y-2 transform" style="animation-delay: 0.3s;">
+                <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-green-500 to-teal-600 rounded-2xl flex items-center justify-center text-white text-3xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+                    <i class="bi bi-phone"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Responsive Design</h3>
+                <p class="text-gray-600 dark:text-gray-300 leading-relaxed">Fully responsive design that adapts perfectly to all screen sizes, from mobile phones to large desktop displays.</p>
+            </div>
+            <div class="group text-center p-8 rounded-2xl bg-white dark:bg-gray-800 shadow-lg hover:shadow-2xl transition-all duration-500 opacity-0 animate-fade-in-up border border-gray-100 dark:border-gray-700 hover:border-orange-200 dark:hover:border-orange-600 hover:-translate-y-2 transform" style="animation-delay: 0.5s;">
+                <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center text-white text-3xl group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Secure & Reliable</h3>
+                <p class="text-gray-600 dark:text-gray-300 leading-relaxed">Built with security best practices and reliable Flask architecture to ensure your application is safe and stable.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-20 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-800 dark:via-purple-800 dark:to-pink-800 relative overflow-hidden transition-colors duration-300">
+    <div class="absolute inset-0 bg-black/20"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        <h2 class="text-4xl md:text-5xl font-bold text-white mb-6 opacity-0 animate-fade-in-up">Ready to Get Started?</h2>
+        <p class="text-xl text-gray-100 mb-10 max-w-3xl mx-auto opacity-0 animate-fade-in-up leading-relaxed" style="animation-delay: 0.2s;">Contact us today to discuss your project requirements and let's build something amazing together.</p>
+        <a href="{{ url_for('contact.contact_page') }}" class="group inline-flex items-center px-10 py-4 bg-white text-blue-600 font-bold text-lg rounded-xl hover:bg-gray-100 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-white/25 shadow-2xl hover:shadow-3xl hover:scale-105 transform opacity-0 animate-fade-in-up" style="animation-delay: 0.4s;">
+            <span>Contact Us</span>
+            <i class="bi bi-arrow-right ml-3"></i>
+        </a>
+    </div>
+    <!-- Animated background elements -->
+    <div class="absolute top-10 left-1/4 w-32 h-32 bg-white/10 rounded-full animate-pulse"></div>
+    <div class="absolute bottom-10 right-1/4 w-24 h-24 bg-yellow-400/20 rounded-full animate-pulse" style="animation-delay: 1s;"></div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/home.js') }}"></script>
+{% endblock %}

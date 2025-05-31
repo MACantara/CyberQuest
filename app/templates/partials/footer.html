@@ -1,0 +1,57 @@
+<!-- Footer -->
+<footer class="bg-gradient-to-r from-gray-900 to-gray-800 dark:from-gray-950 dark:to-gray-900 text-white py-12 mt-auto transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-4 gap-8 mb-8">
+            <!-- Company Info -->
+            <div class="md:col-span-2">
+                <h3 class="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">Flask Template</h3>
+                <p class="text-gray-300 mb-4">A modern Flask-based website template with comprehensive features and robust security.</p>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300 hover:scale-110 transform">
+                        <i class="bi bi-twitter text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300 hover:scale-110 transform">
+                        <i class="bi bi-facebook text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300 hover:scale-110 transform">
+                        <i class="bi bi-linkedin text-xl"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Quick Links -->
+            <div>
+                <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                <ul class="space-y-2">
+                    <li><a href="{{ url_for('main.home') }}" class="text-gray-400 hover:text-white transition-colors duration-300">Home</a></li>
+                    <li><a href="{{ url_for('main.about') }}" class="text-gray-400 hover:text-white transition-colors duration-300">About</a></li>
+                    <li><a href="{{ url_for('contact.contact_page') }}" class="text-gray-400 hover:text-white transition-colors duration-300">Contact</a></li>
+                    {% if session.user_id %}
+                    <li><a href="{{ url_for('profile.profile') }}" class="text-gray-400 hover:text-white transition-colors duration-300">Profile</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            
+            <!-- Legal -->
+            <div>
+                <h4 class="text-lg font-semibold mb-4">Legal</h4>
+                <ul class="space-y-2">
+                    <li><a href="{{ url_for('main.privacy_policy') }}" class="text-gray-400 hover:text-white transition-colors duration-300">Privacy Policy</a></li>
+                    <li><a href="{{ url_for('main.terms_of_service') }}" class="text-gray-400 hover:text-white transition-colors duration-300">Terms of Service</a></li>
+                    <li><a href="{{ url_for('main.cookie_policy') }}" class="text-gray-400 hover:text-white transition-colors duration-300">Cookie Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="border-t border-gray-700 pt-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-300 mb-4 md:mb-0">&copy; {{ current_date.year }} Flask Website Template. All rights reserved.</p>
+                <div class="flex space-x-6 text-sm">
+                    <a href="{{ url_for('main.privacy_policy') }}" class="text-gray-400 hover:text-white transition-colors duration-300">Privacy</a>
+                    <a href="{{ url_for('main.terms_of_service') }}" class="text-gray-400 hover:text-white transition-colors duration-300">Terms</a>
+                    <a href="{{ url_for('main.cookie_policy') }}" class="text-gray-400 hover:text-white transition-colors duration-300">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}About - Flask Website{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="py-20 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 dark:from-blue-800 dark:via-purple-800 dark:to-indigo-900 relative overflow-hidden transition-colors duration-300">
+    <div class="absolute inset-0 bg-black/10"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        <h1 class="text-5xl md:text-6xl font-bold text-white mb-6 opacity-0 animate-fade-in-up">About Us</h1>
+        <p class="text-xl md:text-2xl text-gray-100 max-w-3xl mx-auto opacity-0 animate-fade-in-up" style="animation-delay: 0.2s;">Discover our story, mission, and the values that drive us forward</p>
+    </div>
+    <div class="absolute top-20 right-20 w-40 h-40 bg-white/5 rounded-full animate-bounce" style="animation-duration: 4s;"></div>
+    <div class="absolute bottom-20 left-20 w-32 h-32 bg-yellow-400/10 rounded-full animate-bounce" style="animation-delay: 2s; animation-duration: 5s;"></div>
+</section>
+
+<!-- About Content -->
+<section class="py-20 bg-gradient-to-br from-white to-gray-50 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-16 items-center">
+            <div class="opacity-0 animate-fade-in-left">
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-8">Our Story</h2>
+                <div class="space-y-6 text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+                    <p class="opacity-0 animate-fade-in-up" style="animation-delay: 0.2s;">
+                        We are passionate innovators dedicated to creating exceptional digital experiences. Our journey began with a simple vision: to bridge the gap between cutting-edge technology and meaningful human connection.
+                    </p>
+                    <p class="opacity-0 animate-fade-in-up" style="animation-delay: 0.4s;">
+                        Through years of experience and countless projects, we've learned that the best solutions come from understanding not just what our clients need, but why they need it. Every line of code we write serves a purpose.
+                    </p>
+                </div>
+                <a href="{{ url_for('contact.contact_page') }}" class="group inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold text-lg rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/25 shadow-xl hover:shadow-2xl mt-8 opacity-0 animate-fade-in-up hover:scale-105 transform" style="animation-delay: 0.6s;">
+                    <span>Get in Touch</span>
+                    <i class="bi bi-arrow-right ml-2"></i>
+                </a>
+            </div>
+            <div class="opacity-0 animate-fade-in-up" style="animation-delay: 0.3s;">
+                <div class="relative group">
+                    <img src="https://picsum.photos/600/400" alt="About us" class="w-full h-auto rounded-2xl shadow-2xl group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-purple-600/20 rounded-2xl group-hover:opacity-0 transition-opacity duration-500"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mission Section -->
+<section class="py-20 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 transition-colors duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6 opacity-0 animate-fade-in-up">Our Mission</h2>
+            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto opacity-0 animate-fade-in-up leading-relaxed" style="animation-delay: 0.2s;">
+                We strive to create innovative solutions that empower businesses to thrive in the digital landscape while maintaining authentic human connections.
+            </p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="group text-center p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 opacity-0 animate-fade-in-up hover:-translate-y-3 transform border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-600" style="animation-delay: 0.1s;">
+                <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg">
+                    <i class="bi bi-bullseye text-3xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Innovation</h3>
+                <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                    We embrace cutting-edge technologies and creative solutions to deliver exceptional results that push boundaries and exceed expectations.
+                </p>
+            </div>
+            <div class="group text-center p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 opacity-0 animate-fade-in-up hover:-translate-y-3 transform border border-gray-100 dark:border-gray-700 hover:border-green-200 dark:hover:border-green-600" style="animation-delay: 0.3s;">
+                <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg">
+                    <i class="bi bi-people text-3xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Collaboration</h3>
+                <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                    We believe in the power of teamwork and building strong, lasting partnerships with our clients based on trust and mutual success.
+                </p>
+            </div>
+            <div class="group text-center p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 opacity-0 animate-fade-in-up hover:-translate-y-3 transform border border-gray-100 dark:border-gray-700 hover:border-orange-200 dark:hover:border-orange-600" style="animation-delay: 0.5s;">
+                <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg">
+                    <i class="bi bi-award text-3xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-white">Excellence</h3>
+                <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                    We are committed to delivering high-quality solutions with meticulous attention to detail and unwavering dedication to perfection.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/about.js') }}"></script>
+{% endblock %}

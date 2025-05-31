@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Flask Website{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 sm:py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {% include 'partials/admin/dashboard/header.html' %}
+
+        {% include 'partials/admin/dashboard/stats-cards.html' %}
+
+        <!-- Content Grid -->
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 lg:gap-8">
+            {% include 'partials/admin/dashboard/recent-users.html' %}
+
+            {% include 'partials/admin/dashboard/login-activity.html' %}
+        </div>
+
+        {% include 'partials/admin/dashboard/quick-actions.html' %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script type="module" src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}
