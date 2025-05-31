@@ -19,14 +19,14 @@ def send_reset_email(user, token):
         reset_url = url_for('password_reset.reset_password', token=token, _external=True)
         
         msg = Message(
-            subject='Password Reset Request - Flask Template',
+            subject='Password Reset Request - CyberQuest',
             sender=current_app.config.get('MAIL_USERNAME'),
             recipients=[user.email]
         )
         
         msg.body = f"""Hello {user.username},
 
-You requested a password reset for your Flask Template account.
+You requested a password reset for your CyberQuest account.
 
 Click the link below to reset your password:
 {reset_url}
@@ -36,7 +36,7 @@ This link will expire in 1 hour.
 If you didn't request this password reset, please ignore this email.
 
 Best regards,
-Flask Template Team
+CyberQuest Team
 """
         
         msg.html = f"""
@@ -45,7 +45,7 @@ Flask Template Team
     <h2>Password Reset Request</h2>
     <p>Hello <strong>{user.username}</strong>,</p>
     
-    <p>You requested a password reset for your Flask Template account.</p>
+    <p>You requested a password reset for your CyberQuest account.</p>
     
     <p><a href="{reset_url}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Reset Your Password</a></p>
     
@@ -56,7 +56,7 @@ Flask Template Team
     
     <p>If you didn't request this password reset, please ignore this email.</p>
     
-    <p>Best regards,<br>Flask Template Team</p>
+    <p>Best regards,<br>CyberQuest Team</p>
 </body>
 </html>
 """

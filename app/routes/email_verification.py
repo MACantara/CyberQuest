@@ -16,14 +16,14 @@ def send_verification_email(user, verification):
         verification_url = url_for('email_verification.verify_email', token=verification.token, _external=True)
         
         msg = Message(
-            subject='Verify Your Email Address - Flask Template',
+            subject='Verify Your Email Address - CyberQuest',
             sender=current_app.config.get('MAIL_USERNAME'),
             recipients=[user.email]
         )
         
         msg.body = f"""Hello {user.username},
 
-Thank you for registering with Flask Template! To complete your registration, please verify your email address by clicking the link below:
+Thank you for registering with CyberQuest! To complete your registration, please verify your email address by clicking the link below:
 
 {verification_url}
 
@@ -32,7 +32,7 @@ This verification link will expire in 24 hours.
 If you didn't create an account, you can safely ignore this email.
 
 Best regards,
-Flask Template Team
+CyberQuest Team
 """
         
         msg.html = f"""
@@ -41,7 +41,7 @@ Flask Template Team
     <h2>Verify Your Email Address</h2>
     <p>Hello <strong>{user.username}</strong>,</p>
     
-    <p>Thank you for registering with Flask Template! To complete your registration, please verify your email address by clicking the button below:</p>
+    <p>Thank you for registering with CyberQuest! To complete your registration, please verify your email address by clicking the button below:</p>
     
     <p style="text-align: center; margin: 30px 0;">
         <a href="{verification_url}" style="background-color: #3B82F6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; display: inline-block;">
@@ -56,7 +56,7 @@ Flask Template Team
     
     <p>If you didn't create an account, you can safely ignore this email.</p>
     
-    <p>Best regards,<br>Flask Template Team</p>
+    <p>Best regards,<br>CyberQuest Team</p>
 </body>
 </html>
 """
