@@ -43,7 +43,7 @@ pip install -r requirements.txt
 
 ### 2. Configuration
 ```bash
-cp .env.template .env
+copy .env.template .env
 # Edit .env with your settings
 ```
 
