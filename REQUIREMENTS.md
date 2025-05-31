@@ -64,5 +64,5 @@ These describe **how** the system should perform.
 
 #### ☁️ Availability & Reliability
 
-* [ ] NFR11: Platform must maintain 99.5% uptime annually.
-* [ ] NFR12: Implement daily backups and disaster recovery procedures.
+* [ ] NFR10: Platform must maintain 99.5% uptime annually.
+* [ ] NFR11: Implement daily backups and disaster recovery procedures.
