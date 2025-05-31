@@ -4,22 +4,6 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
-<style>
-    .hero-gradient {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .dark .hero-gradient {
-        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-    }
-
-    @keyframes float {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-20px); }
-    }
-</style>
 {% endblock %}
 
 {% block content %}
