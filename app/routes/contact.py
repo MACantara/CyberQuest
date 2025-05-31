@@ -41,7 +41,7 @@ def send_contact_notification(contact_submission):
         
         # Auto-reply to user
         user_msg = Message(
-            subject='Thank you for contacting us - Flask Template',
+            subject='Thank you for contacting us - CyberQuest',
             sender=current_app.config.get('MAIL_USERNAME'),
             recipients=[contact_submission.email]
         )
@@ -56,7 +56,7 @@ Your message:
 We typically respond within 24-48 hours.
 
 Best regards,
-Flask Template Team
+CyberQuest Team
 """
         
         user_msg.html = f"""
@@ -72,7 +72,7 @@ Flask Template Team
     
     <p>We typically respond within 24-48 hours.</p>
     
-    <p>Best regards,<br>Flask Template Team</p>
+    <p>Best regards,<br>CyberQuest Team</p>
 </body>
 </html>
 """
