@@ -7,59 +7,61 @@
     
     <div class="space-y-6">
         <div class="opacity-0 animate-fade-in-up" style="animation-delay: 0.1s;">
-            <label class="block text-sm font-semibold text-cyan-400 mb-4">
-                <i class="bi bi-target mr-2"></i>Primary Training Focus
-            </label>
-            <div class="grid md:grid-cols-2 gap-4">
-                <label class="cursor-pointer">
-                    <input type="radio" name="focus" value="beginner" class="sr-only peer" checked>
-                    <div class="p-4 border border-green-500/30 rounded-xl peer-checked:border-green-500 peer-checked:bg-green-500/10 hover:border-green-500/50 transition-all duration-300">
-                        <div class="flex items-center space-x-3">
-                            <i class="bi bi-shield text-green-400 text-xl"></i>
-                            <div>
-                                <h3 class="text-white font-semibold">Recruit</h3>
-                                <p class="text-gray-400 text-sm">New to cybersecurity</p>
+            <fieldset>
+                <legend class="block text-sm font-semibold text-cyan-400 mb-4">
+                    <i class="bi bi-target mr-2"></i>Primary Training Focus
+                </legend>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <label class="cursor-pointer">
+                        <input type="radio" name="focus" value="beginner" class="sr-only peer" checked aria-describedby="beginner-desc">
+                        <div class="p-4 border border-green-500/30 rounded-xl peer-checked:border-green-500 peer-checked:bg-green-500/10 hover:border-green-500/50 transition-all duration-300">
+                            <div class="flex items-center space-x-3">
+                                <i class="bi bi-shield text-green-400 text-xl" aria-hidden="true"></i>
+                                <div>
+                                    <h3 class="text-white font-semibold">Recruit</h3>
+                                    <p id="beginner-desc" class="text-gray-400 text-sm">New to cybersecurity</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </label>
-                <label class="cursor-pointer">
-                    <input type="radio" name="focus" value="intermediate" class="sr-only peer">
-                    <div class="p-4 border border-blue-500/30 rounded-xl peer-checked:border-blue-500 peer-checked:bg-blue-500/10 hover:border-blue-500/50 transition-all duration-300">
-                        <div class="flex items-center space-x-3">
-                            <i class="bi bi-shield-check text-blue-400 text-xl"></i>
-                            <div>
-                                <h3 class="text-white font-semibold">Agent</h3>
-                                <p class="text-gray-400 text-sm">Some experience</p>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="focus" value="intermediate" class="sr-only peer" aria-describedby="intermediate-desc">
+                        <div class="p-4 border border-blue-500/30 rounded-xl peer-checked:border-blue-500 peer-checked:bg-blue-500/10 hover:border-blue-500/50 transition-all duration-300">
+                            <div class="flex items-center space-x-3">
+                                <i class="bi bi-shield-check text-blue-400 text-xl" aria-hidden="true"></i>
+                                <div>
+                                    <h3 class="text-white font-semibold">Agent</h3>
+                                    <p id="intermediate-desc" class="text-gray-400 text-sm">Some experience</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </label>
-                <label class="cursor-pointer">
-                    <input type="radio" name="focus" value="advanced" class="sr-only peer">
-                    <div class="p-4 border border-purple-500/30 rounded-xl peer-checked:border-purple-500 peer-checked:bg-purple-500/10 hover:border-purple-500/50 transition-all duration-300">
-                        <div class="flex items-center space-x-3">
-                            <i class="bi bi-shield-fill text-purple-400 text-xl"></i>
-                            <div>
-                                <h3 class="text-white font-semibold">Specialist</h3>
-                                <p class="text-gray-400 text-sm">Advanced knowledge</p>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="focus" value="advanced" class="sr-only peer" aria-describedby="advanced-desc">
+                        <div class="p-4 border border-purple-500/30 rounded-xl peer-checked:border-purple-500 peer-checked:bg-purple-500/10 hover:border-purple-500/50 transition-all duration-300">
+                            <div class="flex items-center space-x-3">
+                                <i class="bi bi-shield-fill text-purple-400 text-xl" aria-hidden="true"></i>
+                                <div>
+                                    <h3 class="text-white font-semibold">Specialist</h3>
+                                    <p id="advanced-desc" class="text-gray-400 text-sm">Advanced knowledge</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </label>
-                <label class="cursor-pointer">
-                    <input type="radio" name="focus" value="expert" class="sr-only peer">
-                    <div class="p-4 border border-red-500/30 rounded-xl peer-checked:border-red-500 peer-checked:bg-red-500/10 hover:border-red-500/50 transition-all duration-300">
-                        <div class="flex items-center space-x-3">
-                            <i class="bi bi-award text-red-400 text-xl"></i>
-                            <div>
-                                <h3 class="text-white font-semibold">Elite</h3>
-                                <p class="text-gray-400 text-sm">Expert level</p>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="focus" value="expert" class="sr-only peer" aria-describedby="expert-desc">
+                        <div class="p-4 border border-red-500/30 rounded-xl peer-checked:border-red-500 peer-checked:bg-red-500/10 hover:border-red-500/50 transition-all duration-300">
+                            <div class="flex items-center space-x-3">
+                                <i class="bi bi-award text-red-400 text-xl" aria-hidden="true"></i>
+                                <div>
+                                    <h3 class="text-white font-semibold">Elite</h3>
+                                    <p id="expert-desc" class="text-gray-400 text-sm">Expert level</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </label>
-            </div>
+                    </label>
+                </div>
+            </fieldset>
         </div>
     </div>
 </div>
