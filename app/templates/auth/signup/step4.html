@@ -1,8 +1,10 @@
 <!-- Step 4: Final Verification -->
 <div class="form-step cyber-card rounded-2xl p-8" data-step="4">
     <div class="text-center mb-6">
-        <h2 class="text-2xl font-bold text-white mb-2">Security Clearance - Final</h2>
-        <p class="text-gray-300">Complete your mission activation</p>
+        <div class="bg-gray-800/30 border border-gray-600/30 rounded-xl p-4 mb-6">
+            <h2 class="text-2xl font-bold text-white mb-2">Step 4: Complete Registration</h2>
+            <p class="text-gray-300">Review your information and finish creating your account</p>
+        </div>
     </div>
     
     <div class="space-y-6">
@@ -22,12 +24,12 @@
             <div class="bg-gray-800/50 border border-cyan-500/30 rounded-xl p-6">
                 <h3 class="text-white font-semibold mb-3 flex items-center">
                     <i class="bi bi-info-circle text-cyan-400 mr-2"></i>
-                    Mission Briefing Summary
+                    Account Summary
                 </h3>
                 <div class="space-y-2 text-sm text-gray-300">
-                    <p><span class="text-green-400">Agent:</span> <span id="summary-username">-</span></p>
-                    <p><span class="text-blue-400">Contact:</span> <span id="summary-email">-</span></p>
-                    <p><span class="text-purple-400">Clearance:</span> <span id="summary-focus">-</span></p>
+                    <p><span class="text-green-400">Agent Username:</span> <span id="summary-username">-</span></p>
+                    <p><span class="text-blue-400">Agent Email:</span> <span id="summary-email">-</span></p>
+                    <p><span class="text-purple-400">Experience Level:</span> <span id="summary-focus">-</span></p>
                 </div>
             </div>
         </div>
@@ -36,8 +38,8 @@
             <label class="flex items-start space-x-3 cursor-pointer">
                 <input type="checkbox" id="terms-agreement" required class="mt-1 rounded border-gray-600 bg-gray-800 text-green-500 focus:ring-green-500">
                 <span class="text-gray-300 text-sm">
-                    I agree to the <a href="{{ url_for('main.terms_of_service') }}" class="text-green-400 hover:text-green-300 underline">CyberQuest Mission Terms</a> 
-                    and <a href="{{ url_for('main.privacy_policy') }}" class="text-blue-400 hover:text-blue-300 underline">Privacy Protocol</a>
+                    I agree to the <a href="{{ url_for('main.terms_of_service') }}" class="text-green-400 hover:text-green-300 underline">Terms of Service</a> 
+                    and <a href="{{ url_for('main.privacy_policy') }}" class="text-blue-400 hover:text-blue-300 underline">Privacy Policy</a>
                 </span>
             </label>
         </div>

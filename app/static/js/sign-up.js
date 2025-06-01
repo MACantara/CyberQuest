@@ -86,10 +86,10 @@ class CyberQuestSignup {
         const selectedFocus = document.querySelector('input[name="focus"]:checked');
         if (selectedFocus) {
             const focusLabels = {
-                'beginner': 'Recruit Level',
-                'intermediate': 'Agent Level',
-                'advanced': 'Specialist Level',
-                'expert': 'Elite Level'
+                'beginner': 'Beginner',
+                'intermediate': 'Intermediate', 
+                'advanced': 'Advanced',
+                'expert': 'Expert'
             };
             document.getElementById('summary-focus').textContent = focusLabels[selectedFocus.value] || '-';
         }
@@ -136,45 +136,45 @@ class CyberQuestSignup {
         }
         
         if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-            this.showNotification('Username can only contain letters, numbers, and underscores', 'error');
+            this.showNotification('Agent username can only contain letters, numbers, and underscores', 'error');
             return false;
         }
         
         if (!email || !this.isValidEmail(email)) {
-            this.showNotification('Please enter a valid secure communication channel', 'error');
+            this.showNotification('Please enter a valid agent email address', 'error');
             return false;
         }
         
-        this.showNotification('Security clearance Level 1 approved!', 'success');
+        this.showNotification('Step 1 completed!', 'success');
         return true;
     }
 
     validateStep2() {
         if (!this.passwordValidator.isValid()) {
             const errors = this.passwordValidator.getValidationErrors();
-            this.showNotification(errors[0] || 'Master access key requirements not met', 'error');
+            this.showNotification(errors[0] || 'Agent password requirements not met', 'error');
             return false;
         }
         
-        this.showNotification('Security credentials verified!', 'success');
+        this.showNotification('Agent password created successfully!', 'success');
         return true;
     }
 
     validateStep3() {
         const selectedFocus = document.querySelector('input[name="focus"]:checked');
         if (!selectedFocus) {
-            this.showNotification('Please select your training specialization', 'error');
+            this.showNotification('Please select your experience level', 'error');
             return false;
         }
         
-        this.showNotification('Training preferences configured!', 'success');
+        this.showNotification('Experience level set!', 'success');
         return true;
     }
 
     validateStep4() {
         const termsChecked = document.getElementById('terms-agreement').checked;
         if (!termsChecked) {
-            this.showNotification('Please accept the mission terms to proceed', 'error');
+            this.showNotification('Please accept the terms and conditions', 'error');
             return false;
         }
         
@@ -310,11 +310,11 @@ class CyberQuestSignup {
             this.saveCurrentStepData();
             
             // Submit form
-            this.showNotification('Activating agent profile...', 'info');
+            this.showNotification('Creating your account...', 'info');
             this.form.submit();
             
         } catch (error) {
-            this.showNotification('Mission activation failed. Please try again.', 'error');
+            this.showNotification('Failed to create account. Please try again.', 'error');
             this.setSubmissionState(false);
         }
     }
@@ -325,12 +325,12 @@ class CyberQuestSignup {
         const spinner = this.nextBtn.querySelector('.submit-spinner');
         
         if (loading) {
-            submitText.textContent = 'Activating...';
+            submitText.textContent = 'Creating Account...';
             submitIcon.classList.add('hidden');
             spinner.classList.remove('hidden');
             this.nextBtn.disabled = true;
         } else {
-            submitText.textContent = 'Activate Agent';
+            submitText.textContent = 'Create Account';
             submitIcon.classList.remove('hidden');
             spinner.classList.add('hidden');
             this.nextBtn.disabled = false;
