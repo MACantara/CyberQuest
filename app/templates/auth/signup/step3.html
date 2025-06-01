@@ -1,0 +1,89 @@
+<!-- Step 3: Mission Preferences -->
+<div class="form-step cyber-card rounded-2xl p-8" data-step="3">
+    <div class="text-center mb-6">
+        <h2 class="text-2xl font-bold text-white mb-2">Security Clearance - Level 3</h2>
+        <p class="text-gray-300">Select your training specialization</p>
+    </div>
+    
+    <div class="space-y-6">
+        <div class="opacity-0 animate-fade-in-up" style="animation-delay: 0.1s;">
+            <label class="block text-sm font-semibold text-cyan-400 mb-4">
+                <i class="bi bi-target mr-2"></i>Primary Training Focus
+            </label>
+            <div class="grid md:grid-cols-2 gap-4">
+                <label class="cursor-pointer">
+                    <input type="radio" name="focus" value="beginner" class="sr-only peer" checked>
+                    <div class="p-4 border border-green-500/30 rounded-xl peer-checked:border-green-500 peer-checked:bg-green-500/10 hover:border-green-500/50 transition-all duration-300">
+                        <div class="flex items-center space-x-3">
+                            <i class="bi bi-shield text-green-400 text-xl"></i>
+                            <div>
+                                <h3 class="text-white font-semibold">Recruit</h3>
+                                <p class="text-gray-400 text-sm">New to cybersecurity</p>
+                            </div>
+                        </div>
+                    </div>
+                </label>
+                <label class="cursor-pointer">
+                    <input type="radio" name="focus" value="intermediate" class="sr-only peer">
+                    <div class="p-4 border border-blue-500/30 rounded-xl peer-checked:border-blue-500 peer-checked:bg-blue-500/10 hover:border-blue-500/50 transition-all duration-300">
+                        <div class="flex items-center space-x-3">
+                            <i class="bi bi-shield-check text-blue-400 text-xl"></i>
+                            <div>
+                                <h3 class="text-white font-semibold">Agent</h3>
+                                <p class="text-gray-400 text-sm">Some experience</p>
+                            </div>
+                        </div>
+                    </div>
+                </label>
+                <label class="cursor-pointer">
+                    <input type="radio" name="focus" value="advanced" class="sr-only peer">
+                    <div class="p-4 border border-purple-500/30 rounded-xl peer-checked:border-purple-500 peer-checked:bg-purple-500/10 hover:border-purple-500/50 transition-all duration-300">
+                        <div class="flex items-center space-x-3">
+                            <i class="bi bi-shield-fill text-purple-400 text-xl"></i>
+                            <div>
+                                <h3 class="text-white font-semibold">Specialist</h3>
+                                <p class="text-gray-400 text-sm">Advanced knowledge</p>
+                            </div>
+                        </div>
+                    </div>
+                </label>
+                <label class="cursor-pointer">
+                    <input type="radio" name="focus" value="expert" class="sr-only peer">
+                    <div class="p-4 border border-red-500/30 rounded-xl peer-checked:border-red-500 peer-checked:bg-red-500/10 hover:border-red-500/50 transition-all duration-300">
+                        <div class="flex items-center space-x-3">
+                            <i class="bi bi-award text-red-400 text-xl"></i>
+                            <div>
+                                <h3 class="text-white font-semibold">Elite</h3>
+                                <p class="text-gray-400 text-sm">Expert level</p>
+                            </div>
+                        </div>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <div class="opacity-0 animate-fade-in-up" style="animation-delay: 0.2s;">
+            <label class="block text-sm font-semibold text-yellow-400 mb-4">
+                <i class="bi bi-lightning mr-2"></i>Preferred Mission Types (Optional)
+            </label>
+            <div class="grid grid-cols-2 gap-3">
+                <label class="flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" name="interests" value="phishing" class="rounded border-gray-600 bg-gray-800 text-green-500 focus:ring-green-500">
+                    <span class="text-gray-300 text-sm">Email Detective</span>
+                </label>
+                <label class="flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" name="interests" value="privacy" class="rounded border-gray-600 bg-gray-800 text-blue-500 focus:ring-blue-500">
+                    <span class="text-gray-300 text-sm">Privacy Guardian</span>
+                </label>
+                <label class="flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" name="interests" value="financial" class="rounded border-gray-600 bg-gray-800 text-purple-500 focus:ring-purple-500">
+                    <span class="text-gray-300 text-sm">Vault Keeper</span>
+                </label>
+                <label class="flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" name="interests" value="hacking" class="rounded border-gray-600 bg-gray-800 text-orange-500 focus:ring-orange-500">
+                    <span class="text-gray-300 text-sm">White Hat Academy</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
