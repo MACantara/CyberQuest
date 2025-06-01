@@ -88,21 +88,21 @@
             <div class="space-y-6">
                 <div class="opacity-0 animate-fade-in-up" style="animation-delay: 0.3s;">
                     <label for="username_or_email" class="block text-sm font-semibold text-blue-400 mb-2">
-                        <i class="bi bi-person-badge mr-2"></i>Agent ID or Communication Channel
+                        <i class="bi bi-person-badge mr-2"></i>Agent Username or Email
                     </label>
                     <input id="username_or_email" name="username_or_email" type="text" required 
                            class="w-full px-4 py-4 bg-gray-800/50 border border-blue-500/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-white placeholder-gray-400 hover:border-blue-500/50"
-                           placeholder="Enter agent username or email" value="{{ request.form.username_or_email }}"
+                           placeholder="Enter username or email" value="{{ request.form.username_or_email }}"
                            {% if locked_out %}disabled{% endif %}>
                 </div>
                 
                 <div class="opacity-0 animate-fade-in-up" style="animation-delay: 0.4s;">
                     <label for="password" class="block text-sm font-semibold text-purple-400 mb-2">
-                        <i class="bi bi-key mr-2"></i>Security Access Code
+                        <i class="bi bi-key mr-2"></i>Agent Password
                     </label>
                     <input id="password" name="password" type="password" required 
                            class="w-full px-4 py-4 bg-gray-800/50 border border-purple-500/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 text-white placeholder-gray-400 hover:border-purple-500/50"
-                           placeholder="Enter your access code"
+                           placeholder="Enter password"
                            {% if locked_out %}disabled{% endif %}>
                 </div>
             </div>
@@ -119,7 +119,7 @@
 
                 <div class="text-sm">
                     <a href="{{ url_for('password_reset.forgot_password') }}" class="font-medium text-cyan-400 hover:text-cyan-300 transition-colors duration-200 hover:underline">
-                        Forgot access code?
+                        Forgot password?
                     </a>
                 </div>
             </div>
