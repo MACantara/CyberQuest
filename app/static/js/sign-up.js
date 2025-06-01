@@ -193,12 +193,7 @@ class CyberQuestSignup {
         inputs.forEach(input => {
             if (input.type === 'checkbox' || input.type === 'radio') {
                 if (input.checked) {
-                    if (input.name === 'interests') {
-                        if (!this.formData.interests) this.formData.interests = [];
-                        this.formData.interests.push(input.value);
-                    } else {
-                        this.formData[input.name] = input.value;
-                    }
+                    this.formData[input.name] = input.value;
                 }
             } else {
                 this.formData[input.name] = input.value;
