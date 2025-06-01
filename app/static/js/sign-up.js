@@ -131,17 +131,17 @@ class CyberQuestSignup {
         const email = this.emailInput.value.trim();
         
         if (!username || username.length < 3) {
-            this.showNotification('Username must be at least 3 characters', 'error');
+            this.showNotification('Agent username must be at least 3 characters', 'error');
             return false;
         }
         
         if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-            this.showNotification('Username can only contain letters, numbers, and underscores', 'error');
+            this.showNotification('Agent username can only contain letters, numbers, and underscores', 'error');
             return false;
         }
         
         if (!email || !this.isValidEmail(email)) {
-            this.showNotification('Please enter a valid email address', 'error');
+            this.showNotification('Please enter a valid agent email address', 'error');
             return false;
         }
         
@@ -152,11 +152,11 @@ class CyberQuestSignup {
     validateStep2() {
         if (!this.passwordValidator.isValid()) {
             const errors = this.passwordValidator.getValidationErrors();
-            this.showNotification(errors[0] || 'Password requirements not met', 'error');
+            this.showNotification(errors[0] || 'Agent password requirements not met', 'error');
             return false;
         }
         
-        this.showNotification('Password created successfully!', 'success');
+        this.showNotification('Agent password created successfully!', 'success');
         return true;
     }
 
