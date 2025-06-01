@@ -138,7 +138,7 @@
 
             <div class="opacity-0 animate-fade-in-up" style="animation-delay: 0.6s;">
                 <button type="submit" id="login-btn"
-                        class="group w-full inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-blue-500 to-cyan-600 text-white font-semibold text-lg rounded-xl hover:from-blue-600 hover:to-cyan-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/25 shadow-xl hover:shadow-2xl hover:scale-105 transform cyber-glow {% if locked_out %}opacity-50 cursor-not-allowed{% endif %}"
+                        class="group w-full inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-blue-500 to-cyan-600 text-white font-semibold text-lg rounded-xl hover:from-blue-600 hover:to-cyan-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/25 shadow-xl hover:shadow-2xl hover:scale-105 transform cyber-glow cursor-pointer {% if locked_out %}opacity-50 cursor-not-allowed{% endif %}"
                         {% if locked_out %}disabled{% endif %}>
                     {% if locked_out %}
                         <i class="bi bi-lock mr-3"></i>
