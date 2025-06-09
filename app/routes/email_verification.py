@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, jsonify
+from flask_login import current_user
 from flask_mail import Message
 from app import db, mail
 from app.models.user import User

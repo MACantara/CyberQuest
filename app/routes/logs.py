@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, make_response
+from flask_login import login_required
 from app import db
 from app.models.user import User
 from app.models.login_attempt import LoginAttempt
@@ -15,6 +16,7 @@ from app.routes.admin import admin_required
 logs_bp = Blueprint('logs', __name__, url_prefix='/admin/logs')
 
 @logs_bp.route('/')
+@login_required
 @admin_required
 def logs():
     """View system logs."""
@@ -52,6 +54,7 @@ def logs():
                          log_type=log_type)
 
 @logs_bp.route('/export')
+@login_required
 @admin_required
 def export_logs():
     """Export logs to CSV format."""

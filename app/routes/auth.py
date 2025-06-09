@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app
+from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
+from flask_login import login_user, logout_user, login_required, current_user
 from app import db
 from app.models.user import User
 from app.models.email_verification import EmailVerification
@@ -24,6 +25,10 @@ def is_valid_username(username):
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
+    # Redirect if already logged in
+    if current_user.is_authenticated:
+        return redirect(url_for('main.home'))
+    
     # Check if IP is locked out
     locked_out, minutes_remaining = check_ip_lockout()
     if locked_out:
@@ -76,9 +81,7 @@ def login():
                 # Successful login - record success
                 record_login_attempt(username_or_email, success=True)
                 
-                session['user_id'] = user.id
-                session['username'] = user.username
-                session.permanent = remember_me
+                login_user(user, remember=remember_me)
                 user.update_last_login()
                 
                 flash(f'Welcome back, {user.username}!', 'success')
@@ -103,6 +106,10 @@ def login():
 
 @auth_bp.route('/signup', methods=['GET', 'POST'])
 def signup():
+    # Redirect if already logged in
+    if current_user.is_authenticated:
+        return redirect(url_for('main.home'))
+    
     if request.method == 'POST':
         username = request.form.get('username', '').strip().lower()
         email = request.form.get('email', '').strip().lower()
@@ -185,7 +192,8 @@ def signup():
     return render_template('auth/signup.html')
 
 @auth_bp.route('/logout')
+@login_required
 def logout():
-    session.clear()
+    logout_user()
     flash('You have been logged out successfully.', 'success')
     return redirect(url_for('main.home'))

@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session, current_app, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, jsonify
+from flask_login import login_required, current_user
 from app import db
 from app.models.user import User
 from app.models.login_attempt import LoginAttempt
@@ -19,14 +20,8 @@ def admin_required(f):
             flash('Admin panel is not available in this deployment environment.', 'warning')
             return redirect(url_for('main.home'))
         
-        # Check if user is logged in
-        if 'user_id' not in session:
-            flash('Please log in to access the admin panel.', 'error')
-            return redirect(url_for('auth.login', next=request.url))
-        
-        # Check if user is admin
-        user = User.query.get(session['user_id'])
-        if not user or not user.is_admin:
+        # Check if user is logged in and is admin
+        if not current_user.is_authenticated or not current_user.is_admin:
             flash('Access denied. Admin privileges required.', 'error')
             return redirect(url_for('main.home'))
         
@@ -34,6 +29,7 @@ def admin_required(f):
     return decorated_function
 
 @admin_bp.route('/')
+@login_required
 @admin_required
 def dashboard():
     """Admin dashboard with overview statistics."""
@@ -83,6 +79,7 @@ def dashboard():
                          recent_login_logs=recent_login_logs)
 
 @admin_bp.route('/users')
+@login_required
 @admin_required
 def users():
     """User management page."""
@@ -123,6 +120,7 @@ def users():
                          status_filter=status_filter)
 
 @admin_bp.route('/user/<int:user_id>')
+@login_required
 @admin_required
 def user_details(user_id):
     """View detailed information about a specific user."""
@@ -150,13 +148,14 @@ def user_details(user_id):
                          verifications=verifications)
 
 @admin_bp.route('/user/<int:user_id>/toggle-status', methods=['POST'])
+@login_required
 @admin_required
 def toggle_user_status(user_id):
     """Toggle user active status."""
     user = User.query.get_or_404(user_id)
     
     # Prevent admin from deactivating themselves
-    if user.id == session['user_id']:
+    if user.id == current_user.id:
         flash('You cannot deactivate your own account.', 'error')
         return redirect(url_for('admin.user_details', user_id=user_id))
     
@@ -169,13 +168,14 @@ def toggle_user_status(user_id):
     return redirect(url_for('admin.user_details', user_id=user_id))
 
 @admin_bp.route('/user/<int:user_id>/toggle-admin', methods=['POST'])
+@login_required
 @admin_required
 def toggle_admin_status(user_id):
     """Toggle user admin status."""
     user = User.query.get_or_404(user_id)
     
     # Prevent admin from removing their own admin status
-    if user.id == session['user_id']:
+    if user.id == current_user.id:
         flash('You cannot remove your own admin privileges.', 'error')
         return redirect(url_for('admin.user_details', user_id=user_id))
     
@@ -188,6 +188,7 @@ def toggle_admin_status(user_id):
     return redirect(url_for('admin.user_details', user_id=user_id))
 
 @admin_bp.route('/api/stats')
+@login_required
 @admin_required
 def api_stats():
     """API endpoint for dashboard statistics."""
@@ -221,6 +222,7 @@ def api_stats():
     return jsonify(daily_stats)
 
 @admin_bp.route('/cleanup', methods=['POST'])
+@login_required
 @admin_required
 def cleanup_logs():
     """Clean up old logs and expired tokens."""

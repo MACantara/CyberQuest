@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
+from flask_login import current_user
 from flask_mail import Message
 from app import db, mail
 from app.models.user import User, PasswordResetToken
@@ -70,6 +71,10 @@ CyberQuest Team
 
 @password_reset_bp.route('/forgot', methods=['GET', 'POST'])
 def forgot_password():
+    # Redirect if already logged in
+    if current_user.is_authenticated:
+        return redirect(url_for('main.home'))
+    
     if request.method == 'POST':
         email = request.form.get('email', '').strip().lower()
         
@@ -107,6 +112,10 @@ def forgot_password():
 
 @password_reset_bp.route('/reset/<token>', methods=['GET', 'POST'])
 def reset_password(token):
+    # Redirect if already logged in
+    if current_user.is_authenticated:
+        return redirect(url_for('main.home'))
+    
     # Check if database is disabled (Vercel environment)
     if current_app.config.get('DISABLE_DATABASE', False):
         flash('Password reset is not available in this deployment environment.', 'warning')
