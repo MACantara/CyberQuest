@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}Cybersecurity Levels{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/levels.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="text-center mb-12 opacity-0 animate-fade-in-up">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+                Cybersecurity <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Levels</span>
+            </h1>
+            <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                Master cybersecurity through gamified challenges. Complete levels to unlock new skills and advance your digital defense expertise.
+            </p>
+        </div>
+
+        <!-- Progress Overview -->
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-8 opacity-0 animate-fade-in-up border border-gray-200 dark:border-gray-700" style="animation-delay: 0.1s;">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Your Progress</h2>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center">
+                            <i class="bi bi-trophy text-yellow-500 mr-2"></i>
+                            <span class="text-gray-600 dark:text-gray-300">
+                                Completed: <strong>{{ levels | selectattr('unlocked') | list | length - 1 }}/{{ levels | length }}</strong>
+                            </span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="bi bi-star text-blue-500 mr-2"></i>
+                            <span class="text-gray-600 dark:text-gray-300">
+                                Total XP: <strong>{{ (levels | selectattr('unlocked') | list | length - 1) * 150 }}</strong>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center sm:text-right">
+                    <div class="text-sm text-gray-500 dark:text-gray-400 mb-1">Overall Progress</div>
+                    <div class="w-48 bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+                        <div class="bg-gradient-to-r from-blue-500 to-purple-600 h-3 rounded-full transition-all duration-500" 
+                             style="width: {{ ((levels | selectattr('unlocked') | list | length - 1) / levels | length * 100) | round }}%"></div>
+                    </div>
+                    <div class="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                        {{ ((levels | selectattr('unlocked') | list | length - 1) / levels | length * 100) | round }}% Complete
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Levels Grid -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for level in levels %}
+            <div class="group relative opacity-0 animate-fade-in-up {{ 'cursor-pointer' if level.unlocked else 'cursor-not-allowed' }}" 
+                 style="animation-delay: {{ loop.index * 0.1 }}s;">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 
+                           {{ 'hover:shadow-2xl hover:scale-105 transform transition-all duration-300' if level.unlocked else 'opacity-60' }}
+                           {{ 'border-green-400 dark:border-green-500' if level.unlocked else '' }}">
+                    
+                    <!-- Level Card Content -->
+                    <div class="p-6">
+                        <!-- Level Header -->
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 rounded-lg flex items-center justify-center text-white text-xl mr-4
+                                           {{ 'bg-gradient-to-br from-green-500 to-emerald-600' if level.unlocked else 'bg-gray-400 dark:bg-gray-600' }}">
+                                    <i class="{{ level.icon }}"></i>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-medium text-gray-500 dark:text-gray-400">Level {{ level.id }}</div>
+                                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">{{ level.name }}</h3>
+                                </div>
+                            </div>
+                            {% if level.unlocked %}
+                                <i class="bi bi-unlock text-green-500 text-xl"></i>
+                            {% else %}
+                                <i class="bi bi-lock text-gray-400 text-xl"></i>
+                            {% endif %}
+                        </div>
+
+                        <!-- Level Description -->
+                        <p class="text-gray-600 dark:text-gray-300 text-sm mb-4">{{ level.description }}</p>
+
+                        <!-- Level Metadata -->
+                        <div class="space-y-2 mb-4">
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-500 dark:text-gray-400">Difficulty:</span>
+                                <span class="px-2 py-1 rounded-full text-xs font-medium
+                                           {% if level.difficulty == 'Beginner' %}bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400
+                                           {% elif level.difficulty == 'Intermediate' %}bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400
+                                           {% elif level.difficulty == 'Advanced' %}bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400
+                                           {% elif level.difficulty == 'Expert' %}bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400
+                                           {% else %}bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400{% endif %}">
+                                    {{ level.difficulty }}
+                                </span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-500 dark:text-gray-400">XP Reward:</span>
+                                <span class="font-medium text-blue-600 dark:text-blue-400">{{ level.xp_reward }} XP</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-500 dark:text-gray-400">Time:</span>
+                                <span class="text-gray-700 dark:text-gray-300">{{ level.estimated_time }}</span>
+                            </div>
+                        </div>
+
+                        <!-- Skills -->
+                        <div class="mb-4">
+                            <div class="text-xs text-gray-500 dark:text-gray-400 mb-2">Skills you'll learn:</div>
+                            <div class="flex flex-wrap gap-1">
+                                {% for skill in level.skills %}
+                                <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 text-xs rounded-full">
+                                    {{ skill }}
+                                </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Action Button -->
+                        {% if level.unlocked %}
+                            <a href="{{ url_for('levels.level_detail', level_id=level.id) }}" 
+                               class="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/25 shadow-lg hover:shadow-xl">
+                                <i class="bi bi-play-circle mr-2"></i>
+                                Start Level
+                            </a>
+                        {% else %}
+                            <button disabled 
+                                    class="w-full inline-flex items-center justify-center px-4 py-3 bg-gray-400 dark:bg-gray-600 text-white font-semibold rounded-lg cursor-not-allowed opacity-60">
+                                <i class="bi bi-lock mr-2"></i>
+                                Locked
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/levels.js') }}"></script>
+{% endblock %}
