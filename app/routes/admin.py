@@ -116,7 +116,7 @@ def users():
         page=page, per_page=per_page, error_out=False
     )
     
-    return render_template('admin/users.html', 
+    return render_template('admin/users/users.html', 
                          users=users_pagination.items,
                          pagination=users_pagination,
                          search=search,
