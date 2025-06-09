@@ -22,9 +22,9 @@
                 </a>
                 
                 <!-- Authentication Links -->
-                {% if session.get('user_id') %}
+                {% if current_user.is_authenticated %}
                     <!-- Admin Panel Link for Admin Users -->
-                    {% if not config.get('DISABLE_DATABASE', False) and current_user and current_user.is_admin %}
+                    {% if not config.get('DISABLE_DATABASE', False) and current_user.is_admin %}
                         <a href="{{ url_for('admin.dashboard') }}" class="text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 transition-all duration-300 font-medium relative group">
                             <i class="bi bi-gear mr-1"></i>Admin
                             <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-orange-600 to-red-600 group-hover:w-full transition-all duration-300"></span>
@@ -35,9 +35,9 @@
                     <div class="relative">
                         <button class="flex items-center text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer" data-dropdown-toggle="userDropdown">
                             <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm mr-2">
-                                {{ session.username[0].upper() }}
+                                {{ current_user.username[0].upper() }}
                             </div>
-                            <span class="hidden md:block">{{ session.username }}</span>
+                            <span class="hidden md:block">{{ current_user.username }}</span>
                             <i class="bi bi-chevron-down ml-1"></i>
                         </button>
                         
@@ -46,7 +46,7 @@
                                 <a href="{{ url_for('profile.profile') }}" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
                                     <i class="bi bi-person mr-2"></i>Profile
                                 </a>
-                                {% if not config.get('DISABLE_DATABASE', False) and current_user and current_user.is_admin %}
+                                {% if not config.get('DISABLE_DATABASE', False) and current_user.is_admin %}
                                     <a href="{{ url_for('admin.dashboard') }}" class="flex items-center px-4 py-2 text-sm text-orange-700 dark:text-orange-300 hover:bg-orange-50 dark:hover:bg-orange-900/20">
                                         <i class="bi bi-gear mr-2"></i>Admin Panel
                                     </a>
@@ -135,12 +135,12 @@
             <a href="{{ url_for('contact.contact_page') }}" class="block px-3 py-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-gray-800/50 transition-all duration-300 rounded-lg font-medium">Contact</a>
             
             <!-- Mobile Authentication Links -->
-            {% if session.get('user_id') %}
+            {% if current_user.is_authenticated %}
                 <div class="border-t border-gray-200 dark:border-gray-700 pt-2 mt-2">
                     <a href="{{ url_for('profile.profile') }}" class="block px-3 py-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-gray-800/50 transition-all duration-300 rounded-lg font-medium">
                         <i class="bi bi-person mr-2"></i>Profile
                     </a>
-                    {% if not config.get('DISABLE_DATABASE', False) and current_user and current_user.is_admin %}
+                    {% if not config.get('DISABLE_DATABASE', False) and current_user.is_admin %}
                         <a href="{{ url_for('admin.dashboard') }}" class="block px-3 py-2 text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 hover:bg-orange-50/50 dark:hover:bg-orange-900/20 transition-all duration-300 rounded-lg font-medium">
                             <i class="bi bi-gear mr-2"></i>Admin Panel
                         </a>
