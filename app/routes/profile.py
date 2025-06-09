@@ -96,3 +96,72 @@ def edit_profile():
             return render_template('profile/edit-profile.html', user=current_user)
     
     return render_template('profile/edit-profile.html', user=current_user)
+
+@profile_bp.route('/dashboard')
+@login_required
+def dashboard():
+    """Display user dashboard with cybersecurity level progress."""
+    from app.routes.levels import CYBERSECURITY_LEVELS
+    
+    # Calculate user progress (mock data for now)
+    # TODO: Replace with actual user progress from database
+    total_levels = len(CYBERSECURITY_LEVELS)
+    completed_levels = 1  # Mock: user has completed first level
+    total_xp = 100  # Mock: XP from completed levels
+    learning_streak = 3  # Mock: days of consecutive learning
+    progress_percentage = (completed_levels / total_levels) * 100
+    
+    # Determine user rank based on XP
+    if total_xp < 100:
+        user_rank = "Novice"
+    elif total_xp < 500:
+        user_rank = "Apprentice"
+    elif total_xp < 1000:
+        user_rank = "Guardian"
+    elif total_xp < 2000:
+        user_rank = "Expert"
+    else:
+        user_rank = "Master"
+    
+    # Prepare levels with completion status
+    levels_progress = []
+    for i, level in enumerate(CYBERSECURITY_LEVELS):
+        level_data = level.copy()
+        level_data['completed'] = i < completed_levels  # Mock: only first level completed
+        level_data['unlocked'] = i < completed_levels + 1  # Next level is unlocked
+        levels_progress.append(level_data)
+    
+    # Find next available level
+    next_level = None
+    for level in levels_progress:
+        if level['unlocked'] and not level['completed']:
+            next_level = level
+            break
+    
+    # Mock recent activity
+    from datetime import datetime, timedelta
+    recent_activity = [
+        {
+            'icon': 'bi-trophy',
+            'title': 'Level Completed',
+            'description': 'Completed "The Misinformation Maze"',
+            'timestamp': datetime.now() - timedelta(days=1)
+        },
+        {
+            'icon': 'bi-star',
+            'title': 'XP Earned',
+            'description': 'Earned 100 XP points',
+            'timestamp': datetime.now() - timedelta(days=1)
+        }
+    ]
+    
+    return render_template('profile/dashboard.html',
+                         total_xp=total_xp,
+                         completed_levels=completed_levels,
+                         total_levels=total_levels,
+                         learning_streak=learning_streak,
+                         user_rank=user_rank,
+                         progress_percentage=int(progress_percentage),
+                         levels=levels_progress,
+                         next_level=next_level,
+                         recent_activity=recent_activity)
