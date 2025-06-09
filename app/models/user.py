@@ -2,11 +2,12 @@ from app import db
 from datetime import datetime
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError, HashingError
+from flask_login import UserMixin
 import secrets
 
 ph = PasswordHasher()
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = 'users'  # Add explicit table name to match foreign key reference
     
     id = db.Column(db.Integer, primary_key=True)
@@ -52,6 +53,13 @@ class User(db.Model):
         db.session.add(reset_token)
         db.session.commit()
         return reset_token.token
+    
+    def get_id(self):
+        """Override UserMixin method to return user ID as string."""
+        return str(self.id)
+    
+    # Remove the problematic method overrides that conflict with database columns
+    # Flask-Login will use the default UserMixin implementations which work correctly
     
     def __repr__(self):
         return f'<User {self.username}>'
