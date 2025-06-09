@@ -63,6 +63,8 @@
         {% endif %}
 
         <form class="cyber-card rounded-2xl p-8 space-y-6 opacity-0 animate-fade-in-up" method="POST" {% if locked_out %}style="pointer-events: none; opacity: 0.6;"{% endif %}>
+            <input type="hidden" id="csrf_token" name="csrf_token" value="{{csrf_token()}}">
+            
             <div class="text-center mb-6">
                 <div class="flex items-center justify-center mb-4">
                     <div class="w-16 h-16 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-full flex items-center justify-center cyber-glow">

@@ -18,6 +18,8 @@
         {% include 'auth/signup/header.html' %}
 
         <form id="cyberquest-signup" class="space-y-8" method="POST">
+            <input type="hidden" id="csrf_token" name="csrf_token" value="{{csrf_token()}}">
+            
             <!-- Include Form Steps -->
             {% include 'auth/signup/step1.html' %}
             {% include 'auth/signup/step2.html' %}
