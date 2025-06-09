@@ -77,7 +77,7 @@ def dashboard():
         'recent_contacts': recent_contacts
     }
     
-    return render_template('admin/dashboard.html', 
+    return render_template('admin/dashboard/dashboard.html', 
                          stats=stats, 
                          recent_users=recent_users,
                          recent_login_logs=recent_login_logs)
