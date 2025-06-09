@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Level Locked - {{ level.name }}{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 py-8 flex items-center justify-center">
+    <div class="max-w-md w-full px-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 text-center border border-gray-200 dark:border-gray-700">
+            <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-gray-400 to-gray-600 rounded-full flex items-center justify-center">
+                <i class="bi bi-lock text-white text-3xl"></i>
+            </div>
+            
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Level Locked</h1>
+            <h2 class="text-lg text-gray-600 dark:text-gray-300 mb-4">{{ level.name }}</h2>
+            
+            <p class="text-gray-600 dark:text-gray-300 mb-6">
+                Complete previous levels to unlock this challenge. Master the fundamentals before taking on advanced cybersecurity scenarios.
+            </p>
+            
+            <div class="space-y-3">
+                <a href="{{ url_for('levels.levels_overview') }}" 
+                   class="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300">
+                    <i class="bi bi-arrow-left mr-2"></i>
+                    Back to Levels
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
