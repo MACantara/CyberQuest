@@ -55,6 +55,11 @@
     <!-- Include Footer -->
     {% include 'partials/footer.html' %}
 
+    <!-- Make CSRF token available globally -->
+    <script>
+        window.csrfToken = "{{ csrf_token() }}";
+    </script>
+
     <!-- Main JavaScript as ES6 module -->
     <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script type="module" src="{{ url_for('static', filename='js/components/toast.js') }}"></script>
