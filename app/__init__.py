@@ -115,7 +115,6 @@ def create_app(config_name=None):
         @app.context_processor
         def inject_current_date():
             from datetime import datetime
-            from flask_wtf.csrf import generate_csrf
             current_date = datetime.now()
             
             # Get current user for templates
@@ -130,8 +129,7 @@ def create_app(config_name=None):
             return {
                 'current_year': current_date.year,
                 'current_date': current_date,
-                'current_user': current_user,
-                'csrf_token': generate_csrf
+                'current_user': current_user
             }
 
     # Make hCaptcha available in templates
