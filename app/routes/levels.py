@@ -68,13 +68,13 @@ CYBERSECURITY_LEVELS = [
     {
         'id': 6,
         'name': 'Digital Gold Rush',
-        'description': 'Secure your financial data and learn about cryptocurrency safety.',
+        'description': 'Navigate financial investment scams and master safe online business practices to protect your assets.',
         'difficulty': 'Advanced',
         'xp_reward': 250,
         'icon': 'bi-credit-card-2-front',
         'category': 'Financial Security',
         'estimated_time': '35 minutes',
-        'skills': ['Financial Protection', 'Crypto Security', 'Banking Safety'],
+        'skills': ['Investment Scam Detection', 'Safe Business Practices', 'Financial Fraud Prevention'],
         'unlocked': False
     },
     {
