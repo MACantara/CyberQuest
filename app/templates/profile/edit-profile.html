@@ -23,6 +23,7 @@
             </div>
 
             <form method="POST" class="space-y-6 opacity-0 animate-fade-in-left" style="animation-delay: 0.1s;">
+                <input type="hidden" id="csrf_token" name="csrf_token" value="{{csrf_token()}}">
                 <!-- Username -->
                 <div class="opacity-0 animate-fade-in-up" style="animation-delay: 0.2s;">
                     <label for="username" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
