@@ -46,7 +46,7 @@ def logs():
         flash('Invalid log type.', 'error')
         return redirect(url_for('logs.logs'))
     
-    return render_template('admin/logs.html',
+    return render_template('admin/logs/logs.html',
                          logs=logs_pagination.items,
                          pagination=logs_pagination,
                          log_type=log_type)

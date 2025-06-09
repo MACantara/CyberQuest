@@ -77,7 +77,7 @@ def dashboard():
         'recent_contacts': recent_contacts
     }
     
-    return render_template('admin/dashboard.html', 
+    return render_template('admin/dashboard/dashboard.html', 
                          stats=stats, 
                          recent_users=recent_users,
                          recent_login_logs=recent_login_logs)
@@ -116,7 +116,7 @@ def users():
         page=page, per_page=per_page, error_out=False
     )
     
-    return render_template('admin/users.html', 
+    return render_template('admin/users/users.html', 
                          users=users_pagination.items,
                          pagination=users_pagination,
                          search=search,
@@ -124,7 +124,7 @@ def users():
 
 @admin_bp.route('/user/<int:user_id>')
 @admin_required
-def user_detail(user_id):
+def user_details(user_id):
     """View detailed information about a specific user."""
     user = User.query.get_or_404(user_id)
     
@@ -144,7 +144,7 @@ def user_detail(user_id):
     verifications = EmailVerification.query.filter_by(user_id=user.id)\
         .order_by(desc(EmailVerification.created_at)).all()
     
-    return render_template('admin/user-detail.html', 
+    return render_template('admin/user-details/user-details.html', 
                          user=user,
                          login_attempts=all_attempts[:20],
                          verifications=verifications)
@@ -158,7 +158,7 @@ def toggle_user_status(user_id):
     # Prevent admin from deactivating themselves
     if user.id == session['user_id']:
         flash('You cannot deactivate your own account.', 'error')
-        return redirect(url_for('admin.user_detail', user_id=user_id))
+        return redirect(url_for('admin.user_details', user_id=user_id))
     
     user.is_active = not user.is_active
     db.session.commit()
@@ -166,7 +166,7 @@ def toggle_user_status(user_id):
     status = 'activated' if user.is_active else 'deactivated'
     flash(f'User {user.username} has been {status}.', 'success')
     
-    return redirect(url_for('admin.user_detail', user_id=user_id))
+    return redirect(url_for('admin.user_details', user_id=user_id))
 
 @admin_bp.route('/user/<int:user_id>/toggle-admin', methods=['POST'])
 @admin_required
@@ -177,7 +177,7 @@ def toggle_admin_status(user_id):
     # Prevent admin from removing their own admin status
     if user.id == session['user_id']:
         flash('You cannot remove your own admin privileges.', 'error')
-        return redirect(url_for('admin.user_detail', user_id=user_id))
+        return redirect(url_for('admin.user_details', user_id=user_id))
     
     user.is_admin = not user.is_admin
     db.session.commit()
@@ -185,7 +185,7 @@ def toggle_admin_status(user_id):
     status = 'granted' if user.is_admin else 'revoked'
     flash(f'Admin privileges have been {status} for user {user.username}.', 'success')
     
-    return redirect(url_for('admin.user_detail', user_id=user_id))
+    return redirect(url_for('admin.user_details', user_id=user_id))
 
 @admin_bp.route('/api/stats')
 @admin_required
