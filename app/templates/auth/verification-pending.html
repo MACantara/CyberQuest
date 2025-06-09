@@ -116,7 +116,8 @@
                     <p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
                         Didn't receive the email?
                     </p>
-                    <form method="POST" action="{{ url_for('email_verification.resend_verification') }}" class="inline">
+                    <form method="POST" action="{{ url_for('email_verification.resend_verification') }}" class="mt-6">
+                        <input type="hidden" id="csrf_token" name="csrf_token" value="{{csrf_token()}}">
                         <input type="hidden" name="user_id" value="{{ user_id }}">
                         <input type="hidden" name="user_email" value="{{ user_email }}">
                         <button type="submit" 
