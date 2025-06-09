@@ -5,10 +5,10 @@
 {% block content %}
 <div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 sm:py-8 lg:py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-7xl mx-auto">
-        {% include 'partials/admin/logs/header.html' %}
+        {% include 'admin/logs/components/header.html' %}
 
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-6 border border-gray-200 dark:border-gray-700 opacity-0 animate-fade-in-up mb-4" style="animation-delay: 0.1s;">
-            {% include 'partials/admin/logs/filters.html' %}
+            {% include 'admin/logs/components/filters.html' %}
         </div>
 
         <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 opacity-0 animate-fade-in-up" style="animation-delay: 0.2s;">Recent Logs - {{ log_type.replace('_', ' ').title() }}</h2>
@@ -20,7 +20,7 @@
             {% set position = 'top' %}
             {% include 'partials/shared/pagination.html' %}
 
-            {% include 'partials/admin/logs/table.html' %}
+            {% include 'admin/logs/components/table.html' %}
 
             <!-- Bottom Section -->
             {% if pagination.total > 0 %}
@@ -28,7 +28,7 @@
                 {% set position = 'bottom' %}
                 {% include 'partials/shared/pagination.html' %}
             {% else %}
-                {% include 'partials/admin/logs/empty-state.html' %}
+                {% include 'admin/logs/components/empty-state.html' %}
             {% endif %}
         </div>
     </div>
