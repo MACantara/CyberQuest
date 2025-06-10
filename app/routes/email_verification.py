@@ -83,16 +83,20 @@ CyberQuest Team
             height: 64px;
             background: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 16px;
+            display: block;
+            margin: 0 auto 16px auto;
             backdrop-filter: blur(10px);
             border: 2px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
+            line-height: 60px;
+            position: relative;
         }}
         .logo-icon {{
             font-size: 28px;
             color: white;
+            display: inline-block;
+            vertical-align: middle;
+            line-height: normal;
         }}
         .header h1 {{
             color: white;
