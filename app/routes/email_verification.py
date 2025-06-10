@@ -182,18 +182,6 @@ CyberQuest Team
             font-size: 14px;
             margin: 0;
         }}
-        .footer-links {{
-            margin-top: 16px;
-        }}
-        .footer-links a {{
-            color: #3b82f6;
-            text-decoration: none;
-            margin: 0 12px;
-            font-size: 14px;
-        }}
-        .footer-links a:hover {{
-            text-decoration: underline;
-        }}
         @keyframes float {{
             0%, 100% {{ transform: translateY(0px); }}
             50% {{ transform: translateY(-10px); }}
@@ -278,13 +266,8 @@ CyberQuest Team
                     Best regards,<br>
                     <strong>The CyberQuest Team</strong>
                 </p>
-                <div class="footer-links">
-                    <a href="#">Privacy Policy</a> |
-                    <a href="#">Terms of Service</a> |
-                    <a href="#">Contact Support</a>
-                </div>
                 <p class="footer-text" style="margin-top: 16px; font-size: 12px;">
-                    © 2024 CyberQuest. All rights reserved.
+                    © 2025 CyberQuest. All rights reserved.
                 </p>
             </div>
         </div>
