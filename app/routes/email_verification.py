@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, jsonify
 from flask_login import current_user
 from flask_mail import Message
+from flask_wtf.csrf import validate_csrf
 from app import db, mail
 from app.models.user import User
 from app.models.email_verification import EmailVerification
@@ -388,6 +389,14 @@ def check_verification_status():
 @email_verification_bp.route('/resend-verification', methods=['POST'])
 def resend_verification():
     """Resend verification email."""
+    try:
+        # Validate CSRF token
+        validate_csrf(request.form.get('csrf_token'))
+    except Exception as e:
+        current_app.logger.error(f"CSRF validation failed: {e}")
+        flash('Invalid request. Please try again.', 'error')
+        return redirect(url_for('auth.login'))
+    
     user_id = request.form.get('user_id')
     user_email = request.form.get('user_email')
     
