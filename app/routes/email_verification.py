@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, jsonify
 from flask_login import current_user
 from flask_mail import Message
+from flask_wtf.csrf import validate_csrf
 from app import db, mail
 from app.models.user import User
 from app.models.email_verification import EmailVerification
@@ -37,31 +38,243 @@ CyberQuest Team
 """
         
         msg.html = f"""
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Email - CyberQuest</title>
+    <style>
+        body {{
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #374151;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%);
+        }}
+        .container {{
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }}
+        .header {{
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #06b6d4 100%);
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }}
+        .header::before {{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="30" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="60" cy="70" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: float 6s ease-in-out infinite;
+        }}
+        .logo {{
+            width: 64px;
+            height: 64px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: block;
+            margin: 0 auto 16px auto;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
+            line-height: 60px;
+            position: relative;
+        }}
+        .logo-icon {{
+            font-size: 28px;
+            color: white;
+            display: inline-block;
+            vertical-align: middle;
+            line-height: normal;
+        }}
+        .header h1 {{
+            color: white;
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }}
+        .header .subtitle {{
+            color: rgba(255, 255, 255, 0.9);
+            margin: 8px 0 0 0;
+            font-size: 16px;
+        }}
+        .content {{
+            padding: 40px 30px;
+        }}
+        .greeting {{
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 16px;
+        }}
+        .message {{
+            font-size: 16px;
+            color: #6b7280;
+            margin-bottom: 32px;
+            line-height: 1.7;
+        }}
+        .cta-container {{
+            text-align: center;
+            margin: 40px 0;
+        }}
+        .cta-button {{
+            display: inline-block;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white !important;
+            text-decoration: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.4), 0 4px 6px -2px rgba(16, 185, 129, 0.05);
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }}
+        .cta-button:hover {{
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.4), 0 10px 10px -5px rgba(16, 185, 129, 0.1);
+        }}
+        .link-fallback {{
+            background: #f3f4f6;
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 24px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #4b5563;
+            word-break: break-all;
+        }}
+        .security-notice {{
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 4px solid #f59e0b;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 24px 0;
+        }}
+        .security-notice .icon {{
+            display: inline-block;
+            margin-right: 8px;
+            font-size: 16px;
+        }}
+        .footer {{
+            background: #f9fafb;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #e5e7eb;
+        }}
+        .footer-text {{
+            color: #6b7280;
+            font-size: 14px;
+            margin: 0;
+        }}
+        @keyframes float {{
+            0%, 100% {{ transform: translateY(0px); }}
+            50% {{ transform: translateY(-10px); }}
+        }}
+        @media only screen and (max-width: 600px) {{
+            .container {{
+                margin: 10px;
+                border-radius: 12px;
+            }}
+            .header, .content, .footer {{
+                padding: 24px 20px;
+            }}
+            .header h1 {{
+                font-size: 24px;
+            }}
+            .cta-button {{
+                display: block;
+                margin: 0 auto;
+                width: 100%;
+                max-width: 280px;
+            }}
+        }}
+    </style>
+</head>
 <body>
-    <h2>Verify Your Email Address</h2>
-    <p>Hello <strong>{user.username}</strong>,</p>
-    
-    <p>Thank you for registering with CyberQuest! To complete your registration, please verify your email address by clicking the button below:</p>
-    
-    <p style="text-align: center; margin: 30px 0;">
-        <a href="{verification_url}" style="background-color: #3B82F6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; display: inline-block;">
-            Verify Email Address
-        </a>
-    </p>
-    
-    <p>Or copy and paste this link into your browser:</p>
-    <p><a href="{verification_url}">{verification_url}</a></p>
-    
-    <p><small>This verification link will expire in 24 hours.</small></p>
-    
-    <p>If you didn't create an account, you can safely ignore this email.</p>
-    
-    <p>Best regards,<br>CyberQuest Team</p>
+    <div style="padding: 20px 0; background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%); min-height: 100vh;">
+        <div class="container">
+            <!-- Header -->
+            <div class="header">
+                <div class="logo">
+                    <span class="logo-icon">🛡️</span>
+                </div>
+                <h1>Welcome to CyberQuest!</h1>
+                <p class="subtitle">Secure Your Digital Journey</p>
+            </div>
+            
+            <!-- Content -->
+            <div class="content">
+                <div class="greeting">Hello, <strong>{user.username}</strong>! 👋</div>
+                
+                <div class="message">
+                    Thank you for joining <strong>CyberQuest</strong>! You're about to embark on an exciting journey to master cybersecurity through interactive challenges and gamified learning.
+                </div>
+                
+                <div class="message">
+                    To activate your agent credentials and begin your missions, please verify your email address by clicking the secure button below:
+                </div>
+                
+                <!-- CTA Button -->
+                <div class="cta-container">
+                    <a href="{verification_url}" class="cta-button">
+                        🔐 Verify Email Address
+                    </a>
+                </div>
+                
+                <!-- Link Fallback -->
+                <div class="link-fallback">
+                    <strong>Alternative access:</strong><br>
+                    If the button doesn't work, copy and paste this link:<br>
+                    <a href="{verification_url}" style="color: #3b82f6;">{verification_url}</a>
+                </div>
+                
+                <!-- Security Notice -->
+                <div class="security-notice">
+                    <span class="icon">⚠️</span>
+                    <strong>Security Notice:</strong> This verification link will expire in 24 hours for your protection. If you didn't create this account, you can safely ignore this email.
+                </div>
+                
+                <div class="message">
+                    Once verified, you'll gain access to:
+                    <ul style="color: #4b5563; margin-top: 12px;">
+                        <li>🎮 Interactive cybersecurity challenges</li>
+                        <li>🏆 Achievement system and progress tracking</li>
+                        <li>🛡️ Real-world security simulations</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <div class="footer">
+                <p class="footer-text">
+                    Best regards,<br>
+                    <strong>The CyberQuest Team</strong>
+                </p>
+                <p class="footer-text" style="margin-top: 16px; font-size: 12px;">
+                    © 2025 CyberQuest. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
 """
-        
+
         mail.send(msg)
         return True
         
@@ -157,6 +370,14 @@ def check_verification_status():
 @email_verification_bp.route('/resend-verification', methods=['POST'])
 def resend_verification():
     """Resend verification email."""
+    try:
+        # Validate CSRF token
+        validate_csrf(request.form.get('csrf_token'))
+    except Exception as e:
+        current_app.logger.error(f"CSRF validation failed: {e}")
+        flash('Invalid request. Please try again.', 'error')
+        return redirect(url_for('auth.login'))
+    
     user_id = request.form.get('user_id')
     user_email = request.form.get('user_email')
     
