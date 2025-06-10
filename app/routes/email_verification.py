@@ -266,7 +266,6 @@ CyberQuest Team
                     Once verified, you'll gain access to:
                     <ul style="color: #4b5563; margin-top: 12px;">
                         <li>🎮 Interactive cybersecurity challenges</li>
-                        <li>🤖 AI-powered learning assistance</li>
                         <li>🏆 Achievement system and progress tracking</li>
                         <li>🛡️ Real-world security simulations</li>
                     </ul>
