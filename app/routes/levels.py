@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, current_app
+from flask import Blueprint, render_template, current_app, redirect, url_for
 from flask_login import login_required, current_user
 
 levels_bp = Blueprint('levels', __name__, url_prefix='/levels')
@@ -158,4 +158,19 @@ def level_detail(level_id):
     if not level['unlocked'] and not current_app.config.get('DISABLE_DATABASE', False):
         return render_template('levels/level-locked.html', level=level)
     
+    # Route to specific level templates
+    if level_id == 1:
+        return render_template('levels/level-one/level-1.html', level=level)
+    
+    # For other levels, show the generic level detail page for now
     return render_template('levels/level-detail.html', level=level)
+
+@levels_bp.route('/1/play')
+@login_required
+def level_one():
+    """Direct route to level 1 gameplay."""
+    level = next((l for l in CYBERSECURITY_LEVELS if l['id'] == 1), None)
+    if not level or not level['unlocked']:
+        return redirect(url_for('levels.levels_overview'))
+    
+    return render_template('levels/level-one/level-1.html', level=level)
