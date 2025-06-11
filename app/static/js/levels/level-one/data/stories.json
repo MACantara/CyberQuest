@@ -1,0 +1,148 @@
+{
+    "1": {
+        "id": 1,
+        "headline": "🚨 SENATOR WILLIAMS' PRIVATE FILES LEAKED BY ANONYMOUS HACKERS",
+        "source": "CyberNewsNow",
+        "publishTime": "2 hours ago",
+        "shares": "50,000+ (Viral)",
+        "verification": "UNVERIFIED",
+        "domain": "cybernewsnow.net",
+        "isFake": true,
+        "credibilityScore": 15,
+        "viralRisk": 85,
+        "fullContent": "BREAKING: Anonymous hackers have allegedly accessed Senator Williams' private computer files, revealing shocking documents about upcoming legislation. The files, which cannot be independently verified, show what appears to be correspondence with lobbyists. This story is developing rapidly across social media platforms.",
+        "images": {
+            "hasImages": true,
+            "imageDescription": "Blurry screenshot of a computer screen with unreadable text",
+            "imageVerification": {
+                "authentic": false,
+                "reverseSearchResults": "Image found on 15+ unrelated articles from 2019-2023",
+                "metadata": "No EXIF data, uploaded via anonymous image host",
+                "redFlags": ["Generic stock photo", "No source attribution", "Previously used in unrelated stories"]
+            }
+        },
+        "sourceAnalysis": {
+            "domainAge": "3 months",
+            "whoisData": "Private registration, hosted in unverified location",
+            "sslCertificate": "Basic SSL, no extended validation",
+            "socialPresence": "Created 2 months ago, suspicious follower growth",
+            "authorCredentials": "No author byline or credentials listed"
+        },
+        "metadataAnalysis": {
+            "publishTime": "2:47 AM (unusual timing for breaking news)",
+            "ipGeolocation": "VPN detected, true location masked",
+            "serverResponse": "CloudFlare proxy, origin server hidden",
+            "contentHash": "Similar content detected on 3 other domains",
+            "trafficSpike": "Artificial traffic boost detected"
+        },
+        "redFlags": [
+            "Excessive emotional language (🚨, PRIVATE, LEAKED)",
+            "Unverified source with no official badge",
+            "Sensational headline designed for clicks and shares",
+            "No official confirmation or credible sources cited",
+            "Domain registered only 3 months ago",
+            "Anonymous tip with no verifiable evidence",
+            "Recycled stock image with no relation to story",
+            "Published during suspicious hours (2:47 AM)",
+            "VPN-masked publishing location"
+        ],
+        "correctAnswer": "fake",
+        "newsType": "BREAKING",
+        "category": "Political Misinformation"
+    },
+    "2": {
+        "id": 2,
+        "headline": "Election Security Measures Enhanced for Upcoming Digital Vote",
+        "source": "Official Government News",
+        "publishTime": "4 hours ago",
+        "shares": "2,500 (Moderate)",
+        "verification": "VERIFIED",
+        "domain": "gov.official",
+        "isFake": false,
+        "credibilityScore": 95,
+        "viralRisk": 5,
+        "fullContent": "The Department of Digital Security announced today that additional cybersecurity measures will be implemented for the upcoming digital voting system. The new protocols include enhanced encryption, multi-factor authentication, and real-time monitoring systems. Officials stress that voter privacy will remain protected while ensuring election integrity.",
+        "images": {
+            "hasImages": true,
+            "imageDescription": "Official government building with security personnel",
+            "imageVerification": {
+                "authentic": true,
+                "reverseSearchResults": "Original image, first appearance on official government site",
+                "metadata": "Complete EXIF data showing government photographer credentials",
+                "redFlags": []
+            }
+        },
+        "sourceAnalysis": {
+            "domainAge": "8 years",
+            "whoisData": "Registered to government agency, verified contact information",
+            "sslCertificate": "Extended validation SSL with government verification",
+            "socialPresence": "Verified accounts across all platforms since 2016",
+            "authorCredentials": "Press Secretary Maria Rodriguez, official government position"
+        },
+        "metadataAnalysis": {
+            "publishTime": "11:30 AM (standard business hours for announcements)",
+            "ipGeolocation": "Government data center, Washington D.C.",
+            "serverResponse": "Official government servers with security headers",
+            "contentHash": "Original content, no duplicates detected",
+            "trafficSpike": "Natural traffic growth from official channels"
+        },
+        "redFlags": [],
+        "correctAnswer": "real",
+        "newsType": "OFFICIAL",
+        "category": "Government Announcement",
+        "verificationBadge": true,
+        "officialSource": true
+    },
+    "3": {
+        "id": 3,
+        "headline": "SHOCKING: You Won't Believe What Hackers Found in Williams' Computer!",
+        "source": "ViralNewsHub",
+        "publishTime": "1 hour ago",
+        "shares": "15,000+ (Rising)",
+        "verification": "CLICKBAIT",
+        "domain": "viralnewshub.click",
+        "isFake": true,
+        "credibilityScore": 10,
+        "viralRisk": 90,
+        "fullContent": "You won't believe what internet sleuths discovered when they analyzed Senator Williams' digital footprint! The shocking revelations will change everything you thought you knew about politics. Click to see the mind-blowing evidence that everyone is talking about! (Warning: This content may disturb some viewers)",
+        "images": {
+            "hasImages": true,
+            "imageDescription": "Sensationalized composite image with red arrows and shocked face emoji",
+            "imageVerification": {
+                "authentic": false,
+                "reverseSearchResults": "Composite image made from 3 different stock photos",
+                "metadata": "Heavily edited, no original source data",
+                "redFlags": ["Obvious digital manipulation", "Click-bait style graphics", "No journalistic photography standards"]
+            }
+        },
+        "sourceAnalysis": {
+            "domainAge": "1 month", 
+            "whoisData": "Anonymous registration via privacy service",
+            "sslCertificate": "Basic SSL, no business verification",
+            "socialPresence": "Purchased followers, engagement appears artificial",
+            "authorCredentials": "No author listed, content farm operation suspected"
+        },
+        "metadataAnalysis": {
+            "publishTime": "1:15 PM (timed for maximum social media engagement)",
+            "ipGeolocation": "Content delivery network, original location unknown",
+            "serverResponse": "Shared hosting with known clickbait farms",
+            "contentHash": "Template-based content, similar structure to other viral sites",
+            "trafficSpike": "Bot-driven initial shares detected"
+        },
+        "redFlags": [
+            "Classic clickbait structure ('You Won't Believe')",
+            "Vague, sensational claims with no specifics",
+            "Suspicious .click domain extension",
+            "Designed to generate shares, not inform readers",
+            "No journalistic credentials or author byline",
+            "Similar content pattern to known fake news sites",
+            "Heavily manipulated composite images",
+            "Anonymous domain registration",
+            "Artificial social media engagement patterns",
+            "Template-based content structure"
+        ],
+        "correctAnswer": "fake",
+        "newsType": "VIRAL",
+        "category": "Clickbait Misinformation"
+    }
+}
