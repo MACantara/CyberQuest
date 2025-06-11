@@ -122,11 +122,19 @@
 
                         <!-- Action Button -->
                         {% if level.unlocked %}
-                            <a href="{{ url_for('levels.level_detail', level_id=level.id) }}" 
-                               class="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/25 shadow-lg hover:shadow-xl">
-                                <i class="bi bi-play-circle mr-2"></i>
-                                Start Level
-                            </a>
+                            {% if level.id == 1 %}
+                                <a href="{{ url_for('levels.level_one') }}" 
+                                   class="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/25 shadow-lg hover:shadow-xl">
+                                    <i class="bi bi-play-circle mr-2"></i>
+                                    Start Level
+                                </a>
+                            {% else %}
+                                <a href="{{ url_for('levels.level_detail', level_id=level.id) }}" 
+                                   class="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/25 shadow-lg hover:shadow-xl">
+                                    <i class="bi bi-play-circle mr-2"></i>
+                                    Start Level
+                                </a>
+                            {% endif %}
                         {% else %}
                             <button disabled 
                                     class="w-full inline-flex items-center justify-center px-4 py-3 bg-gray-400 dark:bg-gray-600 text-white font-semibold rounded-lg cursor-not-allowed opacity-60">
