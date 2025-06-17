@@ -1,6 +1,5 @@
 import { BootSequence } from './boot-sequence.js';
 import { LoadingScreen } from './loading-screen.js';
-import { WelcomeScreen } from './welcome-screen.js';
 import { Desktop } from './desktop.js';
 
 export class SimulatedPC {
@@ -10,7 +9,6 @@ export class SimulatedPC {
         this.container = null;
         this.bootSequence = null;
         this.loadingScreen = null;
-        this.welcomeScreen = null;
         this.desktop = null;
     }
 
@@ -38,16 +36,7 @@ export class SimulatedPC {
             this.loadingScreen = new LoadingScreen(loadingContainer);
             await this.loadingScreen.show();
 
-            // Step 3: Welcome screen
-            this.container.innerHTML = '';
-            const welcomeContainer = document.createElement('div');
-            welcomeContainer.className = 'w-full h-full';
-            this.container.appendChild(welcomeContainer);
-
-            this.welcomeScreen = new WelcomeScreen(welcomeContainer, this.level);
-            await this.welcomeScreen.show();
-
-            // Step 4: Initialize desktop
+            // Step 3: Initialize desktop directly
             await this.initializeDesktop();
             this.isActive = true;
         } catch (error) {
@@ -57,7 +46,7 @@ export class SimulatedPC {
     }
 
     async initializeDesktop() {
-        // Clear welcome screen
+        // Clear loading screen
         this.container.innerHTML = '';
         
         // Initialize desktop
