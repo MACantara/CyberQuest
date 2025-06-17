@@ -1,4 +1,6 @@
 import { BootSequence } from './boot-sequence.js';
+import { LoadingScreen } from './loading-screen.js';
+import { WelcomeScreen } from './welcome-screen.js';
 import { Desktop } from './desktop.js';
 
 export class SimulatedPC {
@@ -7,6 +9,8 @@ export class SimulatedPC {
         this.isActive = false;
         this.container = null;
         this.bootSequence = null;
+        this.loadingScreen = null;
+        this.welcomeScreen = null;
         this.desktop = null;
     }
 
@@ -16,15 +20,34 @@ export class SimulatedPC {
         this.container.className = 'fixed inset-0 w-full h-full overflow-hidden z-50 bg-black';
         document.body.appendChild(this.container);
 
-        // Start boot sequence
-        const bootContainer = document.createElement('div');
-        bootContainer.className = 'w-full h-full';
-        this.container.appendChild(bootContainer);
-
-        this.bootSequence = new BootSequence(bootContainer);
-        
         try {
+            // Step 1: Boot sequence
+            const bootContainer = document.createElement('div');
+            bootContainer.className = 'w-full h-full';
+            this.container.appendChild(bootContainer);
+
+            this.bootSequence = new BootSequence(bootContainer);
             await this.bootSequence.start();
+
+            // Step 2: Loading screen
+            this.container.innerHTML = '';
+            const loadingContainer = document.createElement('div');
+            loadingContainer.className = 'w-full h-full';
+            this.container.appendChild(loadingContainer);
+
+            this.loadingScreen = new LoadingScreen(loadingContainer);
+            await this.loadingScreen.show();
+
+            // Step 3: Welcome screen
+            this.container.innerHTML = '';
+            const welcomeContainer = document.createElement('div');
+            welcomeContainer.className = 'w-full h-full';
+            this.container.appendChild(welcomeContainer);
+
+            this.welcomeScreen = new WelcomeScreen(welcomeContainer, this.level);
+            await this.welcomeScreen.show();
+
+            // Step 4: Initialize desktop
             await this.initializeDesktop();
             this.isActive = true;
         } catch (error) {
@@ -34,7 +57,7 @@ export class SimulatedPC {
     }
 
     async initializeDesktop() {
-        // Clear boot sequence
+        // Clear welcome screen
         this.container.innerHTML = '';
         
         // Initialize desktop
