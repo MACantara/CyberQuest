@@ -24,6 +24,12 @@ export class BootSequence {
             { text: '', type: 'info', delay: 500 }
         ];
         this.currentLine = 0;
+        this.setupContainer();
+    }
+
+    setupContainer() {
+        // Set up container with Tailwind classes
+        this.container.className = 'fixed inset-0 bg-black text-green-400 font-mono text-sm leading-relaxed p-10 overflow-y-auto flex flex-col justify-center items-start';
     }
 
     async start() {
@@ -37,7 +43,7 @@ export class BootSequence {
         if (this.currentLine >= this.bootLines.length) {
             // Add blinking cursor
             const cursor = document.createElement('span');
-            cursor.className = 'boot-cursor';
+            cursor.className = 'inline-block w-2 h-3.5 bg-green-400 boot-cursor';
             this.container.appendChild(cursor);
             
             setTimeout(() => {
@@ -48,10 +54,32 @@ export class BootSequence {
 
         const line = this.bootLines[this.currentLine];
         const lineElement = document.createElement('div');
-        lineElement.className = `boot-line ${line.type}`;
+        
+        // Apply Tailwind classes based on line type
+        let typeClasses = '';
+        switch(line.type) {
+            case 'success':
+                typeClasses = 'text-green-400';
+                break;
+            case 'warning':
+                typeClasses = 'text-yellow-400';
+                break;
+            case 'error':
+                typeClasses = 'text-red-400';
+                break;
+            default:
+                typeClasses = 'text-green-400';
+        }
+        
+        lineElement.className = `boot-line opacity-0 mb-0.5 whitespace-pre-wrap ${typeClasses}`;
         lineElement.textContent = line.text;
         
         this.container.appendChild(lineElement);
+        
+        // Trigger animation
+        setTimeout(() => {
+            lineElement.classList.remove('opacity-0');
+        }, 10);
         
         // Scroll to bottom
         this.container.scrollTop = this.container.scrollHeight;
