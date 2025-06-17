@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, current_app
+from flask import Blueprint, render_template, current_app, flash, redirect, url_for
 from flask_login import login_required, current_user
 
 levels_bp = Blueprint('levels', __name__, url_prefix='/levels')
@@ -159,3 +159,32 @@ def level_detail(level_id):
         return render_template('levels/level-locked.html', level=level)
     
     return render_template('levels/level-detail.html', level=level)
+
+@levels_bp.route('/<int:level_id>/start')
+@login_required
+def start_level(level_id):
+    """Start the interactive simulation for a specific level."""
+    level = next((l for l in CYBERSECURITY_LEVELS if l['id'] == level_id), None)
+    
+    if not level:
+        flash('Level not found.', 'error')
+        return redirect(url_for('levels.levels_overview'))
+    
+    # Check if level is unlocked
+    if not level['unlocked'] and not current_app.config.get('DISABLE_DATABASE', False):
+        flash('This level is locked. Complete previous levels to unlock it.', 'warning')
+        return redirect(url_for('levels.levels_overview'))
+    
+    # Prepare level data for simulation
+    level_data = {
+        'id': level['id'],
+        'name': level['name'],
+        'description': level['description'],
+        'category': level['category'],
+        'difficulty': level['difficulty'],
+        'skills': level['skills']
+    }
+    
+    return render_template('simulated-pc/simulation.html', 
+                         level=level, 
+                         level_data=level_data)
