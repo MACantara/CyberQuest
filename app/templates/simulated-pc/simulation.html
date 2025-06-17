@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block title %}{{ level.name if level else 'Training Environment' }} - Simulation{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/simulated-pc/main.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/simulated-pc/windows.css') }}">
+<style>
+    /* Hide navbar and footer for fullscreen simulation */
+    nav, footer {
+        display: none !important;
+    }
+    
+    /* Make body fullscreen */
+    body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: #000;
+    }
+    
+    main {
+        padding: 0;
+        margin: 0;
+        min-height: 100vh;
+        height: 100vh;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Loading Screen -->
+<div id="loading-screen" class="fixed inset-0 bg-black flex items-center justify-center z-50">
+    <div class="text-center">
+        <div class="pc-loading mb-4"></div>
+        <p class="text-green-400 text-lg">Initializing Simulation...</p>
+    </div>
+</div>
+
+<!-- Simulation Container -->
+<div id="simulation-container"></div>
+
+<!-- Emergency Exit (hidden by default) -->
+<div id="emergency-exit" class="fixed top-4 left-4 z-50 hidden">
+    <button onclick="emergencyExit()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded text-sm">
+        <i class="bi bi-x-circle"></i> Emergency Exit
+    </button>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script type="module">
+    import { SimulatedPC } from '{{ url_for("static", filename="js/simulated-pc/main.js") }}';
+    
+    // Level data from server
+    const levelData = {{ level_data | tojson if level_data else '{}' }};
+    
+    // Initialize simulation
+    async function initSimulation() {
+        try {
+            // Hide loading screen after a short delay
+            setTimeout(() => {
+                document.getElementById('loading-screen').style.display = 'none';
+            }, 1000);
+            
+            // Start simulation
+            const simulation = new SimulatedPC(levelData);
+            await simulation.initialize();
+            
+            // Show emergency exit after 10 seconds
+            setTimeout(() => {
+                document.getElementById('emergency-exit').classList.remove('hidden');
+            }, 10000);
+            
+            // Store simulation globally for debugging
+            window.currentSimulation = simulation;
+            
+        } catch (error) {
+            console.error('Failed to initialize simulation:', error);
+            document.getElementById('loading-screen').innerHTML = `
+                <div class="text-center text-red-400">
+                    <i class="bi bi-exclamation-triangle text-4xl mb-4"></i>
+                    <p class="text-lg mb-4">Failed to load simulation</p>
+                    <button onclick="window.location.href='/levels'" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                        Return to Levels
+                    </button>
+                </div>
+            `;
+        }
+    }
+    
+    // Emergency exit function
+    window.emergencyExit = function() {
+        if (confirm('Are you sure you want to exit the simulation?')) {
+            window.location.href = '/levels';
+        }
+    };
+    
+    // Prevent right-click context menu
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    
+    // Prevent F12, Ctrl+Shift+I, etc.
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'F12' || 
+            (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+            (e.ctrlKey && e.shiftKey && e.key === 'C') ||
+            (e.ctrlKey && e.key === 'u')) {
+            e.preventDefault();
+        }
+    });
+    
+    // Start simulation when page loads
+    document.addEventListener('DOMContentLoaded', initSimulation);
+</script>
+{% endblock %}
