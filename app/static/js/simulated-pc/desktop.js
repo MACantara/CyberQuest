@@ -9,32 +9,32 @@ export class Desktop {
 
     initializeDesktop() {
         this.container.innerHTML = `
-            <div class="desktop">
-                <div class="desktop-icons">
+            <div class="relative w-full h-full bg-gradient-to-br from-blue-800 via-blue-900 to-indigo-900" style="background-image: radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(0, 255, 0, 0.05) 0%, transparent 50%);">
+                <div class="absolute top-5 left-5 flex flex-col space-y-5">
                     ${this.createDesktopIcons()}
                 </div>
-                <div class="taskbar">
-                    <button class="start-button" id="start-btn">
-                        <i class="bi bi-grid-3x3-gap"></i> Start
+                <div class="absolute bottom-0 left-0 w-full h-12 bg-gray-800 border-t border-gray-600 flex items-center px-2.5 shadow-lg">
+                    <button class="bg-gray-700 border border-gray-600 text-white px-4 py-2 text-xs font-mono hover:bg-green-400 hover:text-black transition-all duration-200 hover:shadow-lg" id="start-btn">
+                        <i class="bi bi-grid-3x3-gap mr-1"></i> Start
                     </button>
-                    <div class="taskbar-items" id="taskbar-items"></div>
-                    <div class="system-tray">
-                        <span class="system-clock" id="system-clock"></span>
+                    <div class="flex-1 flex items-center space-x-2.5 ml-5" id="taskbar-items"></div>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-gray-300 text-xs text-center leading-tight" id="system-clock"></span>
                     </div>
                 </div>
-                <div class="control-panel">
-                    <h3>Mission Control</h3>
-                    <button class="control-button" id="help-btn">
-                        <i class="bi bi-question-circle"></i> Help
+                <div class="absolute top-5 right-5 bg-gray-800 border border-gray-600 rounded-lg p-4 shadow-xl min-w-48">
+                    <h3 class="text-green-400 text-sm font-bold mb-4 pb-1 border-b border-gray-600">Mission Control</h3>
+                    <button class="control-button w-full bg-gray-700 border border-gray-600 text-white px-3 py-2 mb-2 text-xs text-left hover:bg-gray-600 hover:shadow-lg transition-all duration-200" id="help-btn">
+                        <i class="bi bi-question-circle mr-2"></i> Help
                     </button>
-                    <button class="control-button" id="hint-btn">
-                        <i class="bi bi-lightbulb"></i> Hint
+                    <button class="control-button w-full bg-gray-700 border border-gray-600 text-white px-3 py-2 mb-2 text-xs text-left hover:bg-gray-600 hover:shadow-lg transition-all duration-200" id="hint-btn">
+                        <i class="bi bi-lightbulb mr-2"></i> Hint
                     </button>
-                    <button class="control-button" id="progress-btn">
-                        <i class="bi bi-clipboard-data"></i> Progress
+                    <button class="control-button w-full bg-gray-700 border border-gray-600 text-white px-3 py-2 mb-2 text-xs text-left hover:bg-gray-600 hover:shadow-lg transition-all duration-200" id="progress-btn">
+                        <i class="bi bi-clipboard-data mr-2"></i> Progress
                     </button>
-                    <button class="control-button danger" id="exit-btn">
-                        <i class="bi bi-box-arrow-left"></i> Exit Simulation
+                    <button class="control-button w-full border border-red-400 text-red-400 px-3 py-2 text-xs text-left hover:bg-red-400 hover:text-black transition-all duration-200" id="exit-btn">
+                        <i class="bi bi-box-arrow-left mr-2"></i> Exit Simulation
                     </button>
                 </div>
             </div>
@@ -56,11 +56,11 @@ export class Desktop {
         ];
 
         return icons.map(icon => `
-            <div class="desktop-icon" data-action="${icon.action}" data-id="${icon.id}">
-                <div class="icon-image">
+            <div class="desktop-icon flex flex-col items-center w-20 cursor-pointer p-2.5 rounded hover:bg-white hover:bg-opacity-10 transition-all duration-200" data-action="${icon.action}" data-id="${icon.id}">
+                <div class="w-12 h-12 bg-green-400 border-2 border-gray-600 rounded flex items-center justify-center text-2xl text-black mb-1 shadow-lg">
                     <i class="bi ${icon.icon}"></i>
                 </div>
-                <div class="icon-label">${icon.name}</div>
+                <div class="text-xs text-center text-white text-shadow-sm max-w-[70px] break-words leading-tight">${icon.name}</div>
             </div>
         `).join('');
     }
@@ -98,8 +98,8 @@ export class Desktop {
         });
 
         // Clear selection when clicking on empty desktop
-        this.container.querySelector('.desktop').addEventListener('click', (e) => {
-            if (e.target.classList.contains('desktop')) {
+        this.container.querySelector('.relative').addEventListener('click', (e) => {
+            if (e.target === this.container.querySelector('.relative')) {
                 this.clearSelection();
             }
         });
@@ -107,13 +107,13 @@ export class Desktop {
 
     selectIcon(icon) {
         this.clearSelection();
-        icon.classList.add('selected');
+        icon.classList.add('bg-green-400', 'bg-opacity-20', 'border', 'border-green-400');
         this.selectedIcon = icon;
     }
 
     clearSelection() {
         if (this.selectedIcon) {
-            this.selectedIcon.classList.remove('selected');
+            this.selectedIcon.classList.remove('bg-green-400', 'bg-opacity-20', 'border', 'border-green-400');
             this.selectedIcon = null;
         }
     }
@@ -141,56 +141,6 @@ export class Desktop {
         setInterval(updateClock, 1000);
     }
 
-    // Application launchers
-    openBrowser() {
-        this.createWindow('browser', 'Web Browser', this.createBrowserContent(), {
-            width: '80%',
-            height: '70%'
-        });
-    }
-
-    openTerminal() {
-        this.createWindow('terminal', 'Terminal', this.createTerminalContent(), {
-            width: '70%',
-            height: '60%'
-        });
-    }
-
-    openFileManager() {
-        this.createWindow('files', 'File Manager', this.createFileManagerContent(), {
-            width: '75%',
-            height: '65%'
-        });
-    }
-
-    openEmailClient() {
-        this.createWindow('email', 'Email Client', this.createEmailContent(), {
-            width: '80%',
-            height: '70%'
-        });
-    }
-
-    openNetworkMonitor() {
-        this.createWindow('wireshark', 'Network Monitor', this.createNetworkMonitorContent(), {
-            width: '85%',
-            height: '75%'
-        });
-    }
-
-    openSecurityTools() {
-        this.createWindow('security', 'Security Tools', this.createSecurityToolsContent(), {
-            width: '70%',
-            height: '60%'
-        });
-    }
-
-    openSystemLogs() {
-        this.createWindow('logs', 'System Logs', this.createSystemLogsContent(), {
-            width: '75%',
-            height: '65%'
-        });
-    }
-
     createWindow(id, title, content, options = {}) {
         if (this.windows.has(id)) {
             // Bring existing window to front
@@ -200,7 +150,7 @@ export class Desktop {
         }
 
         const window = document.createElement('div');
-        window.className = 'simulated-window';
+        window.className = 'absolute bg-gray-800 border border-gray-600 rounded-lg shadow-2xl overflow-hidden min-w-72 min-h-48 backdrop-blur-lg';
         window.style.zIndex = ++this.zIndex;
         window.style.width = options.width || '60%';
         window.style.height = options.height || '50%';
@@ -208,29 +158,29 @@ export class Desktop {
         window.style.top = `${Math.random() * 20 + 10}%`;
 
         window.innerHTML = `
-            <div class="window-header">
-                <div class="window-title">
+            <div class="window-header bg-gradient-to-r from-gray-700 to-gray-600 px-3 py-2 flex justify-between items-center border-b border-gray-600 cursor-grab select-none">
+                <div class="window-title text-white text-sm font-semibold flex items-center space-x-2">
                     <i class="bi bi-${this.getIconForWindow(id)}"></i>
-                    ${title}
+                    <span>${title}</span>
                 </div>
-                <div class="window-controls">
-                    <button class="window-btn minimize" title="Minimize">
+                <div class="window-controls flex space-x-1">
+                    <button class="window-btn w-6 h-6 rounded bg-yellow-500 hover:bg-yellow-400 flex items-center justify-center text-black text-xs transition-all duration-200 hover:scale-110 hover:shadow-md" title="Minimize">
                         <i class="bi bi-dash"></i>
                     </button>
-                    <button class="window-btn maximize" title="Maximize">
+                    <button class="window-btn w-6 h-6 rounded bg-green-500 hover:bg-green-400 flex items-center justify-center text-black text-xs transition-all duration-200 hover:scale-110 hover:shadow-md" title="Maximize">
                         <i class="bi bi-square"></i>
                     </button>
-                    <button class="window-btn close" title="Close">
+                    <button class="window-btn w-6 h-6 rounded bg-red-500 hover:bg-red-400 flex items-center justify-center text-white text-xs transition-all duration-200 hover:scale-110 hover:shadow-md" title="Close">
                         <i class="bi bi-x"></i>
                     </button>
                 </div>
             </div>
-            <div class="window-content">
+            <div class="window-content h-full overflow-auto bg-black text-white" style="height: calc(100% - 40px);">
                 ${content}
             </div>
         `;
 
-        this.container.querySelector('.desktop').appendChild(window);
+        this.container.querySelector('.relative').appendChild(window);
         this.windows.set(id, window);
 
         // Add to taskbar
@@ -422,23 +372,23 @@ export class Desktop {
     // Content creators for different windows
     createBrowserContent() {
         return `
-            <div class="browser-interface">
-                <div class="browser-toolbar">
-                    <div class="browser-controls">
-                        <button class="browser-btn"><i class="bi bi-arrow-left"></i></button>
-                        <button class="browser-btn"><i class="bi bi-arrow-right"></i></button>
-                        <button class="browser-btn"><i class="bi bi-arrow-clockwise"></i></button>
+            <div class="h-full flex flex-col">
+                <div class="bg-gray-700 p-2 border-b border-gray-600 flex items-center space-x-3">
+                    <div class="flex space-x-1">
+                        <button class="px-1.5 py-1 bg-gray-600 border border-gray-500 rounded text-white text-xs hover:bg-gray-500 transition-colors duration-200"><i class="bi bi-arrow-left"></i></button>
+                        <button class="px-1.5 py-1 bg-gray-600 border border-gray-500 rounded text-white text-xs hover:bg-gray-500 transition-colors duration-200"><i class="bi bi-arrow-right"></i></button>
+                        <button class="px-1.5 py-1 bg-gray-600 border border-gray-500 rounded text-white text-xs hover:bg-gray-500 transition-colors duration-200"><i class="bi bi-arrow-clockwise"></i></button>
                     </div>
-                    <div class="address-bar">
-                        <input type="text" value="https://suspicious-site.com" readonly>
+                    <div class="flex-1">
+                        <input type="text" value="https://suspicious-site.com" readonly class="w-full px-3 py-1 bg-black border border-gray-600 rounded text-white text-xs font-mono">
                     </div>
                 </div>
-                <div class="browser-content">
-                    <div class="webpage">
-                        <h2>🎉 CONGRATULATIONS! YOU'VE WON! 🎉</h2>
-                        <p>Click here to claim your $1,000,000 prize!</p>
-                        <button class="suspicious-button">CLAIM NOW!</button>
-                        <p><small>* No catch, totally legitimate *</small></p>
+                <div class="flex-1 overflow-auto bg-white">
+                    <div class="p-5 text-center text-black">
+                        <h2 class="text-2xl font-bold text-red-600 mb-4">🎉 CONGRATULATIONS! YOU'VE WON! 🎉</h2>
+                        <p class="mb-4">Click here to claim your $1,000,000 prize!</p>
+                        <button class="bg-gradient-to-r from-red-500 to-orange-500 text-white px-6 py-3 rounded-lg font-bold text-lg animate-pulse hover:scale-105 transition-transform duration-200">CLAIM NOW!</button>
+                        <p class="text-sm text-gray-600 mt-2">* No catch, totally legitimate *</p>
                     </div>
                 </div>
             </div>
@@ -447,19 +397,19 @@ export class Desktop {
 
     createTerminalContent() {
         return `
-            <div class="terminal-interface">
-                <div class="terminal-output">
-                    <div class="terminal-line">user@cyberquest:~$ whoami</div>
-                    <div class="terminal-line">trainee</div>
-                    <div class="terminal-line">user@cyberquest:~$ ls -la</div>
-                    <div class="terminal-line">drwxr-xr-x 2 trainee trainee 4096 Dec 20 10:30 Documents</div>
-                    <div class="terminal-line">drwxr-xr-x 2 trainee trainee 4096 Dec 20 10:30 Downloads</div>
-                    <div class="terminal-line">-rw-r--r-- 1 trainee trainee  1337 Dec 20 10:31 suspicious_file.txt</div>
-                    <div class="terminal-line">user@cyberquest:~$ <span class="terminal-cursor">|</span></div>
+            <div class="h-full bg-black text-green-400 font-mono text-sm p-3 flex flex-col">
+                <div class="flex-1 overflow-y-auto mb-3 space-y-1">
+                    <div>user@cyberquest:~$ whoami</div>
+                    <div>trainee</div>
+                    <div>user@cyberquest:~$ ls -la</div>
+                    <div>drwxr-xr-x 2 trainee trainee 4096 Dec 20 10:30 Documents</div>
+                    <div>drwxr-xr-x 2 trainee trainee 4096 Dec 20 10:30 Downloads</div>
+                    <div class="text-red-400">-rw-r--r-- 1 trainee trainee  1337 Dec 20 10:31 suspicious_file.txt</div>
+                    <div>user@cyberquest:~$ <span class="inline-block w-2 h-3.5 bg-green-400 animate-pulse">|</span></div>
                 </div>
-                <div class="terminal-input">
-                    <span class="terminal-prompt">user@cyberquest:~$ </span>
-                    <input type="text" class="terminal-command" placeholder="Type your command...">
+                <div class="flex items-center">
+                    <span class="text-green-400 mr-2">user@cyberquest:~$ </span>
+                    <input type="text" class="flex-1 bg-transparent border-none text-green-400 outline-none font-mono text-sm" placeholder="Type your command...">
                 </div>
             </div>
         `;
@@ -498,28 +448,28 @@ export class Desktop {
 
     createEmailContent() {
         return `
-            <div class="email-client">
-                <div class="email-sidebar">
-                    <div class="email-folder active">Inbox (3)</div>
-                    <div class="email-folder">Sent</div>
-                    <div class="email-folder">Trash</div>
+            <div class="h-full flex">
+                <div class="w-48 bg-gray-700 border-r border-gray-600 p-3">
+                    <div class="email-folder bg-green-400 text-black px-3 py-2 rounded text-sm font-medium mb-1 cursor-pointer">Inbox (3)</div>
+                    <div class="email-folder px-3 py-2 text-gray-300 text-sm hover:bg-gray-600 rounded cursor-pointer transition-colors duration-200">Sent</div>
+                    <div class="email-folder px-3 py-2 text-gray-300 text-sm hover:bg-gray-600 rounded cursor-pointer transition-colors duration-200">Trash</div>
                 </div>
-                <div class="email-main">
-                    <div class="email-list">
-                        <div class="email-item suspicious">
-                            <div class="email-from">prince.nigeria@totally-real.com</div>
-                            <div class="email-subject">URGENT: Claim Your Inheritance!</div>
-                            <div class="email-time">2 min ago</div>
+                <div class="flex-1 flex flex-col">
+                    <div class="flex-1 overflow-y-auto">
+                        <div class="email-item p-3 border-b border-gray-600 cursor-pointer hover:bg-gray-700 transition-colors duration-200 border-l-4 border-red-500 bg-red-900 bg-opacity-20">
+                            <div class="font-medium text-white text-sm">prince.nigeria@totally-real.com</div>
+                            <div class="text-gray-300 text-sm mb-1">URGENT: Claim Your Inheritance!</div>
+                            <div class="text-gray-400 text-xs">2 min ago</div>
                         </div>
-                        <div class="email-item">
-                            <div class="email-from">admin@cyberquest.com</div>
-                            <div class="email-subject">Welcome to CyberQuest Training</div>
-                            <div class="email-time">1 hour ago</div>
+                        <div class="email-item p-3 border-b border-gray-600 cursor-pointer hover:bg-gray-700 transition-colors duration-200">
+                            <div class="font-medium text-white text-sm">admin@cyberquest.com</div>
+                            <div class="text-gray-300 text-sm mb-1">Welcome to CyberQuest Training</div>
+                            <div class="text-gray-400 text-xs">1 hour ago</div>
                         </div>
-                        <div class="email-item">
-                            <div class="email-from">noreply@bank.com</div>
-                            <div class="email-subject">Your account has been suspended</div>
-                            <div class="email-time">3 hours ago</div>
+                        <div class="email-item p-3 border-b border-gray-600 cursor-pointer hover:bg-gray-700 transition-colors duration-200">
+                            <div class="font-medium text-white text-sm">noreply@bank.com</div>
+                            <div class="text-gray-300 text-sm mb-1">Your account has been suspended</div>
+                            <div class="text-gray-400 text-xs">3 hours ago</div>
                         </div>
                     </div>
                 </div>
