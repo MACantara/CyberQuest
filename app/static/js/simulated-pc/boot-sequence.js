@@ -29,7 +29,7 @@ export class BootSequence {
 
     setupContainer() {
         // Set up container with Tailwind classes
-        this.container.className = 'fixed inset-0 bg-black text-green-400 font-mono text-sm leading-relaxed p-10 overflow-y-auto flex flex-col justify-center items-start';
+        this.container.className = 'fixed inset-0 bg-black text-green-400 font-mono text-sm leading-relaxed p-10 overflow-y-auto flex flex-col justify-start items-start';
     }
 
     async start() {
