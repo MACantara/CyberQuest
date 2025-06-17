@@ -13,10 +13,10 @@ export class LoadingScreen {
             this.container.innerHTML = '';
             this.createLoadingScreen();
             
-            // Show loading animation for 3 seconds
+            // Show loading animation for 5 seconds
             setTimeout(() => {
                 resolve();
-            }, 3000);
+            }, 5000);
         });
     }
 
@@ -141,16 +141,16 @@ export class LoadingScreen {
                     textElement.textContent = loadingTexts[currentIndex];
                     textElement.style.opacity = '1';
                     currentIndex = (currentIndex + 1) % loadingTexts.length;
-                }, 200);
+                }, 300);
             }
         };
 
-        // Update text every 500ms
-        const interval = setInterval(updateText, 500);
+        // Update text every 800ms
+        const interval = setInterval(updateText, 800);
 
-        // Clear interval after 3 seconds
+        // Clear interval after 5 seconds
         setTimeout(() => {
             clearInterval(interval);
-        }, 3000);
+        }, 5000);
     }
 }
