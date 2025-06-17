@@ -13,12 +13,12 @@ export class SimulatedPC {
     async initialize() {
         // Create fullscreen overlay
         this.container = document.createElement('div');
-        this.container.className = 'simulated-pc';
+        this.container.className = 'fixed inset-0 w-full h-full overflow-hidden z-50 bg-black';
         document.body.appendChild(this.container);
 
         // Start boot sequence
         const bootContainer = document.createElement('div');
-        bootContainer.className = 'boot-sequence';
+        bootContainer.className = 'w-full h-full';
         this.container.appendChild(bootContainer);
 
         this.bootSequence = new BootSequence(bootContainer);
@@ -100,13 +100,35 @@ export class SimulatedPC {
     }
 
     showNotification(message, type = 'info') {
-        // Show system notification
+        // Show system notification with Tailwind classes
         const notification = document.createElement('div');
-        notification.className = `pc-notification ${type}`;
+        
+        let typeClasses = '';
+        let iconClass = '';
+        
+        switch(type) {
+            case 'error':
+                typeClasses = 'bg-red-900 border-red-600 text-red-200';
+                iconClass = 'bi-exclamation-triangle';
+                break;
+            case 'warning':
+                typeClasses = 'bg-yellow-900 border-yellow-600 text-yellow-200';
+                iconClass = 'bi-exclamation-circle';
+                break;
+            case 'success':
+                typeClasses = 'bg-green-900 border-green-600 text-green-200';
+                iconClass = 'bi-check-circle';
+                break;
+            default:
+                typeClasses = 'bg-blue-900 border-blue-600 text-blue-200';
+                iconClass = 'bi-info-circle';
+        }
+        
+        notification.className = `fixed top-5 right-5 ${typeClasses} border rounded-lg p-3 shadow-lg animate-slide-in-right z-50`;
         notification.innerHTML = `
-            <div class="notification-content">
-                <i class="bi bi-${type === 'error' ? 'exclamation-triangle' : 'info-circle'}"></i>
-                <span>${message}</span>
+            <div class="flex items-center space-x-2">
+                <i class="bi ${iconClass}"></i>
+                <span class="font-medium">${message}</span>
             </div>
         `;
         
