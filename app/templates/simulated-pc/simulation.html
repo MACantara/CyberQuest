@@ -3,8 +3,6 @@
 {% block title %}{{ level.name if level else 'Training Environment' }} - Simulation{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/simulated-pc/main.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/simulated-pc/windows.css') }}">
 <style>
     /* Hide navbar and footer for fullscreen simulation */
     nav, footer {
@@ -25,6 +23,38 @@
         min-height: 100vh;
         height: 100vh;
     }
+    
+    /* Custom animations for boot sequence */
+    @keyframes fadeInType {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    @keyframes blink {
+        0%, 50% { opacity: 1; }
+        51%, 100% { opacity: 0; }
+    }
+    
+    .boot-cursor {
+        animation: blink 1s infinite;
+    }
+    
+    .boot-line {
+        animation: fadeInType 0.1s ease-in forwards;
+    }
+    
+    /* Loading spinner */
+    .pc-loading {
+        border: 2px solid #374151;
+        border-top: 2px solid #10b981;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
 </style>
 {% endblock %}
 
@@ -32,18 +62,19 @@
 <!-- Loading Screen -->
 <div id="loading-screen" class="fixed inset-0 bg-black flex items-center justify-center z-50">
     <div class="text-center">
-        <div class="pc-loading mb-4"></div>
-        <p class="text-green-400 text-lg">Initializing Simulation...</p>
+        <div class="pc-loading w-12 h-12 mb-4 mx-auto"></div>
+        <p class="text-green-400 text-lg font-mono">Initializing Simulation...</p>
     </div>
 </div>
 
 <!-- Simulation Container -->
-<div id="simulation-container"></div>
+<div id="simulation-container" class="w-full h-full"></div>
 
 <!-- Emergency Exit (hidden by default) -->
 <div id="emergency-exit" class="fixed top-4 left-4 z-50 hidden">
-    <button onclick="emergencyExit()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded text-sm">
-        <i class="bi bi-x-circle"></i> Emergency Exit
+    <button onclick="emergencyExit()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded text-sm transition-colors duration-200 flex items-center space-x-2">
+        <i class="bi bi-x-circle"></i>
+        <span>Emergency Exit</span>
     </button>
 </div>
 {% endblock %}
@@ -81,7 +112,7 @@
                 <div class="text-center text-red-400">
                     <i class="bi bi-exclamation-triangle text-4xl mb-4"></i>
                     <p class="text-lg mb-4">Failed to load simulation</p>
-                    <button onclick="window.location.href='/levels'" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                    <button onclick="window.location.href='/levels'" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition-colors duration-200">
                         Return to Levels
                     </button>
                 </div>
