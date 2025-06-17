@@ -78,12 +78,12 @@
 
             <!-- Start Level Button -->
             <div class="text-center">
-                <button class="group inline-flex items-center px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold text-lg rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-green-500/25 shadow-xl hover:shadow-2xl hover:scale-105 transform">
+                <a href="{{ url_for('levels.start_level', level_id=level.id) }}" class="group inline-flex items-center px-8 py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold text-lg rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-green-500/25 shadow-xl hover:shadow-2xl hover:scale-105 transform">
                     <i class="bi bi-play-circle mr-3"></i>
-                    <span>Start Challenge</span>
-                </button>
+                    <span>Start Simulation</span>
+                </a>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-3">
-                    Click to begin the interactive cybersecurity challenge
+                    Enter the interactive cybersecurity simulation environment
                 </p>
             </div>
         </div>
