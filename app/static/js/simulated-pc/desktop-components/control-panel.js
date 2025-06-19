@@ -74,6 +74,12 @@ export class ControlPanel {
                             <li><strong>Exit:</strong> Leave the simulation</li>
                         </ul>
                     </div>
+                    <div class="pt-4 border-t border-gray-600">
+                        <button onclick="Tutorial.restart()" class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition-colors duration-200 flex items-center justify-center">
+                            <i class="bi bi-arrow-clockwise mr-2"></i>
+                            Restart Tutorial
+                        </button>
+                    </div>
                 </div>
             </div>
         `;

@@ -2,10 +2,12 @@ import { Taskbar } from './desktop-components/taskbar.js';
 import { DesktopIcons } from './desktop-components/desktop-icons.js';
 import { ControlPanel } from './desktop-components/control-panel.js';
 import { WindowManager } from './desktop-components/window-manager.js';
+import { Tutorial } from './tutorial.js';
 
 export class Desktop {
     constructor(container) {
         this.container = container;
+        this.tutorial = null;
         this.initializeDesktop();
     }
 
@@ -30,6 +32,17 @@ export class Desktop {
             this.desktopElement.classList.remove('opacity-0');
             this.desktopElement.classList.add('opacity-100');
         }, 100);
+
+        // Initialize tutorial after all components are loaded
+        this.tutorial = new Tutorial(this);
+        window.tutorial = this.tutorial; // Make globally accessible
+        
+        // Auto-start tutorial for new users
+        setTimeout(() => {
+            if (Tutorial.shouldAutoStart()) {
+                this.tutorial.start();
+            }
+        }, 2000); // Wait 2 seconds after desktop loads
     }
 
     // Legacy methods for backward compatibility
