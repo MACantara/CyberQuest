@@ -28,12 +28,17 @@ export class Taskbar {
     }
 
     bindEvents() {
-        // Start button functionality can be added here
+        // Start button functionality - now includes exit simulation
         const startBtn = this.taskbarElement.querySelector('#start-btn');
         startBtn.addEventListener('click', () => {
-            // Future: implement start menu
-            console.log('Start menu clicked');
+            this.exitSimulation();
         });
+    }
+
+    exitSimulation() {
+        if (confirm('Are you sure you want to exit the simulation?')) {
+            window.dispatchEvent(new CustomEvent('exitSimulation'));
+        }
     }
 
     addWindow(id, title, iconClass) {

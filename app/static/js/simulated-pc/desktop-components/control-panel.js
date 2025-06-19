@@ -21,11 +21,8 @@ export class ControlPanel {
             <button class="control-button w-full bg-gray-700 border border-gray-600 text-white px-3 py-2 mb-2 text-xs text-left hover:bg-gray-600 hover:shadow-lg transition-all duration-200" id="hint-btn">
                 <i class="bi bi-lightbulb mr-2"></i> Hint
             </button>
-            <button class="control-button w-full bg-gray-700 border border-gray-600 text-white px-3 py-2 mb-2 text-xs text-left hover:bg-gray-600 hover:shadow-lg transition-all duration-200" id="progress-btn">
+            <button class="control-button w-full bg-gray-700 border border-gray-600 text-white px-3 py-2 text-xs text-left hover:bg-gray-600 hover:shadow-lg transition-all duration-200" id="progress-btn">
                 <i class="bi bi-clipboard-data mr-2"></i> Progress
-            </button>
-            <button class="control-button w-full border border-red-400 text-red-400 px-3 py-2 text-xs text-left hover:bg-red-400 hover:text-black transition-all duration-200" id="exit-btn">
-                <i class="bi bi-box-arrow-left mr-2"></i> Exit Simulation
             </button>
         `;
         
@@ -33,10 +30,6 @@ export class ControlPanel {
     }
 
     bindEvents() {
-        this.panelElement.querySelector('#exit-btn').addEventListener('click', () => {
-            this.exitSimulation();
-        });
-
         this.panelElement.querySelector('#help-btn').addEventListener('click', () => {
             this.windowManager.createWindow('help', 'Help', this.createHelpContent(), {
                 width: '60%',
@@ -57,12 +50,6 @@ export class ControlPanel {
                 height: '45%'
             });
         });
-    }
-
-    exitSimulation() {
-        if (confirm('Are you sure you want to exit the simulation?')) {
-            window.dispatchEvent(new CustomEvent('exitSimulation'));
-        }
     }
 
     createHelpContent() {
