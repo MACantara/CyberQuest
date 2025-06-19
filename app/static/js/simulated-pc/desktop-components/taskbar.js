@@ -36,9 +36,7 @@ export class Taskbar {
     }
 
     exitSimulation() {
-        if (confirm('Are you sure you want to exit the simulation?')) {
-            window.dispatchEvent(new CustomEvent('exitSimulation'));
-        }
+        window.dispatchEvent(new CustomEvent('exitSimulation'));
     }
 
     addWindow(id, title, iconClass) {
