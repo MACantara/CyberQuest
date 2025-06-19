@@ -5,6 +5,7 @@ export class Tutorial {
         this.isActive = false;
         this.overlay = null;
         this.tooltip = null;
+        this.emailAppOpened = false; // Track if email app has been opened
         this.steps = [
             {
                 target: '.desktop-icon[data-id="email"]',
@@ -50,8 +51,26 @@ export class Tutorial {
         
         this.isActive = true;
         this.currentStep = 0;
+        this.emailAppOpened = false;
         this.createOverlay();
         this.showStep();
+        this.setupEmailAppListener();
+    }
+
+    setupEmailAppListener() {
+        // Listen for email app being opened
+        const emailIcon = document.querySelector('.desktop-icon[data-id="email"]');
+        if (emailIcon) {
+            emailIcon.addEventListener('dblclick', () => {
+                if (this.isActive) {
+                    this.emailAppOpened = true;
+                    // Complete tutorial after a short delay to allow email app to open
+                    setTimeout(() => {
+                        this.complete();
+                    }, 500);
+                }
+            });
+        }
     }
 
     createOverlay() {
@@ -152,10 +171,17 @@ export class Tutorial {
                             </button>
                         ` : ''}
                         
-                        <button class="tutorial-btn-primary px-4 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 transition-colors duration-200" onclick="window.tutorial.nextStep()">
-                            ${step.final ? 'Start Mission' : 'Next'}
-                            ${!step.final ? '<i class="bi bi-arrow-right ml-1"></i>' : '<i class="bi bi-play ml-1"></i>'}
-                        </button>
+                        ${step.final ? `
+                            <button class="tutorial-btn-primary px-4 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 transition-colors duration-200" onclick="window.tutorial.openEmailAndComplete()">
+                                Start Mission
+                                <i class="bi bi-play ml-1"></i>
+                            </button>
+                        ` : `
+                            <button class="tutorial-btn-primary px-4 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 transition-colors duration-200" onclick="window.tutorial.nextStep()">
+                                Next
+                                <i class="bi bi-arrow-right ml-1"></i>
+                            </button>
+                        `}
                     </div>
                 </div>
             </div>
@@ -229,6 +255,19 @@ export class Tutorial {
         }
     }
 
+    openEmailAndComplete() {
+        // Open the email application
+        if (this.desktop && this.desktop.windowManager) {
+            this.desktop.windowManager.openEmailClient();
+        }
+        
+        // Mark as opened and complete tutorial
+        this.emailAppOpened = true;
+        setTimeout(() => {
+            this.complete();
+        }, 500);
+    }
+
     complete() {
         this.clearHighlights();
         this.cleanup();
@@ -236,11 +275,13 @@ export class Tutorial {
         // Store completion in localStorage
         localStorage.setItem('cyberquest_tutorial_completed', 'true');
         
-        // Show completion message
-        this.desktop.windowManager.createWindow('tutorial-complete', 'Tutorial Complete', this.createCompletionContent(), {
-            width: '50%',
-            height: '40%'
-        });
+        // Show completion message only if email app was opened
+        if (this.emailAppOpened) {
+            this.desktop.windowManager.createWindow('tutorial-complete', 'Tutorial Complete', this.createCompletionContent(), {
+                width: '50%',
+                height: '40%'
+            });
+        }
     }
 
     createCompletionContent() {
@@ -249,20 +290,27 @@ export class Tutorial {
                 <div class="text-6xl mb-4">🎉</div>
                 <h2 class="text-2xl font-bold text-green-400 mb-4">Tutorial Complete!</h2>
                 <p class="text-gray-300 mb-6">
-                    Great job! You now know the basics of navigating the CyberQuest simulation environment.
-                    You're ready to start your cybersecurity training missions.
+                    Excellent! You've successfully opened the Email Client and completed the tutorial.
+                    You're now ready to start your cybersecurity training missions.
                 </p>
                 <div class="bg-gray-700 rounded-lg p-4 mb-6">
-                    <h3 class="text-lg font-semibold text-yellow-400 mb-2">Quick Reminders:</h3>
+                    <h3 class="text-lg font-semibold text-yellow-400 mb-2">Your Mission:</h3>
+                    <p class="text-left text-sm text-gray-300">
+                        Examine the emails in your inbox and identify which ones might be suspicious or phishing attempts. 
+                        Look for red flags like suspicious sender addresses, urgent language, and requests for personal information.
+                    </p>
+                </div>
+                <div class="bg-green-900/30 rounded-lg p-4 mb-6">
+                    <h3 class="text-lg font-semibold text-green-400 mb-2">Quick Reminders:</h3>
                     <ul class="text-left text-sm text-gray-300 space-y-1">
                         <li>• Double-click icons to open applications</li>
                         <li>• Use Mission Control for help and hints</li>
                         <li>• Click Start button to exit safely</li>
-                        <li>• Look for suspicious content in applications</li>
+                        <li>• Look for suspicious content in emails</li>
                     </ul>
                 </div>
                 <p class="text-sm text-gray-400">
-                    Good luck with your missions, Agent! 🛡️
+                    Good luck with your cybersecurity training, Agent! 🛡️
                 </p>
             </div>
         `;
