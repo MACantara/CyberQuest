@@ -78,7 +78,7 @@ export class SimulatedPC {
     }
 
     exit() {
-        if (confirm('Exit simulation and return to levels?')) {
+        if (confirm('Are you sure you want to exit the simulation?')) {
             this.destroy();
             // Redirect back to levels page
             window.location.href = '/levels';
