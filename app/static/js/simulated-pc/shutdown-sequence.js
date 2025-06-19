@@ -42,24 +42,10 @@ export class ShutdownSequence {
 
     typeNextLine(onComplete) {
         if (this.currentLine >= this.shutdownLines.length) {
-            // Add final shutdown message
-            const finalMessage = document.createElement('div');
-            finalMessage.className = 'text-center w-full mt-8 opacity-0 animate-fade-in';
-            finalMessage.innerHTML = `
-                <div class="text-2xl text-cyan-400 mb-4">🛡️</div>
-                <div class="text-lg text-cyan-300 mb-2">System Shutdown Complete</div>
-                <div class="text-sm text-gray-400">Returning to CyberQuest Portal</div>
-            `;
-            this.container.appendChild(finalMessage);
-            
-            // Trigger fade-in
-            setTimeout(() => {
-                finalMessage.classList.remove('opacity-0');
-            }, 100);
-            
+            // Complete shutdown without final message
             setTimeout(() => {
                 onComplete();
-            }, 2000);
+            }, 1000);
             return;
         }
 
