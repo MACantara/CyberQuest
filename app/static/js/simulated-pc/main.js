@@ -1,5 +1,6 @@
 import { BootSequence } from './boot-sequence.js';
 import { LoadingScreen } from './loading-screen.js';
+import { ShutdownSequence } from './shutdown-sequence.js';
 import { Desktop } from './desktop.js';
 
 export class SimulatedPC {
@@ -79,8 +80,29 @@ export class SimulatedPC {
 
     exit() {
         if (confirm('Are you sure you want to exit the simulation?')) {
+            this.runShutdownSequence();
+        }
+    }
+
+    async runShutdownSequence() {
+        try {
+            // Clear current content and show shutdown sequence
+            this.container.innerHTML = '';
+            
+            const shutdownContainer = document.createElement('div');
+            shutdownContainer.className = 'w-full h-full';
+            this.container.appendChild(shutdownContainer);
+
+            // Run shutdown sequence
+            await ShutdownSequence.runShutdown(shutdownContainer);
+            
+            // After shutdown completes, redirect
             this.destroy();
-            // Redirect back to levels page
+            window.location.href = '/levels';
+        } catch (error) {
+            console.error('Error during shutdown sequence:', error);
+            // Fallback to immediate exit
+            this.destroy();
             window.location.href = '/levels';
         }
     }
