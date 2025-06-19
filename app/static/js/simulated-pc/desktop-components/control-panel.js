@@ -1,7 +1,8 @@
 export class ControlPanel {
-    constructor(container, windowManager) {
+    constructor(container, windowManager, desktop = null) {
         this.container = container;
         this.windowManager = windowManager;
+        this.desktop = desktop;
         this.init();
     }
 
@@ -75,7 +76,7 @@ export class ControlPanel {
                         </ul>
                     </div>
                     <div class="pt-4 border-t border-gray-600">
-                        <button onclick="Tutorial.restart()" class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition-colors duration-200 flex items-center justify-center">
+                        <button onclick="window.restartTutorial()" class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition-colors duration-200 flex items-center justify-center">
                             <i class="bi bi-arrow-clockwise mr-2"></i>
                             Restart Tutorial
                         </button>
@@ -83,6 +84,16 @@ export class ControlPanel {
                 </div>
             </div>
         `;
+    }
+
+    restartTutorial() {
+        if (this.desktop && this.desktop.tutorial) {
+            // Clear any localStorage flag and restart tutorial
+            localStorage.removeItem('cyberquest_tutorial_completed');
+            this.desktop.tutorial.start();
+        } else {
+            console.error('Tutorial not available');
+        }
     }
 
     createHintContent() {

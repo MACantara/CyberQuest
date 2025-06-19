@@ -19,13 +19,13 @@ export class Desktop {
         
         this.container.appendChild(this.desktopElement);
 
-        // Initialize components
-        this.taskbar = new Taskbar(this.desktopElement, null); // Will be set after WindowManager
+        // Initialize components - pass desktop instance to control panel
+        this.taskbar = new Taskbar(this.desktopElement, null);
         this.windowManager = new WindowManager(this.desktopElement, this.taskbar);
-        this.taskbar.windowManager = this.windowManager; // Set the reference
+        this.taskbar.windowManager = this.windowManager;
         
         this.desktopIcons = new DesktopIcons(this.desktopElement, this.windowManager);
-        this.controlPanel = new ControlPanel(this.desktopElement, this.windowManager);
+        this.controlPanel = new ControlPanel(this.desktopElement, this.windowManager, this);
 
         // Trigger fade-in effect after all components are loaded
         setTimeout(() => {
@@ -37,6 +37,14 @@ export class Desktop {
         this.tutorial = new Tutorial(this);
         window.tutorial = this.tutorial; // Make globally accessible
         
+        // Make tutorial restart function globally accessible
+        window.restartTutorial = () => {
+            if (this.tutorial) {
+                localStorage.removeItem('cyberquest_tutorial_completed');
+                this.tutorial.start();
+            }
+        };
+
         // Auto-start tutorial for new users
         setTimeout(() => {
             if (Tutorial.shouldAutoStart()) {
