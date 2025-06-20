@@ -29,7 +29,7 @@ export class DesktopIcons {
 
     generateIconsHTML() {
         return this.icons.map(icon => `
-            <div class="desktop-icon flex flex-col items-center w-20 cursor-pointer p-2.5 rounded hover:bg-white hover:bg-opacity-10 transition-all duration-200" data-action="${icon.action}" data-id="${icon.id}">
+            <div class="desktop-icon flex flex-col items-center w-20 cursor-pointer p-2.5 rounded hover:bg-white/25 transition-all duration-200" data-action="${icon.action}" data-id="${icon.id}">
                 <div class="w-12 h-12 bg-green-400 border-2 border-gray-600 rounded flex items-center justify-center text-2xl text-black mb-1 shadow-lg">
                     <i class="bi ${icon.icon}"></i>
                 </div>
@@ -63,13 +63,13 @@ export class DesktopIcons {
 
     selectIcon(icon) {
         this.clearSelection();
-        icon.classList.add('bg-green-400', 'bg-opacity-20', 'border', 'border-green-400');
+        icon.classList.add('bg-green-400/50', 'border', 'border-green-400', 'border-opacity-75');
         this.selectedIcon = icon;
     }
 
     clearSelection() {
         if (this.selectedIcon) {
-            this.selectedIcon.classList.remove('bg-green-400', 'bg-opacity-20', 'border', 'border-green-400');
+            this.selectedIcon.classList.remove('bg-green-400/50', 'border', 'border-green-400', 'border-opacity-75');
             this.selectedIcon = null;
         }
     }
