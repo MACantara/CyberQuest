@@ -81,7 +81,7 @@ export class EmailTutorial extends BaseTutorial {
     }
 
     getFinalButtonText() {
-        return 'Complete Training';
+        return 'Finish Tutorial';
     }
 
     complete() {
@@ -89,57 +89,6 @@ export class EmailTutorial extends BaseTutorial {
         
         // Store completion in localStorage
         localStorage.setItem('cyberquest_email_tutorial_completed', 'true');
-        
-        // Show completion message
-        this.desktop.windowManager.createWindow('email-tutorial-complete', 'Email Security Training Complete', this.createCompletionContent(), {
-            width: '60%',
-            height: '50%'
-        });
-    }
-
-    createCompletionContent() {
-        return `
-            <div class="p-6 text-center text-white">
-                <div class="text-6xl mb-4">🛡️</div>
-                <h2 class="text-2xl font-bold text-green-400 mb-4">Email Security Training Complete!</h2>
-                <p class="text-gray-300 mb-6">
-                    Excellent work! You've learned how to identify phishing emails and suspicious content.
-                    This knowledge will help protect you from cyber threats.
-                </p>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div class="bg-red-900/30 rounded p-4">
-                        <h3 class="text-lg font-semibold text-red-400 mb-2">🚨 Red Flags</h3>
-                        <ul class="text-left text-sm text-gray-300 space-y-1">
-                            <li>• Suspicious sender addresses</li>
-                            <li>• Urgent or threatening language</li>
-                            <li>• Too-good-to-be-true offers</li>
-                            <li>• Requests for personal info</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="bg-green-900/30 rounded p-4">
-                        <h3 class="text-lg font-semibold text-green-400 mb-2">✅ Safety Tips</h3>
-                        <ul class="text-left text-sm text-gray-300 space-y-1">
-                            <li>• Verify sender identity</li>
-                            <li>• Check URLs carefully</li>
-                            <li>• Don't click suspicious links</li>
-                            <li>• When in doubt, ask for help</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                <p class="text-sm text-gray-400">
-                    Continue exploring the email client to practice your skills! 🎯
-                </p>
-            </div>
-        `;
-    }
-
-    showSkipModal() {
-        if (confirm('Are you sure you want to skip the email security tutorial? This training is important for cybersecurity awareness.')) {
-            this.complete();
-        }
     }
 
     // Static methods
