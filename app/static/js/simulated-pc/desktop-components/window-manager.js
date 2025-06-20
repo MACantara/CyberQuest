@@ -1,9 +1,10 @@
 import { ApplicationFactory } from './application-factory.js';
 
 export class WindowManager {
-    constructor(container, taskbar) {
+    constructor(container, taskbar, tutorialManager = null) {
         this.container = container;
         this.taskbar = taskbar;
+        this.tutorialManager = tutorialManager;
         this.windows = new Map();
         this.zIndex = 1000;
         this.applicationFactory = new ApplicationFactory();
@@ -334,11 +335,27 @@ export class WindowManager {
         });
     }
 
-    openEmailClient() {
+    async openEmailClient() {
+        const isFirstTime = !localStorage.getItem('cyberquest_email_opened');
+        
         this.createWindow('email', 'Email Client', this.applicationFactory.createEmailContent(), {
             width: '80%',
             height: '70%'
         });
+
+        // Mark email as opened
+        localStorage.setItem('cyberquest_email_opened', 'true');
+
+        // Start email tutorial if it's the first time and tutorial manager is available
+        if (isFirstTime && this.tutorialManager) {
+            const shouldStart = await this.tutorialManager.shouldAutoStartEmail();
+            if (shouldStart) {
+                // Wait a bit for the window to be fully rendered
+                setTimeout(async () => {
+                    await this.tutorialManager.startEmailTutorial();
+                }, 1500);
+            }
+        }
     }
 
     openNetworkMonitor() {

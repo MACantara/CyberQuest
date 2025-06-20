@@ -57,9 +57,13 @@ export class EmailTutorial extends BaseTutorial {
         this.isActive = true;
         this.currentStep = 0;
         this.emailsAnalyzed = 0;
-        this.createOverlay();
-        this.showStep();
-        this.setupEmailClickListeners();
+        
+        // Wait for email app to be fully loaded
+        setTimeout(() => {
+            this.createOverlay();
+            this.showStep();
+            this.setupEmailClickListeners();
+        }, 1000);
     }
 
     setupEmailClickListeners() {

@@ -21,7 +21,11 @@ export class Desktop {
 
         // Initialize components - pass desktop instance to control panel
         this.taskbar = new Taskbar(this.desktopElement, null);
-        this.windowManager = new WindowManager(this.desktopElement, this.taskbar);
+        
+        // Initialize tutorial before window manager so we can pass it
+        this.tutorial = new TutorialManager(this);
+        
+        this.windowManager = new WindowManager(this.desktopElement, this.taskbar, this.tutorial);
         this.taskbar.windowManager = this.windowManager;
         
         this.desktopIcons = new DesktopIcons(this.desktopElement, this.windowManager);
@@ -34,7 +38,6 @@ export class Desktop {
         }, 100);
 
         // Initialize tutorial after all components are loaded
-        this.tutorial = new TutorialManager(this);
         window.tutorial = this.tutorial; // Make globally accessible
         
         // Make tutorial restart function globally accessible
