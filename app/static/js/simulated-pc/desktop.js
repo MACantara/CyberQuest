@@ -2,7 +2,7 @@ import { Taskbar } from './desktop-components/taskbar.js';
 import { DesktopIcons } from './desktop-components/desktop-icons.js';
 import { ControlPanel } from './desktop-components/control-panel.js';
 import { WindowManager } from './desktop-components/window-manager.js';
-import { Tutorial } from './tutorial.js';
+import { TutorialManager } from './tutorial.js';
 
 export class Desktop {
     constructor(container) {
@@ -11,7 +11,7 @@ export class Desktop {
         this.initializeDesktop();
     }
 
-    initializeDesktop() {
+    async initializeDesktop() {
         // Create main desktop container with initial opacity 0 for fade-in effect
         this.desktopElement = document.createElement('div');
         this.desktopElement.className = 'relative w-full h-full bg-gradient-to-br from-blue-800 via-blue-900 to-indigo-900 opacity-0 transition-opacity duration-1000 ease-in-out';
@@ -34,21 +34,21 @@ export class Desktop {
         }, 100);
 
         // Initialize tutorial after all components are loaded
-        this.tutorial = new Tutorial(this);
+        this.tutorial = new TutorialManager(this);
         window.tutorial = this.tutorial; // Make globally accessible
         
         // Make tutorial restart function globally accessible
-        window.restartTutorial = () => {
+        window.restartTutorial = async () => {
             if (this.tutorial) {
-                localStorage.removeItem('cyberquest_tutorial_completed');
-                this.tutorial.start();
+                await this.tutorial.restartInitialTutorial();
             }
         };
 
         // Auto-start tutorial for new users
-        setTimeout(() => {
-            if (Tutorial.shouldAutoStart()) {
-                this.tutorial.start();
+        setTimeout(async () => {
+            const shouldStart = await this.tutorial.shouldAutoStartInitial();
+            if (shouldStart) {
+                await this.tutorial.startInitialTutorial();
             }
         }, 2000); // Wait 2 seconds after desktop loads
     }
