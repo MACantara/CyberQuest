@@ -1,3 +1,5 @@
+import { SkipTutorialModal } from './desktop-components/skip-tutorial-modal.js';
+
 export class Tutorial {
     constructor(desktop) {
         this.desktop = desktop;
@@ -5,7 +7,8 @@ export class Tutorial {
         this.isActive = false;
         this.overlay = null;
         this.tooltip = null;
-        this.emailAppOpened = false; // Track if email app has been opened
+        this.emailAppOpened = false;
+        this.skipTutorialModal = null;
         this.steps = [
             {
                 target: '.desktop-icon[data-id="email"]',
@@ -150,7 +153,7 @@ export class Tutorial {
                         <h3 class="text-lg font-bold text-white mb-2">${step.title}</h3>
                         <div class="text-xs text-gray-400 mb-2">Step ${this.currentStep + 1} of ${this.steps.length}</div>
                     </div>
-                    <button class="tutorial-close text-gray-400 hover:text-white transition-colors duration-200 ml-4 text-xs cursor-pointer" onclick="window.tutorial.skip()">
+                    <button class="tutorial-close text-gray-400 hover:text-white transition-colors duration-200 ml-4 text-xs cursor-pointer" onclick="window.tutorial.showSkipModal()">
                         Skip tutorial
                     </button>
                 </div>
@@ -249,10 +252,19 @@ export class Tutorial {
         }
     }
 
-    skip() {
-        if (confirm('Are you sure you want to skip the tutorial? You can restart it later from the Help menu.')) {
+    async showSkipModal() {
+        if (!this.skipTutorialModal) {
+            this.skipTutorialModal = new SkipTutorialModal(document.body);
+        }
+        
+        const shouldSkip = await this.skipTutorialModal.show();
+        if (shouldSkip) {
             this.complete();
         }
+    }
+
+    skip() {
+        this.showSkipModal();
     }
 
     openEmailAndComplete() {
