@@ -32,8 +32,8 @@ export class ShutdownModal {
                 </div>
                 
                 <div class="p-6 bg-gray-800 rounded-b">
-                    <div class="flex items-start space-x-4 mb-6">
-                        <div class="bg-gray-700 border border-gray-600 p-3">
+                    <div class="flex items-center space-x-4 mb-6">
+                        <div class="bg-gray-700 border border-gray-600 p-3 rounded">
                             <i class="bi bi-exclamation-triangle text-green-400 text-2xl"></i>
                         </div>
                         <div>
