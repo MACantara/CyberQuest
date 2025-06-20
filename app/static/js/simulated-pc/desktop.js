@@ -2,7 +2,7 @@ import { Taskbar } from './desktop-components/taskbar.js';
 import { DesktopIcons } from './desktop-components/desktop-icons.js';
 import { ControlPanel } from './desktop-components/control-panel.js';
 import { WindowManager } from './desktop-components/window-manager.js';
-import { TutorialManager } from './tutorial.js';
+import { TutorialManager } from './tutorial-manager.js';
 
 export class Desktop {
     constructor(container) {
