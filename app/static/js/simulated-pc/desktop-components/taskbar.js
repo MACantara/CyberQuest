@@ -2,6 +2,7 @@ export class Taskbar {
     constructor(container, windowManager) {
         this.container = container;
         this.windowManager = windowManager;
+        this.activeWindowId = null;
         this.init();
     }
 
@@ -51,6 +52,10 @@ export class Taskbar {
         });
         
         taskbarItems.appendChild(taskbarItem);
+        
+        // Set this window as active immediately when added
+        this.setActiveWindow(id);
+        
         return taskbarItem;
     }
 
@@ -59,6 +64,22 @@ export class Taskbar {
         if (taskbarItem) {
             taskbarItem.remove();
         }
+        
+        // Clear active state if this was the active window
+        if (this.activeWindowId === id) {
+            this.activeWindowId = null;
+        }
+    }
+
+    setActiveWindow(id) {
+        // Clear previous active state
+        if (this.activeWindowId) {
+            this.setWindowActive(this.activeWindowId, false);
+        }
+        
+        // Set new active state
+        this.activeWindowId = id;
+        this.setWindowActive(id, true);
     }
 
     setWindowActive(id, active) {

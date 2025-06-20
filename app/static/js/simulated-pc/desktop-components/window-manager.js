@@ -14,7 +14,7 @@ export class WindowManager {
             // Bring existing window to front
             const existingWindow = this.windows.get(id);
             existingWindow.style.zIndex = ++this.zIndex;
-            this.taskbar.setWindowActive(id, true);
+            this.taskbar.setActiveWindow(id);
             return;
         }
 
@@ -61,7 +61,7 @@ export class WindowManager {
         this.container.appendChild(window);
         this.windows.set(id, window);
 
-        // Add to taskbar
+        // Add to taskbar (this will automatically set it as active)
         const iconClass = this.getIconClassForWindow(id);
         this.taskbar.addWindow(id, title, iconClass);
 
@@ -109,9 +109,10 @@ export class WindowManager {
             this.maximizeWindow(id);
         });
 
-        // Bring to front on click
+        // Bring to front on click and set as active
         window.addEventListener('mousedown', () => {
             window.style.zIndex = ++this.zIndex;
+            this.taskbar.setActiveWindow(id);
         });
     }
 
@@ -263,6 +264,11 @@ export class WindowManager {
         if (window) {
             window.style.display = 'none';
             this.taskbar.setWindowActive(id, false);
+            
+            // Clear active state if this was the active window
+            if (this.taskbar.activeWindowId === id) {
+                this.taskbar.activeWindowId = null;
+            }
         }
     }
 
@@ -299,7 +305,7 @@ export class WindowManager {
             if (window.style.display === 'none') {
                 window.style.display = 'block';
                 window.style.zIndex = ++this.zIndex;
-                this.taskbar.setWindowActive(id, true);
+                this.taskbar.setActiveWindow(id);
             } else {
                 this.minimizeWindow(id);
             }
