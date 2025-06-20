@@ -19,7 +19,7 @@ export class WindowManager {
         }
 
         const window = document.createElement('div');
-        window.className = 'absolute bg-gray-800 border border-gray-600 rounded-lg shadow-2xl overflow-hidden min-w-72 min-h-48 backdrop-blur-lg';
+        window.className = 'absolute bg-gray-800 border border-gray-600 rounded shadow-2xl overflow-hidden min-w-72 min-h-48 backdrop-blur-lg';
         window.style.zIndex = ++this.zIndex;
         window.style.width = options.width || '60%';
         window.style.height = options.height || '50%';

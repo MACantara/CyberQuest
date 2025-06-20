@@ -16,7 +16,7 @@ export class BrowserApp {
                     <div class="p-5 text-center text-black">
                         <h2 class="text-2xl font-bold text-red-600 mb-4">🎉 CONGRATULATIONS! YOU'VE WON! 🎉</h2>
                         <p class="mb-4">Click here to claim your $1,000,000 prize!</p>
-                        <button class="bg-gradient-to-r from-red-500 to-orange-500 text-white px-6 py-3 rounded-lg font-bold text-lg animate-pulse hover:scale-105 transition-transform duration-200">CLAIM NOW!</button>
+                        <button class="bg-gradient-to-r from-red-500 to-orange-500 text-white px-6 py-3 rounded font-bold text-lg animate-pulse hover:scale-105 transition-transform duration-200">CLAIM NOW!</button>
                         <p class="text-sm text-gray-600 mt-2">* No catch, totally legitimate *</p>
                     </div>
                 </div>

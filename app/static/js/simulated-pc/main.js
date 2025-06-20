@@ -165,7 +165,7 @@ export class SimulatedPC {
                 iconClass = 'bi-info-circle';
         }
         
-        notification.className = `fixed top-5 right-5 ${typeClasses} border rounded-lg p-3 shadow-lg animate-slide-in-right z-50`;
+        notification.className = `fixed top-5 right-5 ${typeClasses} border rounded p-3 shadow-lg animate-slide-in-right z-50`;
         notification.innerHTML = `
             <div class="flex items-center space-x-2">
                 <i class="bi ${iconClass}"></i>

@@ -4,19 +4,19 @@ export class SecurityToolsApp {
             <div class="p-5 text-white">
                 <h3 class="text-xl font-bold text-green-400 mb-6">Security Analysis Tools</h3>
                 <div class="grid grid-cols-2 gap-4 mb-6">
-                    <button class="p-4 bg-gray-700 border border-gray-600 rounded-lg hover:bg-gray-600 transition-colors duration-200 flex flex-col items-center space-y-2">
+                    <button class="p-4 bg-gray-700 border border-gray-600 rounded hover:bg-gray-600 transition-colors duration-200 flex flex-col items-center space-y-2">
                         <i class="bi bi-shield-check text-2xl text-green-400"></i>
                         <span class="text-sm">Antivirus Scan</span>
                     </button>
-                    <button class="p-4 bg-gray-700 border border-gray-600 rounded-lg hover:bg-gray-600 transition-colors duration-200 flex flex-col items-center space-y-2">
+                    <button class="p-4 bg-gray-700 border border-gray-600 rounded hover:bg-gray-600 transition-colors duration-200 flex flex-col items-center space-y-2">
                         <i class="bi bi-search text-2xl text-blue-400"></i>
                         <span class="text-sm">Malware Detector</span>
                     </button>
-                    <button class="p-4 bg-gray-700 border border-gray-600 rounded-lg hover:bg-gray-600 transition-colors duration-200 flex flex-col items-center space-y-2">
+                    <button class="p-4 bg-gray-700 border border-gray-600 rounded hover:bg-gray-600 transition-colors duration-200 flex flex-col items-center space-y-2">
                         <i class="bi bi-graph-up text-2xl text-purple-400"></i>
                         <span class="text-sm">Network Scanner</span>
                     </button>
-                    <button class="p-4 bg-gray-700 border border-gray-600 rounded-lg hover:bg-gray-600 transition-colors duration-200 flex flex-col items-center space-y-2">
+                    <button class="p-4 bg-gray-700 border border-gray-600 rounded hover:bg-gray-600 transition-colors duration-200 flex flex-col items-center space-y-2">
                         <i class="bi bi-lock text-2xl text-yellow-400"></i>
                         <span class="text-sm">Encryption Tool</span>
                     </button>

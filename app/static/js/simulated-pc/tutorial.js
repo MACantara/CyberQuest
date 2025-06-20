@@ -84,7 +84,7 @@ export class Tutorial {
         
         // Create tooltip container
         this.tooltip = document.createElement('div');
-        this.tooltip.className = 'fixed z-50 tutorial-tooltip bg-gray-800 border border-gray-600 rounded-lg shadow-2xl p-6 max-w-sm transform transition-all duration-300';
+        this.tooltip.className = 'fixed z-50 tutorial-tooltip bg-gray-800 border border-gray-600 rounded shadow-2xl p-6 max-w-sm transform transition-all duration-300';
         this.tooltip.style.pointerEvents = 'auto';
         
         document.body.appendChild(this.overlay);
@@ -305,14 +305,14 @@ export class Tutorial {
                     Excellent! You've successfully opened the Email Client and completed the tutorial.
                     You're now ready to start your cybersecurity training missions.
                 </p>
-                <div class="bg-gray-700 rounded-lg p-4 mb-6">
+                <div class="bg-gray-700 rounded p-4 mb-6">
                     <h3 class="text-lg font-semibold text-yellow-400 mb-2">Your Mission:</h3>
                     <p class="text-left text-sm text-gray-300">
                         Examine the emails in your inbox and identify which ones might be suspicious or phishing attempts. 
                         Look for red flags like suspicious sender addresses, urgent language, and requests for personal information.
                     </p>
                 </div>
-                <div class="bg-green-900/30 rounded-lg p-4 mb-6">
+                <div class="bg-green-900/30 rounded p-4 mb-6">
                     <h3 class="text-lg font-semibold text-green-400 mb-2">Quick Reminders:</h3>
                     <ul class="text-left text-sm text-gray-300 space-y-1">
                         <li>• Double-click icons to open applications</li>
