@@ -150,8 +150,8 @@ export class Tutorial {
                         <h3 class="text-lg font-bold text-white mb-2">${step.title}</h3>
                         <div class="text-xs text-gray-400 mb-2">Step ${this.currentStep + 1} of ${this.steps.length}</div>
                     </div>
-                    <button class="tutorial-close text-gray-400 hover:text-white transition-colors duration-200 ml-4" onclick="window.tutorial.skip()">
-                        <i class="bi bi-x text-xl"></i>
+                    <button class="tutorial-close text-gray-400 hover:text-white transition-colors duration-200 ml-4 text-xs cursor-pointer" onclick="window.tutorial.skip()">
+                        Skip tutorial
                     </button>
                 </div>
                 
@@ -166,18 +166,18 @@ export class Tutorial {
                     
                     <div class="flex space-x-2">
                         ${this.currentStep > 0 ? `
-                            <button class="tutorial-btn-secondary px-3 py-1 text-xs border border-gray-500 text-gray-300 rounded hover:bg-gray-700 transition-colors duration-200" onclick="window.tutorial.previousStep()">
+                            <button class="tutorial-btn-secondary px-3 py-1 text-xs border border-gray-500 text-gray-300 rounded hover:bg-gray-700 transition-colors duration-200 cursor-pointer" onclick="window.tutorial.previousStep()">
                                 <i class="bi bi-arrow-left mr-1"></i>Back
                             </button>
                         ` : ''}
                         
                         ${step.final ? `
-                            <button class="tutorial-btn-primary px-4 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 transition-colors duration-200" onclick="window.tutorial.openEmailAndComplete()">
+                            <button class="tutorial-btn-primary px-4 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 transition-colors duration-200 cursor-pointer" onclick="window.tutorial.openEmailAndComplete()">
                                 Start Mission
                                 <i class="bi bi-play ml-1"></i>
                             </button>
                         ` : `
-                            <button class="tutorial-btn-primary px-4 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 transition-colors duration-200" onclick="window.tutorial.nextStep()">
+                            <button class="tutorial-btn-primary px-4 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 transition-colors duration-200 cursor-pointer" onclick="window.tutorial.nextStep()">
                                 Next
                                 <i class="bi bi-arrow-right ml-1"></i>
                             </button>
@@ -398,6 +398,10 @@ tutorialStyles.textContent = `
     
     .tutorial-btn-secondary:hover {
         transform: translateY(-1px);
+    }
+    
+    .tutorial-close:hover {
+        text-decoration: underline;
     }
 `;
 document.head.appendChild(tutorialStyles);
