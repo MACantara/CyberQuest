@@ -59,9 +59,9 @@ export class LoadingScreen {
                 
                 <!-- Loading Dots -->
                 <div class="flex space-x-3 mb-8">
-                    <div class="w-4 h-4 bg-green-400 rounded animate-bounce"></div>
-                    <div class="w-4 h-4 bg-gray-700 border border-gray-600 rounded animate-bounce" style="animation-delay: 0.1s;"></div>
-                    <div class="w-4 h-4 bg-green-400 rounded animate-bounce" style="animation-delay: 0.2s;"></div>
+                    <div class="w-4 h-4 bg-green-400 rounded-full animate-bounce"></div>
+                    <div class="w-4 h-4 bg-green-400 rounded-full animate-bounce" style="animation-delay: 0.1s;"></div>
+                    <div class="w-4 h-4 bg-green-400 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
                 </div>
 
                 <!-- Loading Text -->
