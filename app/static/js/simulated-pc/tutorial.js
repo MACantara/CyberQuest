@@ -88,23 +88,5 @@ export class TutorialManager {
     // startSpecificToolTutorial(toolName) { ... }
 }
 
-// Legacy support - maintain backwards compatibility
-export class Tutorial extends TutorialManager {
-    constructor(desktop) {
-        super(desktop);
-    }
-
-    start() {
-        this.startInitialTutorial();
-    }
-
-    static shouldAutoStart() {
-        return InitialTutorial.shouldAutoStart();
-    }
-
-    static restart() {
-        if (window.tutorial) {
-            window.tutorial.restartInitialTutorial();
-        }
-    }
-}
+// Maintain Tutorial as an alias for backwards compatibility
+export const Tutorial = TutorialManager;
