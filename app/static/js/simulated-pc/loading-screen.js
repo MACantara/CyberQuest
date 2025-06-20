@@ -30,43 +30,43 @@ export class LoadingScreen {
         loadingContent.innerHTML = `
             <!-- OS Logo -->
             <div class="mb-8 opacity-0 animate-fade-in-up" style="animation-delay: 0.2s;">
-                <div class="w-32 h-32 bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 rounded-3xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform duration-300 relative overflow-hidden">
-                    <div class="absolute inset-0 bg-gradient-to-br from-green-400/20 to-purple-600/20 animate-pulse"></div>
-                    <div class="w-20 h-20 bg-black rounded-2xl flex items-center justify-center relative z-10">
+                <div class="w-32 h-32 bg-gray-700 border-2 border-gray-600 rounded flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform duration-300 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gray-800 opacity-50 animate-pulse"></div>
+                    <div class="w-20 h-20 bg-gray-800 border border-gray-600 rounded flex items-center justify-center relative z-10">
                         <i class="bi bi-shield-check text-green-400 text-4xl animate-pulse"></i>
                     </div>
                     <!-- Floating particles around logo -->
-                    <div class="absolute top-2 left-2 w-2 h-2 bg-white rounded-full animate-ping"></div>
-                    <div class="absolute bottom-3 right-3 w-1.5 h-1.5 bg-yellow-300 rounded-full animate-bounce" style="animation-delay: 0.5s;"></div>
-                    <div class="absolute top-1/2 left-1 w-1 h-1 bg-blue-300 rounded-full animate-pulse" style="animation-delay: 1s;"></div>
+                    <div class="absolute top-2 left-2 w-2 h-2 bg-green-400 rounded-full animate-ping"></div>
+                    <div class="absolute bottom-3 right-3 w-1.5 h-1.5 bg-green-400 rounded-full animate-bounce" style="animation-delay: 0.5s;"></div>
+                    <div class="absolute top-1/2 left-1 w-1 h-1 bg-green-400 rounded-full animate-pulse" style="animation-delay: 1s;"></div>
                 </div>
             </div>
 
             <!-- OS Name and Version -->
             <div class="text-center mb-12 opacity-0 animate-fade-in-up" style="animation-delay: 0.4s;">
-                <h1 class="text-5xl md:text-6xl font-bold mb-2 bg-gradient-to-r from-green-400 via-blue-400 to-purple-500 bg-clip-text text-transparent">
+                <h1 class="text-5xl md:text-6xl font-bold mb-2 text-white font-mono">
                     CyberOS
                 </h1>
-                <p class="text-lg text-gray-400">Version 2.1.0</p>
+                <p class="text-lg text-gray-400 font-mono">Version 2.1.0</p>
             </div>
 
             <!-- Loading Animation -->
             <div class="flex flex-col items-center opacity-0 animate-fade-in-up" style="animation-delay: 0.6s;">
                 <!-- Progress Bar -->
-                <div class="w-64 h-3 bg-gray-800 rounded-full overflow-hidden mb-6 shadow-inner">
-                    <div class="h-full bg-gradient-to-r from-green-400 to-blue-500 rounded-full animate-loading-bar shadow-lg"></div>
+                <div class="w-64 h-3 bg-gray-700 border border-gray-600 rounded overflow-hidden mb-6 shadow-inner">
+                    <div class="h-full bg-green-400 rounded animate-loading-bar shadow-lg"></div>
                 </div>
                 
                 <!-- Loading Dots -->
                 <div class="flex space-x-3 mb-8">
-                    <div class="w-4 h-4 bg-green-400 rounded-full animate-bounce"></div>
-                    <div class="w-4 h-4 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0.1s;"></div>
-                    <div class="w-4 h-4 bg-purple-400 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+                    <div class="w-4 h-4 bg-green-400 rounded animate-bounce"></div>
+                    <div class="w-4 h-4 bg-gray-700 border border-gray-600 rounded animate-bounce" style="animation-delay: 0.1s;"></div>
+                    <div class="w-4 h-4 bg-green-400 rounded animate-bounce" style="animation-delay: 0.2s;"></div>
                 </div>
 
                 <!-- Loading Text -->
                 <div class="text-center">
-                    <p class="text-xl text-green-400 loading-text">Initializing System...</p>
+                    <p class="text-xl text-green-400 loading-text font-mono">Initializing System...</p>
                 </div>
             </div>
         `;
@@ -95,8 +95,8 @@ export class LoadingScreen {
         const gridPattern = document.createElement('div');
         gridPattern.className = 'absolute inset-0 opacity-5';
         gridPattern.style.backgroundImage = `
-            linear-gradient(rgba(34, 197, 94, 0.3) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(34, 197, 94, 0.3) 1px, transparent 1px)
+            linear-gradient(rgba(16, 185, 129, 0.3) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(16, 185, 129, 0.3) 1px, transparent 1px)
         `;
         gridPattern.style.backgroundSize = '50px 50px';
         gridPattern.style.animation = 'grid-move 10s linear infinite';
