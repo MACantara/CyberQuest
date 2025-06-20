@@ -23,17 +23,17 @@ export class SkipTutorialModal {
         
         // Create modal content
         this.modal.innerHTML = `
-            <div class="bg-gray-800 border border-gray-600 shadow-2xl max-w-md w-full mx-4 transform scale-90 transition-transform duration-300" id="modal-content">
+            <div class="bg-gray-800 border border-gray-600 shadow-2xl max-w-md w-full mx-4 transform scale-90 transition-transform duration-300 rounded" id="modal-content">
                 <div class="bg-gray-700 px-6 py-4 border-b border-gray-600">
-                    <div class="flex items-center space-x-3">
+                    <div class="flex items-center space-x-3 rounded-t">
                         <i class="bi bi-question-circle text-green-400 text-xl"></i>
                         <h3 class="text-lg font-semibold text-white">Skip Tutorial</h3>
                     </div>
                 </div>
                 
-                <div class="p-6 bg-gray-800">
+                <div class="p-6 bg-gray-800 rounded-b">
                     <div class="flex items-center space-x-4 mb-6">
-                        <div class="bg-gray-700 border border-gray-600 p-3">
+                        <div class="bg-gray-700 border border-gray-600 p-3 rounded">
                             <i class="bi bi-exclamation-triangle text-green-400 text-2xl"></i>
                         </div>
                         <div>
@@ -49,13 +49,13 @@ export class SkipTutorialModal {
                     <div class="flex space-x-3 justify-end">
                         <button 
                             id="cancel-skip" 
-                            class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white border border-gray-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 font-mono text-sm cursor-pointer"
+                            class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white border border-gray-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 font-mono text-sm cursor-pointer rounded"
                         >
                             <i class="bi bi-arrow-left mr-1"></i> Continue Tutorial
                         </button>
                         <button 
                             id="confirm-skip" 
-                            class="px-4 py-2 bg-gray-700 hover:bg-green-400 hover:text-black text-white border border-gray-600 hover:border-green-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-400 font-mono text-sm hover:shadow-lg cursor-pointer"
+                            class="px-4 py-2 bg-gray-700 hover:bg-green-400 hover:text-black text-white border border-gray-600 hover:border-green-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-400 font-mono text-sm hover:shadow-lg cursor-pointer rounded"
                         >
                             <i class="bi bi-skip-end mr-1"></i> Skip Tutorial
                         </button>
