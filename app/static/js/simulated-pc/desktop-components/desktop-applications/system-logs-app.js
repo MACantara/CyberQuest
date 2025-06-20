@@ -2,14 +2,14 @@ export class SystemLogsApp {
     static createContent() {
         return `
             <div class="h-full flex flex-col bg-gray-900">
-                <div class="bg-gray-700 p-2 border-b border-gray-600 flex items-center space-x-2">
+                <div class="bg-gray-700 p-2 border-b border-gray-600 flex items-center space-x-2 cursor-pointer">
                     <select class="px-2 py-1 bg-black border border-gray-600 rounded text-white text-xs">
                         <option>All Logs</option>
                         <option>Security</option>
                         <option>Network</option>
                         <option>System</option>
                     </select>
-                    <button class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-500 transition-colors duration-200">Refresh</button>
+                    <button class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-500 transition-colors duration-200 cursor-pointer">Refresh</button>
                 </div>
                 <div class="flex-1 overflow-auto font-mono text-xs">
                     <div class="grid grid-cols-4 gap-2 p-2 bg-gray-800 border-b border-gray-600 font-bold text-gray-300">
