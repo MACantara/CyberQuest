@@ -16,13 +16,13 @@ export class ControlPanel {
         this.panelElement.className = 'absolute top-5 right-5 bg-gray-800 border border-gray-600 rounded-lg p-4 shadow-xl min-w-48';
         this.panelElement.innerHTML = `
             <h3 class="text-green-400 text-sm font-bold mb-4 pb-1 border-b border-gray-600">Mission Control</h3>
-            <button class="control-button w-full bg-gray-700 border border-gray-600 text-white px-3 py-2 mb-2 text-xs text-left hover:bg-gray-600 hover:shadow-lg transition-all duration-200" id="help-btn">
+            <button class="control-button w-full bg-gray-700 border border-gray-600 text-white px-3 py-2 mb-2 text-xs text-left hover:bg-gray-600 hover:shadow-lg transition-all duration-200 cursor-pointer" id="help-btn">
                 <i class="bi bi-question-circle mr-2"></i> Help
             </button>
-            <button class="control-button w-full bg-gray-700 border border-gray-600 text-white px-3 py-2 mb-2 text-xs text-left hover:bg-gray-600 hover:shadow-lg transition-all duration-200" id="hint-btn">
+            <button class="control-button w-full bg-gray-700 border border-gray-600 text-white px-3 py-2 mb-2 text-xs text-left hover:bg-gray-600 hover:shadow-lg transition-all duration-200 cursor-pointer" id="hint-btn">
                 <i class="bi bi-lightbulb mr-2"></i> Hint
             </button>
-            <button class="control-button w-full bg-gray-700 border border-gray-600 text-white px-3 py-2 text-xs text-left hover:bg-gray-600 hover:shadow-lg transition-all duration-200" id="progress-btn">
+            <button class="control-button w-full bg-gray-700 border border-gray-600 text-white px-3 py-2 text-xs text-left hover:bg-gray-600 hover:shadow-lg transition-all duration-200 cursor-pointer" id="progress-btn">
                 <i class="bi bi-clipboard-data mr-2"></i> Progress
             </button>
         `;
@@ -76,7 +76,7 @@ export class ControlPanel {
                         </ul>
                     </div>
                     <div class="pt-4 border-t border-gray-600">
-                        <button onclick="window.restartTutorial()" class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition-colors duration-200 flex items-center justify-center">
+                        <button onclick="window.restartTutorial()" class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition-colors duration-200 flex items-center justify-center cursor-pointer">
                             <i class="bi bi-arrow-clockwise mr-2"></i>
                             Restart Tutorial
                         </button>
