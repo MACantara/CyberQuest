@@ -2,6 +2,7 @@ import { BootSequence } from './boot-sequence.js';
 import { LoadingScreen } from './loading-screen.js';
 import { ShutdownSequence } from './shutdown-sequence.js';
 import { Desktop } from './desktop.js';
+import { ShutdownModal } from './desktop-components/shutdown-modal.js';
 
 export class SimulatedPC {
     constructor(level = null) {
@@ -11,6 +12,7 @@ export class SimulatedPC {
         this.bootSequence = null;
         this.loadingScreen = null;
         this.desktop = null;
+        this.shutdownModal = null;
     }
 
     async initialize() {
@@ -71,15 +73,20 @@ export class SimulatedPC {
             
             if (event.key === 'Escape') {
                 // Allow escape to show exit confirmation
-                this.desktop.exitSimulation();
+                this.exit();
             } else {
                 event.preventDefault();
             }
         }
     }
 
-    exit() {
-        if (confirm('Are you sure you want to exit the simulation?')) {
+    async exit() {
+        if (!this.shutdownModal) {
+            this.shutdownModal = new ShutdownModal(this.container);
+        }
+        
+        const shouldShutdown = await this.shutdownModal.show();
+        if (shouldShutdown) {
             this.runShutdownSequence();
         }
     }

@@ -1,7 +1,10 @@
+import { ShutdownModal } from './shutdown-modal.js';
+
 export class Taskbar {
     constructor(container, windowManager) {
         this.container = container;
         this.windowManager = windowManager;
+        this.shutdownModal = null;
         this.init();
     }
 
@@ -28,11 +31,22 @@ export class Taskbar {
     }
 
     bindEvents() {
-        // Start button functionality - now includes exit simulation
+        // Start button functionality - now shows shutdown modal
         const startBtn = this.taskbarElement.querySelector('#start-btn');
         startBtn.addEventListener('click', () => {
-            this.exitSimulation();
+            this.showShutdownModal();
         });
+    }
+
+    async showShutdownModal() {
+        if (!this.shutdownModal) {
+            this.shutdownModal = new ShutdownModal(this.container);
+        }
+        
+        const shouldShutdown = await this.shutdownModal.show();
+        if (shouldShutdown) {
+            this.exitSimulation();
+        }
     }
 
     exitSimulation() {
