@@ -2,8 +2,8 @@ export class SystemLogsApp {
     static createContent() {
         return `
             <div class="h-full flex flex-col bg-gray-900">
-                <div class="bg-gray-700 p-2 border-b border-gray-600 flex items-center space-x-2 cursor-pointer">
-                    <select class="px-2 py-1 bg-black border border-gray-600 rounded text-white text-xs">
+                <div class="bg-gray-700 p-2 border-b border-gray-600 flex items-center space-x-2">
+                    <select class="px-2 py-1 bg-black border border-gray-600 rounded text-white text-xs cursor-pointer">
                         <option>All Logs</option>
                         <option>Security</option>
                         <option>Network</option>
