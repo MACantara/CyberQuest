@@ -3,9 +3,9 @@ export class NetworkMonitorApp {
         return `
             <div class="h-full flex flex-col bg-gray-900">
                 <div class="bg-gray-700 p-2 border-b border-gray-600 flex space-x-2">
-                    <button class="px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 transition-colors duration-200">Live Capture</button>
-                    <button class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-500 transition-colors duration-200">Filters</button>
-                    <button class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-500 transition-colors duration-200">Statistics</button>
+                    <button class="px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 transition-colors duration-200 cursor-pointer">Live Capture</button>
+                    <button class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-500 transition-colors duration-200 cursor-pointer">Filters</button>
+                    <button class="px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-500 transition-colors duration-200 cursor-pointer">Statistics</button>
                 </div>
                 <div class="flex-1 overflow-auto font-mono text-xs">
                     <div class="grid grid-cols-5 gap-2 p-2 bg-gray-800 border-b border-gray-600 font-bold text-gray-300">
