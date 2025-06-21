@@ -5,9 +5,7 @@ export class TutorialManager {
         this.desktop = desktop;
         this.currentTutorial = null;
         this.initializeCSS();
-    }
-
-    initializeCSS() {
+    }    initializeCSS() {
         // Add tutorial CSS styles to the page
         const tutorialStyles = document.createElement('style');
         tutorialStyles.textContent = `
@@ -58,8 +56,139 @@ export class TutorialManager {
             .tutorial-close:hover {
                 text-decoration: underline;
             }
+            
+            /* Disable interactions during tutorial */
+            .tutorial-mode-active .window-header {
+                pointer-events: none !important;
+                cursor: default !important;
+            }
+            
+            .tutorial-mode-active .window-controls {
+                pointer-events: none !important;
+            }
+            
+            .tutorial-mode-active .resize-handle {
+                pointer-events: none !important;
+                cursor: default !important;
+            }
+            
+            .tutorial-mode-active .taskbar-button {
+                pointer-events: none !important;
+                cursor: default !important;
+            }
+            
+            .tutorial-mode-active .start-button {
+                pointer-events: none !important;
+                cursor: default !important;
+            }
+            
+            .tutorial-mode-active .desktop-icon {
+                pointer-events: none !important;
+                cursor: default !important;
+            }
+            
+            .tutorial-mode-active .window-content {
+                pointer-events: none !important;
+            }
+            
+            /* Allow tutorial elements to be interactive */
+            .tutorial-mode-active .tutorial-tooltip {
+                pointer-events: auto !important;
+            }
+            
+            .tutorial-mode-active .tutorial-tooltip * {
+                pointer-events: auto !important;
+            }
+            
+            .tutorial-mode-active .tutorial-overlay {
+                pointer-events: auto !important;
+            }
+            
+            /* Allow highlighted elements to be interactive if needed */
+            .tutorial-mode-active .tutorial-highlight {
+                pointer-events: auto !important;
+            }
         `;
         document.head.appendChild(tutorialStyles);
+    }
+
+    // Enable tutorial mode - disable all interactions
+    enableTutorialMode() {
+        document.body.classList.add('tutorial-mode-active');
+        
+        // Disable right-click context menu during tutorial
+        document.addEventListener('contextmenu', this.preventContextMenu, true);
+        
+        // Disable keyboard shortcuts during tutorial
+        document.addEventListener('keydown', this.preventKeyboardShortcuts, true);
+        
+        // Disable drag and drop during tutorial
+        document.addEventListener('dragstart', this.preventDragDrop, true);
+        document.addEventListener('drop', this.preventDragDrop, true);
+    }
+
+    // Disable tutorial mode - re-enable all interactions
+    disableTutorialMode() {
+        document.body.classList.remove('tutorial-mode-active');
+        
+        // Re-enable right-click context menu
+        document.removeEventListener('contextmenu', this.preventContextMenu, true);
+        
+        // Re-enable keyboard shortcuts
+        document.removeEventListener('keydown', this.preventKeyboardShortcuts, true);
+        
+        // Re-enable drag and drop
+        document.removeEventListener('dragstart', this.preventDragDrop, true);
+        document.removeEventListener('drop', this.preventDragDrop, true);
+    }
+
+    // Prevent context menu during tutorial
+    preventContextMenu = (e) => {
+        // Allow context menu only on tutorial elements
+        if (!e.target.closest('.tutorial-tooltip') && !e.target.closest('.tutorial-highlight')) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+    }
+
+    // Prevent keyboard shortcuts during tutorial
+    preventKeyboardShortcuts = (e) => {
+        // Allow only basic navigation keys and tutorial-specific keys
+        const allowedKeys = [
+            'Tab', 'Shift', 'Enter', 'Escape', 'ArrowUp', 'ArrowDown', 
+            'ArrowLeft', 'ArrowRight', 'Space'
+        ];
+        
+        // Block Ctrl/Cmd combinations except for basic text editing
+        if ((e.ctrlKey || e.metaKey) && !['c', 'v', 'a', 'x'].includes(e.key.toLowerCase())) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+        
+        // Block Alt combinations
+        if (e.altKey && !allowedKeys.includes(e.key)) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+        
+        // Block F keys (except F5 for refresh in development)
+        if (e.key.startsWith('F') && e.key !== 'F5') {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+    }
+
+    // Prevent drag and drop during tutorial
+    preventDragDrop = (e) => {
+        if (!e.target.closest('.tutorial-tooltip')) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
     }
 
     // Generic tutorial starter
@@ -68,6 +197,9 @@ export class TutorialManager {
             this.currentTutorial.cleanup();
         }
         
+        // Enable tutorial mode to disable interactions
+        this.enableTutorialMode();
+        
         // Dynamic import to avoid circular dependency
         const module = await import(`./tutorials/${tutorialName}-tutorial.js`);
         const TutorialClass = module[tutorialClass];
@@ -75,6 +207,21 @@ export class TutorialManager {
         this.currentTutorial = new TutorialClass(this.desktop);
         window[globalVarName] = this.currentTutorial; // For global access
         window.currentTutorial = this.currentTutorial; // For shared base functionality
+        
+        // Override the tutorial's complete method to disable tutorial mode
+        const originalComplete = this.currentTutorial.complete.bind(this.currentTutorial);
+        this.currentTutorial.complete = () => {
+            originalComplete();
+            this.disableTutorialMode();
+        };
+        
+        // Override the tutorial's cleanup method to disable tutorial mode
+        const originalCleanup = this.currentTutorial.cleanup.bind(this.currentTutorial);
+        this.currentTutorial.cleanup = () => {
+            originalCleanup();
+            this.disableTutorialMode();
+        };
+        
         this.currentTutorial.start();
     }
 
