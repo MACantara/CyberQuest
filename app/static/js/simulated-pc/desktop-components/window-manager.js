@@ -388,13 +388,31 @@ export class WindowManager {
                 }, 1500);
             }
         }
-    }
-
+    }    
+    
     openNetworkMonitor() {
+        const isFirstTime = !localStorage.getItem('cyberquest_networkmonitor_opened');
+        
         this.createWindow('wireshark', 'Network Monitor', this.applicationFactory.createNetworkMonitorContent(), {
             width: '85%',
             height: '75%'
         });
+
+        // Mark network monitor as opened
+        localStorage.setItem('cyberquest_networkmonitor_opened', 'true');
+
+        // Start network monitor tutorial if it's the first time and tutorial manager is available
+        if (isFirstTime && this.tutorialManager) {
+            setTimeout(async () => {
+                const shouldStart = await this.tutorialManager.shouldAutoStartNetworkMonitor();
+                if (shouldStart) {
+                    // Wait a bit for the window to be fully rendered
+                    setTimeout(async () => {
+                        await this.tutorialManager.startNetworkMonitorTutorial();
+                    }, 1500);
+                }
+            }, 100);
+        }
     }
 
     openSecurityTools() {
