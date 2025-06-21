@@ -438,12 +438,30 @@ export class WindowManager {
                 }
             }, 100);
         }
-    }
-
+    }    
+    
     openSystemLogs() {
+        const isFirstTime = !localStorage.getItem('cyberquest_systemlogs_opened');
+        
         this.createWindow('logs', 'System Logs', this.applicationFactory.createSystemLogsContent(), {
             width: '75%',
             height: '65%'
         });
+
+        // Mark system logs as opened
+        localStorage.setItem('cyberquest_systemlogs_opened', 'true');
+
+        // Start system logs tutorial if it's the first time and tutorial manager is available
+        if (isFirstTime && this.tutorialManager) {
+            setTimeout(async () => {
+                const shouldStart = await this.tutorialManager.shouldAutoStartSystemLogs();
+                if (shouldStart) {
+                    // Wait a bit for the window to be fully rendered
+                    setTimeout(async () => {
+                        await this.tutorialManager.startSystemLogsTutorial();
+                    }, 1500);
+                }
+            }, 100);
+        }
     }
 }

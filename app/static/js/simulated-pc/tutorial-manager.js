@@ -206,12 +206,37 @@ export class TutorialManager {
     async shouldAutoStartSecurityTools() {
         const { SecurityToolsTutorial } = await import('./tutorials/security-tools-tutorial.js');
         return SecurityToolsTutorial.shouldAutoStart();
-    }
-
+    }    
+    
     async restartSecurityToolsTutorial() {
         const { SecurityToolsTutorial } = await import('./tutorials/security-tools-tutorial.js');
         SecurityToolsTutorial.restart();
         await this.startSecurityToolsTutorial();
+    }
+
+    async startSystemLogsTutorial() {
+        if (this.currentTutorial) {
+            this.currentTutorial.cleanup();
+        }
+        
+        // Dynamic import to avoid circular dependency
+        const { SystemLogsTutorial } = await import('./tutorials/system-logs-tutorial.js');
+        
+        this.currentTutorial = new SystemLogsTutorial(this.desktop);
+        window.systemLogsTutorial = this.currentTutorial; // For global access
+        window.currentTutorial = this.currentTutorial; // For shared base functionality
+        this.currentTutorial.start();
+    }
+
+    async shouldAutoStartSystemLogs() {
+        const { SystemLogsTutorial } = await import('./tutorials/system-logs-tutorial.js');
+        return SystemLogsTutorial.shouldAutoStart();
+    }
+
+    async restartSystemLogsTutorial() {
+        const { SystemLogsTutorial } = await import('./tutorials/system-logs-tutorial.js');
+        SystemLogsTutorial.restart();
+        await this.startSystemLogsTutorial();
     }
 
     // Future tutorial methods can be added here
