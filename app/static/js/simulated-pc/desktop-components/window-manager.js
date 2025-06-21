@@ -340,13 +340,31 @@ export class WindowManager {
             width: '70%',
             height: '60%'
         });
-    }
-
+    }    
+    
     openFileManager() {
+        const isFirstTime = !localStorage.getItem('cyberquest_filemanager_opened');
+        
         this.createWindow('files', 'File Manager', this.applicationFactory.createFileManagerContent(), {
             width: '75%',
             height: '65%'
         });
+
+        // Mark file manager as opened
+        localStorage.setItem('cyberquest_filemanager_opened', 'true');
+
+        // Start file manager tutorial if it's the first time and tutorial manager is available
+        if (isFirstTime && this.tutorialManager) {
+            setTimeout(async () => {
+                const shouldStart = await this.tutorialManager.shouldAutoStartFileManager();
+                if (shouldStart) {
+                    // Wait a bit for the window to be fully rendered
+                    setTimeout(async () => {
+                        await this.tutorialManager.startFileManagerTutorial();
+                    }, 1500);
+                }
+            }, 100);
+        }
     }
 
     async openEmailClient() {

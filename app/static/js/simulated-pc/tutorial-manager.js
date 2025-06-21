@@ -139,6 +139,31 @@ export class TutorialManager {
         await this.startBrowserTutorial();
     }
 
+    async startFileManagerTutorial() {
+        if (this.currentTutorial) {
+            this.currentTutorial.cleanup();
+        }
+        
+        // Dynamic import to avoid circular dependency
+        const { FileManagerTutorial } = await import('./tutorials/file-manager-tutorial.js');
+        
+        this.currentTutorial = new FileManagerTutorial(this.desktop);
+        window.fileManagerTutorial = this.currentTutorial; // For global access
+        window.currentTutorial = this.currentTutorial; // For shared base functionality
+        this.currentTutorial.start();
+    }
+
+    async shouldAutoStartFileManager() {
+        const { FileManagerTutorial } = await import('./tutorials/file-manager-tutorial.js');
+        return FileManagerTutorial.shouldAutoStart();
+    }
+
+    async restartFileManagerTutorial() {
+        const { FileManagerTutorial } = await import('./tutorials/file-manager-tutorial.js');
+        FileManagerTutorial.restart();
+        await this.startFileManagerTutorial();
+    }
+
     // Future tutorial methods can be added here
     // async startAdvancedTutorial() { ... }
     // async startSpecificToolTutorial(toolName) { ... }
