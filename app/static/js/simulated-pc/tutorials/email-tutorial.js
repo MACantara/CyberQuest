@@ -81,7 +81,7 @@ export class EmailTutorial extends BaseTutorial {
     }
 
     getFinalButtonText() {
-        return 'Complete Tutorial';
+        return 'Finish Tutorial';
     }
 
     complete() {
