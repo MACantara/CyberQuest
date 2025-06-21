@@ -181,12 +181,37 @@ export class TutorialManager {
     async shouldAutoStartNetworkMonitor() {
         const { NetworkMonitorTutorial } = await import('./tutorials/network-monitor-tutorial.js');
         return NetworkMonitorTutorial.shouldAutoStart();
-    }
-
+    }    
+    
     async restartNetworkMonitorTutorial() {
         const { NetworkMonitorTutorial } = await import('./tutorials/network-monitor-tutorial.js');
         NetworkMonitorTutorial.restart();
         await this.startNetworkMonitorTutorial();
+    }
+
+    async startSecurityToolsTutorial() {
+        if (this.currentTutorial) {
+            this.currentTutorial.cleanup();
+        }
+        
+        // Dynamic import to avoid circular dependency
+        const { SecurityToolsTutorial } = await import('./tutorials/security-tools-tutorial.js');
+        
+        this.currentTutorial = new SecurityToolsTutorial(this.desktop);
+        window.securityToolsTutorial = this.currentTutorial; // For global access
+        window.currentTutorial = this.currentTutorial; // For shared base functionality
+        this.currentTutorial.start();
+    }
+
+    async shouldAutoStartSecurityTools() {
+        const { SecurityToolsTutorial } = await import('./tutorials/security-tools-tutorial.js');
+        return SecurityToolsTutorial.shouldAutoStart();
+    }
+
+    async restartSecurityToolsTutorial() {
+        const { SecurityToolsTutorial } = await import('./tutorials/security-tools-tutorial.js');
+        SecurityToolsTutorial.restart();
+        await this.startSecurityToolsTutorial();
     }
 
     // Future tutorial methods can be added here

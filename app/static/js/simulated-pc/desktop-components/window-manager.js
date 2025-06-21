@@ -413,13 +413,31 @@ export class WindowManager {
                 }
             }, 100);
         }
-    }
-
+    }    
+    
     openSecurityTools() {
+        const isFirstTime = !localStorage.getItem('cyberquest_securitytools_opened');
+        
         this.createWindow('security', 'Security Tools', this.applicationFactory.createSecurityToolsContent(), {
             width: '70%',
             height: '60%'
         });
+
+        // Mark security tools as opened
+        localStorage.setItem('cyberquest_securitytools_opened', 'true');
+
+        // Start security tools tutorial if it's the first time and tutorial manager is available
+        if (isFirstTime && this.tutorialManager) {
+            setTimeout(async () => {
+                const shouldStart = await this.tutorialManager.shouldAutoStartSecurityTools();
+                if (shouldStart) {
+                    // Wait a bit for the window to be fully rendered
+                    setTimeout(async () => {
+                        await this.tutorialManager.startSecurityToolsTutorial();
+                    }, 1500);
+                }
+            }, 100);
+        }
     }
 
     openSystemLogs() {
