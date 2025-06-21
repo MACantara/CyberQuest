@@ -5,42 +5,42 @@ export class EmailTutorial extends BaseTutorial {
         super(desktop);
         this.steps = [
             {
-                target: '.email-item:first-child',
+                target: '#suspicious-email',
                 title: 'Suspicious Email Alert',
                 content: 'This email has been flagged as suspicious! Notice the red border - this indicates potential phishing. Let\'s examine why this email is dangerous.',
                 action: 'highlight',
                 position: 'right'
             },
             {
-                target: '.email-item:first-child .font-medium',
+                target: '#suspicious-sender',
                 title: 'Check the Sender',
                 content: 'Look at the sender address: "prince.nigeria@totally-real.com" - This is clearly suspicious! Real organizations use professional email addresses.',
                 action: 'pulse',
                 position: 'right'
             },
             {
-                target: '.email-item:first-child .text-gray-300',
+                target: '#suspicious-subject',
                 title: 'Urgent Language Warning',
                 content: 'Phishing emails often use urgent language like "URGENT" or "CLAIM NOW" to pressure you into acting quickly without thinking.',
                 action: 'highlight',
                 position: 'right'
             },
             {
-                target: '.email-item:nth-child(2)',
+                target: '#legitimate-email',
                 title: 'Legitimate Email',
                 content: 'This email from "admin@cyberquest.com" appears legitimate. It\'s from the actual training platform with a professional address.',
                 action: 'highlight',
                 position: 'right'
             },
             {
-                target: '.email-item:nth-child(3)',
+                target: '#bank-email',
                 title: 'Another Suspicious Email',
                 content: 'This email claims to be from a bank but asks about account suspension. Always verify bank communications through official channels!',
                 action: 'highlight',
                 position: 'right'
             },
             {
-                target: '.email-item',
+                target: '#email-list',
                 title: 'Email Security Complete',
                 content: 'You\'ve learned to identify suspicious emails! Always look for red flags like suspicious senders, urgent language, and requests for personal information.',
                 action: 'highlight',
