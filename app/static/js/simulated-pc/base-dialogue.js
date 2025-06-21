@@ -28,7 +28,7 @@ export class BaseDialogue {
         
         // Create dialogue container
         this.dialogueContainer = document.createElement('div');
-        this.dialogueContainer.className = 'bg-gray-700 border-2 border-green-500 rounded-xl p-4 max-w-3xl w-[90%] min-h-[200px] shadow-2xl flex flex-row items-start gap-8 dialogue-appear';
+        this.dialogueContainer.className = 'bg-gray-700 border-2 border-green-500 rounded p-4 max-w-3xl w-[90%] min-h-[200px] shadow-2xl flex flex-row items-start gap-8 dialogue-appear';
         
         this.overlay.appendChild(this.dialogueContainer);
         document.body.appendChild(this.overlay);
@@ -57,7 +57,7 @@ export class BaseDialogue {
         const characterName = this.getCharacterName();
         const isLastMessage = this.currentMessageIndex >= this.messages.length - 1;        this.dialogueContainer.innerHTML = `
             <img src="${avatarUrl}" alt="${characterName}" 
-                 class="w-30 h-30 rounded-full border-3 border-green-500 object-cover shadow-lg shadow-green-500/30 flex-shrink-0" 
+                 class="w-30 h-30 rounded border-3 border-green-500 object-cover shadow-lg shadow-green-500/30 flex-shrink-0" 
                  onerror="this.src='/static/images/avatars/default.png'" width="120" height="120">
             
             <div class="flex-1 flex flex-col min-h-[200px]">
@@ -69,14 +69,14 @@ export class BaseDialogue {
                 
                 <div class="flex gap-4 mt-auto">
                     ${this.currentMessageIndex > 0 ? 
-                        `<button class="px-6 py-3 bg-gray-600 text-white rounded-lg font-semibold hover:bg-gray-700 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer text-sm" onclick="${this.getPreviousHandler()}">
+                        `<button class="px-6 py-3 bg-gray-600 text-white rounded font-semibold hover:bg-gray-700 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer text-sm" onclick="${this.getPreviousHandler()}">
                             ← Previous
                         </button>` : ''
                     }
-                    <button class="px-6 py-3 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-green-500/30 transition-all duration-200 cursor-pointer text-sm" onclick="${this.getNextHandler()}">
+                    <button class="px-6 py-3 bg-green-500 text-white rounded font-semibold hover:bg-green-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-green-500/30 transition-all duration-200 cursor-pointer text-sm" onclick="${this.getNextHandler()}">
                         ${isLastMessage ? this.getFinalButtonText() : 'Next →'}
                     </button>
-                    <button class="px-6 py-3 bg-gray-600 text-white rounded-lg font-semibold hover:bg-gray-700 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer text-sm" onclick="${this.getSkipHandler()}">
+                    <button class="px-6 py-3 bg-gray-600 text-white rounded font-semibold hover:bg-gray-700 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer text-sm" onclick="${this.getSkipHandler()}">
                         Skip
                     </button>
                 </div>
