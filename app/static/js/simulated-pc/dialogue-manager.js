@@ -33,7 +33,7 @@ export class DialogueManager {
                 padding: 1rem;
                 max-width: 700px;
                 width: 90%;
-                min-height: 300px;
+                min-height: 200px;
                 box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
                 display: flex;
                 flex-direction: row;
