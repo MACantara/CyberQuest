@@ -13,6 +13,7 @@ export class ControlPanel {
 
     createControlPanel() {
         this.panelElement = document.createElement('div');
+        this.panelElement.id = 'control-panel';
         this.panelElement.className = 'absolute top-5 right-5 bg-gray-800 border border-gray-600 rounded p-4 shadow-xl min-w-48';
         this.panelElement.innerHTML = `
             <h3 class="text-green-400 text-sm font-bold mb-4 pb-1 border-b border-gray-600">Mission Control</h3>

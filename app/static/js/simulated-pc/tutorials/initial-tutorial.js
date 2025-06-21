@@ -29,7 +29,7 @@ export class InitialTutorial extends BaseTutorial {
                 position: 'top'
             },
             {
-                target: '.control-panel',
+                target: '#control-panel',
                 title: 'Mission Control',
                 content: 'Use Mission Control to get help, hints, and track your progress during missions.',
                 action: 'highlight',
