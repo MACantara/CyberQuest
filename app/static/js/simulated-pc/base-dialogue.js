@@ -59,7 +59,7 @@ export class BaseDialogue {
         
         this.dialogueContainer.innerHTML = `
             <img src="${avatarUrl}" alt="${characterName}" class="dialogue-avatar" 
-                 onerror="this.src='/static/images/avatars/default.png'">
+                 onerror="this.src='/static/images/avatars/default.png'" width="120" height="120">
             
             <div class="dialogue-speaker">${characterName}</div>
             
