@@ -25,12 +25,12 @@ export class DialogueManager {
                 z-index: 10000;
                 backdrop-filter: blur(5px);
             }
-                
+
             .dialogue-container {
                 background: rgb(55, 65, 81); /* bg-gray-700 */
                 border: 2px solid #10b981;
                 border-radius: 12px;
-                padding: 2rem;
+                padding: 1rem;
                 max-width: 700px;
                 width: 90%;
                 min-height: 300px;
