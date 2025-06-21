@@ -311,14 +311,28 @@ export class WindowManager {
                 this.minimizeWindow(id);
             }
         }
-    }
-
-    // Application launchers
-    openBrowser() {
+    }    // Application launchers
+    async openBrowser() {
+        const isFirstTime = !localStorage.getItem('cyberquest_browser_opened');
+        
         this.createWindow('browser', 'Web Browser', this.applicationFactory.createBrowserContent(), {
             width: '80%',
             height: '70%'
         });
+
+        // Mark browser as opened
+        localStorage.setItem('cyberquest_browser_opened', 'true');
+
+        // Start browser tutorial if it's the first time and tutorial manager is available
+        if (isFirstTime && this.tutorialManager) {
+            const shouldStart = await this.tutorialManager.shouldAutoStartBrowser();
+            if (shouldStart) {
+                // Wait a bit for the window to be fully rendered
+                setTimeout(async () => {
+                    await this.tutorialManager.startBrowserTutorial();
+                }, 1500);
+            }
+        }
     }
 
     openTerminal() {

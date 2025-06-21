@@ -363,6 +363,31 @@ export class TutorialManager {
         await this.startEmailTutorial();
     }
 
+    async startBrowserTutorial() {
+        if (this.currentTutorial) {
+            this.currentTutorial.cleanup();
+        }
+        
+        // Dynamic import to avoid circular dependency
+        const { BrowserTutorial } = await import('./tutorials/browser-tutorial.js');
+        
+        this.currentTutorial = new BrowserTutorial(this.desktop);
+        window.browserTutorial = this.currentTutorial; // For global access
+        window.currentTutorial = this.currentTutorial; // For shared base functionality
+        this.currentTutorial.start();
+    }
+
+    async shouldAutoStartBrowser() {
+        const { BrowserTutorial } = await import('./tutorials/browser-tutorial.js');
+        return BrowserTutorial.shouldAutoStart();
+    }
+
+    async restartBrowserTutorial() {
+        const { BrowserTutorial } = await import('./tutorials/browser-tutorial.js');
+        BrowserTutorial.restart();
+        await this.startBrowserTutorial();
+    }
+
     // Future tutorial methods can be added here
     // async startAdvancedTutorial() { ... }
     // async startSpecificToolTutorial(toolName) { ... }
