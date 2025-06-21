@@ -67,7 +67,7 @@ export class BaseDialogue {
                     ${this.shouldTypeMessage(message) ? '' : message.text}
                 </div>
                 
-                <div class="flex gap-4 mt-auto">
+                <div class="flex justify-end gap-4 mt-auto">
                     ${this.currentMessageIndex > 0 ? 
                         `<button class="px-6 py-3 bg-gray-600 text-white rounded font-semibold hover:bg-gray-700 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer text-sm" onclick="${this.getPreviousHandler()}">
                             ← Previous
