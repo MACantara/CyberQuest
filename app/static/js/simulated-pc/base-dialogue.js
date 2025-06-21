@@ -24,11 +24,11 @@ export class BaseDialogue {
         
         // Create overlay
         this.overlay = document.createElement('div');
-        this.overlay.className = 'fixed inset-0 bg-black bg-opacity-80 flex justify-center items-start pt-[5vh] z-[10000] backdrop-blur-sm';
+        this.overlay.className = 'fixed inset-0 bg-black/80 flex justify-center items-start pt-[3vh] z-[10000] backdrop-blur-sm';
         
         // Create dialogue container
         this.dialogueContainer = document.createElement('div');
-        this.dialogueContainer.className = 'bg-gray-700 border-2 border-green-500 rounded-xl p-8 max-w-4xl w-[90%] min-h-[300px] shadow-2xl flex flex-row items-start gap-8 dialogue-appear';
+        this.dialogueContainer.className = 'bg-gray-700 border-2 border-green-500 rounded-xl p-4 max-w-3xl w-[90%] min-h-[200px] shadow-2xl flex flex-row items-start gap-8 dialogue-appear';
         
         this.overlay.appendChild(this.dialogueContainer);
         document.body.appendChild(this.overlay);
