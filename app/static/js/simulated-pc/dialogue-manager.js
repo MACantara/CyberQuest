@@ -5,43 +5,12 @@ export class DialogueManager {
         this.desktop = desktop;
         this.currentDialogue = null;
         this.initializeCSS();
-    }
-
+    }    
+    
     initializeCSS() {
-        // Add dialogue CSS styles to the page
+        // Add minimal dialogue CSS styles
         const dialogueStyles = document.createElement('style');
         dialogueStyles.textContent = `
-            .dialogue-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.8);
-                display: flex;
-                justify-content: center;
-                align-items: flex-start;
-                padding-top: 3vh;
-                z-index: 10000;
-                backdrop-filter: blur(5px);
-            }
-
-            .dialogue-container {
-                background: rgb(55, 65, 81); /* bg-gray-700 */
-                border: 2px solid #10b981;
-                border-radius: 12px;
-                padding: 1rem;
-                max-width: 700px;
-                width: 90%;
-                min-height: 200px;
-                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-                display: flex;
-                flex-direction: row;
-                align-items: flex-start;
-                gap: 2rem;
-                animation: dialogue-appear 0.3s ease-out;
-            }
-            
             @keyframes dialogue-appear {
                 from {
                     opacity: 0;
@@ -53,80 +22,8 @@ export class DialogueManager {
                 }
             }
             
-            .dialogue-avatar {
-                width: 120px;
-                height: 120px;
-                border-radius: 50%;
-                border: 3px solid #10b981;
-                object-fit: cover;
-                box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
-                flex-shrink: 0;
-            }
-            
-            .dialogue-content {
-                flex: 1;
-                display: flex;
-                flex-direction: column;
-                min-height: 200px;
-            }
-            
-            .dialogue-speaker {
-                color: #10b981;
-                font-size: 1.25rem;
-                font-weight: bold;
-                margin-bottom: 1rem;
-                text-align: left;
-            }
-            
-            .dialogue-text {
-                color: rgb(74, 222, 128); /* text-green-400 */
-                font-size: 1.1rem;
-                line-height: 1.6;
-                margin-bottom: 2rem;
-                flex-grow: 1;
-                text-align: left;
-            }
-            
-            .dialogue-controls {
-                display: flex;
-                gap: 1rem;
-                margin-top: auto;
-            }
-            
-            .dialogue-btn {
-                padding: 0.75rem 1.5rem;
-                border: none;
-                border-radius: 6px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.2s ease;
-                font-size: 0.9rem;
-            }
-            
-            .dialogue-btn-primary {
-                background: #10b981;
-                color: white;
-            }
-            
-            .dialogue-btn-primary:hover {
-                background: #059669;
-                transform: translateY(-1px);
-                box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
-            }
-            
-            .dialogue-btn-secondary {
-                background: rgb(75, 85, 99); /* bg-gray-600 */
-                color: white;
-            }
-            
-            .dialogue-btn-secondary:hover {
-                background: rgb(55, 65, 81); /* bg-gray-700 */
-                transform: translateY(-1px);
-            }
-            
-            .dialogue-typing {
-                display: inline-block;
-                animation: dialogue-typing 1.5s infinite;
+            .dialogue-appear {
+                animation: dialogue-appear 0.3s ease-out;
             }
             
             @keyframes dialogue-typing {
@@ -134,13 +31,9 @@ export class DialogueManager {
                 51%, 100% { opacity: 0; }
             }
             
-            .dialogue-progress {
-                position: absolute;
-                bottom: 1rem;
-                left: 50%;
-                transform: translateX(-50%);
-                color: rgba(74, 222, 128, 0.6);
-                font-size: 0.8rem;
+            .dialogue-typing {
+                display: inline-block;
+                animation: dialogue-typing 1.5s infinite;
             }
         `;
         document.head.appendChild(dialogueStyles);

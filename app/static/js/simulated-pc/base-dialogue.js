@@ -17,18 +17,18 @@ export class BaseDialogue {
         this.createDialogueOverlay();
         this.showMessage();
     }
-
+    
     createDialogueOverlay() {
         // Remove any existing overlay
         this.cleanup();
         
         // Create overlay
         this.overlay = document.createElement('div');
-        this.overlay.className = 'dialogue-overlay';
+        this.overlay.className = 'fixed inset-0 bg-black bg-opacity-80 flex justify-center items-start pt-[5vh] z-[10000] backdrop-blur-sm';
         
         // Create dialogue container
         this.dialogueContainer = document.createElement('div');
-        this.dialogueContainer.className = 'dialogue-container';
+        this.dialogueContainer.className = 'bg-gray-700 border-2 border-green-500 rounded-xl p-8 max-w-4xl w-[90%] min-h-[300px] shadow-2xl flex flex-row items-start gap-8 dialogue-appear';
         
         this.overlay.appendChild(this.dialogueContainer);
         document.body.appendChild(this.overlay);
@@ -55,31 +55,33 @@ export class BaseDialogue {
     renderMessage(message) {
         const avatarUrl = this.getCharacterAvatar();
         const characterName = this.getCharacterName();
-        const isLastMessage = this.currentMessageIndex >= this.messages.length - 1;
-        this.dialogueContainer.innerHTML = `
-            <img src="${avatarUrl}" alt="${characterName}" class="dialogue-avatar" 
+        const isLastMessage = this.currentMessageIndex >= this.messages.length - 1;        this.dialogueContainer.innerHTML = `
+            <img src="${avatarUrl}" alt="${characterName}" 
+                 class="w-30 h-30 rounded-full border-3 border-green-500 object-cover shadow-lg shadow-green-500/30 flex-shrink-0" 
                  onerror="this.src='/static/images/avatars/default.png'" width="120" height="120">
             
-            <div class="dialogue-content">
-                <div class="dialogue-speaker">${characterName}</div>
+            <div class="flex-1 flex flex-col min-h-[200px]">
+                <div class="text-green-500 text-xl font-bold mb-4 text-left">${characterName}</div>
                 
-                <div class="dialogue-text" id="dialogue-text-content">
+                <div class="text-green-400 text-lg leading-relaxed mb-8 flex-grow text-left" id="dialogue-text-content">
                     ${this.shouldTypeMessage(message) ? '' : message.text}
                 </div>
                 
-                <div class="dialogue-controls">
+                <div class="flex gap-4 mt-auto">
                     ${this.currentMessageIndex > 0 ? 
-                        `<button class="dialogue-btn dialogue-btn-secondary" onclick="${this.getPreviousHandler()}">
+                        `<button class="px-6 py-3 bg-gray-600 text-white rounded-lg font-semibold hover:bg-gray-700 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer text-sm" onclick="${this.getPreviousHandler()}">
                             ← Previous
                         </button>` : ''
                     }
-                    <button class="dialogue-btn dialogue-btn-primary" onclick="${this.getNextHandler()}">
+                    <button class="px-6 py-3 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-green-500/30 transition-all duration-200 cursor-pointer text-sm" onclick="${this.getNextHandler()}">
                         ${isLastMessage ? this.getFinalButtonText() : 'Next →'}
                     </button>
-                    ${this.getSkipButton()}
+                    <button class="px-6 py-3 bg-gray-600 text-white rounded-lg font-semibold hover:bg-gray-700 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer text-sm" onclick="${this.getSkipHandler()}">
+                        Skip
+                    </button>
                 </div>
                 
-                <div class="dialogue-progress">
+                <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-green-400 text-sm opacity-60">
                     ${this.currentMessageIndex + 1} / ${this.messages.length}
                 </div>
             </div>
