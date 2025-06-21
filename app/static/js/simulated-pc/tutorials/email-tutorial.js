@@ -1,4 +1,4 @@
-import { BaseTutorial } from '../tutorial-manager.js';
+import { BaseTutorial } from '../base-tutorial.js';
 
 export class EmailTutorial extends BaseTutorial {
     constructor(desktop) {
