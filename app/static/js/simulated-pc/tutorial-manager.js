@@ -232,11 +232,36 @@ export class TutorialManager {
         const { SystemLogsTutorial } = await import('./tutorials/system-logs-tutorial.js');
         return SystemLogsTutorial.shouldAutoStart();
     }
-
+    
     async restartSystemLogsTutorial() {
         const { SystemLogsTutorial } = await import('./tutorials/system-logs-tutorial.js');
         SystemLogsTutorial.restart();
         await this.startSystemLogsTutorial();
+    }
+
+    async startTerminalTutorial() {
+        if (this.currentTutorial) {
+            this.currentTutorial.cleanup();
+        }
+        
+        // Dynamic import to avoid circular dependency
+        const { TerminalTutorial } = await import('./tutorials/terminal-tutorial.js');
+        
+        this.currentTutorial = new TerminalTutorial(this.desktop);
+        window.terminalTutorial = this.currentTutorial; // For global access
+        window.currentTutorial = this.currentTutorial; // For shared base functionality
+        this.currentTutorial.start();
+    }
+
+    async shouldAutoStartTerminal() {
+        const { TerminalTutorial } = await import('./tutorials/terminal-tutorial.js');
+        return TerminalTutorial.shouldAutoStart();
+    }
+
+    async restartTerminalTutorial() {
+        const { TerminalTutorial } = await import('./tutorials/terminal-tutorial.js');
+        TerminalTutorial.restart();
+        await this.startTerminalTutorial();
     }
 
     // Future tutorial methods can be added here

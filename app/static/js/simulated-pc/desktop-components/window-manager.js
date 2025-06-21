@@ -333,14 +333,30 @@ export class WindowManager {
                 }, 1500);
             }
         }
-    }
-
-    openTerminal() {
+    }    openTerminal() {
+        const isFirstTime = !localStorage.getItem('cyberquest_terminal_opened');
+        
         this.createWindow('terminal', 'Terminal', this.applicationFactory.createTerminalContent(), {
             width: '70%',
             height: '60%'
         });
-    }    
+
+        // Mark terminal as opened
+        localStorage.setItem('cyberquest_terminal_opened', 'true');
+
+        // Start terminal tutorial if it's the first time and tutorial manager is available
+        if (isFirstTime && this.tutorialManager) {
+            setTimeout(async () => {
+                const shouldStart = await this.tutorialManager.shouldAutoStartTerminal();
+                if (shouldStart) {
+                    // Wait a bit for the window to be fully rendered
+                    setTimeout(async () => {
+                        await this.tutorialManager.startTerminalTutorial();
+                    }, 1500);
+                }
+            }, 100);
+        }
+    }
     
     openFileManager() {
         const isFirstTime = !localStorage.getItem('cyberquest_filemanager_opened');
