@@ -25,20 +25,20 @@ export class DialogueManager {
                 z-index: 10000;
                 backdrop-filter: blur(5px);
             }
-            
+                
             .dialogue-container {
                 background: rgb(55, 65, 81); /* bg-gray-700 */
                 border: 2px solid #10b981;
                 border-radius: 12px;
                 padding: 2rem;
-                max-width: 600px;
+                max-width: 700px;
                 width: 90%;
-                min-height: 400px;
+                min-height: 300px;
                 box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
                 display: flex;
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
+                flex-direction: row;
+                align-items: flex-start;
+                gap: 2rem;
                 animation: dialogue-appear 0.3s ease-out;
             }
             
@@ -58,9 +58,16 @@ export class DialogueManager {
                 height: 120px;
                 border-radius: 50%;
                 border: 3px solid #10b981;
-                margin-bottom: 1.5rem;
                 object-fit: cover;
                 box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+                flex-shrink: 0;
+            }
+            
+            .dialogue-content {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                min-height: 200px;
             }
             
             .dialogue-speaker {
@@ -68,6 +75,7 @@ export class DialogueManager {
                 font-size: 1.25rem;
                 font-weight: bold;
                 margin-bottom: 1rem;
+                text-align: left;
             }
             
             .dialogue-text {
@@ -76,8 +84,7 @@ export class DialogueManager {
                 line-height: 1.6;
                 margin-bottom: 2rem;
                 flex-grow: 1;
-                display: flex;
-                align-items: center;
+                text-align: left;
             }
             
             .dialogue-controls {

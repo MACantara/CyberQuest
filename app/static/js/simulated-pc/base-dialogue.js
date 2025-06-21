@@ -56,31 +56,32 @@ export class BaseDialogue {
         const avatarUrl = this.getCharacterAvatar();
         const characterName = this.getCharacterName();
         const isLastMessage = this.currentMessageIndex >= this.messages.length - 1;
-        
         this.dialogueContainer.innerHTML = `
             <img src="${avatarUrl}" alt="${characterName}" class="dialogue-avatar" 
                  onerror="this.src='/static/images/avatars/default.png'" width="120" height="120">
             
-            <div class="dialogue-speaker">${characterName}</div>
-            
-            <div class="dialogue-text" id="dialogue-text-content">
-                ${this.shouldTypeMessage(message) ? '' : message.text}
-            </div>
-            
-            <div class="dialogue-controls">
-                ${this.currentMessageIndex > 0 ? 
-                    `<button class="dialogue-btn dialogue-btn-secondary" onclick="${this.getPreviousHandler()}">
-                        ← Previous
-                    </button>` : ''
-                }
-                <button class="dialogue-btn dialogue-btn-primary" onclick="${this.getNextHandler()}">
-                    ${isLastMessage ? this.getFinalButtonText() : 'Next →'}
-                </button>
-                ${this.getSkipButton()}
-            </div>
-            
-            <div class="dialogue-progress">
-                ${this.currentMessageIndex + 1} / ${this.messages.length}
+            <div class="dialogue-content">
+                <div class="dialogue-speaker">${characterName}</div>
+                
+                <div class="dialogue-text" id="dialogue-text-content">
+                    ${this.shouldTypeMessage(message) ? '' : message.text}
+                </div>
+                
+                <div class="dialogue-controls">
+                    ${this.currentMessageIndex > 0 ? 
+                        `<button class="dialogue-btn dialogue-btn-secondary" onclick="${this.getPreviousHandler()}">
+                            ← Previous
+                        </button>` : ''
+                    }
+                    <button class="dialogue-btn dialogue-btn-primary" onclick="${this.getNextHandler()}">
+                        ${isLastMessage ? this.getFinalButtonText() : 'Next →'}
+                    </button>
+                    ${this.getSkipButton()}
+                </div>
+                
+                <div class="dialogue-progress">
+                    ${this.currentMessageIndex + 1} / ${this.messages.length}
+                </div>
             </div>
         `;
 
