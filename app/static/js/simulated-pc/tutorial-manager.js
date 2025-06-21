@@ -62,211 +62,160 @@ export class TutorialManager {
         document.head.appendChild(tutorialStyles);
     }
 
-    async startInitialTutorial() {
+    // Generic tutorial starter
+    async startTutorial(tutorialName, tutorialClass, globalVarName) {
         if (this.currentTutorial) {
             this.currentTutorial.cleanup();
         }
         
         // Dynamic import to avoid circular dependency
-        const { InitialTutorial } = await import('./tutorials/initial-tutorial.js');
+        const module = await import(`./tutorials/${tutorialName}-tutorial.js`);
+        const TutorialClass = module[tutorialClass];
         
-        this.currentTutorial = new InitialTutorial(this.desktop);
-        window.initialTutorial = this.currentTutorial; // For global access
+        this.currentTutorial = new TutorialClass(this.desktop);
+        window[globalVarName] = this.currentTutorial; // For global access
         window.currentTutorial = this.currentTutorial; // For shared base functionality
         this.currentTutorial.start();
     }
 
-    // Check if initial tutorial should auto-start
-    async shouldAutoStartInitial() {
-        const { InitialTutorial } = await import('./tutorials/initial-tutorial.js');
-        return InitialTutorial.shouldAutoStart();
+    // Generic auto-start checker
+    async shouldAutoStart(tutorialName, tutorialClass) {
+        const module = await import(`./tutorials/${tutorialName}-tutorial.js`);
+        const TutorialClass = module[tutorialClass];
+        return TutorialClass.shouldAutoStart();
     }
 
-    // Restart initial tutorial
+    // Generic tutorial restarter
+    async restartTutorial(tutorialName, tutorialClass, startMethodName) {
+        const module = await import(`./tutorials/${tutorialName}-tutorial.js`);
+        const TutorialClass = module[tutorialClass];
+        TutorialClass.restart();
+        await this[startMethodName]();
+    }
+
+    // Individual tutorial methods using the generic functions
+    async startInitialTutorial() {
+        return this.startTutorial('initial', 'InitialTutorial', 'initialTutorial');
+    }
+
+    async shouldAutoStartInitial() {
+        return this.shouldAutoStart('initial', 'InitialTutorial');
+    }
+
     async restartInitialTutorial() {
-        const { InitialTutorial } = await import('./tutorials/initial-tutorial.js');
-        InitialTutorial.restart();
-        await this.startInitialTutorial();
+        return this.restartTutorial('initial', 'InitialTutorial', 'startInitialTutorial');
     }
 
     async startEmailTutorial() {
-        if (this.currentTutorial) {
-            this.currentTutorial.cleanup();
-        }
-        
-        // Dynamic import to avoid circular dependency
-        const { EmailTutorial } = await import('./tutorials/email-tutorial.js');
-        
-        this.currentTutorial = new EmailTutorial(this.desktop);
-        window.emailTutorial = this.currentTutorial; // For global access
-        window.currentTutorial = this.currentTutorial; // For shared base functionality
-        this.currentTutorial.start();
+        return this.startTutorial('email', 'EmailTutorial', 'emailTutorial');
     }
 
     async shouldAutoStartEmail() {
-        const { EmailTutorial } = await import('./tutorials/email-tutorial.js');
-        return EmailTutorial.shouldAutoStart();
+        return this.shouldAutoStart('email', 'EmailTutorial');
     }
 
     async restartEmailTutorial() {
-        const { EmailTutorial } = await import('./tutorials/email-tutorial.js');
-        EmailTutorial.restart();
-        await this.startEmailTutorial();
+        return this.restartTutorial('email', 'EmailTutorial', 'startEmailTutorial');
     }
 
     async startBrowserTutorial() {
-        if (this.currentTutorial) {
-            this.currentTutorial.cleanup();
-        }
-        
-        // Dynamic import to avoid circular dependency
-        const { BrowserTutorial } = await import('./tutorials/browser-tutorial.js');
-        
-        this.currentTutorial = new BrowserTutorial(this.desktop);
-        window.browserTutorial = this.currentTutorial; // For global access
-        window.currentTutorial = this.currentTutorial; // For shared base functionality
-        this.currentTutorial.start();
+        return this.startTutorial('browser', 'BrowserTutorial', 'browserTutorial');
     }
 
     async shouldAutoStartBrowser() {
-        const { BrowserTutorial } = await import('./tutorials/browser-tutorial.js');
-        return BrowserTutorial.shouldAutoStart();
+        return this.shouldAutoStart('browser', 'BrowserTutorial');
     }
 
     async restartBrowserTutorial() {
-        const { BrowserTutorial } = await import('./tutorials/browser-tutorial.js');
-        BrowserTutorial.restart();
-        await this.startBrowserTutorial();
+        return this.restartTutorial('browser', 'BrowserTutorial', 'startBrowserTutorial');
     }
 
     async startFileManagerTutorial() {
-        if (this.currentTutorial) {
-            this.currentTutorial.cleanup();
-        }
-        
-        // Dynamic import to avoid circular dependency
-        const { FileManagerTutorial } = await import('./tutorials/file-manager-tutorial.js');
-        
-        this.currentTutorial = new FileManagerTutorial(this.desktop);
-        window.fileManagerTutorial = this.currentTutorial; // For global access
-        window.currentTutorial = this.currentTutorial; // For shared base functionality
-        this.currentTutorial.start();
+        return this.startTutorial('file-manager', 'FileManagerTutorial', 'fileManagerTutorial');
     }
 
     async shouldAutoStartFileManager() {
-        const { FileManagerTutorial } = await import('./tutorials/file-manager-tutorial.js');
-        return FileManagerTutorial.shouldAutoStart();
-    }    
-    
+        return this.shouldAutoStart('file-manager', 'FileManagerTutorial');
+    }
+
     async restartFileManagerTutorial() {
-        const { FileManagerTutorial } = await import('./tutorials/file-manager-tutorial.js');
-        FileManagerTutorial.restart();
-        await this.startFileManagerTutorial();
+        return this.restartTutorial('file-manager', 'FileManagerTutorial', 'startFileManagerTutorial');
     }
 
     async startNetworkMonitorTutorial() {
-        if (this.currentTutorial) {
-            this.currentTutorial.cleanup();
-        }
-        
-        // Dynamic import to avoid circular dependency
-        const { NetworkMonitorTutorial } = await import('./tutorials/network-monitor-tutorial.js');
-        
-        this.currentTutorial = new NetworkMonitorTutorial(this.desktop);
-        window.networkMonitorTutorial = this.currentTutorial; // For global access
-        window.currentTutorial = this.currentTutorial; // For shared base functionality
-        this.currentTutorial.start();
+        return this.startTutorial('network-monitor', 'NetworkMonitorTutorial', 'networkMonitorTutorial');
     }
 
     async shouldAutoStartNetworkMonitor() {
-        const { NetworkMonitorTutorial } = await import('./tutorials/network-monitor-tutorial.js');
-        return NetworkMonitorTutorial.shouldAutoStart();
-    }    
-    
+        return this.shouldAutoStart('network-monitor', 'NetworkMonitorTutorial');
+    }
+
     async restartNetworkMonitorTutorial() {
-        const { NetworkMonitorTutorial } = await import('./tutorials/network-monitor-tutorial.js');
-        NetworkMonitorTutorial.restart();
-        await this.startNetworkMonitorTutorial();
+        return this.restartTutorial('network-monitor', 'NetworkMonitorTutorial', 'startNetworkMonitorTutorial');
     }
 
     async startSecurityToolsTutorial() {
-        if (this.currentTutorial) {
-            this.currentTutorial.cleanup();
-        }
-        
-        // Dynamic import to avoid circular dependency
-        const { SecurityToolsTutorial } = await import('./tutorials/security-tools-tutorial.js');
-        
-        this.currentTutorial = new SecurityToolsTutorial(this.desktop);
-        window.securityToolsTutorial = this.currentTutorial; // For global access
-        window.currentTutorial = this.currentTutorial; // For shared base functionality
-        this.currentTutorial.start();
+        return this.startTutorial('security-tools', 'SecurityToolsTutorial', 'securityToolsTutorial');
     }
 
     async shouldAutoStartSecurityTools() {
-        const { SecurityToolsTutorial } = await import('./tutorials/security-tools-tutorial.js');
-        return SecurityToolsTutorial.shouldAutoStart();
-    }    
-    
+        return this.shouldAutoStart('security-tools', 'SecurityToolsTutorial');
+    }
+
     async restartSecurityToolsTutorial() {
-        const { SecurityToolsTutorial } = await import('./tutorials/security-tools-tutorial.js');
-        SecurityToolsTutorial.restart();
-        await this.startSecurityToolsTutorial();
+        return this.restartTutorial('security-tools', 'SecurityToolsTutorial', 'startSecurityToolsTutorial');
     }
 
     async startSystemLogsTutorial() {
-        if (this.currentTutorial) {
-            this.currentTutorial.cleanup();
-        }
-        
-        // Dynamic import to avoid circular dependency
-        const { SystemLogsTutorial } = await import('./tutorials/system-logs-tutorial.js');
-        
-        this.currentTutorial = new SystemLogsTutorial(this.desktop);
-        window.systemLogsTutorial = this.currentTutorial; // For global access
-        window.currentTutorial = this.currentTutorial; // For shared base functionality
-        this.currentTutorial.start();
+        return this.startTutorial('system-logs', 'SystemLogsTutorial', 'systemLogsTutorial');
     }
 
     async shouldAutoStartSystemLogs() {
-        const { SystemLogsTutorial } = await import('./tutorials/system-logs-tutorial.js');
-        return SystemLogsTutorial.shouldAutoStart();
+        return this.shouldAutoStart('system-logs', 'SystemLogsTutorial');
     }
-    
+
     async restartSystemLogsTutorial() {
-        const { SystemLogsTutorial } = await import('./tutorials/system-logs-tutorial.js');
-        SystemLogsTutorial.restart();
-        await this.startSystemLogsTutorial();
+        return this.restartTutorial('system-logs', 'SystemLogsTutorial', 'startSystemLogsTutorial');
     }
 
     async startTerminalTutorial() {
-        if (this.currentTutorial) {
-            this.currentTutorial.cleanup();
-        }
-        
-        // Dynamic import to avoid circular dependency
-        const { TerminalTutorial } = await import('./tutorials/terminal-tutorial.js');
-        
-        this.currentTutorial = new TerminalTutorial(this.desktop);
-        window.terminalTutorial = this.currentTutorial; // For global access
-        window.currentTutorial = this.currentTutorial; // For shared base functionality
-        this.currentTutorial.start();
+        return this.startTutorial('terminal', 'TerminalTutorial', 'terminalTutorial');
     }
 
     async shouldAutoStartTerminal() {
-        const { TerminalTutorial } = await import('./tutorials/terminal-tutorial.js');
-        return TerminalTutorial.shouldAutoStart();
+        return this.shouldAutoStart('terminal', 'TerminalTutorial');
     }
 
     async restartTerminalTutorial() {
-        const { TerminalTutorial } = await import('./tutorials/terminal-tutorial.js');
-        TerminalTutorial.restart();
-        await this.startTerminalTutorial();
+        return this.restartTutorial('terminal', 'TerminalTutorial', 'startTerminalTutorial');
     }
 
-    // Future tutorial methods can be added here
-    // async startAdvancedTutorial() { ... }
-    // async startSpecificToolTutorial(toolName) { ... }
+    // Utility method to get all available tutorials
+    getTutorialList() {
+        return [
+            { name: 'initial', class: 'InitialTutorial', title: 'Desktop Introduction' },
+            { name: 'email', class: 'EmailTutorial', title: 'Email Security' },
+            { name: 'browser', class: 'BrowserTutorial', title: 'Web Security' },
+            { name: 'file-manager', class: 'FileManagerTutorial', title: 'File Security' },
+            { name: 'network-monitor', class: 'NetworkMonitorTutorial', title: 'Network Analysis' },
+            { name: 'security-tools', class: 'SecurityToolsTutorial', title: 'Security Tools' },
+            { name: 'system-logs', class: 'SystemLogsTutorial', title: 'Log Analysis' },
+            { name: 'terminal', class: 'TerminalTutorial', title: 'Command Line' }
+        ];
+    }
+
+    // Utility method to start any tutorial by name
+    async startTutorialByName(tutorialName) {
+        const methodName = `start${tutorialName.split('-').map(word => 
+            word.charAt(0).toUpperCase() + word.slice(1)
+        ).join('')}Tutorial`;
+        
+        if (typeof this[methodName] === 'function') {
+            return await this[methodName]();
+        } else {
+            throw new Error(`Tutorial '${tutorialName}' not found`);
+        }
+    }
 }
 
 // Maintain Tutorial as an alias for backwards compatibility
