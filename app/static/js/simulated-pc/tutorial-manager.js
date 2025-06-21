@@ -21,8 +21,8 @@ export class BaseTutorial {
         
         document.body.appendChild(this.overlay);
         document.body.appendChild(this.tooltip);
-    }
-
+    }    
+    
     highlightElement(element, action = 'highlight') {
         // Create highlight effect
         const rect = element.getBoundingClientRect();
@@ -44,8 +44,11 @@ export class BaseTutorial {
             element.classList.add('tutorial-pulse');
         }
         
-        // Make target clickable during tutorial
-        element.style.position = 'relative';
+        // Make target clickable during tutorial - preserve existing position if absolute
+        const currentPosition = window.getComputedStyle(element).position;
+        if (currentPosition !== 'absolute') {
+            element.style.position = 'relative';
+        }
         element.style.zIndex = '51';
         element.style.pointerEvents = 'auto';
     }
@@ -153,12 +156,14 @@ export class BaseTutorial {
                 </button>
             `;
         }
-    }
-
-    clearHighlights() {
+    }    clearHighlights() {
         // Remove all tutorial highlights
         document.querySelectorAll('.tutorial-highlight').forEach(el => {
             el.classList.remove('tutorial-highlight', 'tutorial-pulse');
+            // Only reset position if we changed it (not if it was originally absolute)
+            if (el.style.position === 'relative') {
+                el.style.position = '';
+            }
             el.style.zIndex = '';
             el.style.pointerEvents = '';
         });
