@@ -20,7 +20,8 @@ export class DialogueManager {
                 background: rgba(0, 0, 0, 0.8);
                 display: flex;
                 justify-content: center;
-                align-items: center;
+                align-items: flex-start;
+                padding-top: 3vh;
                 z-index: 10000;
                 backdrop-filter: blur(5px);
             }
