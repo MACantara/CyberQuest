@@ -2,38 +2,37 @@ import { BaseTutorial } from '../tutorial-manager.js';
 
 export class BrowserTutorial extends BaseTutorial {
     constructor(desktop) {
-        super(desktop);
-        this.steps = [
+        super(desktop);        this.steps = [
             {
-                target: 'input[value="https://suspicious-site.com"]',
+                target: '#browser-url-bar',
                 title: 'Suspicious URL',
                 content: 'Look at the address bar! This URL "suspicious-site.com" should immediately raise red flags. Always check the URL carefully before trusting a website.',
                 action: 'highlight',
                 position: 'bottom'
             },
             {
-                target: '.text-red-600',
+                target: '#scam-headline',
                 title: 'Too Good to Be True',
                 content: 'This headline is a classic scam indicator. No legitimate website gives away money like this. If it sounds too good to be true, it probably is!',
                 action: 'pulse',
                 position: 'bottom'
             },
             {
-                target: '.animate-pulse',
+                target: '#scam-button',
                 title: 'Urgent Action Buttons',
                 content: 'Scam sites use flashy, pulsing buttons to pressure you into clicking quickly without thinking. Never click suspicious "CLAIM NOW" buttons!',
                 action: 'highlight',
                 position: 'top'
             },
             {
-                target: '.text-gray-600',
+                target: '#fake-disclaimer',
                 title: 'False Reassurances',
                 content: 'Phrases like "No catch, totally legitimate" are actually red flags! Real legitimate sites don\'t need to convince you they\'re legitimate.',
                 action: 'highlight',
                 position: 'top'
             },
             {
-                target: '.bg-white',
+                target: '#browser-content',
                 title: 'Browser Security Complete',
                 content: 'You\'ve learned to identify suspicious websites! Always check URLs, be skeptical of unrealistic offers, and avoid urgent action buttons.',
                 action: 'highlight',
