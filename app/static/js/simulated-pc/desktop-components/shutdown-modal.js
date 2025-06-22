@@ -19,7 +19,7 @@ export class ShutdownModal {
     createModal() {
         // Create backdrop
         this.modal = document.createElement('div');
-        this.modal.className = 'fixed inset-0 bg-black/75 flex items-center justify-center z-50 opacity-0 transition-opacity duration-300';
+        this.modal.className = 'fixed inset-0 bg-black/75 flex items-center justify-center z-2000 opacity-0 transition-opacity duration-300';
         
         // Create modal content
         this.modal.innerHTML = `
