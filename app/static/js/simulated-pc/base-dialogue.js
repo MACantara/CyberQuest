@@ -7,6 +7,7 @@ export class BaseDialogue {
         this.overlay = null;
         this.dialogueContainer = null;
         this.messages = []; // To be defined by child classes
+        this.typingSpeed = 50; // Default typing speed in milliseconds per character
     }
 
     start() {
@@ -100,7 +101,7 @@ export class BaseDialogue {
         return message.typing !== false && message.type !== 'instant';
     }
 
-    async typeMessage(text, speed = 50) {
+    async typeMessage(text, speed = this.typingSpeed) {
         const container = document.getElementById('dialogue-text-content');
         if (!container) return;
         
