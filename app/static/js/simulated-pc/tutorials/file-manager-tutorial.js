@@ -1,8 +1,10 @@
 import { BaseTutorial } from '../base-tutorial.js';
+import { SkipTutorialModal } from '../desktop-components/skip-tutorial-modal.js';
 
 export class FileManagerTutorial extends BaseTutorial {
     constructor(desktop) {
         super(desktop);
+        this.skipTutorialModal = null;
         this.steps = [
             {
                 target: '#file-toolbar',
@@ -91,8 +93,13 @@ export class FileManagerTutorial extends BaseTutorial {
         localStorage.setItem('cyberquest_filemanager_tutorial_completed', 'true');
     }
 
-    showSkipModal() {
-        if (confirm('Are you sure you want to skip the file manager security tutorial? This training helps you identify dangerous files.')) {
+    async showSkipModal() {
+        if (!this.skipTutorialModal) {
+            this.skipTutorialModal = new SkipTutorialModal(document.body);
+        }
+        
+        const shouldSkip = await this.skipTutorialModal.show();
+        if (shouldSkip) {
             this.complete();
         }
     }

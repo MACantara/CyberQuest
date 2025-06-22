@@ -1,8 +1,11 @@
 import { BaseTutorial } from '../base-tutorial.js';
+import { SkipTutorialModal } from '../desktop-components/skip-tutorial-modal.js';
 
 export class BrowserTutorial extends BaseTutorial {
     constructor(desktop) {
-        super(desktop);        this.steps = [
+        super(desktop);        
+        this.skipTutorialModal = null;
+        this.steps = [
             {
                 target: '#browser-url-bar',
                 title: 'Suspicious URL',
@@ -83,8 +86,13 @@ export class BrowserTutorial extends BaseTutorial {
         localStorage.setItem('cyberquest_browser_tutorial_completed', 'true');
     }
 
-    showSkipModal() {
-        if (confirm('Are you sure you want to skip the browser security tutorial? This training helps you identify dangerous websites.')) {
+    async showSkipModal() {
+        if (!this.skipTutorialModal) {
+            this.skipTutorialModal = new SkipTutorialModal(document.body);
+        }
+        
+        const shouldSkip = await this.skipTutorialModal.show();
+        if (shouldSkip) {
             this.complete();
         }
     }

@@ -1,8 +1,10 @@
 import { BaseTutorial } from '../base-tutorial.js';
+import { SkipTutorialModal } from '../desktop-components/skip-tutorial-modal.js';
 
 export class SecurityToolsTutorial extends BaseTutorial {
     constructor(desktop) {
         super(desktop);
+        this.skipTutorialModal = null;
         this.steps = [
             {
                 target: '#security-tools-title',
@@ -112,8 +114,13 @@ export class SecurityToolsTutorial extends BaseTutorial {
         localStorage.setItem('cyberquest_securitytools_tutorial_completed', 'true');
     }
 
-    showSkipModal() {
-        if (confirm('Are you sure you want to skip the security tools tutorial? This training is essential for understanding cybersecurity defense tools.')) {
+    async showSkipModal() {
+        if (!this.skipTutorialModal) {
+            this.skipTutorialModal = new SkipTutorialModal(document.body);
+        }
+        
+        const shouldSkip = await this.skipTutorialModal.show();
+        if (shouldSkip) {
             this.complete();
         }
     }

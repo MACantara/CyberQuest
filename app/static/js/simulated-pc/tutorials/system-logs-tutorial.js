@@ -1,8 +1,10 @@
 import { BaseTutorial } from '../base-tutorial.js';
+import { SkipTutorialModal } from '../desktop-components/skip-tutorial-modal.js';
 
 export class SystemLogsTutorial extends BaseTutorial {
     constructor(desktop) {
         super(desktop);
+        this.skipTutorialModal = null;
         this.steps = [
             {
                 target: '#logs-toolbar',
@@ -98,8 +100,13 @@ export class SystemLogsTutorial extends BaseTutorial {
         localStorage.setItem('cyberquest_systemlogs_tutorial_completed', 'true');
     }
 
-    showSkipModal() {
-        if (confirm('Are you sure you want to skip the system logs tutorial? This training is crucial for monitoring system security events.')) {
+    async showSkipModal() {
+        if (!this.skipTutorialModal) {
+            this.skipTutorialModal = new SkipTutorialModal(document.body);
+        }
+        
+        const shouldSkip = await this.skipTutorialModal.show();
+        if (shouldSkip) {
             this.complete();
         }
     }

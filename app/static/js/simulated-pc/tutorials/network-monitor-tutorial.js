@@ -1,8 +1,10 @@
 import { BaseTutorial } from '../base-tutorial.js';
+import { SkipTutorialModal } from '../desktop-components/skip-tutorial-modal.js';
 
 export class NetworkMonitorTutorial extends BaseTutorial {
     constructor(desktop) {
         super(desktop);
+        this.skipTutorialModal = null;
         this.steps = [
             {
                 target: '#network-toolbar',
@@ -98,8 +100,13 @@ export class NetworkMonitorTutorial extends BaseTutorial {
         localStorage.setItem('cyberquest_networkmonitor_tutorial_completed', 'true');
     }
 
-    showSkipModal() {
-        if (confirm('Are you sure you want to skip the network monitor tutorial? This training helps you identify malicious network traffic.')) {
+    async showSkipModal() {
+        if (!this.skipTutorialModal) {
+            this.skipTutorialModal = new SkipTutorialModal(document.body);
+        }
+        
+        const shouldSkip = await this.skipTutorialModal.show();
+        if (shouldSkip) {
             this.complete();
         }
     }

@@ -1,8 +1,10 @@
 import { BaseTutorial } from '../base-tutorial.js';
+import { SkipTutorialModal } from '../desktop-components/skip-tutorial-modal.js';
 
 export class TerminalTutorial extends BaseTutorial {
     constructor(desktop) {
         super(desktop);
+        this.skipTutorialModal = null;
         this.steps = [
             {
                 target: '#terminal-container',
@@ -105,8 +107,13 @@ export class TerminalTutorial extends BaseTutorial {
         localStorage.setItem('cyberquest_terminal_tutorial_completed', 'true');
     }
 
-    showSkipModal() {
-        if (confirm('Are you sure you want to skip the terminal tutorial? Command-line skills are essential for cybersecurity professionals.')) {
+    async showSkipModal() {
+        if (!this.skipTutorialModal) {
+            this.skipTutorialModal = new SkipTutorialModal(document.body);
+        }
+        
+        const shouldSkip = await this.skipTutorialModal.show();
+        if (shouldSkip) {
             this.complete();
         }
     }
