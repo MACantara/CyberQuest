@@ -15,6 +15,64 @@ export class WindowManager {
         this.windows = new Map();
         this.applications = new Map();
         this.zIndex = 1000;
+        
+        // Application registry for easier management
+        this.appRegistry = {
+            'browser': { class: BrowserApp, storageKey: 'cyberquest_browser_opened', tutorialMethod: 'shouldAutoStartBrowser', startMethod: 'startBrowserTutorial' },
+            'terminal': { class: TerminalApp, storageKey: 'cyberquest_terminal_opened', tutorialMethod: 'shouldAutoStartTerminal', startMethod: 'startTerminalTutorial' },
+            'files': { class: FileManagerApp, storageKey: 'cyberquest_filemanager_opened', tutorialMethod: 'shouldAutoStartFileManager', startMethod: 'startFileManagerTutorial' },
+            'email': { class: EmailApp, storageKey: 'cyberquest_email_opened', tutorialMethod: 'shouldAutoStartEmail', startMethod: 'startEmailTutorial' },
+            'wireshark': { class: NetworkMonitorApp, storageKey: 'cyberquest_networkmonitor_opened', tutorialMethod: 'shouldAutoStartNetworkMonitor', startMethod: 'startNetworkMonitorTutorial' },
+            'security': { class: SecurityToolsApp, storageKey: 'cyberquest_securitytools_opened', tutorialMethod: 'shouldAutoStartSecurityTools', startMethod: 'startSecurityToolsTutorial' },
+            'logs': { class: SystemLogsApp, storageKey: 'cyberquest_systemlogs_opened', tutorialMethod: 'shouldAutoStartSystemLogs', startMethod: 'startSystemLogsTutorial' }
+        };
+    }
+
+    // Generic application opener that handles tutorial logic
+    async openApplication(appId, windowTitle) {
+        const appConfig = this.appRegistry[appId];
+        if (!appConfig) {
+            throw new Error(`Application '${appId}' not found in registry`);
+        }
+
+        const isFirstTime = !localStorage.getItem(appConfig.storageKey);
+        const app = new appConfig.class();
+        
+        this.createWindow(appId, windowTitle, app);
+        localStorage.setItem(appConfig.storageKey, 'true');
+
+        // Handle tutorial auto-start if it's the first time and tutorial manager is available
+        if (isFirstTime && this.tutorialManager && appConfig.tutorialMethod && appConfig.startMethod) {
+            await this.handleTutorialAutoStart(appConfig.tutorialMethod, appConfig.startMethod);
+        }
+    }
+
+    // Shared tutorial auto-start logic
+    async handleTutorialAutoStart(tutorialCheckMethod, tutorialStartMethod) {
+        try {
+            const shouldStart = await this.tutorialManager[tutorialCheckMethod]();
+            if (shouldStart) {
+                setTimeout(async () => {
+                    await this.tutorialManager[tutorialStartMethod]();
+                }, 1500);
+            }
+        } catch (error) {
+            console.warn(`Tutorial auto-start failed: ${error.message}`);
+        }
+    }
+
+    // Special case for email which needs async handling
+    async handleEmailTutorialAutoStart() {
+        try {
+            const shouldStart = await this.tutorialManager.shouldAutoStartEmail();
+            if (shouldStart) {
+                setTimeout(async () => {
+                    await this.tutorialManager.startEmailTutorial();
+                }, 1500);
+            }
+        } catch (error) {
+            console.warn(`Email tutorial auto-start failed: ${error.message}`);
+        }
     }
 
     createWindow(id, title, contentOrApp, options = {}) {
@@ -353,133 +411,88 @@ export class WindowManager {
         }
     }
 
-    // Application launchers using new WindowBase system
+    // Simplified application launchers using the generic opener
     async openBrowser() {
-        const isFirstTime = !localStorage.getItem('cyberquest_browser_opened');
-        const app = new BrowserApp();
-        
-        this.createWindow('browser', 'Web Browser', app);
-        localStorage.setItem('cyberquest_browser_opened', 'true');
-
-        if (isFirstTime && this.tutorialManager) {
-            const shouldStart = await this.tutorialManager.shouldAutoStartBrowser();
-            if (shouldStart) {
-                setTimeout(async () => {
-                    await this.tutorialManager.startBrowserTutorial();
-                }, 1500);
-            }
-        }
+        await this.openApplication('browser', 'Web Browser');
     }
 
-    openTerminal() {
-        const isFirstTime = !localStorage.getItem('cyberquest_terminal_opened');
-        const app = new TerminalApp();
-        
-        this.createWindow('terminal', 'Terminal', app);
-        localStorage.setItem('cyberquest_terminal_opened', 'true');
-
-        if (isFirstTime && this.tutorialManager) {
-            setTimeout(async () => {
-                const shouldStart = await this.tutorialManager.shouldAutoStartTerminal();
-                if (shouldStart) {
-                    setTimeout(async () => {
-                        await this.tutorialManager.startTerminalTutorial();
-                    }, 1500);
-                }
-            }, 100);
-        }
+    async openTerminal() {
+        await this.openApplication('terminal', 'Terminal');
     }
 
-    openFileManager() {
-        const isFirstTime = !localStorage.getItem('cyberquest_filemanager_opened');
-        const app = new FileManagerApp();
-        
-        this.createWindow('files', 'File Manager', app);
-        localStorage.setItem('cyberquest_filemanager_opened', 'true');
-
-        if (isFirstTime && this.tutorialManager) {
-            setTimeout(async () => {
-                const shouldStart = await this.tutorialManager.shouldAutoStartFileManager();
-                if (shouldStart) {
-                    setTimeout(async () => {
-                        await this.tutorialManager.startFileManagerTutorial();
-                    }, 1500);
-                }
-            }, 100);
-        }
+    async openFileManager() {
+        await this.openApplication('files', 'File Manager');
     }
 
     async openEmailClient() {
-        const isFirstTime = !localStorage.getItem('cyberquest_email_opened');
-        const app = new EmailApp();
-        
-        this.createWindow('email', 'Email Client', app);
-        localStorage.setItem('cyberquest_email_opened', 'true');
+        await this.openApplication('email', 'Email Client');
+    }
 
-        if (isFirstTime && this.tutorialManager) {
-            const shouldStart = await this.tutorialManager.shouldAutoStartEmail();
-            if (shouldStart) {
-                setTimeout(async () => {
-                    await this.tutorialManager.startEmailTutorial();
-                }, 1500);
+    async openNetworkMonitor() {
+        await this.openApplication('wireshark', 'Network Monitor');
+    }
+
+    async openSecurityTools() {
+        await this.openApplication('security', 'Security Tools');
+    }
+
+    async openSystemLogs() {
+        await this.openApplication('logs', 'System Logs');
+    }
+
+    // Utility methods for batch operations
+    closeAllWindows() {
+        const windowIds = Array.from(this.windows.keys());
+        windowIds.forEach(id => this.closeWindow(id));
+    }
+
+    minimizeAllWindows() {
+        const windowIds = Array.from(this.windows.keys());
+        windowIds.forEach(id => this.minimizeWindow(id));
+    }
+
+    getOpenWindows() {
+        return Array.from(this.windows.keys());
+    }
+
+    getOpenApplications() {
+        return Array.from(this.applications.keys());
+    }
+
+    // Window state management
+    saveWindowStates() {
+        const states = {};
+        this.applications.forEach((app, id) => {
+            if (typeof app.getState === 'function') {
+                states[id] = app.getState();
             }
-        }
+        });
+        return states;
     }
 
-    openNetworkMonitor() {
-        const isFirstTime = !localStorage.getItem('cyberquest_networkmonitor_opened');
-        const app = new NetworkMonitorApp();
-        
-        this.createWindow('wireshark', 'Network Monitor', app);
-        localStorage.setItem('cyberquest_networkmonitor_opened', 'true');
-
-        if (isFirstTime && this.tutorialManager) {
-            setTimeout(async () => {
-                const shouldStart = await this.tutorialManager.shouldAutoStartNetworkMonitor();
-                if (shouldStart) {
-                    setTimeout(async () => {
-                        await this.tutorialManager.startNetworkMonitorTutorial();
-                    }, 1500);
-                }
-            }, 100);
-        }
+    restoreWindowStates(states) {
+        Object.entries(states).forEach(([id, state]) => {
+            const app = this.applications.get(id);
+            if (app && typeof app.setState === 'function') {
+                app.setState(state);
+            }
+        });
     }
 
-    openSecurityTools() {
-        const isFirstTime = !localStorage.getItem('cyberquest_securitytools_opened');
-        const app = new SecurityToolsApp();
-        
-        this.createWindow('security', 'Security Tools', app);
-        localStorage.setItem('cyberquest_securitytools_opened', 'true');
-
-        if (isFirstTime && this.tutorialManager) {
-            setTimeout(async () => {
-                const shouldStart = await this.tutorialManager.shouldAutoStartSecurityTools();
-                if (shouldStart) {
-                    setTimeout(async () => {
-                        await this.tutorialManager.startSecurityToolsTutorial();
-                    }, 1500);
-                }
-            }, 100);
-        }
+    // Application registry helpers
+    isApplicationRegistered(appId) {
+        return this.appRegistry.hasOwnProperty(appId);
     }
 
-    openSystemLogs() {
-        const isFirstTime = !localStorage.getItem('cyberquest_systemlogs_opened');
-        const app = new SystemLogsApp();
-        
-        this.createWindow('logs', 'System Logs', app);
-        localStorage.setItem('cyberquest_systemlogs_opened', 'true');
+    getRegisteredApplications() {
+        return Object.keys(this.appRegistry);
+    }
 
-        if (isFirstTime && this.tutorialManager) {
-            setTimeout(async () => {
-                const shouldStart = await this.tutorialManager.shouldAutoStartSystemLogs();
-                if (shouldStart) {
-                    setTimeout(async () => {
-                        await this.tutorialManager.startSystemLogsTutorial();
-                    }, 1500);
-                }
-            }, 100);
-        }
+    addApplicationToRegistry(appId, config) {
+        this.appRegistry[appId] = config;
+    }
+
+    removeApplicationFromRegistry(appId) {
+        delete this.appRegistry[appId];
     }
 }
