@@ -29,7 +29,7 @@ export class BaseDialogue {
         
         // Create dialogue container
         this.dialogueContainer = document.createElement('div');
-        this.dialogueContainer.className = 'bg-gray-800 border-2 border-green-500 rounded p-4 max-w-3xl w-[90%] min-h-[200px] shadow-2xl flex flex-row items-start gap-8 dialogue-appear';
+        this.dialogueContainer.className = 'bg-gray-800 border-2 border-green-500 rounded p-4 max-w-2xl w-[90%] min-h-[200px] shadow-2xl flex flex-row items-start gap-8 dialogue-appear';
         
         this.overlay.appendChild(this.dialogueContainer);
         document.body.appendChild(this.overlay);
