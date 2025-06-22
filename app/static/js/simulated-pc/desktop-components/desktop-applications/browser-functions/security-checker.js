@@ -1,96 +1,40 @@
 import { SecurityPopup } from './security-popup.js';
+import { PageRegistry } from './pages/page-registry.js';
 
 export class SecurityChecker {
     constructor(browserApp) {
         this.browserApp = browserApp;
-        this.threats = new Map();
-        this.certificates = new Map();
         this.securityPopup = new SecurityPopup(browserApp);
-        this.initializeThreats();
-        this.initializeCertificates();
-    }
-
-    initializeThreats() {
-        // Known threats database for training
-        this.threats.set('suspicious-site.com', {
-            level: 'high',
-            type: 'scam',
-            description: 'Known scam website attempting to steal personal information'
-        });
-
-        this.threats.set('phishing-bank.com', {
-            level: 'critical',
-            type: 'phishing',
-            description: 'Fake banking website designed to steal credentials and personal information'
-        });
-
-        this.threats.set('malware-download.net', {
-            level: 'critical',
-            type: 'malware',
-            description: 'Website known to distribute malware'
-        });
-    }
-
-    initializeCertificates() {
-        // Simulated SSL certificate data for training
-        this.certificates.set('cyberquest.com', {
-            valid: true,
-            issuer: 'Let\'s Encrypt Authority X3',
-            expires: '2024-12-20',
-            algorithm: 'RSA 2048-bit',
-            trusted: true
-        });
-
-        this.certificates.set('example-bank.com', {
-            valid: true,
-            issuer: 'DigiCert SHA2 Extended Validation Server CA',
-            expires: '2024-11-15',
-            algorithm: 'RSA 4096-bit',
-            trusted: true,
-            extendedValidation: true
-        });
-
-        this.certificates.set('news-site.com', {
-            valid: true,
-            issuer: 'CloudFlare Inc ECC CA-3',
-            expires: '2024-10-30',
-            algorithm: 'ECDSA P-256',
-            trusted: true
-        });
-
-        this.certificates.set('suspicious-site.com', {
-            valid: false,
-            issuer: 'Self-signed',
-            expires: '2023-01-01',
-            algorithm: 'RSA 1024-bit',
-            trusted: false,
-            selfSigned: true
-        });
-
-        this.certificates.set('phishing-bank.com', {
-            valid: false,
-            issuer: 'Fake CA Authority',
-            expires: '2024-01-01',
-            algorithm: 'RSA 2048-bit',
-            trusted: false,
-            warnings: ['Domain mismatch', 'Untrusted issuer']
-        });
+        this.pageRegistry = new PageRegistry();
     }
 
     checkUrl(url) {
         const domain = this.extractDomain(url);
-        const threat = this.threats.get(domain);
-        const certificate = this.certificates.get(domain);
+        const pageConfig = this.pageRegistry.getPage(url);
         const isHttps = url.startsWith('https://');
 
+        // Use page-specific security data if available, otherwise use defaults
+        const security = pageConfig?.security || this.getDefaultSecurity(url, isHttps);
+        
         return {
-            isSafe: !threat,
-            threat: threat || null,
-            securityLevel: this.getSecurityLevel(url, threat, certificate, isHttps),
-            warnings: this.getWarnings(url, threat, certificate, isHttps),
-            certificate: certificate || null,
+            isSafe: !security.threats,
+            threat: security.threats || null,
+            securityLevel: this.getSecurityLevel(url, security, isHttps),
+            warnings: this.getWarnings(url, security, isHttps),
+            certificate: security.certificate || null,
             isHttps: isHttps,
-            connectionSecurity: this.getConnectionSecurity(isHttps, certificate)
+            connectionSecurity: this.getConnectionSecurity(isHttps, security.certificate),
+            pageConfig: pageConfig
+        };
+    }
+
+    getDefaultSecurity(url, isHttps) {
+        return {
+            isHttps: isHttps,
+            hasValidCertificate: false,
+            certificate: null,
+            threats: null,
+            riskFactors: ['Unknown website', 'Unverified security status']
         };
     }
 
@@ -103,10 +47,10 @@ export class SecurityChecker {
         }
     }
 
-    getSecurityLevel(url, threat, certificate, isHttps) {
+    getSecurityLevel(url, security, isHttps) {
         // Threat-based security takes priority
-        if (threat) {
-            switch (threat.level) {
+        if (security.threats) {
+            switch (security.threats.level) {
                 case 'critical': return 'dangerous';
                 case 'high': return 'dangerous';
                 case 'medium': return 'warning';
@@ -120,12 +64,12 @@ export class SecurityChecker {
         }
 
         // HTTPS with invalid or no certificate
-        if (!certificate || !certificate.valid || !certificate.trusted) {
+        if (!security.certificate || !security.certificate.valid || !security.certificate.trusted) {
             return 'warning';
         }
 
         // HTTPS with Extended Validation certificate
-        if (certificate.extendedValidation) {
+        if (security.certificate.extendedValidation) {
             return 'secure-ev';
         }
 
@@ -173,25 +117,14 @@ export class SecurityChecker {
         };
     }
 
-    isKnownSafeSite(url) {
-        const safeDomains = [
-            'cyberquest.com',
-            'example-bank.com',
-            'news-site.com'
-        ];
-
-        const domain = this.extractDomain(url);
-        return safeDomains.includes(domain);
-    }
-
-    getWarnings(url, threat, certificate, isHttps) {
+    getWarnings(url, security, isHttps) {
         const warnings = [];
 
-        if (threat) {
+        if (security.threats) {
             warnings.push({
                 type: 'threat',
-                severity: threat.level,
-                message: threat.description
+                severity: security.threats.level,
+                message: security.threats.description
             });
         }
 
@@ -201,94 +134,65 @@ export class SecurityChecker {
                 severity: 'high',
                 message: 'This website does not use HTTPS encryption'
             });
-        } else {
-            // HTTPS-specific warnings
-            if (!certificate) {
+        } else if (security.certificate) {
+            // Certificate-specific warnings
+            if (!security.certificate.valid) {
                 warnings.push({
                     type: 'certificate',
                     severity: 'high',
-                    message: 'No SSL certificate found'
+                    message: 'SSL certificate is invalid or expired'
                 });
-            } else {
-                if (!certificate.valid) {
+            }
+
+            if (!security.certificate.trusted) {
+                warnings.push({
+                    type: 'certificate',
+                    severity: 'medium',
+                    message: 'SSL certificate is not from a trusted authority'
+                });
+            }
+
+            if (security.certificate.selfSigned) {
+                warnings.push({
+                    type: 'certificate',
+                    severity: 'medium',
+                    message: 'Website uses a self-signed certificate'
+                });
+            }
+
+            if (security.certificate.warnings) {
+                security.certificate.warnings.forEach(warning => {
                     warnings.push({
                         type: 'certificate',
                         severity: 'high',
-                        message: 'SSL certificate is invalid or expired'
+                        message: warning
                     });
-                }
+                });
+            }
 
-                if (!certificate.trusted) {
+            // Check certificate expiration
+            if (security.certificate.expires) {
+                const expiryDate = new Date(security.certificate.expires);
+                const now = new Date();
+                const daysUntilExpiry = Math.ceil((expiryDate - now) / (1000 * 60 * 60 * 24));
+                
+                if (daysUntilExpiry < 0) {
                     warnings.push({
                         type: 'certificate',
-                        severity: 'medium',
-                        message: 'SSL certificate is not from a trusted authority'
+                        severity: 'high',
+                        message: 'SSL certificate has expired'
                     });
-                }
-
-                if (certificate.selfSigned) {
+                } else if (daysUntilExpiry < 30) {
                     warnings.push({
                         type: 'certificate',
-                        severity: 'medium',
-                        message: 'Website uses a self-signed certificate'
+                        severity: 'low',
+                        message: `SSL certificate expires in ${daysUntilExpiry} days`
                     });
-                }
-
-                if (certificate.warnings) {
-                    certificate.warnings.forEach(warning => {
-                        warnings.push({
-                            type: 'certificate',
-                            severity: 'high',
-                            message: warning
-                        });
-                    });
-                }
-
-                // Check certificate expiration
-                if (certificate.expires) {
-                    const expiryDate = new Date(certificate.expires);
-                    const now = new Date();
-                    const daysUntilExpiry = Math.ceil((expiryDate - now) / (1000 * 60 * 60 * 24));
-                    
-                    if (daysUntilExpiry < 0) {
-                        warnings.push({
-                            type: 'certificate',
-                            severity: 'high',
-                            message: 'SSL certificate has expired'
-                        });
-                    } else if (daysUntilExpiry < 30) {
-                        warnings.push({
-                            type: 'certificate',
-                            severity: 'low',
-                            message: `SSL certificate expires in ${daysUntilExpiry} days`
-                        });
-                    }
                 }
             }
         }
 
-        // Check for suspicious URL patterns
-        if (this.hasSuspiciousPatterns(url)) {
-            warnings.push({
-                type: 'suspicious',
-                severity: 'medium',
-                message: 'This URL contains suspicious patterns'
-            });
-        }
-
         return warnings;
-    }
-
-    hasSuspiciousPatterns(url) {
-        const suspiciousPatterns = [
-            /\d+\.\d+\.\d+\.\d+/, // IP addresses instead of domains
-            /[a-z]+-[a-z]+-[a-z]+\.(tk|ml|ga|cf)/, // Common free domain patterns
-            /bit\.ly|tinyurl|t\.co/, // URL shorteners
-            /urgent|winner|prize|congratulations/i, // Scam keywords
-            /bank.*login|paypal.*verify/i // Phishing patterns
-        ];
-
-        return suspiciousPatterns.some(pattern => pattern.test(url));
     }
 
     displaySecurityStatus(securityCheck) {
