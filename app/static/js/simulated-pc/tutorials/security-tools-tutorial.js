@@ -1,10 +1,8 @@
 import { BaseTutorial } from '../base-tutorial.js';
-import { SkipTutorialModal } from '../desktop-components/skip-tutorial-modal.js';
 
 export class SecurityToolsTutorial extends BaseTutorial {
     constructor(desktop) {
         super(desktop);
-        this.skipTutorialModal = null;
         this.steps = [
             {
                 target: '#security-tools-title',
@@ -112,17 +110,6 @@ export class SecurityToolsTutorial extends BaseTutorial {
         
         // Store completion in localStorage
         localStorage.setItem('cyberquest_securitytools_tutorial_completed', 'true');
-    }
-
-    async showSkipModal() {
-        if (!this.skipTutorialModal) {
-            this.skipTutorialModal = new SkipTutorialModal(document.body);
-        }
-        
-        const shouldSkip = await this.skipTutorialModal.show();
-        if (shouldSkip) {
-            this.complete();
-        }
     }
 
     // Static methods

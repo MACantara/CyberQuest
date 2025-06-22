@@ -1,11 +1,9 @@
-import { SkipTutorialModal } from '../desktop-components/skip-tutorial-modal.js';
 import { BaseTutorial } from '../base-tutorial.js';
 
 export class InitialTutorial extends BaseTutorial {
     constructor(desktop) {
         super(desktop);
         this.emailAppOpened = false;
-        this.skipTutorialModal = null;
         this.steps = [
             {
                 target: '.desktop-icon[data-id="email"]',
@@ -92,17 +90,6 @@ export class InitialTutorial extends BaseTutorial {
 
     getFinalButtonText() {
         return 'Start Mission';
-    }
-
-    async showSkipModal() {
-        if (!this.skipTutorialModal) {
-            this.skipTutorialModal = new SkipTutorialModal(document.body);
-        }
-        
-        const shouldSkip = await this.skipTutorialModal.show();
-        if (shouldSkip) {
-            this.complete();
-        }
     }
 
     openEmailAndComplete() {
