@@ -131,21 +131,6 @@ export class SecurityPopup {
                 </h4>
                 <p class="text-white text-xs">${securityCheck.connectionSecurity.description}</p>
                 <p class="text-gray-300 text-xs mt-1">${securityCheck.connectionSecurity.details}</p>
-                ${!isHttps ? `
-                    <div class="mt-2 p-2 bg-red-900/30 border border-red-500/30 rounded">
-                        <div class="flex items-center space-x-2">
-                            <i class="bi bi-exclamation-triangle text-red-400 text-xs"></i>
-                            <span class="text-red-300 text-xs">Insecure HTTP connection - data is not encrypted</span>
-                        </div>
-                    </div>
-                ` : !hasValidCert ? `
-                    <div class="mt-2 p-2 bg-yellow-900/30 border border-yellow-500/30 rounded">
-                        <div class="flex items-center space-x-2">
-                            <i class="bi bi-exclamation-triangle text-yellow-400 text-xs"></i>
-                            <span class="text-yellow-300 text-xs">HTTPS connection but certificate has issues</span>
-                        </div>
-                    </div>
-                ` : ''}
             </div>
         `;
     }
@@ -178,14 +163,6 @@ export class SecurityPopup {
                                 ` : ''}
                             </div>
                         </div>
-                        ${!cert.trusted ? `
-                            <div class="ml-4 p-2 bg-yellow-900/30 border border-yellow-500/30 rounded">
-                                <div class="flex items-center space-x-2">
-                                    <i class="bi bi-exclamation-triangle text-yellow-400 text-xs"></i>
-                                    <span class="text-yellow-300 text-xs">Certificate authority is not trusted</span>
-                                </div>
-                            </div>
-                        ` : ''}
                         
                         <!-- Valid Until -->
                         <div class="flex justify-between items-center">
@@ -209,21 +186,6 @@ export class SecurityPopup {
                                 ` : ''}
                             </div>
                         </div>
-                        ${isExpired ? `
-                            <div class="ml-4 p-2 bg-red-900/30 border border-red-500/30 rounded">
-                                <div class="flex items-center space-x-2">
-                                    <i class="bi bi-exclamation-triangle text-red-400 text-xs"></i>
-                                    <span class="text-red-300 text-xs">Certificate has expired on ${cert.expires}</span>
-                                </div>
-                            </div>
-                        ` : isExpiringSoon ? `
-                            <div class="ml-4 p-2 bg-yellow-900/30 border border-yellow-500/30 rounded">
-                                <div class="flex items-center space-x-2">
-                                    <i class="bi bi-exclamation-triangle text-yellow-400 text-xs"></i>
-                                    <span class="text-yellow-300 text-xs">Certificate expires soon (within 30 days)</span>
-                                </div>
-                            </div>
-                        ` : ''}
                         
                         <!-- Algorithm -->
                         <div class="flex justify-between items-center">
@@ -240,14 +202,6 @@ export class SecurityPopup {
                                 ` : ''}
                             </div>
                         </div>
-                        ${isWeakAlgorithm ? `
-                            <div class="ml-4 p-2 bg-red-900/30 border border-red-500/30 rounded">
-                                <div class="flex items-center space-x-2">
-                                    <i class="bi bi-exclamation-triangle text-red-400 text-xs"></i>
-                                    <span class="text-red-300 text-xs">Weak encryption algorithm - security may be compromised</span>
-                                </div>
-                            </div>
-                        ` : ''}
                         
                         <!-- Status -->
                         <div class="flex justify-between items-center">
@@ -266,14 +220,6 @@ export class SecurityPopup {
                                 ` : ''}
                             </div>
                         </div>
-                        ${!cert.valid ? `
-                            <div class="ml-4 p-2 bg-red-900/30 border border-red-500/30 rounded">
-                                <div class="flex items-center space-x-2">
-                                    <i class="bi bi-exclamation-triangle text-red-400 text-xs"></i>
-                                    <span class="text-red-300 text-xs">Certificate is invalid and cannot be verified</span>
-                                </div>
-                            </div>
-                        ` : ''}
                         
                         <!-- Self-signed warning -->
                         ${cert.selfSigned ? `
