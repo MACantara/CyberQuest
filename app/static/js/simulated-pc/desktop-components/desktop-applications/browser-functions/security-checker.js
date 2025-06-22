@@ -122,63 +122,6 @@ export class SecurityChecker {
         return suspiciousPatterns.some(pattern => pattern.test(url));
     }
 
-    showSecurityWarning(securityCheck) {
-        if (!securityCheck.warnings.length) return;
-
-        const highSeverityWarnings = securityCheck.warnings.filter(w => 
-            w.severity === 'critical' || w.severity === 'high'
-        );
-
-        if (highSeverityWarnings.length === 0) return;
-
-        const modal = document.createElement('div');
-        modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50';
-        modal.innerHTML = `
-            <div class="bg-white rounded-lg p-6 max-w-lg mx-4">
-                <div class="text-center">
-                    <i class="bi bi-shield-exclamation text-6xl text-red-500 mb-4"></i>
-                    <h2 class="text-xl font-bold text-red-600 mb-4">🚨 SECURITY ALERT</h2>
-                    
-                    <div class="text-left mb-4">
-                        <p class="text-gray-700 mb-3">
-                            This website has been flagged as potentially dangerous:
-                        </p>
-                        
-                        <div class="space-y-2">
-                            ${highSeverityWarnings.map(warning => `
-                                <div class="bg-red-50 border border-red-200 rounded p-3">
-                                    <div class="flex items-center">
-                                        <i class="bi bi-exclamation-triangle text-red-500 mr-2"></i>
-                                        <span class="text-sm text-red-700">${warning.message}</span>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                    
-                    <div class="bg-blue-50 border border-blue-200 rounded p-3 mb-4">
-                        <p class="text-sm text-blue-700">
-                            <strong>Training Tip:</strong> In real life, you should immediately close 
-                            this website and avoid entering any personal information.
-                        </p>
-                    </div>
-                    
-                    <div class="space-x-3">
-                        <button onclick="window.browserApp?.navigation.navigateToUrl('https://cyberquest.com'); this.closest('.fixed').remove()" 
-                                class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors">
-                            Go to Safe Site
-                        </button>
-                        <button onclick="this.closest('.fixed').remove()" 
-                                class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition-colors">
-                            Continue (Training)
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(modal);
-    }
-
     displaySecurityStatus(securityCheck) {
         const urlBar = this.browserApp.windowElement?.querySelector('#browser-url-bar');
         if (!urlBar) return;
@@ -212,14 +155,6 @@ export class SecurityChecker {
     runSecurityScan(url) {
         const securityCheck = this.checkUrl(url);
         this.displaySecurityStatus(securityCheck);
-        
-        // Show warning for dangerous sites
-        if (securityCheck.securityLevel === 'dangerous') {
-            setTimeout(() => {
-                this.showSecurityWarning(securityCheck);
-            }, 1000); // Show warning after page loads
-        }
-
         return securityCheck;
     }
 }
