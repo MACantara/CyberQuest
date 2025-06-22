@@ -96,7 +96,8 @@ export class BaseDialogue {
     }
 
     shouldTypeMessage(message) {
-        return message.type === 'typing' || message.typing === true;
+        // Default to typing unless explicitly disabled
+        return message.typing !== false && message.type !== 'instant';
     }
 
     async typeMessage(text, speed = 50) {
