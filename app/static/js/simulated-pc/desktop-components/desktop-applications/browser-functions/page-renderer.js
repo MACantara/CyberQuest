@@ -45,7 +45,6 @@ export class PageRenderer {
         if (contentElement) {
             contentElement.innerHTML = page.content;
             this.updatePageTitle(page.title);
-            this.applySecurityIndicators(page.securityLevel);
             this.bindPageEvents(url);
         }
     }
@@ -329,31 +328,7 @@ export class PageRenderer {
             windowTitle.textContent = `Web Browser - ${title}`;
         }
     }
-
-    applySecurityIndicators(securityLevel) {
-        const urlBar = this.browserApp.windowElement?.querySelector('#browser-url-bar');
-        if (!urlBar) return;
-
-        // Remove existing security classes
-        urlBar.classList.remove('border-red-500', 'border-green-500', 'border-yellow-500', 'border-gray-600');
-
-        // Apply security-based styling
-        switch (securityLevel) {
-            case 'dangerous':
-                urlBar.classList.add('border-red-500', 'bg-red-50');
-                break;
-            case 'safe':
-            case 'legitimate':
-                urlBar.classList.add('border-green-500', 'bg-green-50');
-                break;
-            case 'warning':
-                urlBar.classList.add('border-yellow-500', 'bg-yellow-50');
-                break;
-            default:
-                urlBar.classList.add('border-gray-600', 'bg-black');
-        }
-    }
-
+    
     bindPageEvents(url) {
         const contentElement = this.browserApp.windowElement?.querySelector('#browser-content');
         if (!contentElement) return;
