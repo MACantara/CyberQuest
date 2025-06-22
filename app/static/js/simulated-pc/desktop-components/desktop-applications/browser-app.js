@@ -36,7 +36,7 @@ export class BrowserApp extends WindowBase {
                     </div>
                     <div class="flex-1 relative">
                         <input type="text" 
-                               class="w-full px-3 py-1 bg-black border border-gray-600 rounded text-white text-xs font-mono pr-8" 
+                               class="w-full px-3 py-1 bg-gray-800 border border-gray-600 rounded text-white text-xs font-mono pr-8" 
                                id="browser-url-bar"
                                placeholder="Enter URL or search term..."
                                title="Address Bar">
