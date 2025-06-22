@@ -83,8 +83,6 @@ export class SecurityPopup {
                 <div class="space-y-3">
                     ${this.createConnectionStatusSection(securityCheck)}
                     ${this.createCertificateSection(securityCheck)}
-                    ${this.createWarningsSection(securityCheck)}
-                    ${this.createThreatSection(securityCheck)}
                 </div>
             </div>
         `;
@@ -128,6 +126,8 @@ export class SecurityPopup {
                             '<div class="text-green-400 text-xs mt-1">✓ Extended Validation</div>' : ''
                         }
                     </div>
+                    
+                    ${this.createIntegratedWarningsSection(securityCheck)}
                 </div>
             `;
         } else {
@@ -135,59 +135,50 @@ export class SecurityPopup {
                 <div class="bg-red-900/30 border border-red-500/30 rounded p-3">
                     <h4 class="text-red-400 font-medium mb-1 text-sm">No Certificate</h4>
                     <p class="text-red-300 text-xs">This website does not have an SSL certificate.</p>
+                    ${this.createIntegratedWarningsSection(securityCheck)}
                 </div>
             `;
         }
     }
 
-    createWarningsSection(securityCheck) {
+    createIntegratedWarningsSection(securityCheck) {
         if (securityCheck.warnings.length > 0) {
             return `
-                <div class="bg-red-900/30 border border-red-500/30 rounded p-3">
-                    <h4 class="text-red-400 font-medium mb-2 text-sm">Security Warnings</h4>
+                <div class="mt-3 pt-3 border-t border-gray-600">
+                    <h5 class="text-yellow-400 font-medium mb-2 text-xs flex items-center">
+                        <i class="bi bi-exclamation-triangle mr-1"></i>
+                        Security Issues
+                    </h5>
                     <div class="space-y-1">
                         ${securityCheck.warnings.map(warning => `
                             <div class="flex items-start space-x-2">
-                                <i class="bi bi-exclamation-triangle text-${this.getSeverityColor(warning.severity)}-400 mt-0.5 text-xs"></i>
+                                <i class="bi bi-dot text-${this.getSeverityColor(warning.severity)}-400 mt-0.5 text-xs"></i>
                                 <span class="text-gray-300 text-xs">${warning.message}</span>
                             </div>
                         `).join('')}
                     </div>
                 </div>
             `;
-        } else {
+        } else if (securityCheck.certificate && securityCheck.certificate.valid) {
             return `
-                <div class="bg-green-900/30 border border-green-500/30 rounded p-3">
-                    <h4 class="text-green-400 font-medium mb-1 text-sm">✓ No Security Issues</h4>
-                    <p class="text-green-300 text-xs">This connection appears secure.</p>
-                </div>
-            `;
-        }
-    }
-
-    createThreatSection(securityCheck) {
-        if (securityCheck.threat) {
-            return `
-                <div class="bg-red-900/40 border border-red-500/40 rounded p-3">
-                    <h4 class="text-red-400 font-medium mb-2 text-sm flex items-center">
-                        <i class="bi bi-exclamation-triangle mr-2"></i>
-                        Threat Detected
-                    </h4>
-                    <div class="text-xs space-y-1">
-                        <div class="text-red-300">${securityCheck.threat.description}</div>
-                        <div class="text-red-400 font-semibold">Risk Level: ${securityCheck.threat.level.toUpperCase()}</div>
-                        ${securityCheck.threat.indicators ? `
-                            <div class="mt-2">
-                                <div class="text-red-400 text-xs mb-1">Threat Indicators:</div>
-                                ${securityCheck.threat.indicators.map(indicator => `
-                                    <div class="text-red-300 text-xs">• ${indicator}</div>
-                                `).join('')}
-                            </div>
-                        ` : ''}
+                <div class="mt-3 pt-3 border-t border-gray-600">
+                    <div class="flex items-center space-x-2">
+                        <i class="bi bi-check-circle text-green-400 text-xs"></i>
+                        <span class="text-green-300 text-xs">No certificate issues detected</span>
                     </div>
                 </div>
             `;
         }
+        return '';
+    }
+
+    createWarningsSection(securityCheck) {
+        // This method is no longer used but kept for compatibility
+        return '';
+    }
+
+    createThreatSection(securityCheck) {
+        // This method is no longer used - threats removed
         return '';
     }
 
