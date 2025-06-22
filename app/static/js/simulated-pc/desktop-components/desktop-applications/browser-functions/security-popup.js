@@ -221,16 +221,6 @@ export class SecurityPopup {
                             </div>
                         </div>
                         
-                        <!-- Self-signed warning -->
-                        ${cert.selfSigned ? `
-                            <div class="p-2 bg-yellow-900/30 border border-yellow-500/30 rounded">
-                                <div class="flex items-center space-x-2">
-                                    <i class="bi bi-exclamation-triangle text-yellow-400 text-xs"></i>
-                                    <span class="text-yellow-300 text-xs">Self-signed certificate - identity cannot be verified</span>
-                                </div>
-                            </div>
-                        ` : ''}
-                        
                         ${cert.extendedValidation ? 
                             '<div class="text-green-400 text-xs mt-2 flex items-center"><i class="bi bi-check-circle mr-1"></i>Extended Validation</div>' : ''
                         }
