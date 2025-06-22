@@ -194,11 +194,6 @@ export class SecurityPopup {
 
         const indicator = this.browserApp.windowElement?.querySelector('.security-indicator');
 
-        // Auto-close popup after 15 seconds
-        setTimeout(() => {
-            this.hide();
-        }, 15000);
-
         // Close popup when clicking outside
         const closeOnOutsideClick = (e) => {
             if (this.popup && 
