@@ -71,14 +71,14 @@ export class BaseDialogue {
                 
                 <div class="flex justify-end gap-6 mt-auto">
                     ${this.currentMessageIndex > 0 ? 
-                        `<button class="text-gray-400 hover:text-white transition-colors duration-200 cursor-pointer text-md" onclick="${this.getPreviousHandler()}">
+                        `<button class="text-gray-300 hover:text-white transition-colors duration-200 cursor-pointer text-md" onclick="${this.getPreviousHandler()}">
                             ← Previous
                         </button>` : ''
                     }
                     <button class="text-green-400 hover:text-green-300 transition-colors duration-200 cursor-pointer text-md" onclick="${this.getNextHandler()}">
                         ${isLastMessage ? this.getFinalButtonText() : 'Next →'}
                     </button>
-                    <button class="text-gray-400 hover:text-white transition-colors duration-200 cursor-pointer text-md" onclick="${this.getSkipHandler()}">
+                    <button class="text-gray-300 hover:text-white transition-colors duration-200 cursor-pointer text-md" onclick="${this.getSkipHandler()}">
                         Skip
                     </button>
                 </div>
