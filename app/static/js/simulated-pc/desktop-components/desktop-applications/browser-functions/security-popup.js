@@ -90,9 +90,23 @@ export class SecurityPopup {
 
     createConnectionStatusSection(securityCheck) {
         const isHttps = securityCheck.isHttps;
-        const statusColor = isHttps ? 'green' : 'red';
-        const statusIcon = isHttps ? 'shield-check' : 'shield-slash';
-        const warningIcon = isHttps ? '' : '<i class="bi bi-exclamation-triangle text-red-400 ml-2 text-xs"></i>';
+        const hasValidCert = securityCheck.certificate && securityCheck.certificate.valid && securityCheck.certificate.trusted;
+        
+        // Determine status based on both HTTPS and certificate validity
+        let statusColor, statusIcon, warningIcon = '';
+        
+        if (!isHttps) {
+            statusColor = 'red';
+            statusIcon = 'shield-slash';
+            warningIcon = '<i class="bi bi-exclamation-triangle text-red-400 ml-2 text-xs"></i>';
+        } else if (!hasValidCert) {
+            statusColor = 'yellow';
+            statusIcon = 'shield-exclamation';
+            warningIcon = '<i class="bi bi-exclamation-triangle text-yellow-400 ml-2 text-xs"></i>';
+        } else {
+            statusColor = 'green';
+            statusIcon = 'shield-check';
+        }
         
         return `
             <div class="bg-gray-700 rounded p-3">
@@ -108,6 +122,13 @@ export class SecurityPopup {
                         <div class="flex items-center space-x-2">
                             <i class="bi bi-exclamation-triangle text-red-400 text-xs"></i>
                             <span class="text-red-300 text-xs">Insecure HTTP connection - data is not encrypted</span>
+                        </div>
+                    </div>
+                ` : !hasValidCert ? `
+                    <div class="mt-2 p-2 bg-yellow-900/30 border border-yellow-500/30 rounded">
+                        <div class="flex items-center space-x-2">
+                            <i class="bi bi-exclamation-triangle text-yellow-400 text-xs"></i>
+                            <span class="text-yellow-300 text-xs">HTTPS connection but certificate has issues</span>
                         </div>
                     </div>
                 ` : ''}

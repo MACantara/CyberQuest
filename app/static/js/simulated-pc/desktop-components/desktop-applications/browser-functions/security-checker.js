@@ -54,7 +54,7 @@ export class SecurityChecker {
                 case 'critical': return 'dangerous';
                 case 'high': return 'dangerous';
                 case 'medium': return 'warning';
-                case 'low': return 'caution';
+                case 'low': return 'warning';
             }
         }
 
@@ -63,17 +63,51 @@ export class SecurityChecker {
             return 'insecure';
         }
 
-        // HTTPS with invalid or no certificate
-        if (!security.certificate || !security.certificate.valid || !security.certificate.trusted) {
+        // HTTPS but no certificate at all
+        if (!security.certificate) {
             return 'warning';
         }
 
-        // HTTPS with Extended Validation certificate
+        // HTTPS with invalid certificate
+        if (!security.certificate.valid) {
+            return 'warning';
+        }
+
+        // HTTPS with untrusted certificate authority
+        if (!security.certificate.trusted) {
+            return 'warning';
+        }
+
+        // HTTPS with self-signed certificate
+        if (security.certificate.selfSigned) {
+            return 'warning';
+        }
+
+        // HTTPS with weak algorithm
+        const isWeakAlgorithm = security.certificate.algorithm && 
+            (security.certificate.algorithm.includes('1024') || 
+             security.certificate.algorithm.toLowerCase().includes('md5') || 
+             security.certificate.algorithm.toLowerCase().includes('sha1'));
+        
+        if (isWeakAlgorithm) {
+            return 'warning';
+        }
+
+        // Check if certificate is expired
+        if (security.certificate.expires) {
+            const expiryDate = new Date(security.certificate.expires);
+            const now = new Date();
+            if (expiryDate < now) {
+                return 'warning';
+            }
+        }
+
+        // HTTPS with Extended Validation certificate (all checks passed)
         if (security.certificate.extendedValidation) {
             return 'secure-ev';
         }
 
-        // HTTPS with valid certificate
+        // HTTPS with valid, trusted certificate
         return 'secure';
     }
 
@@ -86,25 +120,54 @@ export class SecurityChecker {
             };
         }
 
-        if (!certificate || !certificate.valid) {
+        if (!certificate) {
             return {
                 level: 'warning',
-                description: 'Connection is encrypted but certificate is invalid',
+                description: 'Connection uses HTTPS but has no certificate',
                 details: 'The site\'s identity cannot be verified'
+            };
+        }
+
+        if (!certificate.valid) {
+            return {
+                level: 'warning',
+                description: 'Connection uses HTTPS but certificate is invalid',
+                details: 'The certificate has issues and identity cannot be verified'
             };
         }
 
         if (!certificate.trusted) {
             return {
-                level: 'untrusted',
-                description: 'Connection is encrypted but certificate is not trusted',
+                level: 'warning',
+                description: 'Connection uses HTTPS but certificate is not trusted',
                 details: 'The certificate authority is not recognized'
             };
         }
 
+        if (certificate.selfSigned) {
+            return {
+                level: 'warning',
+                description: 'Connection uses HTTPS but certificate is self-signed',
+                details: 'The site\'s identity cannot be independently verified'
+            };
+        }
+
+        // Check for expired certificate
+        if (certificate.expires) {
+            const expiryDate = new Date(certificate.expires);
+            const now = new Date();
+            if (expiryDate < now) {
+                return {
+                    level: 'warning',
+                    description: 'Connection uses HTTPS but certificate has expired',
+                    details: 'The certificate expired on ' + certificate.expires
+                };
+            }
+        }
+
         if (certificate.extendedValidation) {
             return {
-                level: 'ev',
+                level: 'secure-ev',
                 description: 'Connection is secure with Extended Validation',
                 details: `Organization identity verified by ${certificate.issuer}`
             };
