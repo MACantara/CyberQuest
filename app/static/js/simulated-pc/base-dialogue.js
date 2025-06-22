@@ -25,7 +25,7 @@ export class BaseDialogue {
         
         // Create overlay
         this.overlay = document.createElement('div');
-        this.overlay.className = 'fixed inset-0 bg-black/20 flex justify-center items-start pt-[3vh] z-[10000]';
+        this.overlay.className = 'fixed inset-0 bg-black/20 flex justify-center items-start pt-[2vh] z-[10000]';
         
         // Create dialogue container
         this.dialogueContainer = document.createElement('div');
