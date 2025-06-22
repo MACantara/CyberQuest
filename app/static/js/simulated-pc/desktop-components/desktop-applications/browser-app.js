@@ -160,6 +160,13 @@ export class BrowserApp extends WindowBase {
 
     loadInitialPage() {
         const initialUrl = 'https://suspicious-site.com';
+        
+        // Set the URL in the input field
+        const urlBar = this.windowElement?.querySelector('#browser-url-bar');
+        if (urlBar) {
+            urlBar.value = initialUrl;
+        }
+        
         this.pageRenderer.renderPage(initialUrl);
         this.securityChecker.runSecurityScan(initialUrl);
     }
