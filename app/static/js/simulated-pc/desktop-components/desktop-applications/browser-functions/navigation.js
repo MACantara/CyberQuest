@@ -91,6 +91,12 @@ export class BrowserNavigation {
         // Simulate loading delay
         setTimeout(() => {
             this.browserApp.pageRenderer.renderPage(url);
+            
+            // Run security check after page loads
+            if (this.browserApp.securityChecker) {
+                this.browserApp.securityChecker.runSecurityScan(url);
+            }
+            
             this.isLoading = false;
             this.hideLoadingState();
         }, Math.random() * 1000 + 500); // 0.5-1.5 second delay
@@ -124,14 +130,22 @@ export class BrowserNavigation {
     showLoadingState() {
         const refreshBtn = this.browserApp.windowElement?.querySelector('[data-action="refresh"]');
         if (refreshBtn) {
-            refreshBtn.innerHTML = '<i class="bi bi-arrow-clockwise animate-spin"></i>';
+            // Change to loading spinner icon and disable button
+            refreshBtn.innerHTML = '<i class="bi bi-hourglass-split animate-spin"></i>';
+            refreshBtn.disabled = true;
+            refreshBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            refreshBtn.classList.remove('hover:bg-gray-500');
         }
     }
 
     hideLoadingState() {
         const refreshBtn = this.browserApp.windowElement?.querySelector('[data-action="refresh"]');
         if (refreshBtn) {
+            // Restore normal refresh icon and enable button
             refreshBtn.innerHTML = '<i class="bi bi-arrow-clockwise"></i>';
+            refreshBtn.disabled = false;
+            refreshBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            refreshBtn.classList.add('hover:bg-gray-500');
         }
     }
 
