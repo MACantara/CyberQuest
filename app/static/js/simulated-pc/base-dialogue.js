@@ -55,7 +55,9 @@ export class BaseDialogue {
     renderMessage(message) {
         const avatarUrl = this.getCharacterAvatar();
         const characterName = this.getCharacterName();
-        const isLastMessage = this.currentMessageIndex >= this.messages.length - 1;        this.dialogueContainer.innerHTML = `
+        const isLastMessage = this.currentMessageIndex >= this.messages.length - 1;
+
+        this.dialogueContainer.innerHTML = `
             <img src="${avatarUrl}" alt="${characterName}" 
                  class="w-30 h-30 rounded border-3 border-green-500 object-cover shadow-lg shadow-green-500/30 flex-shrink-0" 
                  onerror="this.src='/static/images/avatars/default.png'" width="120" height="120">
@@ -67,16 +69,16 @@ export class BaseDialogue {
                     ${this.shouldTypeMessage(message) ? '' : message.text}
                 </div>
                 
-                <div class="flex justify-end gap-4 mt-auto">
+                <div class="flex justify-end gap-6 mt-auto">
                     ${this.currentMessageIndex > 0 ? 
-                        `<button class="px-6 py-3 bg-gray-600 text-white rounded font-semibold hover:bg-gray-700 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer text-sm" onclick="${this.getPreviousHandler()}">
+                        `<button class="text-gray-400 hover:text-white transition-colors duration-200 cursor-pointer text-md" onclick="${this.getPreviousHandler()}">
                             ← Previous
                         </button>` : ''
                     }
-                    <button class="px-6 py-3 bg-green-500 text-white rounded font-semibold hover:bg-green-600 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-green-500/30 transition-all duration-200 cursor-pointer text-sm" onclick="${this.getNextHandler()}">
+                    <button class="text-green-400 hover:text-green-300 transition-colors duration-200 cursor-pointer text-md" onclick="${this.getNextHandler()}">
                         ${isLastMessage ? this.getFinalButtonText() : 'Next →'}
                     </button>
-                    <button class="px-6 py-3 bg-gray-600 text-white rounded font-semibold hover:bg-gray-700 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer text-sm" onclick="${this.getSkipHandler()}">
+                    <button class="text-gray-400 hover:text-white transition-colors duration-200 cursor-pointer text-md" onclick="${this.getSkipHandler()}">
                         Skip
                     </button>
                 </div>
