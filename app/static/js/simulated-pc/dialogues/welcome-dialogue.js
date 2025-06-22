@@ -45,12 +45,6 @@ export class WelcomeDialogue extends BaseDialogue {
         return 'window.currentDialogue.showSkipModal()';
     }
 
-    showSkipModal() {
-        if (confirm('Are you sure you want to skip the welcome message? This introduces you to the cybersecurity training simulation.')) {
-            this.complete();
-        }
-    }
-
     // Static methods
     static shouldAutoStart() {
         return !localStorage.getItem('cyberquest_welcome_dialogue_completed');

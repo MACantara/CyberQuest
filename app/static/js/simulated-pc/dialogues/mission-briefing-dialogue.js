@@ -37,12 +37,6 @@ export class MissionBriefingDialogue extends BaseDialogue {
         return 'Accept Mission';
     }
 
-    showSkipModal() {
-        if (confirm('Are you sure you want to skip the mission briefing? This provides important context for your cybersecurity training.')) {
-            this.complete();
-        }
-    }
-
     // Static methods
     static shouldAutoStart() {
         return !localStorage.getItem('cyberquest_mission_briefing_completed');

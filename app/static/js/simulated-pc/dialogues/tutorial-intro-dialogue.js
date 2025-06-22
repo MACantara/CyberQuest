@@ -41,12 +41,6 @@ export class TutorialIntroDialogue extends BaseDialogue {
         return 'Start Tutorial';
     }
 
-    showSkipModal() {
-        if (confirm('Are you sure you want to skip the tutorial introduction? This explains how the training system works.')) {
-            this.complete();
-        }
-    }
-
     // Static methods
     static shouldAutoStart() {
         // Auto-start if welcome is done but tutorial intro is not
