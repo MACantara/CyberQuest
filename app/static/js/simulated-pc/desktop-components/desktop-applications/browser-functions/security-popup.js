@@ -89,97 +89,156 @@ export class SecurityPopup {
     }
 
     createConnectionStatusSection(securityCheck) {
+        const isHttps = securityCheck.isHttps;
+        const statusColor = isHttps ? 'green' : 'red';
+        const statusIcon = isHttps ? 'shield-check' : 'shield-slash';
+        const warningIcon = isHttps ? '' : '<i class="bi bi-exclamation-triangle text-red-400 ml-2 text-xs"></i>';
+        
         return `
             <div class="bg-gray-700 rounded p-3">
-                <h4 class="text-green-400 font-medium mb-1 text-sm">Connection Status</h4>
+                <h4 class="text-${statusColor}-400 font-medium mb-1 text-sm flex items-center">
+                    <i class="bi bi-${statusIcon} mr-2"></i>
+                    Connection Status
+                    ${warningIcon}
+                </h4>
                 <p class="text-white text-xs">${securityCheck.connectionSecurity.description}</p>
                 <p class="text-gray-300 text-xs mt-1">${securityCheck.connectionSecurity.details}</p>
+                ${!isHttps ? `
+                    <div class="mt-2 p-2 bg-red-900/30 border border-red-500/30 rounded">
+                        <div class="flex items-center space-x-2">
+                            <i class="bi bi-exclamation-triangle text-red-400 text-xs"></i>
+                            <span class="text-red-300 text-xs">Insecure HTTP connection - data is not encrypted</span>
+                        </div>
+                    </div>
+                ` : ''}
             </div>
         `;
     }
 
     createCertificateSection(securityCheck) {
         if (securityCheck.certificate) {
+            const cert = securityCheck.certificate;
+            const now = new Date();
+            const expiryDate = new Date(cert.expires);
+            const isExpired = expiryDate < now;
+            const isExpiringSoon = (expiryDate - now) / (1000 * 60 * 60 * 24) <= 30 && !isExpired;
+            const isWeakAlgorithm = cert.algorithm && (cert.algorithm.includes('1024') || cert.algorithm.toLowerCase().includes('md5') || cert.algorithm.toLowerCase().includes('sha1'));
+            
             return `
                 <div class="bg-gray-700 rounded p-3">
                     <h4 class="text-blue-400 font-medium mb-2 text-sm">Certificate Information</h4>
-                    <div class="text-xs space-y-1">
-                        <div class="flex justify-between">
+                    <div class="text-xs space-y-2">
+                        <!-- Issued By -->
+                        <div class="flex justify-between items-center">
                             <span class="text-gray-400">Issued by:</span>
-                            <span class="text-white text-right max-w-48 break-words">${securityCheck.certificate.issuer}</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-white text-right max-w-48 break-words">${cert.issuer}</span>
+                                ${!cert.trusted ? '<i class="bi bi-exclamation-triangle text-yellow-400 text-xs" title="Untrusted certificate authority"></i>' : ''}
+                            </div>
                         </div>
-                        <div class="flex justify-between">
+                        ${!cert.trusted ? `
+                            <div class="ml-4 p-2 bg-yellow-900/30 border border-yellow-500/30 rounded">
+                                <div class="flex items-center space-x-2">
+                                    <i class="bi bi-exclamation-triangle text-yellow-400 text-xs"></i>
+                                    <span class="text-yellow-300 text-xs">Certificate authority is not trusted</span>
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        <!-- Valid Until -->
+                        <div class="flex justify-between items-center">
                             <span class="text-gray-400">Valid until:</span>
-                            <span class="text-white">${securityCheck.certificate.expires}</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-white">${cert.expires}</span>
+                                ${isExpired ? '<i class="bi bi-exclamation-triangle text-red-400 text-xs" title="Certificate expired"></i>' : 
+                                  isExpiringSoon ? '<i class="bi bi-exclamation-triangle text-yellow-400 text-xs" title="Certificate expires soon"></i>' : ''}
+                            </div>
                         </div>
-                        <div class="flex justify-between">
+                        ${isExpired ? `
+                            <div class="ml-4 p-2 bg-red-900/30 border border-red-500/30 rounded">
+                                <div class="flex items-center space-x-2">
+                                    <i class="bi bi-exclamation-triangle text-red-400 text-xs"></i>
+                                    <span class="text-red-300 text-xs">Certificate has expired on ${cert.expires}</span>
+                                </div>
+                            </div>
+                        ` : isExpiringSoon ? `
+                            <div class="ml-4 p-2 bg-yellow-900/30 border border-yellow-500/30 rounded">
+                                <div class="flex items-center space-x-2">
+                                    <i class="bi bi-exclamation-triangle text-yellow-400 text-xs"></i>
+                                    <span class="text-yellow-300 text-xs">Certificate expires soon (within 30 days)</span>
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        <!-- Algorithm -->
+                        <div class="flex justify-between items-center">
                             <span class="text-gray-400">Algorithm:</span>
-                            <span class="text-white">${securityCheck.certificate.algorithm}</span>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-white">${cert.algorithm}</span>
+                                ${isWeakAlgorithm ? '<i class="bi bi-exclamation-triangle text-red-400 text-xs" title="Weak encryption algorithm"></i>' : ''}
+                            </div>
                         </div>
-                        <div class="flex justify-between">
+                        ${isWeakAlgorithm ? `
+                            <div class="ml-4 p-2 bg-red-900/30 border border-red-500/30 rounded">
+                                <div class="flex items-center space-x-2">
+                                    <i class="bi bi-exclamation-triangle text-red-400 text-xs"></i>
+                                    <span class="text-red-300 text-xs">Weak encryption algorithm - security may be compromised</span>
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        <!-- Status -->
+                        <div class="flex justify-between items-center">
                             <span class="text-gray-400">Status:</span>
-                            <span class="text-${securityCheck.certificate.valid ? 'green' : 'red'}-400">
-                                ${securityCheck.certificate.valid ? 'Valid' : 'Invalid'}
-                            </span>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-${cert.valid ? 'green' : 'red'}-400">
+                                    ${cert.valid ? 'Valid' : 'Invalid'}
+                                </span>
+                                ${!cert.valid ? '<i class="bi bi-exclamation-triangle text-red-400 text-xs" title="Invalid certificate"></i>' : ''}
+                            </div>
                         </div>
-                        ${securityCheck.certificate.extendedValidation ? 
-                            '<div class="text-green-400 text-xs mt-1">✓ Extended Validation</div>' : ''
+                        ${!cert.valid ? `
+                            <div class="ml-4 p-2 bg-red-900/30 border border-red-500/30 rounded">
+                                <div class="flex items-center space-x-2">
+                                    <i class="bi bi-exclamation-triangle text-red-400 text-xs"></i>
+                                    <span class="text-red-300 text-xs">Certificate is invalid and cannot be verified</span>
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        <!-- Self-signed warning -->
+                        ${cert.selfSigned ? `
+                            <div class="p-2 bg-yellow-900/30 border border-yellow-500/30 rounded">
+                                <div class="flex items-center space-x-2">
+                                    <i class="bi bi-exclamation-triangle text-yellow-400 text-xs"></i>
+                                    <span class="text-yellow-300 text-xs">Self-signed certificate - identity cannot be verified</span>
+                                </div>
+                            </div>
+                        ` : ''}
+                        
+                        ${cert.extendedValidation ? 
+                            '<div class="text-green-400 text-xs mt-2 flex items-center"><i class="bi bi-check-circle mr-1"></i>Extended Validation</div>' : ''
                         }
                     </div>
-                    
-                    ${this.createIntegratedWarningsSection(securityCheck)}
                 </div>
             `;
         } else {
             return `
                 <div class="bg-red-900/30 border border-red-500/30 rounded p-3">
-                    <h4 class="text-red-400 font-medium mb-1 text-sm">No Certificate</h4>
+                    <h4 class="text-red-400 font-medium mb-1 text-sm flex items-center">
+                        <i class="bi bi-exclamation-triangle mr-2"></i>
+                        No Certificate
+                    </h4>
                     <p class="text-red-300 text-xs">This website does not have an SSL certificate.</p>
-                    ${this.createIntegratedWarningsSection(securityCheck)}
-                </div>
-            `;
-        }
-    }
-
-    createIntegratedWarningsSection(securityCheck) {
-        if (securityCheck.warnings.length > 0) {
-            return `
-                <div class="mt-3 pt-3 border-t border-gray-600">
-                    <h5 class="text-yellow-400 font-medium mb-2 text-xs flex items-center">
-                        <i class="bi bi-exclamation-triangle mr-1"></i>
-                        Security Issues
-                    </h5>
-                    <div class="space-y-1">
-                        ${securityCheck.warnings.map(warning => `
-                            <div class="flex items-start space-x-2">
-                                <i class="bi bi-dot text-${this.getSeverityColor(warning.severity)}-400 mt-0.5 text-xs"></i>
-                                <span class="text-gray-300 text-xs">${warning.message}</span>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        } else if (securityCheck.certificate && securityCheck.certificate.valid) {
-            return `
-                <div class="mt-3 pt-3 border-t border-gray-600">
-                    <div class="flex items-center space-x-2">
-                        <i class="bi bi-check-circle text-green-400 text-xs"></i>
-                        <span class="text-green-300 text-xs">No certificate issues detected</span>
+                    <div class="mt-2 p-2 bg-red-900/40 border border-red-500/40 rounded">
+                        <div class="flex items-center space-x-2">
+                            <i class="bi bi-shield-slash text-red-400 text-xs"></i>
+                            <span class="text-red-300 text-xs">Data transmission is not encrypted and may be intercepted</span>
+                        </div>
                     </div>
                 </div>
             `;
         }
-        return '';
-    }
-
-    createWarningsSection(securityCheck) {
-        // This method is no longer used but kept for compatibility
-        return '';
-    }
-
-    createThreatSection(securityCheck) {
-        // This method is no longer used - threats removed
-        return '';
     }
 
     getSecurityIcon(securityCheck) {
