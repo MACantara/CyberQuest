@@ -154,7 +154,14 @@ export class SecurityPopup {
                             <span class="text-gray-400">Issued by:</span>
                             <div class="flex items-center space-x-2">
                                 <span class="text-white text-right max-w-48 break-words">${cert.issuer}</span>
-                                ${!cert.trusted ? '<i class="bi bi-exclamation-triangle text-yellow-400 text-xs" title="Untrusted certificate authority"></i>' : ''}
+                                ${!cert.trusted ? `
+                                    <div class="relative group">
+                                        <i class="bi bi-exclamation-triangle text-yellow-400 text-xs cursor-help"></i>
+                                        <span class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-yellow-300 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+                                            Untrusted certificate authority
+                                        </span>
+                                    </div>
+                                ` : ''}
                             </div>
                         </div>
                         ${!cert.trusted ? `
@@ -171,8 +178,21 @@ export class SecurityPopup {
                             <span class="text-gray-400">Valid until:</span>
                             <div class="flex items-center space-x-2">
                                 <span class="text-white">${cert.expires}</span>
-                                ${isExpired ? '<i class="bi bi-exclamation-triangle text-red-400 text-xs" title="Certificate expired"></i>' : 
-                                  isExpiringSoon ? '<i class="bi bi-exclamation-triangle text-yellow-400 text-xs" title="Certificate expires soon"></i>' : ''}
+                                ${isExpired ? `
+                                    <div class="relative group">
+                                        <i class="bi bi-exclamation-triangle text-red-400 text-xs cursor-help"></i>
+                                        <span class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-red-300 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+                                            Certificate expired
+                                        </span>
+                                    </div>
+                                ` : isExpiringSoon ? `
+                                    <div class="relative group">
+                                        <i class="bi bi-exclamation-triangle text-yellow-400 text-xs cursor-help"></i>
+                                        <span class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-yellow-300 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+                                            Certificate expires soon
+                                        </span>
+                                    </div>
+                                ` : ''}
                             </div>
                         </div>
                         ${isExpired ? `
@@ -196,7 +216,14 @@ export class SecurityPopup {
                             <span class="text-gray-400">Algorithm:</span>
                             <div class="flex items-center space-x-2">
                                 <span class="text-white">${cert.algorithm}</span>
-                                ${isWeakAlgorithm ? '<i class="bi bi-exclamation-triangle text-red-400 text-xs" title="Weak encryption algorithm"></i>' : ''}
+                                ${isWeakAlgorithm ? `
+                                    <div class="relative group">
+                                        <i class="bi bi-exclamation-triangle text-red-400 text-xs cursor-help"></i>
+                                        <span class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-red-300 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+                                            Weak encryption algorithm
+                                        </span>
+                                    </div>
+                                ` : ''}
                             </div>
                         </div>
                         ${isWeakAlgorithm ? `
@@ -215,7 +242,14 @@ export class SecurityPopup {
                                 <span class="text-${cert.valid ? 'green' : 'red'}-400">
                                     ${cert.valid ? 'Valid' : 'Invalid'}
                                 </span>
-                                ${!cert.valid ? '<i class="bi bi-exclamation-triangle text-red-400 text-xs" title="Invalid certificate"></i>' : ''}
+                                ${!cert.valid ? `
+                                    <div class="relative group">
+                                        <i class="bi bi-exclamation-triangle text-red-400 text-xs cursor-help"></i>
+                                        <span class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-red-300 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+                                            Invalid certificate
+                                        </span>
+                                    </div>
+                                ` : ''}
                             </div>
                         </div>
                         ${!cert.valid ? `
