@@ -349,37 +349,52 @@ export class SecurityChecker {
     }
 
     showSecurityDetails(securityCheck) {
-        const modal = document.createElement('div');
-        modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50';
-        modal.innerHTML = `
-            <div class="bg-gray-800 border border-gray-600 rounded-lg p-6 max-w-lg mx-4">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-xl font-bold text-white flex items-center">
+        // Remove any existing security popup
+        const existingPopup = document.querySelector('.security-popup');
+        if (existingPopup) {
+            existingPopup.remove();
+        }
+
+        const popup = document.createElement('div');
+        popup.className = 'security-popup absolute bg-gray-800 border border-gray-600 rounded-lg shadow-2xl z-50 min-w-80 max-w-96';
+        
+        // Position popup near the security indicator
+        const indicator = this.browserApp.windowElement?.querySelector('.security-indicator');
+        if (indicator) {
+            const rect = indicator.getBoundingClientRect();
+            popup.style.left = `${rect.left - 300}px`;
+            popup.style.top = `${rect.bottom + 10}px`;
+        }
+
+        popup.innerHTML = `
+            <div class="p-4">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-lg font-bold text-white flex items-center">
                         <i class="bi bi-${this.getSecurityIcon(securityCheck).icon} ${this.getSecurityIcon(securityCheck).color} mr-2"></i>
                         Connection Security
-                    </h2>
-                    <button onclick="this.closest('.fixed').remove()" 
-                            class="text-gray-400 hover:text-white transition-colors">
-                        <i class="bi bi-x-lg"></i>
+                    </h3>
+                    <button onclick="this.closest('.security-popup').remove()" 
+                            class="text-gray-400 hover:text-white transition-colors text-lg">
+                        <i class="bi bi-x"></i>
                     </button>
                 </div>
                 
-                <div class="space-y-4">
+                <div class="space-y-3">
                     <!-- Connection Status -->
-                    <div class="bg-gray-700 rounded p-4">
-                        <h3 class="text-green-400 font-medium mb-2">Connection Status</h3>
-                        <p class="text-white text-sm">${securityCheck.connectionSecurity.description}</p>
+                    <div class="bg-gray-700 rounded p-3">
+                        <h4 class="text-green-400 font-medium mb-1 text-sm">Connection Status</h4>
+                        <p class="text-white text-xs">${securityCheck.connectionSecurity.description}</p>
                         <p class="text-gray-300 text-xs mt-1">${securityCheck.connectionSecurity.details}</p>
                     </div>
 
                     <!-- Certificate Information -->
                     ${securityCheck.certificate ? `
-                        <div class="bg-gray-700 rounded p-4">
-                            <h3 class="text-blue-400 font-medium mb-2">Certificate Information</h3>
-                            <div class="text-sm space-y-1">
+                        <div class="bg-gray-700 rounded p-3">
+                            <h4 class="text-blue-400 font-medium mb-2 text-sm">Certificate Information</h4>
+                            <div class="text-xs space-y-1">
                                 <div class="flex justify-between">
                                     <span class="text-gray-400">Issued by:</span>
-                                    <span class="text-white">${securityCheck.certificate.issuer}</span>
+                                    <span class="text-white text-right max-w-48 break-words">${securityCheck.certificate.issuer}</span>
                                 </div>
                                 <div class="flex justify-between">
                                     <span class="text-gray-400">Valid until:</span>
@@ -396,51 +411,59 @@ export class SecurityChecker {
                                     </span>
                                 </div>
                                 ${securityCheck.certificate.extendedValidation ? 
-                                    '<div class="text-green-400 text-xs mt-2">✓ Extended Validation</div>' : ''
+                                    '<div class="text-green-400 text-xs mt-1">✓ Extended Validation</div>' : ''
                                 }
                             </div>
                         </div>
                     ` : `
-                        <div class="bg-red-900/30 border border-red-500/30 rounded p-4">
-                            <h3 class="text-red-400 font-medium mb-2">No Certificate</h3>
-                            <p class="text-red-300 text-sm">This website does not have an SSL certificate.</p>
+                        <div class="bg-red-900/30 border border-red-500/30 rounded p-3">
+                            <h4 class="text-red-400 font-medium mb-1 text-sm">No Certificate</h4>
+                            <p class="text-red-300 text-xs">This website does not have an SSL certificate.</p>
                         </div>
                     `}
 
                     <!-- Warnings -->
                     ${securityCheck.warnings.length > 0 ? `
-                        <div class="bg-red-900/30 border border-red-500/30 rounded p-4">
-                            <h3 class="text-red-400 font-medium mb-2">Security Warnings</h3>
-                            <div class="space-y-2">
+                        <div class="bg-red-900/30 border border-red-500/30 rounded p-3">
+                            <h4 class="text-red-400 font-medium mb-2 text-sm">Security Warnings</h4>
+                            <div class="space-y-1">
                                 ${securityCheck.warnings.map(warning => `
                                     <div class="flex items-start space-x-2">
-                                        <i class="bi bi-exclamation-triangle text-${warning.severity === 'high' ? 'red' : warning.severity === 'medium' ? 'yellow' : 'blue'}-400 mt-0.5"></i>
-                                        <span class="text-gray-300 text-sm">${warning.message}</span>
+                                        <i class="bi bi-exclamation-triangle text-${warning.severity === 'high' ? 'red' : warning.severity === 'medium' ? 'yellow' : 'blue'}-400 mt-0.5 text-xs"></i>
+                                        <span class="text-gray-300 text-xs">${warning.message}</span>
                                     </div>
                                 `).join('')}
                             </div>
                         </div>
                     ` : `
-                        <div class="bg-green-900/30 border border-green-500/30 rounded p-4">
-                            <h3 class="text-green-400 font-medium mb-2">✓ No Security Issues</h3>
-                            <p class="text-green-300 text-sm">This connection appears secure.</p>
+                        <div class="bg-green-900/30 border border-green-500/30 rounded p-3">
+                            <h4 class="text-green-400 font-medium mb-1 text-sm">✓ No Security Issues</h4>
+                            <p class="text-green-300 text-xs">This connection appears secure.</p>
                         </div>
                     `}
-
-                    <!-- Educational Info -->
-                    <div class="bg-blue-900/30 border border-blue-500/30 rounded p-4">
-                        <h3 class="text-blue-400 font-medium mb-2">Security Tips</h3>
-                        <ul class="text-blue-300 text-sm space-y-1">
-                            <li>• Always look for HTTPS (🔒) before entering sensitive information</li>
-                            <li>• Verify the domain name matches the expected website</li>
-                            <li>• Be cautious of certificate warnings or errors</li>
-                            <li>• Green indicators usually mean Extended Validation certificates</li>
-                        </ul>
-                    </div>
                 </div>
             </div>
         `;
-        document.body.appendChild(modal);
+
+        document.body.appendChild(popup);
+
+        // Auto-close popup after 15 seconds
+        setTimeout(() => {
+            if (popup.parentNode) {
+                popup.remove();
+            }
+        }, 15000);
+
+        // Close popup when clicking outside
+        const closeOnOutsideClick = (e) => {
+            if (!popup.contains(e.target) && !indicator?.contains(e.target)) {
+                popup.remove();
+                document.removeEventListener('click', closeOnOutsideClick);
+            }
+        };
+        setTimeout(() => {
+            document.addEventListener('click', closeOnOutsideClick);
+        }, 100);
     }
 
     runSecurityScan(url) {
