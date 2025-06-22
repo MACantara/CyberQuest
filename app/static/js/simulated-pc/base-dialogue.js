@@ -7,7 +7,7 @@ export class BaseDialogue {
         this.overlay = null;
         this.dialogueContainer = null;
         this.messages = []; // To be defined by child classes
-        this.typingSpeed = 50; // Default typing speed in milliseconds per character
+        this.typingSpeed = 12.5; // Default typing speed in milliseconds per character (Lower is faster)
     }
 
     start() {
