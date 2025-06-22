@@ -1,4 +1,11 @@
-import { ApplicationFactory } from './application-factory.js';
+import { BrowserApp } from './desktop-applications/browser-app.js';
+import { TerminalApp } from './desktop-applications/terminal-app.js';
+import { FileManagerApp } from './desktop-applications/file-manager-app.js';
+import { EmailApp } from './desktop-applications/email-app.js';
+import { NetworkMonitorApp } from './desktop-applications/network-monitor-app.js';
+import { SecurityToolsApp } from './desktop-applications/security-tools-app.js';
+import { SystemLogsApp } from './desktop-applications/system-logs-app.js';
+import { ControlPanelApp } from './control-panel.js';
 
 export class WindowManager {
     constructor(container, taskbar, tutorialManager = null) {
@@ -6,22 +13,59 @@ export class WindowManager {
         this.taskbar = taskbar;
         this.tutorialManager = tutorialManager;
         this.windows = new Map();
+        this.applications = new Map();
         this.zIndex = 1000;
-        this.applicationFactory = new ApplicationFactory();
     }
 
-    createWindow(id, title, content, options = {}) {
+    createWindow(id, title, contentOrApp, options = {}) {
         if (this.windows.has(id)) {
             // Bring existing window to front
             const existingWindow = this.windows.get(id);
             existingWindow.style.zIndex = ++this.zIndex;
             this.taskbar.setActiveWindow(id);
-            return;
+            return existingWindow;
         }
 
+        let windowElement;
+        let app = null;
+
+        // Check if contentOrApp is a WindowBase application
+        if (contentOrApp && typeof contentOrApp.createWindow === 'function') {
+            app = contentOrApp;
+            windowElement = app.createWindow();
+            this.applications.set(id, app);
+        } else {
+            // Legacy string content support
+            windowElement = this.createLegacyWindow(id, title, contentOrApp, options);
+        }
+
+        windowElement.style.zIndex = ++this.zIndex;
+        this.container.appendChild(windowElement);
+        this.windows.set(id, windowElement);
+
+        // Add to taskbar
+        const iconClass = app ? app.getIconClass() : this.getIconClassForWindow(id);
+        this.taskbar.addWindow(id, title, iconClass);
+
+        // Bind window events
+        this.bindWindowEvents(windowElement, id);
+
+        // Make window draggable and resizable
+        this.makeDraggable(windowElement);
+        this.makeResizable(windowElement);
+
+        // Initialize application if it exists
+        if (app && typeof app.initialize === 'function') {
+            app.initialize();
+        }
+
+        return windowElement;
+    }
+
+    // Legacy window creation for backwards compatibility
+    createLegacyWindow(id, title, content, options) {
         const window = document.createElement('div');
         window.className = 'absolute bg-gray-800 border border-gray-600 rounded shadow-2xl overflow-hidden min-w-72 min-h-48 backdrop-blur-lg';
-        window.style.zIndex = ++this.zIndex;
         window.style.width = options.width || '60%';
         window.style.height = options.height || '50%';
         window.style.left = `${Math.random() * 20 + 10}%`;
@@ -59,19 +103,7 @@ export class WindowManager {
             <div class="resize-handle resize-se absolute bottom-0 right-0 w-3 h-3 cursor-se-resize"></div>
         `;
 
-        this.container.appendChild(window);
-        this.windows.set(id, window);
-
-        // Add to taskbar (this will automatically set it as active)
-        const iconClass = this.getIconClassForWindow(id);
-        this.taskbar.addWindow(id, title, iconClass);
-
-        // Bind window events
-        this.bindWindowEvents(window, id);
-
-        // Make window draggable and resizable
-        this.makeDraggable(window);
-        this.makeResizable(window);
+        return window;
     }
 
     getIconForWindow(id) {
@@ -253,9 +285,17 @@ export class WindowManager {
 
     closeWindow(id) {
         const window = this.windows.get(id);
+        const app = this.applications.get(id);
+        
         if (window) {
+            // Call cleanup if application exists
+            if (app && typeof app.cleanup === 'function') {
+                app.cleanup();
+            }
+            
             window.remove();
             this.windows.delete(id);
+            this.applications.delete(id);
             this.taskbar.removeWindow(id);
         }
     }
@@ -311,45 +351,37 @@ export class WindowManager {
                 this.minimizeWindow(id);
             }
         }
-    }    // Application launchers
+    }
+
+    // Application launchers using new WindowBase system
     async openBrowser() {
         const isFirstTime = !localStorage.getItem('cyberquest_browser_opened');
+        const app = new BrowserApp();
         
-        this.createWindow('browser', 'Web Browser', this.applicationFactory.createBrowserContent(), {
-            width: '80%',
-            height: '70%'
-        });
-
-        // Mark browser as opened
+        this.createWindow('browser', 'Web Browser', app);
         localStorage.setItem('cyberquest_browser_opened', 'true');
 
-        // Start browser tutorial if it's the first time and tutorial manager is available
         if (isFirstTime && this.tutorialManager) {
             const shouldStart = await this.tutorialManager.shouldAutoStartBrowser();
             if (shouldStart) {
-                // Wait a bit for the window to be fully rendered
                 setTimeout(async () => {
                     await this.tutorialManager.startBrowserTutorial();
                 }, 1500);
             }
         }
-    }    openTerminal() {
-        const isFirstTime = !localStorage.getItem('cyberquest_terminal_opened');
-        
-        this.createWindow('terminal', 'Terminal', this.applicationFactory.createTerminalContent(), {
-            width: '70%',
-            height: '60%'
-        });
+    }
 
-        // Mark terminal as opened
+    openTerminal() {
+        const isFirstTime = !localStorage.getItem('cyberquest_terminal_opened');
+        const app = new TerminalApp();
+        
+        this.createWindow('terminal', 'Terminal', app);
         localStorage.setItem('cyberquest_terminal_opened', 'true');
 
-        // Start terminal tutorial if it's the first time and tutorial manager is available
         if (isFirstTime && this.tutorialManager) {
             setTimeout(async () => {
                 const shouldStart = await this.tutorialManager.shouldAutoStartTerminal();
                 if (shouldStart) {
-                    // Wait a bit for the window to be fully rendered
                     setTimeout(async () => {
                         await this.tutorialManager.startTerminalTutorial();
                     }, 1500);
@@ -357,24 +389,18 @@ export class WindowManager {
             }, 100);
         }
     }
-    
+
     openFileManager() {
         const isFirstTime = !localStorage.getItem('cyberquest_filemanager_opened');
+        const app = new FileManagerApp();
         
-        this.createWindow('files', 'File Manager', this.applicationFactory.createFileManagerContent(), {
-            width: '75%',
-            height: '65%'
-        });
-
-        // Mark file manager as opened
+        this.createWindow('files', 'File Manager', app);
         localStorage.setItem('cyberquest_filemanager_opened', 'true');
 
-        // Start file manager tutorial if it's the first time and tutorial manager is available
         if (isFirstTime && this.tutorialManager) {
             setTimeout(async () => {
                 const shouldStart = await this.tutorialManager.shouldAutoStartFileManager();
                 if (shouldStart) {
-                    // Wait a bit for the window to be fully rendered
                     setTimeout(async () => {
                         await this.tutorialManager.startFileManagerTutorial();
                     }, 1500);
@@ -385,94 +411,70 @@ export class WindowManager {
 
     async openEmailClient() {
         const isFirstTime = !localStorage.getItem('cyberquest_email_opened');
+        const app = new EmailApp();
         
-        this.createWindow('email', 'Email Client', this.applicationFactory.createEmailContent(), {
-            width: '80%',
-            height: '70%'
-        });
-
-        // Mark email as opened
+        this.createWindow('email', 'Email Client', app);
         localStorage.setItem('cyberquest_email_opened', 'true');
 
-        // Start email tutorial if it's the first time and tutorial manager is available
         if (isFirstTime && this.tutorialManager) {
             const shouldStart = await this.tutorialManager.shouldAutoStartEmail();
             if (shouldStart) {
-                // Wait a bit for the window to be fully rendered
                 setTimeout(async () => {
                     await this.tutorialManager.startEmailTutorial();
                 }, 1500);
             }
         }
-    }    
-    
+    }
+
     openNetworkMonitor() {
         const isFirstTime = !localStorage.getItem('cyberquest_networkmonitor_opened');
+        const app = new NetworkMonitorApp();
         
-        this.createWindow('wireshark', 'Network Monitor', this.applicationFactory.createNetworkMonitorContent(), {
-            width: '85%',
-            height: '75%'
-        });
-
-        // Mark network monitor as opened
+        this.createWindow('wireshark', 'Network Monitor', app);
         localStorage.setItem('cyberquest_networkmonitor_opened', 'true');
 
-        // Start network monitor tutorial if it's the first time and tutorial manager is available
         if (isFirstTime && this.tutorialManager) {
             setTimeout(async () => {
                 const shouldStart = await this.tutorialManager.shouldAutoStartNetworkMonitor();
                 if (shouldStart) {
-                    // Wait a bit for the window to be fully rendered
                     setTimeout(async () => {
                         await this.tutorialManager.startNetworkMonitorTutorial();
                     }, 1500);
                 }
             }, 100);
         }
-    }    
-    
+    }
+
     openSecurityTools() {
         const isFirstTime = !localStorage.getItem('cyberquest_securitytools_opened');
+        const app = new SecurityToolsApp();
         
-        this.createWindow('security', 'Security Tools', this.applicationFactory.createSecurityToolsContent(), {
-            width: '70%',
-            height: '60%'
-        });
-
-        // Mark security tools as opened
+        this.createWindow('security', 'Security Tools', app);
         localStorage.setItem('cyberquest_securitytools_opened', 'true');
 
-        // Start security tools tutorial if it's the first time and tutorial manager is available
         if (isFirstTime && this.tutorialManager) {
             setTimeout(async () => {
                 const shouldStart = await this.tutorialManager.shouldAutoStartSecurityTools();
                 if (shouldStart) {
-                    // Wait a bit for the window to be fully rendered
                     setTimeout(async () => {
                         await this.tutorialManager.startSecurityToolsTutorial();
                     }, 1500);
                 }
             }, 100);
         }
-    }    
-    
+    }
+
     openSystemLogs() {
         const isFirstTime = !localStorage.getItem('cyberquest_systemlogs_opened');
+        const app = new SystemLogsApp();
         
-        this.createWindow('logs', 'System Logs', this.applicationFactory.createSystemLogsContent(), {
-            width: '75%',
-            height: '65%'
-        });
-
-        // Mark system logs as opened
+        this.createWindow('logs', 'System Logs', app);
         localStorage.setItem('cyberquest_systemlogs_opened', 'true');
 
-        // Start system logs tutorial if it's the first time and tutorial manager is available
         if (isFirstTime && this.tutorialManager) {
             setTimeout(async () => {
                 const shouldStart = await this.tutorialManager.shouldAutoStartSystemLogs();
                 if (shouldStart) {
-                    // Wait a bit for the window to be fully rendered
                     setTimeout(async () => {
                         await this.tutorialManager.startSystemLogsTutorial();
                     }, 1500);
