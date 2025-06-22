@@ -1,3 +1,49 @@
+import { WindowBase } from './window-base.js';
+
+export class ControlPanelApp extends WindowBase {
+    constructor(desktop = null) {
+        super('control-panel', 'Mission Control', {
+            width: '55%',
+            height: '45%'
+        });
+        this.desktop = desktop;
+    }
+
+    createContent() {
+        return `
+            <div class="p-5 text-white">
+                <h3 class="text-xl font-bold text-green-400 mb-4">CyberQuest Training Help</h3>
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="text-lg font-semibold text-blue-400 mb-2">Navigation</h4>
+                        <ul class="list-disc list-inside space-y-1 text-gray-300">
+                            <li>Double-click desktop icons to open applications</li>
+                            <li>Use the taskbar to switch between windows</li>
+                            <li>Drag windows by their title bar to move them</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-blue-400 mb-2">Mission Controls</h4>
+                        <ul class="list-disc list-inside space-y-1 text-gray-300">
+                            <li><strong>Help:</strong> Show this help dialog</li>
+                            <li><strong>Hint:</strong> Get guidance for current task</li>
+                            <li><strong>Progress:</strong> View your mission progress</li>
+                            <li><strong>Exit:</strong> Leave the simulation</li>
+                        </ul>
+                    </div>
+                    <div class="pt-4 border-t border-gray-600">
+                        <button onclick="window.restartTutorial()" class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition-colors duration-200 flex items-center justify-center cursor-pointer">
+                            <i class="bi bi-arrow-clockwise mr-2"></i>
+                            Restart Tutorial
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+}
+
+// Keep the original ControlPanel class for the desktop panel
 export class ControlPanel {
     constructor(container, windowManager, desktop = null) {
         this.container = container;
@@ -33,10 +79,8 @@ export class ControlPanel {
 
     bindEvents() {
         this.panelElement.querySelector('#help-btn').addEventListener('click', () => {
-            this.windowManager.createWindow('help', 'Help', this.createHelpContent(), {
-                width: '60%',
-                height: '50%'
-            });
+            const app = new ControlPanelApp(this.desktop);
+            this.windowManager.createWindow('help', 'Help', app);
         });
 
         this.panelElement.querySelector('#hint-btn').addEventListener('click', () => {
@@ -52,49 +96,6 @@ export class ControlPanel {
                 height: '45%'
             });
         });
-    }
-
-    createHelpContent() {
-        return `
-            <div class="p-5 text-white">
-                <h3 class="text-xl font-bold text-green-400 mb-4">CyberQuest Training Help</h3>
-                <div class="space-y-4">
-                    <div>
-                        <h4 class="text-lg font-semibold text-blue-400 mb-2">Navigation</h4>
-                        <ul class="list-disc list-inside space-y-1 text-gray-300">
-                            <li>Double-click desktop icons to open applications</li>
-                            <li>Use the taskbar to switch between windows</li>
-                            <li>Drag windows by their title bar to move them</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="text-lg font-semibold text-blue-400 mb-2">Mission Controls</h4>
-                        <ul class="list-disc list-inside space-y-1 text-gray-300">
-                            <li><strong>Help:</strong> Show this help dialog</li>
-                            <li><strong>Hint:</strong> Get guidance for current task</li>
-                            <li><strong>Progress:</strong> View your mission progress</li>
-                            <li><strong>Exit:</strong> Leave the simulation</li>
-                        </ul>
-                    </div>
-                    <div class="pt-4 border-t border-gray-600">
-                        <button onclick="window.restartTutorial()" class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition-colors duration-200 flex items-center justify-center cursor-pointer">
-                            <i class="bi bi-arrow-clockwise mr-2"></i>
-                            Restart Tutorial
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    restartTutorial() {
-        if (this.desktop && this.desktop.tutorial) {
-            // Clear any localStorage flag and restart tutorial
-            localStorage.removeItem('cyberquest_tutorial_completed');
-            this.desktop.tutorial.start();
-        } else {
-            console.error('Tutorial not available');
-        }
     }
 
     createHintContent() {
