@@ -35,7 +35,7 @@ export class SecurityPopup {
         const indicator = this.browserApp.windowElement?.querySelector('.security-indicator');
         if (indicator) {
             const rect = indicator.getBoundingClientRect();
-            this.popup.style.left = `${rect.left - 300}px`;
+            this.popup.style.left = `${rect.left - 5}px`;
             this.popup.style.top = `${rect.bottom + 10}px`;
         }
     }
