@@ -1,5 +1,14 @@
-export class BrowserApp {
-    static createContent() {
+import { WindowBase } from '../window-base.js';
+
+export class BrowserApp extends WindowBase {
+    constructor() {
+        super('browser', 'Web Browser', {
+            width: '80%',
+            height: '70%'
+        });
+    }
+
+    createContent() {
         return `
             <div class="h-full flex flex-col">
                 <div class="bg-gray-700 p-2 border-b border-gray-600 flex items-center space-x-3">
@@ -7,7 +16,8 @@ export class BrowserApp {
                         <button class="px-1.5 py-1 bg-gray-600 border border-gray-500 rounded text-white text-xs hover:bg-gray-500 transition-colors duration-200 cursor-pointer"><i class="bi bi-arrow-left"></i></button>
                         <button class="px-1.5 py-1 bg-gray-600 border border-gray-500 rounded text-white text-xs hover:bg-gray-500 transition-colors duration-200 cursor-pointer"><i class="bi bi-arrow-right"></i></button>
                         <button class="px-1.5 py-1 bg-gray-600 border border-gray-500 rounded text-white text-xs hover:bg-gray-500 transition-colors duration-200 cursor-pointer"><i class="bi bi-arrow-clockwise"></i></button>
-                    </div>                    <div class="flex-1">
+                    </div>
+                    <div class="flex-1">
                         <input type="text" value="https://suspicious-site.com" readonly class="w-full px-3 py-1 bg-black border border-gray-600 rounded text-white text-xs font-mono" id="browser-url-bar">
                     </div>
                 </div>

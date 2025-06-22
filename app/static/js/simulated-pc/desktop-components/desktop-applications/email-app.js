@@ -1,5 +1,14 @@
-export class EmailApp {
-    static createContent() {
+import { WindowBase } from '../window-base.js';
+
+export class EmailApp extends WindowBase {
+    constructor() {
+        super('email', 'Email Client', {
+            width: '80%',
+            height: '70%'
+        });
+    }
+
+    createContent() {
         return `
             <div class="h-full flex">
                 <div class="w-48 bg-gray-700 border-r border-gray-600 p-3">

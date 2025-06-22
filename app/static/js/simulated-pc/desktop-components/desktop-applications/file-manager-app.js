@@ -1,7 +1,16 @@
-export class FileManagerApp {
-    static createContent() {
+import { WindowBase } from '../window-base.js';
+
+export class FileManagerApp extends WindowBase {
+    constructor() {
+        super('files', 'File Manager', {
+            width: '75%',
+            height: '65%'
+        });
+    }
+
+    createContent() {
         return `
-        <div class="h-full flex flex-col bg-gray-800">
+            <div class="h-full flex flex-col bg-gray-800">
                 <div class="bg-gray-700 p-2 border-b border-gray-600 flex items-center space-x-2 flex-shrink-0" id="file-toolbar">
                     <button class="px-2 py-1 bg-gray-600 border border-gray-500 rounded text-white text-xs hover:bg-gray-500 transition-colors duration-200 cursor-pointer" id="back-btn"><i class="bi bi-arrow-left"></i></button>
                     <button class="px-2 py-1 bg-gray-600 border border-gray-500 rounded text-white text-xs hover:bg-gray-500 transition-colors duration-200 cursor-pointer" id="forward-btn"><i class="bi bi-arrow-right"></i></button>

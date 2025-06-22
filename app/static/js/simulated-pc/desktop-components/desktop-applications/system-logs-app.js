@@ -1,5 +1,14 @@
-export class SystemLogsApp {
-    static createContent() {
+import { WindowBase } from '../window-base.js';
+
+export class SystemLogsApp extends WindowBase {
+    constructor() {
+        super('logs', 'System Logs', {
+            width: '75%',
+            height: '65%'
+        });
+    }
+
+    createContent() {
         return `
             <div class="h-full flex flex-col bg-gray-900">
                 <div class="bg-gray-700 p-2 border-b border-gray-600 flex items-center space-x-2" id="logs-toolbar">

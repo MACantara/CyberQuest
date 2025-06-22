@@ -1,7 +1,16 @@
-export class SecurityToolsApp {
-    static createContent() {
+import { WindowBase } from '../window-base.js';
+
+export class SecurityToolsApp extends WindowBase {
+    constructor() {
+        super('security', 'Security Tools', {
+            width: '70%',
+            height: '60%'
+        });
+    }
+
+    createContent() {
         return `
-        <div class="p-5 text-white">
+            <div class="p-5 text-white">
                 <h3 class="text-xl font-bold text-green-400 mb-6" id="security-tools-title">Security Analysis Tools</h3>
                 <div class="grid grid-cols-2 gap-4 mb-6" id="security-tools-grid">
                     <button class="p-4 bg-gray-700 border border-gray-600 rounded hover:bg-gray-600 transition-colors duration-200 flex flex-col items-center space-y-2 cursor-pointer" id="antivirus-tool">

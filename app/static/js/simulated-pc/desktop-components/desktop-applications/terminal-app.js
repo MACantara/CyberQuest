@@ -1,5 +1,14 @@
-export class TerminalApp {
-    static createContent() {
+import { WindowBase } from '../window-base.js';
+
+export class TerminalApp extends WindowBase {
+    constructor() {
+        super('terminal', 'Terminal', {
+            width: '70%',
+            height: '60%'
+        });
+    }
+
+    createContent() {
         return `
         <div class="h-full bg-black text-green-400 font-mono text-sm p-3 flex flex-col" id="terminal-container">
                 <div class="flex-1 overflow-y-auto mb-3 space-y-1" id="terminal-output">
