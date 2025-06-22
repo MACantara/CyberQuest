@@ -1,3 +1,5 @@
+import { SkipTutorialModal } from './desktop-components/skip-tutorial-modal.js';
+
 export class BaseTutorial {
     constructor(desktop) {
         this.desktop = desktop;
@@ -6,6 +8,7 @@ export class BaseTutorial {
         this.overlay = null;
         this.tooltip = null;
         this.steps = [];
+        this.skipTutorialModal = null;
     }
 
     createOverlay() {
@@ -248,9 +251,13 @@ export class BaseTutorial {
         return 'Complete';
     }
 
-    showSkipModal() {
-        // Default implementation - override in child classes
-        if (confirm('Are you sure you want to skip this tutorial?')) {
+    async showSkipModal() {
+        if (!this.skipTutorialModal) {
+            this.skipTutorialModal = new SkipTutorialModal(document.body);
+        }
+        
+        const shouldSkip = await this.skipTutorialModal.show();
+        if (shouldSkip) {
             this.complete();
         }
     }
