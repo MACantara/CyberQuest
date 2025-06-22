@@ -196,15 +196,29 @@ export class BrowserApp extends WindowBase {
             window.browserApp = null;
         }
         
-        // Clean up any modals
-        const modals = document.querySelectorAll('.fixed.inset-0');
-        modals.forEach(modal => {
-            if (modal.innerHTML.includes('SECURITY ALERT') || 
-                modal.innerHTML.includes('SCAM DETECTED') ||
-                modal.innerHTML.includes('Bookmarks')) {
+        // Clean up only browser-specific modals and popups
+        const browserModals = document.querySelectorAll('.security-popup');
+        browserModals.forEach(modal => {
+            if (modal.parentNode) {
                 modal.remove();
             }
         });
+        
+        // Clean up browser-specific overlays
+        const scamModals = document.querySelectorAll('.fixed.inset-0');
+        scamModals.forEach(modal => {
+            if (modal.innerHTML && (
+                modal.innerHTML.includes('SCAM DETECTED') ||
+                modal.innerHTML.includes('SECURITY WARNING')
+            )) {
+                modal.remove();
+            }
+        });
+        
+        // Clean up security popup specifically
+        if (this.securityChecker && this.securityChecker.securityPopup) {
+            this.securityChecker.securityPopup.hide();
+        }
         
         super.cleanup();
     }
