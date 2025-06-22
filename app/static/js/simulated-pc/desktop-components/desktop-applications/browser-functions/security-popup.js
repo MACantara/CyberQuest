@@ -26,8 +26,32 @@ export class SecurityPopup {
         this.bindEvents();
         this.setupAutoClose();
         
+        // Add custom CSS for hover behavior
+        this.addHoverStyles();
+        
         // Update security indicator when popup is shown
         this.updateSecurityIndicator(securityCheck);
+    }
+
+    addHoverStyles() {
+        // Add custom styles to ensure proper hover behavior
+        const style = document.createElement('style');
+        style.textContent = `
+            .security-popup .hover-tooltip {
+                visibility: hidden;
+                opacity: 0;
+                transition: opacity 0.2s, visibility 0.2s;
+                pointer-events: none;
+            }
+            .security-popup .hover-group:hover .hover-tooltip {
+                visibility: visible;
+                opacity: 1;
+            }
+        `;
+        if (!document.querySelector('#security-hover-styles')) {
+            style.id = 'security-hover-styles';
+            document.head.appendChild(style);
+        }
     }
 
     hide() {
@@ -35,6 +59,12 @@ export class SecurityPopup {
             this.popup.remove();
             this.popup = null;
             this.isVisible = false;
+        }
+        
+        // Clean up hover styles when popup is hidden
+        const hoverStyles = document.querySelector('#security-hover-styles');
+        if (hoverStyles) {
+            hoverStyles.remove();
         }
     }
 
@@ -99,9 +129,9 @@ export class SecurityPopup {
             statusColor = 'red';
             statusIcon = 'shield-slash';
             warningIcon = `
-                <div class="relative group ml-2">
+                <div class="relative hover-group ml-2">
                     <i class="bi bi-exclamation-triangle text-red-400 text-xs cursor-help"></i>
-                    <span class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-red-300 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+                    <span class="hover-tooltip absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-red-300 text-xs rounded whitespace-nowrap z-10">
                         Insecure HTTP connection
                     </span>
                 </div>
@@ -110,9 +140,9 @@ export class SecurityPopup {
             statusColor = 'yellow';
             statusIcon = 'shield-exclamation';
             warningIcon = `
-                <div class="relative group ml-2">
+                <div class="relative hover-group ml-2">
                     <i class="bi bi-exclamation-triangle text-yellow-400 text-xs cursor-help"></i>
-                    <span class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-yellow-300 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+                    <span class="hover-tooltip absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-yellow-300 text-xs rounded whitespace-nowrap z-10">
                         HTTPS with certificate issues
                     </span>
                 </div>
@@ -154,9 +184,9 @@ export class SecurityPopup {
                             <div class="flex items-center space-x-2">
                                 <span class="text-white text-right max-w-48 break-words">${cert.issuer}</span>
                                 ${!cert.trusted ? `
-                                    <div class="relative group">
+                                    <div class="relative hover-group">
                                         <i class="bi bi-exclamation-triangle text-yellow-400 text-xs cursor-help"></i>
-                                        <span class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-yellow-300 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+                                        <span class="hover-tooltip absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-yellow-300 text-xs rounded whitespace-nowrap z-10">
                                             Untrusted certificate authority
                                         </span>
                                     </div>
@@ -170,16 +200,16 @@ export class SecurityPopup {
                             <div class="flex items-center space-x-2">
                                 <span class="text-white">${cert.expires}</span>
                                 ${isExpired ? `
-                                    <div class="relative group">
+                                    <div class="relative hover-group">
                                         <i class="bi bi-exclamation-triangle text-red-400 text-xs cursor-help"></i>
-                                        <span class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-red-300 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+                                        <span class="hover-tooltip absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-red-300 text-xs rounded whitespace-nowrap z-10">
                                             Certificate expired
                                         </span>
                                     </div>
                                 ` : isExpiringSoon ? `
-                                    <div class="relative group">
+                                    <div class="relative hover-group">
                                         <i class="bi bi-exclamation-triangle text-yellow-400 text-xs cursor-help"></i>
-                                        <span class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-yellow-300 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+                                        <span class="hover-tooltip absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-yellow-300 text-xs rounded whitespace-nowrap z-10">
                                             Certificate expires soon
                                         </span>
                                     </div>
@@ -193,9 +223,9 @@ export class SecurityPopup {
                             <div class="flex items-center space-x-2">
                                 <span class="text-white">${cert.algorithm}</span>
                                 ${isWeakAlgorithm ? `
-                                    <div class="relative group">
+                                    <div class="relative hover-group">
                                         <i class="bi bi-exclamation-triangle text-red-400 text-xs cursor-help"></i>
-                                        <span class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-red-300 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+                                        <span class="hover-tooltip absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-red-300 text-xs rounded whitespace-nowrap z-10">
                                             Weak encryption algorithm
                                         </span>
                                     </div>
@@ -211,9 +241,9 @@ export class SecurityPopup {
                                     ${cert.valid ? 'Valid' : 'Invalid'}
                                 </span>
                                 ${!cert.valid ? `
-                                    <div class="relative group">
+                                    <div class="relative hover-group">
                                         <i class="bi bi-exclamation-triangle text-red-400 text-xs cursor-help"></i>
-                                        <span class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-red-300 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+                                        <span class="hover-tooltip absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-red-300 text-xs rounded whitespace-nowrap z-10">
                                             Invalid certificate
                                         </span>
                                     </div>
