@@ -13,16 +13,16 @@ export class SecurityChecker {
             description: 'Known scam website attempting to steal personal information'
         });
 
+        this.threats.set('phishing-bank.com', {
+            level: 'critical',
+            type: 'phishing',
+            description: 'Fake banking website designed to steal credentials and personal information'
+        });
+
         this.threats.set('malware-download.net', {
             level: 'critical',
             type: 'malware',
             description: 'Website known to distribute malware'
-        });
-
-        this.threats.set('phishing-bank.com', {
-            level: 'high',
-            type: 'phishing',
-            description: 'Fake banking website designed to steal credentials'
         });
     }
 
