@@ -49,7 +49,7 @@ export class SecurityPopup {
                         Connection Security
                     </h3>
                     <button onclick="this.closest('.security-popup').remove()" 
-                            class="text-gray-400 hover:text-white transition-colors text-lg">
+                            class="text-gray-400 hover:text-white transition-colors text-lg cursor-pointer">
                         <i class="bi bi-x"></i>
                     </button>
                 </div>
