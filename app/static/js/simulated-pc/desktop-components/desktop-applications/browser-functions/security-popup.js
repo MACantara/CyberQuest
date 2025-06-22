@@ -98,11 +98,25 @@ export class SecurityPopup {
         if (!isHttps) {
             statusColor = 'red';
             statusIcon = 'shield-slash';
-            warningIcon = '<i class="bi bi-exclamation-triangle text-red-400 ml-2 text-xs"></i>';
+            warningIcon = `
+                <div class="relative group ml-2">
+                    <i class="bi bi-exclamation-triangle text-red-400 text-xs cursor-help"></i>
+                    <span class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-red-300 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+                        Insecure HTTP connection
+                    </span>
+                </div>
+            `;
         } else if (!hasValidCert) {
             statusColor = 'yellow';
             statusIcon = 'shield-exclamation';
-            warningIcon = '<i class="bi bi-exclamation-triangle text-yellow-400 ml-2 text-xs"></i>';
+            warningIcon = `
+                <div class="relative group ml-2">
+                    <i class="bi bi-exclamation-triangle text-yellow-400 text-xs cursor-help"></i>
+                    <span class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-900 text-yellow-300 text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10">
+                        HTTPS with certificate issues
+                    </span>
+                </div>
+            `;
         } else {
             statusColor = 'green';
             statusIcon = 'shield-check';
