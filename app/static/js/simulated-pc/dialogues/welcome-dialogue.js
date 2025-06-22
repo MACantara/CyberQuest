@@ -5,8 +5,7 @@ export class WelcomeDialogue extends BaseDialogue {
         super(desktop, character);
         this.messages = [
             {
-                text: "Welcome to CyberQuest, Agent! I'm your guide through this cybersecurity training simulation.",
-                type: 'typing'
+                text: "Welcome to CyberQuest, Agent! I'm your guide through this cybersecurity training simulation."
             },
             {
                 text: "In this simulation, you'll learn to identify and respond to various cyber threats. Your decisions will determine the outcome of each mission."

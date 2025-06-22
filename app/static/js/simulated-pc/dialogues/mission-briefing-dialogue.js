@@ -5,8 +5,7 @@ export class MissionBriefingDialogue extends BaseDialogue {
         super(desktop, character);
         this.messages = [
             {
-                text: "Agent, we have a critical situation. Our intelligence indicates a sophisticated cyber attack is underway.",
-                type: 'typing'
+                text: "Agent, we have a critical situation. Our intelligence indicates a sophisticated cyber attack is underway."
             },
             {
                 text: "Multiple organizations have reported suspicious email activity, network intrusions, and potential data breaches."

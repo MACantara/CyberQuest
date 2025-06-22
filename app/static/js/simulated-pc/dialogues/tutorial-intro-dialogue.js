@@ -5,8 +5,7 @@ export class TutorialIntroDialogue extends BaseDialogue {
         super(desktop, character);
         this.messages = [
             {
-                text: "Hello! I'm Dr. Cipher, your cybersecurity instructor. Before we dive into real scenarios, let me show you around the system.",
-                type: 'typing'
+                text: "Hello! I'm Dr. Cipher, your cybersecurity instructor. Before we dive into real scenarios, let me show you around the system."
             },
             {
                 text: "This desktop simulation contains all the tools a cybersecurity professional uses daily: email clients, terminals, network monitors, and security scanners."
