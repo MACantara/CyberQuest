@@ -1,8 +1,11 @@
+import { SecurityPopup } from './security-popup.js';
+
 export class SecurityChecker {
     constructor(browserApp) {
         this.browserApp = browserApp;
         this.threats = new Map();
         this.certificates = new Map();
+        this.securityPopup = new SecurityPopup(browserApp);
         this.initializeThreats();
         this.initializeCertificates();
     }
@@ -313,7 +316,7 @@ export class SecurityChecker {
         `;
 
         // Add click handler to show security details
-        indicator.onclick = () => this.showSecurityDetails(securityCheck);
+        indicator.onclick = () => this.securityPopup.show(securityCheck);
     }
 
     getSecurityIcon(securityCheck) {
@@ -346,124 +349,6 @@ export class SecurityChecker {
         };
 
         return iconMap[securityCheck.securityLevel] || iconMap['insecure'];
-    }
-
-    showSecurityDetails(securityCheck) {
-        // Remove any existing security popup
-        const existingPopup = document.querySelector('.security-popup');
-        if (existingPopup) {
-            existingPopup.remove();
-        }
-
-        const popup = document.createElement('div');
-        popup.className = 'security-popup absolute bg-gray-800 border border-gray-600 rounded-lg shadow-2xl z-50 min-w-80 max-w-96';
-        
-        // Position popup near the security indicator
-        const indicator = this.browserApp.windowElement?.querySelector('.security-indicator');
-        if (indicator) {
-            const rect = indicator.getBoundingClientRect();
-            popup.style.left = `${rect.left - 300}px`;
-            popup.style.top = `${rect.bottom + 10}px`;
-        }
-
-        popup.innerHTML = `
-            <div class="p-4">
-                <div class="flex items-center justify-between mb-3">
-                    <h3 class="text-lg font-bold text-white flex items-center">
-                        <i class="bi bi-${this.getSecurityIcon(securityCheck).icon} ${this.getSecurityIcon(securityCheck).color} mr-2"></i>
-                        Connection Security
-                    </h3>
-                    <button onclick="this.closest('.security-popup').remove()" 
-                            class="text-gray-400 hover:text-white transition-colors text-lg">
-                        <i class="bi bi-x"></i>
-                    </button>
-                </div>
-                
-                <div class="space-y-3">
-                    <!-- Connection Status -->
-                    <div class="bg-gray-700 rounded p-3">
-                        <h4 class="text-green-400 font-medium mb-1 text-sm">Connection Status</h4>
-                        <p class="text-white text-xs">${securityCheck.connectionSecurity.description}</p>
-                        <p class="text-gray-300 text-xs mt-1">${securityCheck.connectionSecurity.details}</p>
-                    </div>
-
-                    <!-- Certificate Information -->
-                    ${securityCheck.certificate ? `
-                        <div class="bg-gray-700 rounded p-3">
-                            <h4 class="text-blue-400 font-medium mb-2 text-sm">Certificate Information</h4>
-                            <div class="text-xs space-y-1">
-                                <div class="flex justify-between">
-                                    <span class="text-gray-400">Issued by:</span>
-                                    <span class="text-white text-right max-w-48 break-words">${securityCheck.certificate.issuer}</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-gray-400">Valid until:</span>
-                                    <span class="text-white">${securityCheck.certificate.expires}</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-gray-400">Algorithm:</span>
-                                    <span class="text-white">${securityCheck.certificate.algorithm}</span>
-                                </div>
-                                <div class="flex justify-between">
-                                    <span class="text-gray-400">Status:</span>
-                                    <span class="text-${securityCheck.certificate.valid ? 'green' : 'red'}-400">
-                                        ${securityCheck.certificate.valid ? 'Valid' : 'Invalid'}
-                                    </span>
-                                </div>
-                                ${securityCheck.certificate.extendedValidation ? 
-                                    '<div class="text-green-400 text-xs mt-1">✓ Extended Validation</div>' : ''
-                                }
-                            </div>
-                        </div>
-                    ` : `
-                        <div class="bg-red-900/30 border border-red-500/30 rounded p-3">
-                            <h4 class="text-red-400 font-medium mb-1 text-sm">No Certificate</h4>
-                            <p class="text-red-300 text-xs">This website does not have an SSL certificate.</p>
-                        </div>
-                    `}
-
-                    <!-- Warnings -->
-                    ${securityCheck.warnings.length > 0 ? `
-                        <div class="bg-red-900/30 border border-red-500/30 rounded p-3">
-                            <h4 class="text-red-400 font-medium mb-2 text-sm">Security Warnings</h4>
-                            <div class="space-y-1">
-                                ${securityCheck.warnings.map(warning => `
-                                    <div class="flex items-start space-x-2">
-                                        <i class="bi bi-exclamation-triangle text-${warning.severity === 'high' ? 'red' : warning.severity === 'medium' ? 'yellow' : 'blue'}-400 mt-0.5 text-xs"></i>
-                                        <span class="text-gray-300 text-xs">${warning.message}</span>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    ` : `
-                        <div class="bg-green-900/30 border border-green-500/30 rounded p-3">
-                            <h4 class="text-green-400 font-medium mb-1 text-sm">✓ No Security Issues</h4>
-                            <p class="text-green-300 text-xs">This connection appears secure.</p>
-                        </div>
-                    `}
-                </div>
-            </div>
-        `;
-
-        document.body.appendChild(popup);
-
-        // Auto-close popup after 15 seconds
-        setTimeout(() => {
-            if (popup.parentNode) {
-                popup.remove();
-            }
-        }, 15000);
-
-        // Close popup when clicking outside
-        const closeOnOutsideClick = (e) => {
-            if (!popup.contains(e.target) && !indicator?.contains(e.target)) {
-                popup.remove();
-                document.removeEventListener('click', closeOnOutsideClick);
-            }
-        };
-        setTimeout(() => {
-            document.addEventListener('click', closeOnOutsideClick);
-        }, 100);
     }
 
     runSecurityScan(url) {
