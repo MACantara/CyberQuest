@@ -81,32 +81,10 @@ export class SecurityPopup {
                 </div>
                 
                 <div class="space-y-3">
-                    ${this.createSecurityStatusBanner(securityCheck)}
                     ${this.createConnectionStatusSection(securityCheck)}
                     ${this.createCertificateSection(securityCheck)}
                     ${this.createWarningsSection(securityCheck)}
                     ${this.createThreatSection(securityCheck)}
-                </div>
-            </div>
-        `;
-    }
-
-    createSecurityStatusBanner(securityCheck) {
-        const statusMap = {
-            'secure-ev': { color: 'green', message: 'This connection is secure with Extended Validation', icon: 'shield-check' },
-            'secure': { color: 'green', message: 'This connection is secure', icon: 'shield-check' },
-            'warning': { color: 'yellow', message: 'This connection has security warnings', icon: 'shield-exclamation' },
-            'dangerous': { color: 'red', message: 'This website is dangerous - avoid entering personal information', icon: 'shield-x' },
-            'insecure': { color: 'red', message: 'This connection is not secure', icon: 'shield-slash' }
-        };
-
-        const status = statusMap[securityCheck.securityLevel] || statusMap['insecure'];
-        
-        return `
-            <div class="bg-${status.color}-900/30 border border-${status.color}-500/30 rounded p-3">
-                <div class="flex items-center space-x-2">
-                    <i class="bi bi-${status.icon} text-${status.color}-400"></i>
-                    <span class="text-${status.color}-300 font-medium text-sm">${status.message}</span>
                 </div>
             </div>
         `;
