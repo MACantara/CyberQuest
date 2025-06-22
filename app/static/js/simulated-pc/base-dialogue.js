@@ -71,7 +71,7 @@ export class BaseDialogue {
                 </div>
                 
                 <div class="flex justify-between items-center mt-auto">
-                    <div class="text-green-400 text-sm">
+                    <div class="text-green-400 text-md">
                         ${this.currentMessageIndex + 1} / ${this.messages.length}
                     </div>
                     
