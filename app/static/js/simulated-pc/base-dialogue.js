@@ -63,29 +63,31 @@ export class BaseDialogue {
                  class="w-30 h-30 rounded border-3 border-green-500 object-cover shadow-lg shadow-green-500/30 flex-shrink-0" 
                  onerror="this.src='/static/images/avatars/default.png'" width="120" height="120">
             
-            <div class="flex-1 flex flex-col min-h-[200px]">
+            <div class="flex-1 flex flex-col min-h-[200px] relative">
                 <div class="text-green-500 text-xl font-bold mb-4 text-left">${characterName}</div>
                 
                 <div class="text-green-400 text-lg leading-relaxed mb-8 flex-grow text-left" id="dialogue-text-content">
                     ${this.shouldTypeMessage(message) ? '' : message.text}
                 </div>
                 
-                <div class="flex justify-end gap-6 mt-auto">
-                    ${this.currentMessageIndex > 0 ? 
-                        `<button class="text-gray-300 hover:text-white transition-colors duration-200 cursor-pointer text-md" onclick="${this.getPreviousHandler()}">
-                            ← Previous
-                        </button>` : ''
-                    }
-                    <button class="text-green-400 hover:text-green-300 transition-colors duration-200 cursor-pointer text-md" onclick="${this.getNextHandler()}">
-                        ${isLastMessage ? this.getFinalButtonText() : 'Next →'}
-                    </button>
-                    <button class="text-gray-300 hover:text-white transition-colors duration-200 cursor-pointer text-md" onclick="${this.getSkipHandler()}">
-                        Skip
-                    </button>
-                </div>
-                
-                <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-green-400 text-sm opacity-60">
-                    ${this.currentMessageIndex + 1} / ${this.messages.length}
+                <div class="flex justify-between items-center mt-auto">
+                    <div class="text-green-400 text-sm">
+                        ${this.currentMessageIndex + 1} / ${this.messages.length}
+                    </div>
+                    
+                    <div class="flex gap-6">
+                        ${this.currentMessageIndex > 0 ? 
+                            `<button class="text-gray-300 hover:text-white transition-colors duration-200 cursor-pointer text-md" onclick="${this.getPreviousHandler()}">
+                                ← Previous
+                            </button>` : ''
+                        }
+                        <button class="text-green-400 hover:text-green-300 transition-colors duration-200 cursor-pointer text-md" onclick="${this.getNextHandler()}">
+                            ${isLastMessage ? this.getFinalButtonText() : 'Next →'}
+                        </button>
+                        <button class="text-gray-300 hover:text-white transition-colors duration-200 cursor-pointer text-md" onclick="${this.getSkipHandler()}">
+                            Skip
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
