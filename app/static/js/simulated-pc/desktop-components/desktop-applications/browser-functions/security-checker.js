@@ -130,9 +130,12 @@ export class SecurityChecker {
         let indicator = this.browserApp.windowElement?.querySelector('.security-indicator');
         if (!indicator) {
             indicator = document.createElement('div');
-            indicator.className = 'security-indicator absolute right-2 top-1/2 transform -translate-y-1/2';
+            indicator.className = 'security-indicator absolute left-2 top-1/2 transform -translate-y-1/2';
             urlBar.parentElement?.style.setProperty('position', 'relative');
             urlBar.parentElement?.appendChild(indicator);
+            
+            // Add left padding to URL bar to make space for the indicator
+            urlBar.style.paddingLeft = '2rem';
         }
 
         // Update indicator based on security level
