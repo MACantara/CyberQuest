@@ -116,6 +116,81 @@ export class BrowserApp extends WindowBase {
         setTimeout(() => {
             this.loadInitialPage();
         }, 500);
+
+        // Setup dynamic security monitoring
+        this.setupSecurityMonitoring();
+    }
+
+    setupSecurityMonitoring() {
+        // Monitor URL changes and update security status
+        const urlBar = this.windowElement?.querySelector('#browser-url-bar');
+        if (urlBar) {
+            urlBar.addEventListener('input', () => {
+                // Debounce security checks
+                clearTimeout(this.securityCheckTimeout);
+                this.securityCheckTimeout = setTimeout(() => {
+                    if (urlBar.value) {
+                        this.updateSecurityStatus(urlBar.value);
+                    }
+                }, 500);
+            });
+
+            // Also check on focus/blur events
+            urlBar.addEventListener('blur', () => {
+                if (urlBar.value) {
+                    this.updateSecurityStatus(urlBar.value);
+                }
+            });
+        }
+    }
+
+    updateSecurityStatus(url) {
+        if (this.securityChecker) {
+            const securityCheck = this.securityChecker.runSecurityScan(url);
+            
+            // Update any open security popup
+            if (this.securityChecker.securityPopup && this.securityChecker.securityPopup.isVisible) {
+                this.securityChecker.securityPopup.refreshContent(securityCheck);
+            }
+            
+            return securityCheck;
+        }
+    }
+
+    loadInitialPage() {
+        const initialUrl = 'https://suspicious-site.com';
+        
+        // Set the URL in the input field
+        const urlBar = this.windowElement?.querySelector('#browser-url-bar');
+        if (urlBar) {
+            urlBar.value = initialUrl;
+        }
+        
+        this.pageRenderer.renderPage(initialUrl);
+        
+        // Ensure security check runs after page render
+        setTimeout(() => {
+            this.updateSecurityStatus(initialUrl);
+        }, 100);
+    }
+
+    toggleBookmarksBar() {
+        const bookmarksBar = this.windowElement?.querySelector('#bookmarks-bar');
+        const toggleBtn = this.windowElement?.querySelector('[data-action="toggle-bookmarks"]');
+        
+        if (bookmarksBar && toggleBtn) {
+            const isHidden = bookmarksBar.style.display === 'none';
+            
+            if (isHidden) {
+                bookmarksBar.style.display = 'flex';
+                toggleBtn.classList.add('bg-green-600');
+                toggleBtn.classList.remove('bg-gray-600');
+            } else {
+                bookmarksBar.style.display = 'none';
+                toggleBtn.classList.remove('bg-green-600');
+                toggleBtn.classList.add('bg-gray-600');
+            }
+        }
     }
 
     bindBrowserEvents() {
@@ -145,52 +220,40 @@ export class BrowserApp extends WindowBase {
                 const url = item.getAttribute('data-url');
                 if (url) {
                     this.navigation.navigateToUrl(url);
+                    // Update security status after navigation
+                    setTimeout(() => this.updateSecurityStatus(url), 200);
                 }
             });
         });
 
-        // URL bar focus styling
+        // URL bar focus styling and security updates
         const urlBar = windowElement.querySelector('#browser-url-bar');
         if (urlBar) {
             urlBar.addEventListener('focus', () => {
                 urlBar.select();
             });
-        }
-    }
-
-    loadInitialPage() {
-        const initialUrl = 'https://suspicious-site.com';
-        
-        // Set the URL in the input field
-        const urlBar = this.windowElement?.querySelector('#browser-url-bar');
-        if (urlBar) {
-            urlBar.value = initialUrl;
-        }
-        
-        this.pageRenderer.renderPage(initialUrl);
-        this.securityChecker.runSecurityScan(initialUrl);
-    }
-
-    toggleBookmarksBar() {
-        const bookmarksBar = this.windowElement?.querySelector('#bookmarks-bar');
-        const toggleBtn = this.windowElement?.querySelector('[data-action="toggle-bookmarks"]');
-        
-        if (bookmarksBar && toggleBtn) {
-            const isHidden = bookmarksBar.style.display === 'none';
             
-            if (isHidden) {
-                bookmarksBar.style.display = 'flex';
-                toggleBtn.classList.add('bg-green-600');
-                toggleBtn.classList.remove('bg-gray-600');
-            } else {
-                bookmarksBar.style.display = 'none';
-                toggleBtn.classList.remove('bg-green-600');
-                toggleBtn.classList.add('bg-gray-600');
-            }
+            // Handle Enter key in URL bar
+            urlBar.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const url = urlBar.value.trim();
+                    if (url) {
+                        // Add protocol if missing
+                        const fullUrl = url.startsWith('http') ? url : `https://${url}`;
+                        this.navigation.navigateToUrl(fullUrl);
+                        setTimeout(() => this.updateSecurityStatus(fullUrl), 200);
+                    }
+                }
+            });
         }
     }
 
     cleanup() {
+        // Clear any pending security check timeouts
+        if (this.securityCheckTimeout) {
+            clearTimeout(this.securityCheckTimeout);
+        }
+        
         // Clean up global reference
         if (window.browserApp === this) {
             window.browserApp = null;
