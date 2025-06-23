@@ -64,10 +64,6 @@ export class EmailApp extends WindowBase {
                         <div class="text-gray-500 text-xs mb-2">${email.time}</div>
                     </div>
                     <div class="flex space-x-2">
-                        ${folderId !== 'trash'
-                            ? `<button class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-xs cursor-pointer" id="delete-btn">Delete</button>`
-                            : `<button class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 transition-colors text-xs cursor-pointer" id="restore-btn">Restore</button>`
-                        }
                         <button class="px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs cursor-pointer" id="back-btn">Back</button>
                     </div>
                 </div>
@@ -113,54 +109,12 @@ export class EmailApp extends WindowBase {
         });
 
         // Email detail actions
-        const deleteBtn = windowElement.querySelector('#delete-btn');
-        if (deleteBtn) {
-            deleteBtn.addEventListener('click', () => {
-                this.moveEmailToTrash();
-            });
-        }
-        const restoreBtn = windowElement.querySelector('#restore-btn');
-        if (restoreBtn) {
-            restoreBtn.addEventListener('click', () => {
-                this.restoreEmailFromTrash();
-            });
-        }
         const backBtn = windowElement.querySelector('#back-btn');
         if (backBtn) {
             backBtn.addEventListener('click', () => {
                 this.state.selectEmail(null);
                 this.updateContent();
             });
-        }
-    }
-
-    moveEmailToTrash() {
-        const folder = this.state.getCurrentFolder();
-        const emailId = this.state.getSelectedEmailId();
-        if (!emailId || folder === 'trash') return;
-        // Remove from current folder and add to trash
-        const emails = getEmailsByFolder(folder);
-        const idx = emails.findIndex(e => e.id === emailId);
-        if (idx !== -1) {
-            const [email] = emails.splice(idx, 1);
-            getEmailsByFolder('trash').unshift(email);
-            this.state.selectEmail(null);
-            this.updateContent();
-        }
-    }
-
-    restoreEmailFromTrash() {
-        const emailId = this.state.getSelectedEmailId();
-        if (!emailId) return;
-        // Remove from trash and add to inbox
-        const trash = getEmailsByFolder('trash');
-        const idx = trash.findIndex(e => e.id === emailId);
-        if (idx !== -1) {
-            const [email] = trash.splice(idx, 1);
-            getEmailsByFolder('inbox').unshift(email);
-            this.state.setFolder('inbox');
-            this.state.selectEmail(null);
-            this.updateContent();
         }
     }
 }
