@@ -1,5 +1,5 @@
 export const PhishingBankPage = {
-    url: 'https://phishing-bank.com',
+    url: 'https://secure-verify-support.com',
     title: 'Secure Banking - Login',
     securityLevel: 'dangerous',
     
