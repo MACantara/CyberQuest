@@ -1,4 +1,6 @@
 import { WindowBase } from '../window-base.js';
+import { FileNavigator } from './file-manager-functions/file-navigator.js';
+import { FileViewer } from './file-manager-functions/file-viewer.js';
 
 export class FileManagerApp extends WindowBase {
     constructor() {
@@ -6,6 +8,10 @@ export class FileManagerApp extends WindowBase {
             width: '75%',
             height: '65%'
         });
+        
+        this.navigator = null;
+        this.fileViewer = null;
+        this.showHidden = false;
     }
 
     createContent() {
@@ -39,5 +45,183 @@ export class FileManagerApp extends WindowBase {
                 </div>
             </div>
         `;
+    }
+
+    initialize() {
+        super.initialize();
+        
+        this.navigator = new FileNavigator(this);
+        this.fileViewer = new FileViewer(this);
+        
+        this.bindEvents();
+        this.renderDirectory();
+    }
+
+    bindEvents() {
+        const windowElement = this.windowElement;
+        if (!windowElement) return;
+
+        // Navigation buttons
+        const backBtn = windowElement.querySelector('#back-btn');
+        const forwardBtn = windowElement.querySelector('#forward-btn');
+        const homeBtn = windowElement.querySelector('#home-btn');
+
+        if (backBtn) {
+            backBtn.addEventListener('click', () => {
+                this.navigator.goBack();
+            });
+        }
+
+        if (forwardBtn) {
+            forwardBtn.addEventListener('click', () => {
+                this.navigator.goForward();
+            });
+        }
+
+        if (homeBtn) {
+            homeBtn.addEventListener('click', () => {
+                this.navigator.goHome();
+            });
+        }
+
+        // Keyboard shortcuts
+        windowElement.addEventListener('keydown', (e) => {
+            if (e.ctrlKey) {
+                switch (e.key) {
+                    case 'h':
+                        e.preventDefault();
+                        this.toggleHiddenFiles();
+                        break;
+                    case 'r':
+                        e.preventDefault();
+                        this.renderDirectory();
+                        break;
+                }
+            } else {
+                switch (e.key) {
+                    case 'Backspace':
+                        e.preventDefault();
+                        this.navigator.navigateUp();
+                        break;
+                    case 'F5':
+                        e.preventDefault();
+                        this.renderDirectory();
+                        break;
+                }
+            }
+        });
+    }
+
+    renderDirectory() {
+        const fileGrid = this.windowElement?.querySelector('#file-grid');
+        if (!fileGrid) return;
+
+        const items = this.navigator.getVisibleItems(this.showHidden);
+        
+        fileGrid.innerHTML = `
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 auto-rows-max">
+                ${items.map(item => this.createFileItemHTML(item)).join('')}
+            </div>
+        `;
+
+        this.bindFileEvents();
+    }
+
+    createFileItemHTML(item) {
+        const suspiciousClass = item.suspicious ? 'border border-red-500 bg-red-900 bg-opacity-20' : '';
+        const animationClass = item.suspicious ? 'animate-pulse' : '';
+        
+        return `
+            <div class="flex flex-col items-center p-3 rounded hover:bg-gray-700 cursor-pointer transition-colors duration-200 max-w-24 ${suspiciousClass}" 
+                 data-name="${item.name}" 
+                 data-type="${item.type}"
+                 title="${item.name}${item.size ? ' (' + item.size + ')' : ''}">
+                <i class="bi ${item.icon} text-4xl ${item.color} mb-2 max-h-12 flex items-center justify-center ${animationClass}"></i>
+                <span class="text-xs ${item.suspicious ? 'text-red-400' : 'text-white'} text-center break-words leading-tight">${item.name}</span>
+            </div>
+        `;
+    }
+
+    bindFileEvents() {
+        const fileItems = this.windowElement?.querySelectorAll('[data-name]');
+        if (!fileItems) return;
+
+        fileItems.forEach(item => {
+            item.addEventListener('dblclick', () => {
+                const name = item.getAttribute('data-name');
+                const type = item.getAttribute('data-type');
+                
+                if (type === 'directory') {
+                    this.openDirectory(name);
+                } else {
+                    this.openFile(name);
+                }
+            });
+
+            item.addEventListener('click', (e) => {
+                if (e.detail === 1) { // Single click
+                    this.selectItem(item);
+                }
+            });
+        });
+    }
+
+    selectItem(item) {
+        // Remove previous selection
+        const selected = this.windowElement?.querySelector('.bg-blue-600');
+        if (selected) {
+            selected.classList.remove('bg-blue-600', 'bg-opacity-50');
+        }
+        
+        // Select new item
+        item.classList.add('bg-blue-600', 'bg-opacity-50');
+    }
+
+    openDirectory(dirName) {
+        const newPath = `${this.navigator.currentPath}/${dirName}`;
+        this.navigator.navigateTo(newPath);
+    }
+
+    openFile(fileName) {
+        const items = this.navigator.getVisibleItems(this.showHidden);
+        const fileData = items.find(item => item.name === fileName);
+        
+        if (fileData) {
+            this.fileViewer.openFile(fileName, fileData);
+        }
+    }
+
+    updateAddressBar(path) {
+        const addressBar = this.windowElement?.querySelector('#address-bar');
+        if (addressBar) {
+            addressBar.textContent = path;
+        }
+    }
+
+    updateNavigationButtons() {
+        const backBtn = this.windowElement?.querySelector('#back-btn');
+        const forwardBtn = this.windowElement?.querySelector('#forward-btn');
+
+        if (backBtn) {
+            backBtn.disabled = !this.navigator.canGoBack();
+            backBtn.classList.toggle('opacity-50', !this.navigator.canGoBack());
+        }
+
+        if (forwardBtn) {
+            forwardBtn.disabled = !this.navigator.canGoForward();
+            forwardBtn.classList.toggle('opacity-50', !this.navigator.canGoForward());
+        }
+    }
+
+    toggleHiddenFiles() {
+        this.showHidden = !this.showHidden;
+        this.renderDirectory();
+    }
+
+    cleanup() {
+        if (this.fileViewer) {
+            this.fileViewer.closeViewer();
+        }
+        super.cleanup();
     }
 }
