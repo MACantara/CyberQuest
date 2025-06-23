@@ -10,7 +10,13 @@ export const BankEmail = {
             We have detected suspicious activity on your bank account. For your protection, your online access has been <strong>immediately suspended</strong>.
         </p>
         <p>
-            To restore access and avoid permanent account closure, please <a href="https://phishing-bank.com" target="_blank" class="text-blue-600 underline">verify your account now</a> by confirming your personal and banking information.
+            To restore access and avoid permanent account closure, please 
+            <a href="#" 
+               class="text-blue-600 underline open-browser-link" 
+               data-url="https://phishing-bank.com">
+               verify your account now
+            </a> 
+            by confirming your personal and banking information.
         </p>
         <p>
             Failure to act within 24 hours will result in your account being permanently locked.
