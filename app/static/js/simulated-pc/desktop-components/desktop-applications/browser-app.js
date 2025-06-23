@@ -168,6 +168,11 @@ export class BrowserApp extends WindowBase {
         
         this.pageRenderer.renderPage(initialUrl);
         
+        // Emit navigation event for network monitoring
+        document.dispatchEvent(new CustomEvent('browser-navigate', {
+            detail: { url: initialUrl }
+        }));
+        
         // Ensure security check runs after page render
         setTimeout(() => {
             this.updateSecurityStatus(initialUrl);
@@ -201,7 +206,12 @@ export class BrowserApp extends WindowBase {
         const homeBtn = windowElement.querySelector('[data-action="home"]');
         if (homeBtn) {
             homeBtn.addEventListener('click', () => {
-                this.navigation.navigateToUrl('https://cyberquest.com');
+                const url = 'https://cyberquest.com';
+                this.navigation.navigateToUrl(url);
+                // Emit navigation event
+                document.dispatchEvent(new CustomEvent('browser-navigate', {
+                    detail: { url: url }
+                }));
             });
         }
 
@@ -220,6 +230,10 @@ export class BrowserApp extends WindowBase {
                 const url = item.getAttribute('data-url');
                 if (url) {
                     this.navigation.navigateToUrl(url);
+                    // Emit navigation event
+                    document.dispatchEvent(new CustomEvent('browser-navigate', {
+                        detail: { url: url }
+                    }));
                     // Update security status after navigation
                     setTimeout(() => this.updateSecurityStatus(url), 200);
                 }
@@ -241,6 +255,10 @@ export class BrowserApp extends WindowBase {
                         // Add protocol if missing
                         const fullUrl = url.startsWith('http') ? url : `https://${url}`;
                         this.navigation.navigateToUrl(fullUrl);
+                        // Emit navigation event
+                        document.dispatchEvent(new CustomEvent('browser-navigate', {
+                            detail: { url: fullUrl }
+                        }));
                         setTimeout(() => this.updateSecurityStatus(fullUrl), 200);
                     }
                 }
