@@ -1,16 +1,27 @@
-export const DesktopDirectory = {
-    path: '/home/trainee/Desktop',
-    type: 'directory',
-    name: 'Desktop',
-    items: [
-        { 
-            name: 'CyberQuest.lnk', 
-            type: 'shortcut', 
-            icon: 'bi-link-45deg', 
+import { BaseDirectory } from './base-directory.js';
+
+class DesktopDirectoryClass extends BaseDirectory {
+    constructor() {
+        super({
+            path: '/home/trainee/Desktop',
+            name: 'Desktop'
+        });
+    }
+
+    initializeItems() {
+        this.addFile({
+            name: 'CyberQuest.lnk',
+            icon: 'bi-link-45deg',
             color: 'text-blue-400',
-            target: 'https://cyberquest.com',
             size: '1 KB',
-            modified: '2024-12-20 09:00'
-        }
-    ]
-};
+            modified: '2024-12-20 09:00',
+            metadata: {
+                target: 'https://cyberquest.com',
+                description: 'Shortcut to CyberQuest Training Platform'
+            }
+        });
+    }
+}
+
+// Export as directory object for compatibility
+export const DesktopDirectory = new DesktopDirectoryClass().toDirectoryObject();
