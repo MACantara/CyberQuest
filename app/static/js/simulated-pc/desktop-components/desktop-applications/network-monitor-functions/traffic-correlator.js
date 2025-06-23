@@ -23,14 +23,19 @@ export class TrafficCorrelator {
 
     handleBrowserNavigation(url) {
         if (this.app.packetCapture && this.app.packetCapture.isCapturing) {
+            // Generate DNS lookup first (system traffic)
+            this.app.packetCapture.generateSystemTraffic(`DNS resolution for ${url}`);
+            
             // Generate realistic traffic for the website being visited
-            this.app.packetCapture.generateWebsiteTraffic(url);
+            setTimeout(() => {
+                this.app.packetCapture.generateWebsiteTraffic(url);
+            }, 200);
             
             // Add a notification in the network monitor
             setTimeout(() => {
                 this.addTrafficAlert('Website Visit', `User navigated to ${url}`, 
                     url.includes('suspicious') || url.includes('phishing'));
-            }, 1000);
+            }, 1500);
         }
     }
 
@@ -44,21 +49,26 @@ export class TrafficCorrelator {
                 const suspicious = sender.includes('verifysystem-alerts.net') || 
                                  sender.includes('totally-real.com');
                 this.addTrafficAlert('Email Activity', `Email opened from ${sender}`, suspicious);
-            }, 500);
+            }, 800);
         }
     }
 
     handleEmailLinkClick(url, suspicious) {
         if (this.app.packetCapture && this.app.packetCapture.isCapturing) {
+            // Generate DNS lookup for the clicked link
+            this.app.packetCapture.generateSystemTraffic(`DNS resolution for email link: ${url}`);
+            
             // Generate traffic for the clicked link
-            this.app.packetCapture.generateWebsiteTraffic(url);
+            setTimeout(() => {
+                this.app.packetCapture.generateWebsiteTraffic(url);
+            }, 300);
             
             // Add warning if suspicious
             setTimeout(() => {
                 this.addTrafficAlert('Link Click', 
-                    `User clicked link to ${url}${suspicious ? ' [SUSPICIOUS]' : ''}`, 
+                    `User clicked email link to ${url}${suspicious ? ' [SUSPICIOUS]' : ''}`, 
                     suspicious);
-            }, 300);
+            }, 600);
         }
     }
 
