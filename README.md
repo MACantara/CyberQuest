@@ -98,7 +98,7 @@ pip install -r requirements.txt
 # On Windows
 copy .env.template .env
 
-# On macOS/Linux
+# On MacOS/Linux
 cp .env.template .env
 ```
 
