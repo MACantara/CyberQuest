@@ -1,7 +1,26 @@
 import { BaseCommand } from './base-command.js';
 
 export class LsCommand extends BaseCommand {
+    getHelp() {
+        return {
+            name: 'ls',
+            description: 'List directory contents',
+            usage: 'ls [OPTION]... [FILE]...',
+            options: [
+                { flag: '-a, --all', description: 'Show hidden files and directories' },
+                { flag: '-l', description: 'Use long listing format with detailed information' },
+                { flag: '-la', description: 'Combine -l and -a options' },
+                { flag: '--help', description: 'Display this help and exit' }
+            ]
+        };
+    }
+
     execute(args) {
+        if (args.includes('--help')) {
+            this.showHelp();
+            return;
+        }
+
         const showAll = args.includes('-a') || args.includes('-la') || args.includes('-al');
         const longFormat = args.includes('-l') || args.includes('-la') || args.includes('-al');
         

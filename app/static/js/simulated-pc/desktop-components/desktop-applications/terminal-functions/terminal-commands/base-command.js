@@ -9,6 +9,27 @@ export class BaseCommand {
         throw new Error('Command must implement execute method');
     }
 
+    getHelp() {
+        return {
+            name: this.constructor.name.replace('Command', '').toLowerCase(),
+            description: 'No description available',
+            usage: 'command',
+            options: []
+        };
+    }
+
+    showHelp() {
+        const help = this.getHelp();
+        this.addOutput(`Usage: ${help.usage}`);
+        this.addOutput(`Description: ${help.description}`);
+        if (help.options.length > 0) {
+            this.addOutput('Options:');
+            help.options.forEach(option => {
+                this.addOutput(`  ${option.flag.padEnd(12)} ${option.description}`);
+            });
+        }
+    }
+
     addOutput(text, className = '') {
         this.processor.addOutput(text, className);
     }
