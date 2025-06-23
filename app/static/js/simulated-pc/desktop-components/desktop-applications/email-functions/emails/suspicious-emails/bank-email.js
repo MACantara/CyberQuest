@@ -1,21 +1,23 @@
 export const BankEmail = {
     id: 'bank-email',
     folder: 'inbox',
-    sender: 'noreply@bank.com',
-    subject: 'Your account has been suspended',
+    sender: 'account-security@verifysystem-alerts.net',
+    subject: 'Immediate Action Required: Account Verification Needed',
     time: '3 hours ago',
     body: `
         <p>Dear Customer,</p>
         <p>
-            We have detected unusual activity on your bank account and, as a precaution, your online access has been temporarily suspended.
-            To restore access, please log in to your account and verify your recent transactions.
+            We have detected suspicious activity on your bank account. For your protection, your online access has been <strong>immediately suspended</strong>.
         </p>
         <p>
-            If you did not attempt to access your account recently, please contact our customer support immediately at <a href="https://example-bank.com/support" target="_blank">https://example-bank.com/support</a> or call 1-800-BANK-123.
+            To restore access and avoid permanent account closure, please <a href="https://phishing-bank.com" target="_blank" class="text-blue-600 underline">verify your account now</a> by confirming your personal and banking information.
         </p>
         <p>
-            Thank you for helping us keep your account secure.<br>
-            <strong>Example Bank Security Team</strong>
+            Failure to act within 24 hours will result in your account being permanently locked.
+        </p>
+        <p>
+            Thank you for your prompt attention.<br>
+            <strong>SecureBank Security Team</strong>
         </p>
     `,
     suspicious: true
