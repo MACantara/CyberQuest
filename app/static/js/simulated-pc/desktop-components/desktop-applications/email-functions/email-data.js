@@ -12,8 +12,7 @@ export const EMAILS = {
             subject: 'URGENT: Claim Your Inheritance!',
             time: '2 min ago',
             body: `<p>Dear User,</p>
-                   <p>You have inherited $10,000,000! Please send your bank details to claim your prize.</p>
-                   <p><strong>Warning:</strong> This is a classic phishing email for training purposes.</p>`,
+                   <p>You have inherited $10,000,000! Please send your bank details to claim your prize.</p>`,
             suspicious: true
         },
         {
@@ -31,8 +30,7 @@ export const EMAILS = {
             subject: 'Your account has been suspended',
             time: '3 hours ago',
             body: `<p>Dear Customer,</p>
-                   <p>Your bank account has been suspended due to suspicious activity. Please <a href="#">verify your account</a> to restore access.</p>
-                   <p><strong>Warning:</strong> This is a simulated phishing attempt for training.</p>`,
+                   <p>Your bank account has been suspended due to suspicious activity. Please <a href="#">verify your account</a> to restore access.</p>`,
             suspicious: true
         }
     ],

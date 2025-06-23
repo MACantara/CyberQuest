@@ -70,13 +70,6 @@ export class EmailApp extends WindowBase {
                 <div class="bg-gray-800 border border-gray-700 rounded p-4 text-white text-sm">
                     ${email.body}
                 </div>
-                ${email.suspicious
-                    ? `<div class="mt-4 bg-red-900/30 border border-red-500/30 rounded p-3 text-red-300 text-sm">
-                        <i class="bi bi-exclamation-triangle text-red-400 mr-2"></i>
-                        This email is suspicious. Do not click links or provide personal information.
-                       </div>`
-                    : ''
-                }
             </div>
         `;
     }
