@@ -131,6 +131,20 @@ export class EmailApp extends WindowBase {
                 this.state.selectEmail(emailId);
                 // Mark as read
                 this.readEmails.add(emailId);
+                
+                // Find the email and emit event for network monitoring
+                const allEmails = [...LEGITIMATE_EMAILS, ...SUSPICIOUS_EMAILS];
+                const email = allEmails.find(e => e.id === emailId);
+                if (email) {
+                    document.dispatchEvent(new CustomEvent('email-opened', {
+                        detail: { 
+                            sender: email.sender, 
+                            subject: email.subject,
+                            suspicious: email.suspicious 
+                        }
+                    }));
+                }
+                
                 this.updateContent();
             });
         });
@@ -149,6 +163,15 @@ export class EmailApp extends WindowBase {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 const url = link.getAttribute('data-url');
+                
+                // Emit email link click event for network monitoring
+                document.dispatchEvent(new CustomEvent('email-link-clicked', {
+                    detail: { 
+                        url: url,
+                        suspicious: true // Email links are typically suspicious
+                    }
+                }));
+                
                 // Open the browser app and navigate to the phishing page
                 if (window.currentSimulation && window.currentSimulation.desktop && window.currentSimulation.desktop.windowManager) {
                     window.currentSimulation.desktop.windowManager.openBrowser();
