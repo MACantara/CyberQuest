@@ -29,19 +29,19 @@ export class PdfViewerApp extends WindowBase {
                     </div>
                     
                     <div class="flex items-center space-x-2">
-                        <button id="zoom-out-btn" class="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs">
+                        <button id="zoom-out-btn" class="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs cursor-pointer">
                             <i class="bi bi-zoom-out"></i>
                         </button>
                         <span class="text-white text-xs min-w-12 text-center" id="zoom-level">${this.zoomLevel}%</span>
-                        <button id="zoom-in-btn" class="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs">
+                        <button id="zoom-in-btn" class="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs cursor-pointer">
                             <i class="bi bi-zoom-in"></i>
                         </button>
                         <div class="w-px h-6 bg-gray-600 mx-2"></div>
-                        <button id="prev-page-btn" class="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs" ${this.currentPage <= 1 ? 'disabled' : ''}>
+                        <button id="prev-page-btn" class="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs cursor-pointer" ${this.currentPage <= 1 ? 'disabled' : ''}>
                             <i class="bi bi-chevron-left"></i>
                         </button>
                         <span class="text-white text-xs px-2" id="page-info">Page ${this.currentPage} of ${this.totalPages}</span>
-                        <button id="next-page-btn" class="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs" ${this.currentPage >= this.totalPages ? 'disabled' : ''}>
+                        <button id="next-page-btn" class="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs cursor-pointer" ${this.currentPage >= this.totalPages ? 'disabled' : ''}>
                             <i class="bi bi-chevron-right"></i>
                         </button>
                     </div>
