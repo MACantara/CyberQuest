@@ -49,10 +49,6 @@ export const PhishingBankPage = {
                                 <p class="text-blue-700">Your Trusted Banking Partner</p>
                             </div>
                         </div>
-                        <div class="text-red-600 flex items-center">
-                            <i class="bi bi-exclamation-triangle mr-1"></i>
-                            <span class="text-sm">Certificate Error</span>
-                        </div>
                     </div>
                 </header>
 

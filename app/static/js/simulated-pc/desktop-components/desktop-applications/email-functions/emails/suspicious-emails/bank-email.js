@@ -16,10 +16,6 @@ export const BankEmail = {
                         <span class="block text-xs text-blue-700">Your Trusted Banking Partner</span>
                     </div>
                 </div>
-                <div class="text-red-600 flex items-center">
-                    <i class="bi bi-exclamation-triangle mr-1"></i>
-                    <span class="text-xs">Certificate Error</span>
-                </div>
             </div>
             <div class="bg-red-100 border border-red-300 rounded p-3 mb-4 flex items-center">
                 <i class="bi bi-exclamation-triangle text-red-600 mr-2"></i>
