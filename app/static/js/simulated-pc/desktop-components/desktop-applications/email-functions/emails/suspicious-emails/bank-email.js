@@ -1,22 +1,29 @@
-export const BankEmail = {
-    id: 'bank-email',
-    folder: 'inbox',
-    sender: 'account-security@verifysystem-alerts.net',
-    subject: 'URGENT: Account Verification Required',
-    time: '3 hours ago',
-    body: `
-        <div class="bg-blue-50 p-4 rounded-lg border border-blue-200">
-            <div class="flex items-center justify-between border-b border-blue-200 pb-3 mb-4">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-blue-600 rounded flex items-center justify-center">
-                        <i class="bi bi-bank text-white text-lg"></i>
-                    </div>
-                    <div>
-                        <span class="block text-base font-bold text-blue-900">SecureBank Online</span>
-                        <span class="block text-xs text-blue-700">Your Trusted Banking Partner</span>
-                    </div>
-                </div>
-            </div>
+import { BaseEmail } from '../base-email.js';
+
+class BankEmailClass extends BaseEmail {
+    constructor() {
+        super({
+            id: 'bank-email',
+            folder: 'inbox',
+            sender: 'account-security@verifysystem-alerts.net',
+            subject: 'URGENT: Account Verification Required',
+            time: '3 hours ago',
+            suspicious: true,
+            priority: 'high'
+        });
+    }
+
+    createBody() {
+        const headerInfo = {
+            bgColor: 'bg-blue-600',
+            icon: 'bank',
+            titleColor: 'text-blue-900',
+            subtitleColor: 'text-blue-700',
+            title: 'SecureBank Online',
+            subtitle: 'Your Trusted Banking Partner'
+        };
+
+        const urgentAlert = `
             <div class="bg-red-100 border border-red-300 rounded p-3 mb-4 flex items-center">
                 <i class="bi bi-exclamation-triangle text-red-600 mr-2"></i>
                 <div>
@@ -24,6 +31,10 @@ export const BankEmail = {
                     <p class="text-red-700 text-xs mt-1">Your account will be suspended in 24 hours due to suspicious activity. Please verify your credentials immediately!</p>
                 </div>
             </div>
+        `;
+
+        const content = `
+            ${urgentAlert}
             <div class="bg-white border border-red-200 rounded-lg p-4 mb-4">
                 <h2 class="text-base font-semibold text-red-900 mb-2">Emergency Account Verification Required</h2>
                 <p class="text-gray-800 text-sm mb-3">
@@ -36,7 +47,7 @@ export const BankEmail = {
                     To restore access and avoid permanent account closure, please 
                     <a href="#" 
                        class="text-blue-600 underline open-browser-link font-semibold" 
-                       data-url="https://phishing-bank.com">
+                       data-url="https://secure-verify-support.com">
                        verify your account now
                     </a> 
                     by confirming your personal and banking information.
@@ -53,7 +64,20 @@ export const BankEmail = {
                 <span class="text-red-600 font-bold text-xs">Act fast! Your account security depends on immediate verification!</span>
                 <p class="text-xs text-gray-600 mt-1">This is the ONLY way to prevent account closure.</p>
             </div>
-        </div>
-    `,
-    suspicious: true
-};
+        `;
+
+        const trainingAlert = this.createTrainingAlert(
+            'This is a phishing email! Red flags: urgent language, suspicious sender domain, requests for sensitive information, and threatening consequences.',
+            'danger'
+        );
+
+        return this.createStyledContainer(
+            content + trainingAlert,
+            'bg-blue-50 border-blue-200',
+            headerInfo
+        );
+    }
+}
+
+// Export as email object for compatibility
+export const BankEmail = new BankEmailClass().toEmailObject();

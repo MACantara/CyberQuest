@@ -1,20 +1,29 @@
-export const LegitimateEmail = {
-    id: 'cyberquest-welcome',
-    folder: 'inbox',
-    sender: 'welcome@cyberquest.com',
-    subject: 'Welcome to CyberQuest Training',
-    time: '1 day ago',
-    body: `
-        <div class="bg-green-50 p-4 rounded-lg border border-green-200">
-            <div class="flex items-center space-x-3 border-b border-green-200 pb-3 mb-4">
-                <div class="w-10 h-10 bg-green-600 rounded flex items-center justify-center">
-                    <i class="bi bi-shield-check text-white text-lg"></i>
-                </div>
-                <div>
-                    <span class="block text-base font-bold text-green-900">CyberQuest Training Platform</span>
-                    <span class="block text-xs text-green-700">Professional Cybersecurity Education</span>
-                </div>
-            </div>
+import { BaseEmail } from '../base-email.js';
+
+class LegitimateEmailClass extends BaseEmail {
+    constructor() {
+        super({
+            id: 'cyberquest-welcome',
+            folder: 'inbox',
+            sender: 'welcome@cyberquest.com',
+            subject: 'Welcome to CyberQuest Training',
+            time: '1 day ago',
+            suspicious: false,
+            priority: 'normal'
+        });
+    }
+
+    createBody() {
+        const headerInfo = {
+            bgColor: 'bg-green-600',
+            icon: 'shield-check',
+            titleColor: 'text-green-900',
+            subtitleColor: 'text-green-700',
+            title: 'CyberQuest Training Platform',
+            subtitle: 'Professional Cybersecurity Education'
+        };
+
+        const content = `
             <div class="bg-white border border-green-200 rounded-lg p-4">
                 <h2 class="text-base font-semibold text-green-900 mb-3">Welcome to Your Cybersecurity Journey!</h2>
                 <p class="text-gray-800 text-sm mb-3">
@@ -40,13 +49,20 @@ export const LegitimateEmail = {
                     <span class="font-bold text-green-900">The CyberQuest Team</span>
                 </p>
             </div>
-            <div class="bg-green-100 border border-green-300 rounded p-3 mt-4">
-                <p class="text-green-800 text-xs">
-                    <i class="bi bi-info-circle mr-1"></i>
-                    This is a legitimate training email from CyberQuest. Notice the professional formatting, clear sender, and educational content.
-                </p>
-            </div>
-        </div>
-    `,
-    suspicious: false
-};
+        `;
+
+        const trainingAlert = this.createTrainingAlert(
+            'This is a legitimate training email from CyberQuest. Notice the professional formatting, clear sender, and educational content.',
+            'success'
+        );
+
+        return this.createStyledContainer(
+            content + trainingAlert,
+            'bg-green-50 border-green-200',
+            headerInfo
+        );
+    }
+}
+
+// Export as email object for compatibility
+export const LegitimateEmail = new LegitimateEmailClass().toEmailObject();
