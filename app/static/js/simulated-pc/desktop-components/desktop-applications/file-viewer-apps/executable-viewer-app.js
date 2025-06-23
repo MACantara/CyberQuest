@@ -29,16 +29,16 @@ export class ExecutableViewerApp extends WindowBase {
                 
                 <!-- Tab Navigation -->
                 <div class="bg-gray-700 border-b border-gray-600 flex">
-                    <button class="tab-btn px-4 py-2 text-sm ${this.activeTab === 'overview' ? 'bg-gray-600 text-white' : 'text-gray-300 hover:text-white'}" data-tab="overview">
+                    <button class="tab-btn px-4 py-2 text-sm ${this.activeTab === 'overview' ? 'bg-gray-600 text-white' : 'text-gray-300 hover:text-white'} cursor-pointer" data-tab="overview">
                         <i class="bi bi-info-circle mr-1"></i>Overview
                     </button>
-                    <button class="tab-btn px-4 py-2 text-sm ${this.activeTab === 'headers' ? 'bg-gray-600 text-white' : 'text-gray-300 hover:text-white'}" data-tab="headers">
+                    <button class="tab-btn px-4 py-2 text-sm ${this.activeTab === 'headers' ? 'bg-gray-600 text-white' : 'text-gray-300 hover:text-white'} cursor-pointer" data-tab="headers">
                         <i class="bi bi-file-binary mr-1"></i>PE Headers
                     </button>
-                    <button class="tab-btn px-4 py-2 text-sm ${this.activeTab === 'strings' ? 'bg-gray-600 text-white' : 'text-gray-300 hover:text-white'}" data-tab="strings">
+                    <button class="tab-btn px-4 py-2 text-sm ${this.activeTab === 'strings' ? 'bg-gray-600 text-white' : 'text-gray-300 hover:text-white'} cursor-pointer" data-tab="strings">
                         <i class="bi bi-search mr-1"></i>Strings
                     </button>
-                    <button class="tab-btn px-4 py-2 text-sm ${this.activeTab === 'security' ? 'bg-gray-600 text-white' : 'text-gray-300 hover:text-white'}" data-tab="security">
+                    <button class="tab-btn px-4 py-2 text-sm ${this.activeTab === 'security' ? 'bg-gray-600 text-white' : 'text-gray-300 hover:text-white'} cursor-pointer" data-tab="security">
                         <i class="bi bi-shield-check mr-1"></i>Security
                     </button>
                 </div>
@@ -57,10 +57,10 @@ export class ExecutableViewerApp extends WindowBase {
                         <span>Do not execute this file in a production environment</span>
                     </div>
                     <div class="flex space-x-2">
-                        <button class="px-3 py-1 bg-yellow-600 text-white rounded hover:bg-yellow-700 transition-colors text-sm" id="sandbox-btn">
+                        <button class="px-3 py-1 bg-yellow-600 text-white rounded hover:bg-yellow-700 transition-colors text-sm cursor-pointer" id="sandbox-btn">
                             Submit to Sandbox
                         </button>
-                        <button class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-sm" id="quarantine-btn">
+                        <button class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors text-sm cursor-pointer" id="quarantine-btn">
                             Quarantine
                         </button>
                     </div>
@@ -297,9 +297,9 @@ export class ExecutableViewerApp extends WindowBase {
         const tabBtns = this.windowElement?.querySelectorAll('.tab-btn');
         tabBtns?.forEach(btn => {
             if (btn.getAttribute('data-tab') === tabName) {
-                btn.className = 'tab-btn px-4 py-2 text-sm bg-gray-600 text-white';
+                btn.className = 'tab-btn px-4 py-2 text-sm bg-gray-600 text-white cursor-pointer';
             } else {
-                btn.className = 'tab-btn px-4 py-2 text-sm text-gray-300 hover:text-white';
+                btn.className = 'tab-btn px-4 py-2 text-sm text-gray-300 hover:text-white cursor-pointer';
             }
         });
         
@@ -322,7 +322,7 @@ export class ExecutableViewerApp extends WindowBase {
                         This will submit "${this.fileName}" to a secure sandbox environment for analysis.
                     </p>
                     <button onclick="this.closest('.fixed').remove(); alert('File submitted to sandbox (simulation)');" 
-                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors cursor-pointer">
                         Submit
                     </button>
                 </div>
@@ -344,11 +344,11 @@ export class ExecutableViewerApp extends WindowBase {
                     </p>
                     <div class="flex space-x-3">
                         <button onclick="this.closest('.fixed').remove()" 
-                                class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors">
+                                class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors cursor-pointer">
                             Cancel
                         </button>
                         <button onclick="this.closest('.fixed').remove(); alert('File quarantined successfully (simulation)');" 
-                                class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors">
+                                class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors cursor-pointer">
                             Quarantine
                         </button>
                     </div>
