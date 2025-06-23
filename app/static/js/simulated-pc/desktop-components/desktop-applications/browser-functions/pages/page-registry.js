@@ -1,6 +1,6 @@
 import { SuspiciousSitePage } from './suspicious-site.js';
 import { CyberQuestPage } from './cyberquest.js';
-import { ExampleBankPage } from './example-bank.js';
+import { ExampleBankPage } from './secure-bank.js';
 import { PhishingBankPage } from './bank.js';
 import { NewsSitePage } from './news-site.js';
 
