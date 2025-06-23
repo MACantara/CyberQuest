@@ -72,7 +72,7 @@ export class TerminalApp extends WindowBase {
                     
                 case 'Tab':
                     e.preventDefault();
-                    // TODO: Implement tab completion
+                    this.handleTabCompletion(input);
                     break;
             }
         });
@@ -81,6 +81,46 @@ export class TerminalApp extends WindowBase {
         this.windowElement?.addEventListener('click', () => {
             this.focusInput();
         });
+    }
+
+    handleTabCompletion(input) {
+        const inputText = input.value;
+        const cursorPosition = input.selectionStart;
+        
+        const completion = this.commandProcessor.getTabCompletion(inputText, cursorPosition);
+        
+        if (completion) {
+            input.value = completion.newText;
+            input.setSelectionRange(completion.newCursorPosition, completion.newCursorPosition);
+            
+            // Show suggestions if there are multiple matches
+            if (completion.suggestions && completion.suggestions.length > 1) {
+                this.showTabSuggestions(completion.suggestions);
+            }
+        }
+    }
+
+    showTabSuggestions(suggestions) {
+        // Group suggestions by type for better display
+        const commands = suggestions.filter(s => !s.includes('/'));
+        const files = suggestions.filter(s => s.includes('/') || s.includes('.'));
+        
+        let output = '';
+        
+        if (commands.length > 0) {
+            output += 'Commands: ' + commands.join('  ');
+        }
+        
+        if (files.length > 0) {
+            if (output) output += '\n';
+            output += 'Files/Directories: ' + files.join('  ');
+        }
+        
+        if (!output) {
+            output = suggestions.join('  ');
+        }
+        
+        this.addOutput(output, 'text-blue-400');
     }
 
     executeCommand(command) {

@@ -51,7 +51,7 @@ export class HelpCommand extends BaseCommand {
             '  help [cmd]   - Show this help or help for specific command',
             '',
             'Tips:',
-            '  - Use Tab for command completion (coming soon)',
+            '  - Use Tab for command and file completion',
             '  - Use ↑/↓ arrow keys to navigate command history',
             '  - Add --help to any command for detailed usage information',
             '  - Type "help <command>" for specific command help'
