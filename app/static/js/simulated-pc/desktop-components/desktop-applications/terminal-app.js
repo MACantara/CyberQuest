@@ -101,26 +101,49 @@ export class TerminalApp extends WindowBase {
     }
 
     showTabSuggestions(suggestions) {
-        // Group suggestions by type for better display
-        const commands = suggestions.filter(s => !s.includes('/'));
-        const files = suggestions.filter(s => s.includes('/') || s.includes('.'));
+        // Categorize suggestions
+        const commands = suggestions.filter(s => 
+            !s.includes('/') && 
+            !s.includes('.') && 
+            !s.startsWith('-') &&
+            this.commandProcessor.commandRegistry.hasCommand(s)
+        );
         
-        let output = '';
+        const flags = suggestions.filter(s => s.startsWith('-'));
+        const files = suggestions.filter(s => 
+            (s.includes('/') || s.includes('.')) && 
+            !s.startsWith('-')
+        );
+        const other = suggestions.filter(s => 
+            !commands.includes(s) && 
+            !flags.includes(s) && 
+            !files.includes(s)
+        );
+        
+        const output = [];
         
         if (commands.length > 0) {
-            output += 'Commands: ' + commands.join('  ');
+            output.push('Commands: ' + commands.join('  '));
+        }
+        
+        if (flags.length > 0) {
+            output.push('Options: ' + flags.join('  '));
         }
         
         if (files.length > 0) {
-            if (output) output += '\n';
-            output += 'Files/Directories: ' + files.join('  ');
+            output.push('Files/Directories: ' + files.join('  '));
         }
         
-        if (!output) {
-            output = suggestions.join('  ');
+        if (other.length > 0) {
+            output.push('Available: ' + other.join('  '));
         }
         
-        this.addOutput(output, 'text-blue-400');
+        // If no categorization worked, just show all suggestions
+        if (output.length === 0) {
+            output.push(suggestions.join('  '));
+        }
+        
+        output.forEach(line => this.addOutput(line, 'text-blue-400'));
     }
 
     executeCommand(command) {

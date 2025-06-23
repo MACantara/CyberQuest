@@ -51,10 +51,15 @@ export class HelpCommand extends BaseCommand {
             '  help [cmd]   - Show this help or help for specific command',
             '',
             'Tips:',
-            '  - Use Tab for command and file completion',
+            '  - Use Tab for command, option, and file completion',
             '  - Use ↑/↓ arrow keys to navigate command history',
             '  - Add --help to any command for detailed usage information',
-            '  - Type "help <command>" for specific command help'
+            '  - Type "help <command>" for specific command help',
+            '  - Tab completion works for:',
+            '    • Command names (e.g., "h" + Tab → "help")',
+            '    • Command options (e.g., "ls -" + Tab → "-l", "-a", "-la")',
+            '    • File and directory names',
+            '    • Command arguments (e.g., "help " + Tab → shows commands)'
         ];
         
         commands.forEach(cmd => this.addOutput(cmd));

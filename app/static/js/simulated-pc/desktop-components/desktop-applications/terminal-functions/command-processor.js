@@ -62,10 +62,21 @@ export class CommandProcessor {
             return this.completeCommand(currentPart, beforeCursor, afterCursor);
         }
         
-        // If we're completing arguments (file/directory names)
+        // If we're completing arguments
         const command = parts[0].toLowerCase();
-        if (command === 'cd' || command === 'ls' || command === 'cat') {
-            return this.completeFilePath(currentPart, beforeCursor, afterCursor);
+        const commandInstance = this.commandRegistry.getCommand(command);
+        
+        if (commandInstance) {
+            // Try command-specific argument completion first
+            const argCompletion = this.completeCommandArguments(command, parts, currentPart, beforeCursor, afterCursor);
+            if (argCompletion) {
+                return argCompletion;
+            }
+            
+            // Fall back to file/directory completion for commands that support it
+            if (command === 'cd' || command === 'ls' || command === 'cat' || command === 'help') {
+                return this.completeFilePath(currentPart, beforeCursor, afterCursor);
+            }
         }
         
         return null;
@@ -175,6 +186,165 @@ export class CommandProcessor {
         } catch (error) {
             return null;
         }
+    }
+
+    completeCommandArguments(command, parts, currentPart, beforeCursor, afterCursor) {
+        const commandInstance = this.commandRegistry.getCommand(command);
+        if (!commandInstance || !commandInstance.getHelp) {
+            return null;
+        }
+
+        const helpInfo = commandInstance.getHelp();
+        const availableOptions = helpInfo.options || [];
+        
+        // If current part starts with -, complete flags/options
+        if (currentPart.startsWith('-')) {
+            const flagMatches = availableOptions
+                .filter(opt => opt.flag.startsWith(currentPart))
+                .map(opt => opt.flag.split(',')[0].trim()); // Take first flag variant
+            
+            if (flagMatches.length === 0) {
+                return null;
+            }
+            
+            if (flagMatches.length === 1) {
+                const match = flagMatches[0];
+                const beforeCompletion = beforeCursor.substring(0, beforeCursor.length - currentPart.length);
+                return {
+                    newText: beforeCompletion + match + ' ' + afterCursor,
+                    newCursorPosition: beforeCompletion.length + match.length + 1
+                };
+            }
+            
+            const commonPrefix = this.findCommonPrefix(flagMatches);
+            if (commonPrefix.length > currentPart.length) {
+                const beforeCompletion = beforeCursor.substring(0, beforeCursor.length - currentPart.length);
+                return {
+                    newText: beforeCompletion + commonPrefix + afterCursor,
+                    newCursorPosition: beforeCompletion.length + commonPrefix.length,
+                    suggestions: flagMatches
+                };
+            }
+            
+            return {
+                newText: beforeCursor + afterCursor,
+                newCursorPosition: beforeCursor.length,
+                suggestions: flagMatches
+            };
+        }
+        
+        // Command-specific argument completion
+        switch (command) {
+            case 'help':
+                return this.completeHelpArguments(currentPart, beforeCursor, afterCursor);
+            case 'echo':
+                // Echo doesn't need specific completion beyond what user types
+                return null;
+            case 'uname':
+                return this.completeUnameArguments(currentPart, beforeCursor, afterCursor);
+            case 'ls':
+                return this.completeLsArguments(parts, currentPart, beforeCursor, afterCursor);
+            default:
+                return null;
+        }
+    }
+
+    completeHelpArguments(currentPart, beforeCursor, afterCursor) {
+        const commands = this.commandRegistry.getAllCommands();
+        const matches = commands.filter(cmd => cmd.startsWith(currentPart.toLowerCase()));
+        
+        if (matches.length === 0) {
+            return null;
+        }
+        
+        if (matches.length === 1) {
+            const match = matches[0];
+            const beforeCompletion = beforeCursor.substring(0, beforeCursor.length - currentPart.length);
+            return {
+                newText: beforeCompletion + match + ' ' + afterCursor,
+                newCursorPosition: beforeCompletion.length + match.length + 1
+            };
+        }
+        
+        const commonPrefix = this.findCommonPrefix(matches);
+        if (commonPrefix.length > currentPart.length) {
+            const beforeCompletion = beforeCursor.substring(0, beforeCursor.length - currentPart.length);
+            return {
+                newText: beforeCompletion + commonPrefix + afterCursor,
+                newCursorPosition: beforeCompletion.length + commonPrefix.length,
+                suggestions: matches
+            };
+        }
+        
+        return {
+            newText: beforeCursor + afterCursor,
+            newCursorPosition: beforeCursor.length,
+            suggestions: matches
+        };
+    }
+
+    completeUnameArguments(currentPart, beforeCursor, afterCursor) {
+        const unameOptions = ['-a', '--all'];
+        const matches = unameOptions.filter(opt => opt.startsWith(currentPart));
+        
+        if (matches.length === 0) {
+            return null;
+        }
+        
+        if (matches.length === 1) {
+            const match = matches[0];
+            const beforeCompletion = beforeCursor.substring(0, beforeCursor.length - currentPart.length);
+            return {
+                newText: beforeCompletion + match + ' ' + afterCursor,
+                newCursorPosition: beforeCompletion.length + match.length + 1
+            };
+        }
+        
+        return {
+            newText: beforeCursor + afterCursor,
+            newCursorPosition: beforeCursor.length,
+            suggestions: matches
+        };
+    }
+
+    completeLsArguments(parts, currentPart, beforeCursor, afterCursor) {
+        // If no flags specified yet, suggest common flags
+        const hasLFlag = parts.some(part => part.includes('l'));
+        const hasAFlag = parts.some(part => part.includes('a'));
+        
+        if (currentPart.startsWith('-')) {
+            const lsOptions = [];
+            
+            if (!hasLFlag && !hasAFlag) {
+                lsOptions.push('-l', '-a', '-la', '-al');
+            } else if (!hasLFlag) {
+                lsOptions.push('-l');
+            } else if (!hasAFlag) {
+                lsOptions.push('-a');
+            }
+            
+            const matches = lsOptions.filter(opt => opt.startsWith(currentPart));
+            
+            if (matches.length === 1) {
+                const match = matches[0];
+                const beforeCompletion = beforeCursor.substring(0, beforeCursor.length - currentPart.length);
+                return {
+                    newText: beforeCompletion + match + ' ' + afterCursor,
+                    newCursorPosition: beforeCompletion.length + match.length + 1
+                };
+            }
+            
+            if (matches.length > 1) {
+                return {
+                    newText: beforeCursor + afterCursor,
+                    newCursorPosition: beforeCursor.length,
+                    suggestions: matches
+                };
+            }
+        }
+        
+        // Fall back to file/directory completion
+        return null;
     }
 
     findCommonPrefix(strings) {
