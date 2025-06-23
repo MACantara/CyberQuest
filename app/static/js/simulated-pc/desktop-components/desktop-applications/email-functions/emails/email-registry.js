@@ -6,11 +6,11 @@ import { SuspiciousEmail } from './suspicious-emails/nigerian-prince-email.js';
 
 // Add new emails here as needed
 export const LEGITIMATE_EMAILS = [
-    LegitimateEmail,
-    BankEmail
+    LegitimateEmail
 ];
 
 export const SUSPICIOUS_EMAILS = [
+    BankEmail,
     SuspiciousEmail
 ];
 
