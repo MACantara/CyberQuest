@@ -219,9 +219,6 @@ export class FileManagerApp extends WindowBase {
     }
 
     cleanup() {
-        if (this.fileViewer) {
-            this.fileViewer.closeViewer();
-        }
         super.cleanup();
     }
 }
