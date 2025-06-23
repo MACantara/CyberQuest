@@ -34,7 +34,7 @@ export class LogViewerApp extends WindowBase {
                                placeholder="Search logs..."
                                value="${this.searchTerm}">
                         <select id="filter-level" 
-                                class="px-2 py-1 bg-gray-800 text-white border border-gray-600 rounded text-xs">
+                                class="px-2 py-1 bg-gray-800 text-white border border-gray-600 rounded text-xs cursor-pointer">
                             <option value="all">All Levels</option>
                             <option value="error">Errors Only</option>
                             <option value="warning">Warnings</option>
@@ -42,7 +42,7 @@ export class LogViewerApp extends WindowBase {
                             <option value="debug">Debug</option>
                         </select>
                         <button id="export-btn" 
-                                class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-xs">
+                                class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-xs cursor-pointer">
                             Export
                         </button>
                     </div>
@@ -294,7 +294,7 @@ export class LogViewerApp extends WindowBase {
                         This log entry contains suspicious content that may indicate a security incident.
                     </p>
                     <button onclick="this.closest('.fixed').remove()" 
-                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors cursor-pointer">
                         Close
                     </button>
                 </div>
@@ -315,7 +315,7 @@ export class LogViewerApp extends WindowBase {
                         Export filtered log entries for further analysis.
                     </p>
                     <button onclick="this.closest('.fixed').remove(); alert('Logs exported successfully (simulation)');" 
-                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors cursor-pointer">
                         Export
                     </button>
                 </div>
