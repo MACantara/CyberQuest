@@ -9,6 +9,7 @@ export class EmailApp extends WindowBase {
             height: '70%'
         });
         this.state = new EmailState();
+        this.readEmails = new Set(); // Track read email IDs
     }
 
     createContent() {
@@ -57,17 +58,24 @@ export class EmailApp extends WindowBase {
     }
 
     createEmailListItem(email) {
+        const isRead = this.readEmails.has(email.id);
+        // Unread: bold subject, blue dot; Read: normal subject, gray dot
         return `
-            <div class="email-item p-3 border-b border-gray-600 cursor-pointer hover:bg-gray-700 transition-colors duration-200"
+            <div class="email-item p-3 border-b border-gray-600 cursor-pointer hover:bg-gray-700 transition-colors duration-200 flex items-center"
                  data-email-id="${email.id}">
-                <div class="font-medium text-white text-sm">${email.sender}</div>
-                <div class="text-gray-300 text-sm mb-1">${email.subject}</div>
-                <div class="text-gray-400 text-xs">${email.time}</div>
+                <span class="inline-block w-2 h-2 rounded-full mr-3 ${isRead ? 'bg-gray-400' : 'bg-blue-500'}"></span>
+                <div class="flex-1">
+                    <div class="font-medium text-white text-sm">${email.sender}</div>
+                    <div class="text-sm mb-1 ${isRead ? 'text-gray-300 font-normal' : 'text-white font-bold'}">${email.subject}</div>
+                    <div class="text-gray-400 text-xs">${email.time}</div>
+                </div>
             </div>
         `;
     }
 
     createEmailDetail(email, folderId) {
+        // Mark as read when viewing detail
+        this.readEmails.add(email.id);
         return `
             <div class="p-6">
                 <div class="mb-4 flex items-center justify-between">
@@ -121,6 +129,8 @@ export class EmailApp extends WindowBase {
             emailEl.addEventListener('click', () => {
                 const emailId = emailEl.getAttribute('data-email-id');
                 this.state.selectEmail(emailId);
+                // Mark as read
+                this.readEmails.add(emailId);
                 this.updateContent();
             });
         });
