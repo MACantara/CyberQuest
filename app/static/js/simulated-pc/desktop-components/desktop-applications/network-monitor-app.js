@@ -2,6 +2,7 @@ import { WindowBase } from '../window-base.js';
 import { PacketCapture } from './network-monitor-functions/packet-capture.js';
 import { PacketFilter } from './network-monitor-functions/packet-filter.js';
 import { Statistics } from './network-monitor-functions/statistics.js';
+import { TrafficCorrelator } from './network-monitor-functions/traffic-correlator.js';
 
 export class NetworkMonitorApp extends WindowBase {
     constructor() {
@@ -13,6 +14,7 @@ export class NetworkMonitorApp extends WindowBase {
         this.packetCapture = null;
         this.packetFilter = null;
         this.statistics = null;
+        this.trafficCorrelator = null;
     }
 
     createContent() {
@@ -68,6 +70,7 @@ export class NetworkMonitorApp extends WindowBase {
         this.packetCapture = new PacketCapture(this);
         this.packetFilter = new PacketFilter(this);
         this.statistics = new Statistics(this);
+        this.trafficCorrelator = new TrafficCorrelator(this);
         
         this.bindEvents();
     }
@@ -118,17 +121,27 @@ export class NetworkMonitorApp extends WindowBase {
         if (!packetData) return;
 
         const packetElement = document.createElement('div');
-        packetElement.className = `grid grid-cols-5 gap-2 p-2 border-b border-gray-700 hover:bg-gray-800 transition-colors duration-200 ${
-            packet.suspicious ? 'bg-red-900 bg-opacity-20 border-l-4 border-red-500' : ''
-        }`;
         
-        const textClass = packet.suspicious ? 'text-red-400' : '';
+        // Special styling for alert packets
+        let baseClass = 'grid grid-cols-5 gap-2 p-2 border-b border-gray-700 hover:bg-gray-800 transition-colors duration-200';
+        if (packet.isAlert) {
+            baseClass += packet.suspicious ? 
+                ' bg-red-900 bg-opacity-30 border-l-4 border-red-400' : 
+                ' bg-blue-900 bg-opacity-30 border-l-4 border-blue-400';
+        } else if (packet.suspicious) {
+            baseClass += ' bg-red-900 bg-opacity-20 border-l-4 border-red-500';
+        }
+        
+        packetElement.className = baseClass;
+        
+        const textClass = packet.suspicious ? 'text-red-400' : 
+                         packet.isAlert ? (packet.suspicious ? 'text-red-300' : 'text-blue-300') : '';
         
         packetElement.innerHTML = `
             <span class="text-gray-400">${packet.time}</span>
             <span class="${textClass}">${packet.source}</span>
             <span class="${textClass}">${packet.destination}</span>
-            <span class="${packet.suspicious ? 'text-red-400' : this.getProtocolColor(packet.protocol)}">${packet.protocol}</span>
+            <span class="${packet.suspicious ? 'text-red-400' : packet.isAlert ? 'text-yellow-400' : this.getProtocolColor(packet.protocol)}">${packet.protocol}</span>
             <span class="${textClass}">${packet.info}</span>
         `;
 
