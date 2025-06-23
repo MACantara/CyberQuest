@@ -259,11 +259,11 @@ export class PacketCapture {
         if (this.isCapturing) return;
         
         this.isCapturing = true;
-        this.captureInterval = setInterval(() => {
-            this.generatePacket();
-        }, this.captureSpeed);
         
         this.updateCaptureButton();
+        
+        // Show capture started message
+        this.showCaptureStarted();
     }
 
     stopCapture() {
@@ -276,112 +276,54 @@ export class PacketCapture {
         }
         
         this.updateCaptureButton();
+        
+        // Show capture stopped message
+        this.showCaptureStopped();
     }
 
-    generatePacket() {
-        const packet = this.createRealisticPacket();
-        this.packetQueue.push(packet);
-        this.app.addPacketToList(packet);
+    showCaptureStarted() {
+        if (!this.isCapturing) return;
         
-        // Keep only last 100 packets for performance
-        if (this.packetQueue.length > 100) {
-            this.packetQueue.shift();
-        }
-    }
-
-    createRealisticPacket() {
-        const now = new Date();
-        const time = now.toTimeString().split(' ')[0];
-        
-        // Determine traffic type based on probability
-        const rand = Math.random();
-        let trafficType, source;
-        
-        if (rand < 0.5) {
-            // Website traffic (50%)
-            trafficType = 'websites';
-            source = this.getRandomWeightedSource(this.trafficSources.websites);
-        } else if (rand < 0.75) {
-            // Email traffic (25%)
-            trafficType = 'email';
-            source = this.getRandomWeightedSource(this.trafficSources.email);
-        } else {
-            // System traffic (25%)
-            trafficType = 'system';
-            source = this.getRandomWeightedSource(this.trafficSources.system);
-        }
-
-        const pattern = this.getRandomWeightedPattern(source.patterns);
-        
-        let packet = {
-            id: Date.now() + Math.random(),
-            time: time,
-            source: '192.168.1.100', // User's computer
-            protocol: pattern.protocol,
-            info: pattern.info,
-            suspicious: source.suspicious || false
+        const startPacket = {
+            id: 'capture-start-' + Date.now(),
+            time: new Date().toTimeString().split(' ')[0],
+            source: 'SYSTEM',
+            destination: 'MONITOR',
+            protocol: 'INFO',
+            info: 'Network capture started - monitoring user activity',
+            suspicious: false,
+            isAlert: true
         };
-
-        // Set destination based on traffic type
-        if (trafficType === 'websites') {
-            packet.destination = source.domain;
-        } else if (trafficType === 'email') {
-            packet.destination = source.server;
-        } else {
-            packet.destination = source.destination;
-        }
-
-        // Sometimes reverse source/destination for incoming traffic
-        if (Math.random() < 0.3) {
-            [packet.source, packet.destination] = [packet.destination, packet.source];
-            if (pattern.protocol === 'HTTP' || pattern.protocol === 'HTTPS') {
-                packet.info = packet.info.replace('GET', 'Response to GET').replace('POST', 'Response to POST');
-            }
-        }
-
-        return packet;
+        
+        this.packetQueue.push(startPacket);
+        this.app.addPacketToList(startPacket);
     }
 
-    getRandomWeightedSource(sources) {
-        const totalWeight = sources.reduce((sum, source) => {
-            const sourceWeight = source.patterns.reduce((patternSum, pattern) => patternSum + pattern.weight, 0);
-            return sum + sourceWeight;
-        }, 0);
+    showCaptureStopped() {
+        const stopPacket = {
+            id: 'capture-stop-' + Date.now(),
+            time: new Date().toTimeString().split(' ')[0],
+            source: 'SYSTEM',
+            destination: 'MONITOR',
+            protocol: 'INFO',
+            info: 'Network capture stopped',
+            suspicious: false,
+            isAlert: true
+        };
         
-        let random = Math.random() * totalWeight;
-        
-        for (const source of sources) {
-            const sourceWeight = source.patterns.reduce((sum, pattern) => sum + pattern.weight, 0);
-            if (random < sourceWeight) {
-                return source;
-            }
-            random -= sourceWeight;
-        }
-        
-        return sources[0]; // Fallback
+        this.packetQueue.push(stopPacket);
+        this.app.addPacketToList(stopPacket);
     }
 
-    getRandomWeightedPattern(patterns) {
-        const totalWeight = patterns.reduce((sum, pattern) => sum + pattern.weight, 0);
-        let random = Math.random() * totalWeight;
-        
-        for (const pattern of patterns) {
-            if (random < pattern.weight) {
-                return pattern;
-            }
-            random -= pattern.weight;
-        }
-        
-        return patterns[0]; // Fallback
-    }
-
-    // Method to trigger specific traffic based on user actions
+    // Enhanced website traffic generation with more detailed packets
     generateWebsiteTraffic(url) {
+        if (!this.isCapturing) return;
+        
         const domain = url.replace(/^https?:\/\//, '');
         const website = this.trafficSources.websites.find(site => site.domain === domain);
         
         if (website) {
-            // Generate a burst of packets for this website
+            // Generate a realistic sequence of packets for this website
             website.patterns.forEach((pattern, index) => {
                 setTimeout(() => {
                     const packet = {
@@ -397,15 +339,38 @@ export class PacketCapture {
                     this.app.addPacketToList(packet);
                 }, index * 200);
             });
+            
+            // Add response packets after a delay
+            setTimeout(() => {
+                website.patterns.forEach((pattern, index) => {
+                    if (pattern.protocol === 'HTTP' || pattern.protocol === 'HTTPS') {
+                        setTimeout(() => {
+                            const responsePacket = {
+                                id: Date.now() + Math.random(),
+                                time: new Date().toTimeString().split(' ')[0],
+                                source: website.domain,
+                                destination: '192.168.1.100',
+                                protocol: pattern.protocol,
+                                info: pattern.info.replace('GET', 'Response: 200 OK').replace('POST', 'Response: 200 OK'),
+                                suspicious: website.suspicious
+                            };
+                            this.packetQueue.push(responsePacket);
+                            this.app.addPacketToList(responsePacket);
+                        }, index * 150);
+                    }
+                });
+            }, 1000);
         }
     }
 
     generateEmailTraffic(emailSender) {
+        if (!this.isCapturing) return;
+        
         const serverDomain = this.extractServerFromEmail(emailSender);
         const emailServer = this.trafficSources.email.find(e => e.server === serverDomain);
         
         if (emailServer) {
-            // Generate email-related traffic
+            // Generate email-related traffic sequence
             emailServer.patterns.forEach((pattern, index) => {
                 setTimeout(() => {
                     const packet = {
@@ -422,6 +387,25 @@ export class PacketCapture {
                 }, index * 300);
             });
         }
+    }
+
+    // Generate background system traffic only when specifically triggered
+    generateSystemTraffic(triggerReason = 'System activity') {
+        if (!this.isCapturing) return;
+        
+        // Only generate minimal system traffic when actually needed
+        const systemPacket = {
+            id: Date.now() + Math.random(),
+            time: new Date().toTimeString().split(' ')[0],
+            source: '192.168.1.100',
+            destination: '8.8.8.8',
+            protocol: 'DNS',
+            info: `System DNS lookup - ${triggerReason}`,
+            suspicious: false
+        };
+        
+        this.packetQueue.push(systemPacket);
+        this.app.addPacketToList(systemPacket);
     }
 
     updateCaptureButton() {
@@ -444,5 +428,12 @@ export class PacketCapture {
     clearPackets() {
         this.packetQueue = [];
         this.app.clearPacketList();
+        
+        // Show empty state message
+        if (this.isCapturing) {
+            setTimeout(() => {
+                this.showCaptureStarted();
+            }, 100);
+        }
     }
 }
