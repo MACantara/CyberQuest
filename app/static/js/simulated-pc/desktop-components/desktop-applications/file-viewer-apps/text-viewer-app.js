@@ -30,10 +30,10 @@ export class TextViewerApp extends WindowBase {
                     </div>
                     
                     <div class="flex items-center space-x-2">
-                        <button id="toggle-edit-btn" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-xs">
+                        <button id="toggle-edit-btn" class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-xs cursor-pointer">
                             ${this.isEditable ? 'View Mode' : 'Edit Mode'}
                         </button>
-                        <button id="word-wrap-btn" class="px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs">
+                        <button id="word-wrap-btn" class="px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs cursor-pointer">
                             Word Wrap
                         </button>
                     </div>
