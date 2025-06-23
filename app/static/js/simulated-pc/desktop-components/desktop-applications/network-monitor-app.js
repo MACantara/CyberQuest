@@ -35,27 +35,11 @@ export class NetworkMonitorApp extends WindowBase {
                     <span>Info</span>
                 </div>
                 <div id="packet-data">
-                    <!-- Initial sample packets -->
-                    <div class="grid grid-cols-5 gap-2 p-2 border-b border-gray-700 hover:bg-gray-800 transition-colors duration-200" id="normal-packet-1">
-                        <span class="text-gray-400">10:30:45</span>
-                        <span>192.168.1.100</span>
-                        <span>8.8.8.8</span>
-                        <span class="text-blue-400">DNS</span>
-                        <span>Standard query A google.com</span>
-                    </div>
-                    <div class="grid grid-cols-5 gap-2 p-2 border-b border-gray-700 hover:bg-gray-800 transition-colors duration-200 bg-red-900 bg-opacity-20 border-l-4 border-red-500" id="malicious-packet">
-                        <span class="text-gray-400">10:30:47</span>
-                        <span class="text-red-400">192.168.1.100</span>
-                        <span class="text-red-400">malicious-site.com</span>
-                        <span class="text-red-400">HTTP</span>
-                        <span class="text-red-400">GET /malware.exe</span>
-                    </div>
-                    <div class="grid grid-cols-5 gap-2 p-2 border-b border-gray-700 hover:bg-gray-800 transition-colors duration-200" id="normal-packet-2">
-                        <span class="text-gray-400">10:30:48</span>
-                        <span>192.168.1.1</span>
-                        <span>192.168.1.100</span>
-                        <span class="text-green-400">TCP</span>
-                        <span>ACK</span>
+                    <!-- Packets will be captured and displayed here when user performs actions -->
+                    <div class="p-4 text-center text-gray-400">
+                        <i class="bi bi-play-circle text-2xl mb-2"></i>
+                        <p>Start live capture to monitor network traffic</p>
+                        <p class="text-xs mt-1">Traffic will appear when you browse websites or check emails</p>
                     </div>
                 </div>
             </div>
