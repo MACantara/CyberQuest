@@ -63,9 +63,9 @@ export class BrowserApp extends WindowBase {
                             <span>CyberQuest</span>
                         </button>
                         <button class="bookmark-item px-2 py-1 bg-gray-700 hover:bg-gray-500 text-white rounded border border-gray-500 transition-colors duration-200 cursor-pointer flex items-center space-x-1 whitespace-nowrap" 
-                                data-url="https://example-bank.com" title="Example Bank">
+                                data-url="https://securebank.com" title="SecureBank Online">
                             <i class="bi bi-bank text-blue-400 text-xs"></i>
-                            <span>Example Bank</span>
+                            <span>SecureBank</span>
                         </button>
                         <button class="bookmark-item px-2 py-1 bg-gray-700 hover:bg-gray-500 text-white rounded border border-gray-500 transition-colors duration-200 cursor-pointer flex items-center space-x-1 whitespace-nowrap" 
                                 data-url="https://news-site.com" title="Tech News Daily">
@@ -78,9 +78,9 @@ export class BrowserApp extends WindowBase {
                             <span>Suspicious Site</span>
                         </button>
                         <button class="bookmark-item px-2 py-1 bg-gray-700 hover:bg-red-500 text-white rounded border border-gray-500 transition-colors duration-200 cursor-pointer flex items-center space-x-1 whitespace-nowrap" 
-                                data-url="https://phishing-bank.com" title="Phishing Site (Training)">
+                                data-url="https://secure-verify-support.com" title="Secure Verify Support">
                             <i class="bi bi-shield-x text-red-500 text-xs"></i>
-                            <span>Phishing Example</span>
+                            <span>Secure Verify Support</span>
                         </button>
                     </div>
                 </div>
