@@ -1,6 +1,6 @@
 export const ExampleBankPage = {
-    url: 'https://example-bank.com',
-    title: 'Example Bank',
+    url: 'https://securebank.com',
+    title: 'SecureBank Online',
     securityLevel: 'secure-ev',
     
     // Security configuration
@@ -18,7 +18,7 @@ export const ExampleBankPage = {
             algorithm: 'RSA 4096-bit',
             trusted: true,
             extendedValidation: true,
-            organizationName: 'Example Bank Corporation',
+            organizationName: 'SecureBank Corporation',
             country: 'US'
         },
         threats: null,
@@ -42,7 +42,7 @@ export const ExampleBankPage = {
                                 <i class="bi bi-bank text-white text-xl"></i>
                             </div>
                             <div>
-                                <h1 class="text-2xl font-bold text-blue-900">Example Bank</h1>
+                                <h1 class="text-2xl font-bold text-blue-900">SecureBank Online</h1>
                                 <p class="text-blue-700">Secure Online Banking</p>
                             </div>
                         </div>
