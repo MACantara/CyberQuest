@@ -21,7 +21,12 @@ export class Desktop {
         this.desktopElement.className = 'relative w-full h-full bg-gradient-to-br from-blue-800 via-blue-900 to-indigo-900 opacity-0 transition-opacity duration-1000 ease-in-out';
         this.desktopElement.style.backgroundImage = 'radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(0, 255, 0, 0.05) 0%, transparent 50%)';
         
-        this.container.appendChild(this.desktopElement);        // Initialize components - pass desktop instance to control panel
+        // Store reference to desktop on the element
+        this.desktopElement.desktop = this;
+        
+        this.container.appendChild(this.desktopElement);        
+        
+        // Initialize components
         this.taskbar = new Taskbar(this.desktopElement, null);
         
         // Initialize dialogue and tutorial systems before window manager
