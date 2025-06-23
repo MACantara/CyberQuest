@@ -1,7 +1,7 @@
 import { SuspiciousSitePage } from './suspicious-site.js';
 import { CyberQuestPage } from './cyberquest.js';
 import { ExampleBankPage } from './example-bank.js';
-import { PhishingBankPage } from './phishing-bank.js';
+import { PhishingBankPage } from './bank.js';
 import { NewsSitePage } from './news-site.js';
 
 export class PageRegistry {
