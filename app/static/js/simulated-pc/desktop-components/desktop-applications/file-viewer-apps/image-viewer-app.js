@@ -73,24 +73,81 @@ export class ImageViewerApp extends WindowBase {
     }
 
     createImageContent() {
-        // Since this is a simulation, we'll show a placeholder image representation
+        // Generate appropriate image content based on filename
+        const imageUrl = this.getImageUrl();
+        const isSuspicious = this.fileData.suspicious;
+        
         return `
             <div class="text-center p-8" id="image-display">
-                <div class="bg-gray-700 border-2 border-dashed border-gray-500 rounded-lg p-8 inline-block"
-                     style="transform: scale(${this.zoomLevel / 100}) rotate(${this.rotation}deg);">
-                    <i class="bi bi-file-image text-green-400 text-6xl mb-4 block"></i>
-                    <div class="text-white mb-2">${this.fileName}</div>
-                    <div class="text-gray-400 text-sm mb-4">${this.getImageFormat()} Image</div>
-                    <div class="bg-gradient-to-br from-blue-400 to-purple-500 w-64 h-48 rounded mb-4 flex items-center justify-center">
-                        <span class="text-white font-bold">Sample Image</span>
-                    </div>
-                    <div class="text-gray-400 text-xs">
-                        ${this.getImageDimensions()}<br>
-                        This is a simulated image for training purposes
+                <div class="inline-block" style="transform: scale(${this.zoomLevel / 100}) rotate(${this.rotation}deg);">
+                    ${isSuspicious ? this.createSuspiciousImageWarning() : ''}
+                    <div class="bg-white p-4 rounded-lg shadow-lg">
+                        <img src="${imageUrl}" 
+                             alt="${this.fileName}" 
+                             class="max-w-full h-auto rounded border border-gray-300"
+                             style="max-width: 600px; max-height: 400px;"
+                             onload="this.style.opacity = '1'" 
+                             style="opacity: 0; transition: opacity 0.3s;"
+                             onerror="this.parentElement.innerHTML = this.parentElement.innerHTML.replace(this.outerHTML, '<div class=\\'text-center p-8 border border-gray-300 rounded bg-gray-100\\'><i class=\\'bi bi-file-image text-gray-400 text-6xl mb-2\\'></i><p class=\\'text-gray-600\\'>Image preview not available</p><p class=\\'text-gray-500 text-sm\\'>Simulated: ${this.fileName}</p></div>')">
+                        <div class="mt-2 text-sm text-gray-600">
+                            <strong>${this.fileName}</strong><br>
+                            ${this.getImageDimensions()} • ${this.getImageFormat()}
+                        </div>
                     </div>
                 </div>
             </div>
         `;
+    }
+
+    createSuspiciousImageWarning() {
+        return `
+            <div class="bg-red-100 border border-red-400 rounded p-3 mb-4 text-left">
+                <div class="flex items-center space-x-2">
+                    <i class="bi bi-exclamation-triangle text-red-600"></i>
+                    <span class="text-red-800 font-semibold">Suspicious Image File</span>
+                </div>
+                <p class="text-red-700 text-sm mt-1">
+                    This image file has been flagged as potentially suspicious. 
+                    It may contain hidden malware or be used for social engineering.
+                </p>
+            </div>
+        `;
+    }
+
+    getImageUrl() {
+        // Map specific filenames to appropriate picsum.photos images
+        const imageMap = {
+            'conference_2024.jpg': 'https://picsum.photos/600/400?random=1', // Business/conference
+            'team_meeting.png': 'https://picsum.photos/600/400?random=2', // Office/meeting
+            'security_awareness.gif': 'https://picsum.photos/600/400?random=3', // Tech/security themed
+            'vacation_photo.jpg': 'https://picsum.photos/600/400?random=4', // Nature/vacation
+            'network_topology.svg': 'https://picsum.photos/600/400?random=5', // Technical diagram
+            'suspicious_attachment.jpg': 'https://picsum.photos/600/400?random=6', // Generic image
+            'profile_photo.jpg': 'https://picsum.photos/400/400?random=7', // Square profile
+            'network_diagram.png': 'https://picsum.photos/800/600?random=8', // Wide technical
+            'system_screenshot.png': 'https://picsum.photos/1024/768?random=9' // Screenshot ratio
+        };
+
+        // Use mapped URL or generate based on dimensions and filename hash
+        if (imageMap[this.fileName]) {
+            return imageMap[this.fileName];
+        }
+
+        // Generate a consistent random seed based on filename
+        const hash = this.fileName.split('').reduce((a, b) => {
+            a = ((a << 5) - a) + b.charCodeAt(0);
+            return a & a;
+        }, 0);
+        const seed = Math.abs(hash) % 100;
+
+        // Get dimensions for the image
+        const dimensions = this.getImageDimensions();
+        if (dimensions === 'Vector') {
+            return `https://picsum.photos/600/400?random=${seed}`;
+        }
+
+        const [width, height] = dimensions.split(' × ').map(d => parseInt(d));
+        return `https://picsum.photos/${width}/${height}?random=${seed}`;
     }
 
     getImageFormat() {
