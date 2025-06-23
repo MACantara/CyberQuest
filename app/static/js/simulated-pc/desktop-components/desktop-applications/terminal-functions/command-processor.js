@@ -74,8 +74,8 @@ export class CommandProcessor {
             }
             
             // Fall back to file/directory completion for commands that support it
-            if (command === 'cd' || command === 'ls' || command === 'cat' || command === 'help') {
-                return this.completeFilePath(currentPart, beforeCursor, afterCursor);
+            if (this.commandSupportsFileCompletion(command)) {
+                return this.completeFilePath(currentPart, beforeCursor, afterCursor, command);
             }
         }
         
@@ -118,37 +118,67 @@ export class CommandProcessor {
         };
     }
 
-    completeFilePath(partial, beforeCursor, afterCursor) {
+    commandSupportsFileCompletion(command) {
+        const fileCommands = ['cd', 'ls', 'cat', 'help'];
+        return fileCommands.includes(command);
+    }
+
+    completeFilePath(partial, beforeCursor, afterCursor, command = null) {
         try {
             // Handle different path formats
             let basePath = this.currentDirectory;
             let searchPattern = partial;
+            let pathPrefix = '';
             
             if (partial.includes('/')) {
                 const lastSlash = partial.lastIndexOf('/');
-                const dirPart = partial.substring(0, lastSlash + 1);
+                pathPrefix = partial.substring(0, lastSlash + 1);
                 searchPattern = partial.substring(lastSlash + 1);
                 
                 if (partial.startsWith('/')) {
-                    basePath = dirPart;
+                    // Absolute path
+                    basePath = pathPrefix.slice(0, -1) || '/';
                 } else if (partial.startsWith('~/')) {
-                    basePath = '/home/trainee' + dirPart.substring(1);
+                    // Home directory path
+                    basePath = '/home/trainee' + pathPrefix.substring(1);
+                    if (basePath.endsWith('/') && basePath !== '/') {
+                        basePath = basePath.slice(0, -1);
+                    }
                 } else {
-                    basePath = this.fileSystem.resolvePath(this.currentDirectory, dirPart);
+                    // Relative path
+                    basePath = this.fileSystem.resolvePath(this.currentDirectory, pathPrefix.slice(0, -1));
                 }
             }
             
             // Get directory contents
-            const items = this.fileSystem.listDirectory(basePath, false);
-            const matches = items
-                .filter(item => item.name.startsWith(searchPattern))
-                .map(item => {
-                    const fullName = item.type === 'directory' ? item.name + '/' : item.name;
-                    return {
-                        name: fullName,
-                        type: item.type
-                    };
-                });
+            const showHidden = searchPattern.startsWith('.');
+            const items = this.fileSystem.listDirectory(basePath, showHidden);
+            
+            // Filter based on command requirements
+            let filteredItems = items.filter(item => item.name.startsWith(searchPattern));
+            
+            // Command-specific filtering
+            if (command === 'cd') {
+                // Only show directories for cd command
+                filteredItems = filteredItems.filter(item => item.type === 'directory');
+            } else if (command === 'cat') {
+                // Only show files for cat command
+                filteredItems = filteredItems.filter(item => item.type === 'file');
+            }
+            
+            const matches = filteredItems.map(item => {
+                let displayName = item.name;
+                // Add trailing slash for directories
+                if (item.type === 'directory' && !displayName.endsWith('/')) {
+                    displayName += '/';
+                }
+                return {
+                    name: displayName,
+                    type: item.type,
+                    suspicious: item.suspicious,
+                    fullPath: pathPrefix + displayName
+                };
+            });
             
             if (matches.length === 0) {
                 return null;
@@ -157,10 +187,10 @@ export class CommandProcessor {
             if (matches.length === 1) {
                 // Single match - complete it
                 const match = matches[0];
-                const beforeCompletion = beforeCursor.substring(0, beforeCursor.length - searchPattern.length);
+                const beforeCompletion = beforeCursor.substring(0, beforeCursor.length - partial.length);
                 return {
-                    newText: beforeCompletion + match.name + afterCursor,
-                    newCursorPosition: beforeCompletion.length + match.name.length
+                    newText: beforeCompletion + match.fullPath + afterCursor,
+                    newCursorPosition: beforeCompletion.length + match.fullPath.length
                 };
             }
             
@@ -170,9 +200,10 @@ export class CommandProcessor {
             
             if (commonPrefix.length > searchPattern.length) {
                 const beforeCompletion = beforeCursor.substring(0, beforeCursor.length - searchPattern.length);
+                const newPath = pathPrefix + commonPrefix;
                 return {
-                    newText: beforeCompletion + commonPrefix + afterCursor,
-                    newCursorPosition: beforeCompletion.length + commonPrefix.length,
+                    newText: beforeCompletion + newPath + afterCursor,
+                    newCursorPosition: beforeCompletion.length + newPath.length,
                     suggestions: matchNames
                 };
             }

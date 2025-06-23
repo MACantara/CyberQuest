@@ -110,13 +110,17 @@ export class TerminalApp extends WindowBase {
         );
         
         const flags = suggestions.filter(s => s.startsWith('-'));
+        const directories = suggestions.filter(s => s.endsWith('/') && !s.startsWith('-'));
         const files = suggestions.filter(s => 
-            (s.includes('/') || s.includes('.')) && 
-            !s.startsWith('-')
+            !s.endsWith('/') && 
+            (s.includes('.') || s.includes('/')) && 
+            !s.startsWith('-') &&
+            !commands.includes(s)
         );
         const other = suggestions.filter(s => 
             !commands.includes(s) && 
             !flags.includes(s) && 
+            !directories.includes(s) &&
             !files.includes(s)
         );
         
@@ -130,8 +134,12 @@ export class TerminalApp extends WindowBase {
             output.push('Options: ' + flags.join('  '));
         }
         
+        if (directories.length > 0) {
+            output.push('Directories: ' + directories.join('  '));
+        }
+        
         if (files.length > 0) {
-            output.push('Files/Directories: ' + files.join('  '));
+            output.push('Files: ' + files.join('  '));
         }
         
         if (other.length > 0) {
