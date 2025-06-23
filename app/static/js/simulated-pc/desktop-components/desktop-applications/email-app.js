@@ -41,11 +41,8 @@ export class EmailApp extends WindowBase {
     }
 
     createEmailListItem(email) {
-        const suspiciousClass = email.suspicious
-            ? 'border-l-4 border-red-500 bg-red-900 bg-opacity-20'
-            : '';
         return `
-            <div class="email-item p-3 border-b border-gray-600 cursor-pointer hover:bg-gray-700 transition-colors duration-200 ${suspiciousClass}"
+            <div class="email-item p-3 border-b border-gray-600 cursor-pointer hover:bg-gray-700 transition-colors duration-200
                  data-email-id="${email.id}">
                 <div class="font-medium text-white text-sm">${email.sender}</div>
                 <div class="text-gray-300 text-sm mb-1">${email.subject}</div>
