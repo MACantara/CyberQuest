@@ -28,24 +28,24 @@ export class ImageViewerApp extends WindowBase {
                     </div>
                     
                     <div class="flex items-center space-x-2">
-                        <button id="zoom-fit-btn" class="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs">
+                        <button id="zoom-fit-btn" class="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs cursor-pointer">
                             Fit
                         </button>
-                        <button id="zoom-actual-btn" class="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs">
+                        <button id="zoom-actual-btn" class="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs cursor-pointer">
                             1:1
                         </button>
-                        <button id="zoom-out-btn" class="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs">
+                        <button id="zoom-out-btn" class="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs cursor-pointer">
                             <i class="bi bi-zoom-out"></i>
                         </button>
                         <span class="text-white text-xs min-w-12 text-center" id="zoom-level">${this.zoomLevel}%</span>
-                        <button id="zoom-in-btn" class="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs">
+                        <button id="zoom-in-btn" class="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs cursor-pointer">
                             <i class="bi bi-zoom-in"></i>
                         </button>
                         <div class="w-px h-6 bg-gray-600 mx-2"></div>
-                        <button id="rotate-left-btn" class="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs">
+                        <button id="rotate-left-btn" class="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs cursor-pointer">
                             <i class="bi bi-arrow-counterclockwise"></i>
                         </button>
-                        <button id="rotate-right-btn" class="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs">
+                        <button id="rotate-right-btn" class="px-2 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs cursor-pointer">
                             <i class="bi bi-arrow-clockwise"></i>
                         </button>
                     </div>
