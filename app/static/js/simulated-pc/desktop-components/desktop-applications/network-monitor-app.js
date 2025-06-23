@@ -44,18 +44,35 @@ export class NetworkMonitorApp extends WindowBase {
     setupEventListeners() {
         super.setupEventListeners();
         
-        const liveCaptureBtn = this.element.querySelector('#live-capture-btn');
-        const filtersBtn = this.element.querySelector('#filters-btn');
-        const statisticsBtn = this.element.querySelector('#statistics-btn');
-        const clearBtn = this.element.querySelector('#clear-btn');
+        // Use setTimeout to ensure DOM is ready
+        setTimeout(() => {
+            const liveCaptureBtn = this.element.querySelector('#live-capture-btn');
+            const filtersBtn = this.element.querySelector('#filters-btn');
+            const statisticsBtn = this.element.querySelector('#statistics-btn');
+            const clearBtn = this.element.querySelector('#clear-btn');
 
-        liveCaptureBtn.addEventListener('click', () => this.toggleCapture());
-        filtersBtn.addEventListener('click', () => this.showFilters());
-        statisticsBtn.addEventListener('click', () => this.showStatistics());
-        clearBtn.addEventListener('click', () => this.clearPackets());
+            if (liveCaptureBtn) {
+                liveCaptureBtn.addEventListener('click', () => this.toggleCapture());
+            }
+            if (filtersBtn) {
+                filtersBtn.addEventListener('click', () => this.showFilters());
+            }
+            if (statisticsBtn) {
+                statisticsBtn.addEventListener('click', () => this.showStatistics());
+            }
+            if (clearBtn) {
+                clearBtn.addEventListener('click', () => this.clearPackets());
+            }
 
-        // Load initial packets
-        this.loadInitialPackets();
+            // Load initial packets
+            this.loadInitialPackets();
+        }, 100);
+    }
+
+    show() {
+        super.show();
+        // Ensure event listeners are set up after the window is shown
+        this.setupEventListeners();
     }
 
     loadInitialPackets() {
