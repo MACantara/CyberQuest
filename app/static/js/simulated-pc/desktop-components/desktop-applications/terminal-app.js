@@ -15,7 +15,7 @@ export class TerminalApp extends WindowBase {
         return `
             <div class="h-full bg-black text-green-400 font-mono text-sm p-3 flex flex-col" id="terminal-container">
                 <div class="flex-1 overflow-y-auto mb-3 space-y-1" id="terminal-output">
-                    <div class="text-green-300">Welcome to CyberQuest Training Terminal</div>
+                    <div class="text-green-400">Welcome to CyberQuest Training Terminal</div>
                     <div class="text-gray-400">Type 'help' for available commands</div>
                     <div></div>
                 </div>
