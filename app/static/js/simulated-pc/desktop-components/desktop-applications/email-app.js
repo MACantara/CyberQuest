@@ -19,6 +19,20 @@ export class EmailApp extends WindowBase {
         if (currentFolder === 'inbox') {
             emails = [...LEGITIMATE_EMAILS, ...SUSPICIOUS_EMAILS];
         }
+        // Sort emails by recency (most recent first)
+        emails.sort((a, b) => {
+            // Helper to convert time string to a comparable value
+            const parseTime = (email) => {
+                const t = email.time.toLowerCase();
+                if (t.includes('min')) return 0 + parseInt(t) * 60; // minutes ago
+                if (t.includes('hour')) return 1000 + parseInt(t) * 3600; // hours ago
+                if (t.includes('yesterday')) return 2000;
+                if (t.includes('last week')) return 3000;
+                if (t.includes('day')) return 1500 + parseInt(t) * 86400; // days ago
+                return 9999; // fallback for unknown/older
+            };
+            return parseTime(a) - parseTime(b);
+        });
         const selectedEmail = selectedEmailId ? emails.find(e => e.id === selectedEmailId) : null;
 
         // Only show Inbox as folder
