@@ -10,7 +10,11 @@ export const ExampleBankPage = {
         certificate: {
             valid: true,
             issuer: 'DigiCert SHA2 Extended Validation Server CA',
-            expires: '2024-11-15',
+            expires: (() => {
+                const date = new Date();
+                date.setFullYear(date.getFullYear() + 1);
+                return date.toISOString().split('T')[0];
+            })(),
             algorithm: 'RSA 4096-bit',
             trusted: true,
             extendedValidation: true,

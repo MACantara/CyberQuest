@@ -10,7 +10,11 @@ export const SuspiciousSitePage = {
         certificate: {
             valid: false,
             issuer: 'Self-signed Certificate Authority',
-            expires: '2023-01-01',
+            expires: (() => {
+                const date = new Date();
+                date.setMonth(date.getMonth() - 1);
+                return date.toISOString().split('T')[0];
+            })(),
             algorithm: 'RSA 1024-bit',
             trusted: false,
             selfSigned: true,

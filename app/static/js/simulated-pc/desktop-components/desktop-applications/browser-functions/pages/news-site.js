@@ -10,7 +10,11 @@ export const NewsSitePage = {
         certificate: {
             valid: true,
             issuer: 'CloudFlare Inc ECC CA-3',
-            expires: '2024-10-30',
+            expires: (() => {
+                const date = new Date();
+                date.setFullYear(date.getFullYear() + 1);
+                return date.toISOString().split('T')[0];
+            })(),
             algorithm: 'ECDSA P-256',
             trusted: true,
             extendedValidation: false

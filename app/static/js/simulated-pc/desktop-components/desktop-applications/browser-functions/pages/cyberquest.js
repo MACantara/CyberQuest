@@ -10,7 +10,11 @@ export const CyberQuestPage = {
         certificate: {
             valid: true,
             issuer: 'Let\'s Encrypt Authority X3',
-            expires: '2024-12-20',
+            expires: (() => {
+                const date = new Date();
+                date.setFullYear(date.getFullYear() + 1);
+                return date.toISOString().split('T')[0];
+            })(),
             algorithm: 'RSA 2048-bit',
             trusted: true,
             extendedValidation: false

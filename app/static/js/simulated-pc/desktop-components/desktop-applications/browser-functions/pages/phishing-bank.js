@@ -10,7 +10,11 @@ export const PhishingBankPage = {
         certificate: {
             valid: false,
             issuer: 'Fake Certificate Authority Ltd',
-            expires: '2024-01-01',
+            expires: (() => {
+                const date = new Date();
+                date.setMonth(date.getMonth() - 1);
+                return date.toISOString().split('T')[0];
+            })(),
             algorithm: 'RSA 2048-bit',
             trusted: false,
             warnings: ['Domain mismatch', 'Untrusted issuer', 'Suspicious certificate'],
