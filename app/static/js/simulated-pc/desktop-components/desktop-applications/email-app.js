@@ -86,6 +86,17 @@ export class EmailApp extends WindowBase {
         this.bindEvents();
     }
 
+    updateContent() {
+        // Re-render content and re-bind events to ensure UI updates and handlers are attached
+        if (this.windowElement) {
+            const contentElement = this.windowElement.querySelector('.window-content');
+            if (contentElement) {
+                contentElement.innerHTML = this.createContent();
+                this.bindEvents();
+            }
+        }
+    }
+
     bindEvents() {
         const windowElement = this.windowElement;
         if (!windowElement) return;
