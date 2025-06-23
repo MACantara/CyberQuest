@@ -1,7 +1,7 @@
 // Centralized registry for all legitimate and suspicious emails
 
 import { LegitimateEmail } from './legitimate-emails/cyberquest-welcome-email.js';
-import { BankEmail } from './legitimate-emails/bank-email.js';
+import { BankEmail } from './suspicious-emails/bank-email.js';
 import { SuspiciousEmail } from './suspicious-emails/nigerian-prince-email.js';
 
 // Add new emails here as needed
