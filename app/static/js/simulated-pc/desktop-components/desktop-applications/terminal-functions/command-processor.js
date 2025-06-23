@@ -1,18 +1,6 @@
 import { FileSystem } from './file-system.js';
 import { CommandHistory } from './command-history.js';
-
-// Import commands
-import { LsCommand } from './terminal-commands/ls-command.js';
-import { CdCommand } from './terminal-commands/cd-command.js';
-import { CatCommand } from './terminal-commands/cat-command.js';
-import { PwdCommand } from './terminal-commands/pwd-command.js';
-import { WhoamiCommand } from './terminal-commands/whoami-command.js';
-import { ClearCommand } from './terminal-commands/clear-command.js';
-import { HelpCommand } from './terminal-commands/help-command.js';
-import { HistoryCommand } from './terminal-commands/history-command.js';
-import { EchoCommand } from './terminal-commands/echo-command.js';
-import { DateCommand } from './terminal-commands/date-command.js';
-import { UnameCommand } from './terminal-commands/uname-command.js';
+import { CommandRegistry } from './command-registry.js';
 
 export class CommandProcessor {
     constructor(terminalApp) {
@@ -23,20 +11,8 @@ export class CommandProcessor {
         this.username = 'trainee';
         this.hostname = 'cyberquest';
         
-        // Initialize commands
-        this.commands = {
-            'ls': new LsCommand(this),
-            'cd': new CdCommand(this),
-            'cat': new CatCommand(this),
-            'pwd': new PwdCommand(this),
-            'whoami': new WhoamiCommand(this),
-            'clear': new ClearCommand(this),
-            'help': new HelpCommand(this),
-            'history': new HistoryCommand(this),
-            'echo': new EchoCommand(this),
-            'date': new DateCommand(this),
-            'uname': new UnameCommand(this)
-        };
+        // Initialize command registry
+        this.commandRegistry = new CommandRegistry(this);
     }
 
     executeCommand(commandLine) {
@@ -51,8 +27,9 @@ export class CommandProcessor {
         this.addOutput(`${this.getPrompt()}${commandLine}`, 'command');
 
         try {
-            if (this.commands[command]) {
-                this.commands[command].execute(args);
+            const commandInstance = this.commandRegistry.getCommand(command);
+            if (commandInstance) {
+                commandInstance.execute(args);
             } else {
                 this.addOutput(`bash: ${command}: command not found`, 'error');
             }
