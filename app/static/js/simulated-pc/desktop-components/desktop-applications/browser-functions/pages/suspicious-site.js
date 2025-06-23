@@ -1,38 +1,38 @@
-export const SuspiciousSitePage = {
-    url: 'https://suspicious-site.com',
-    title: 'WIN BIG NOW!',
-    securityLevel: 'dangerous',
-    
-    // Security configuration
-    security: {
-        isHttps: true,
-        hasValidCertificate: false,
-        certificate: {
-            valid: false,
-            issuer: 'Self-signed Certificate Authority',
-            expires: (() => {
-                const date = new Date();
-                date.setMonth(date.getMonth() - 1);
-                return date.toISOString().split('T')[0];
-            })(),
-            algorithm: 'RSA 1024-bit',
-            trusted: false,
-            selfSigned: true,
-            warnings: ['Self-signed certificate', 'Weak encryption', 'Expired certificate']
-        },
-        threats: {
-            level: 'high',
-            type: 'scam',
-            description: 'Known scam website attempting to steal personal information',
-            indicators: ['Too good to be true offers', 'Urgent language', 'Suspicious domain']
-        },
-        riskFactors: [
-            'Fraudulent prize claims',
-            'Identity theft attempts',
-            'Credit card fraud',
-            'Personal data harvesting'
-        ]
-    },
+import { BasePage } from './base-page.js';
+
+class SuspiciousSitePageClass extends BasePage {
+    constructor() {
+        super({
+            url: 'https://suspicious-site.com',
+            title: 'WIN BIG NOW!',
+            securityLevel: 'dangerous',
+            security: {
+                isHttps: true,
+                hasValidCertificate: false,
+                certificate: {
+                    valid: false,
+                    issuer: 'Self-signed Certificate Authority',
+                    expires: BasePage.generateCertExpiration(-1), // Expired
+                    algorithm: 'RSA 1024-bit',
+                    trusted: false,
+                    selfSigned: true,
+                    warnings: ['Self-signed certificate', 'Weak encryption', 'Expired certificate']
+                },
+                threats: {
+                    level: 'high',
+                    type: 'scam',
+                    description: 'Known scam website attempting to steal personal information',
+                    indicators: ['Too good to be true offers', 'Urgent language', 'Suspicious domain']
+                },
+                riskFactors: [
+                    'Fraudulent prize claims',
+                    'Identity theft attempts',
+                    'Credit card fraud',
+                    'Personal data harvesting'
+                ]
+            }
+        });
+    }
 
     createContent() {
         return `
@@ -66,4 +66,7 @@ export const SuspiciousSitePage = {
             </div>
         `;
     }
-};
+}
+
+// Export as page object for compatibility
+export const SuspiciousSitePage = new SuspiciousSitePageClass().toPageObject();

@@ -1,39 +1,39 @@
-export const PhishingBankPage = {
-    url: 'https://secure-verify-support.com',
-    title: 'Secure Banking - Login',
-    securityLevel: 'dangerous',
-    
-    // Security configuration
-    security: {
-        isHttps: true,
-        hasValidCertificate: false,
-        certificate: {
-            valid: false,
-            issuer: 'Fake Certificate Authority Ltd',
-            expires: (() => {
-                const date = new Date();
-                date.setMonth(date.getMonth() - 1);
-                return date.toISOString().split('T')[0];
-            })(),
-            algorithm: 'RSA 2048-bit',
-            trusted: false,
-            warnings: ['Domain mismatch', 'Untrusted issuer', 'Suspicious certificate'],
-            domainMismatch: true
-        },
-        threats: {
-            level: 'critical',
-            type: 'phishing',
-            description: 'Fake banking website designed to steal credentials and personal information',
-            indicators: ['Urgent security warnings', 'Requests for sensitive data', 'Domain impersonation']
-        },
-        riskFactors: [
-            'Credential theft',
-            'Identity theft',
-            'Financial fraud',
-            'Account takeover',
-            'Personal data harvesting'
-        ]
-    },
+import { BasePage } from './base-page.js';
+
+class PhishingBankPageClass extends BasePage {
+    constructor() {
+        super({
+            url: 'https://secure-verify-support.com',
+            title: 'Secure Banking - Login',
+            securityLevel: 'dangerous',
+            security: {
+                isHttps: true,
+                hasValidCertificate: false,
+                certificate: {
+                    valid: false,
+                    issuer: 'Fake Certificate Authority Ltd',
+                    expires: BasePage.generateCertExpiration(-1), // Expired
+                    algorithm: 'RSA 2048-bit',
+                    trusted: false,
+                    warnings: ['Domain mismatch', 'Untrusted issuer', 'Suspicious certificate'],
+                    domainMismatch: true
+                },
+                threats: {
+                    level: 'critical',
+                    type: 'phishing',
+                    description: 'Fake banking website designed to steal credentials and personal information',
+                    indicators: ['Urgent security warnings', 'Requests for sensitive data', 'Domain impersonation']
+                },
+                riskFactors: [
+                    'Credential theft',
+                    'Identity theft',
+                    'Financial fraud',
+                    'Account takeover',
+                    'Personal data harvesting'
+                ]
+            }
+        });
+    }
 
     createContent() {
         return `
@@ -45,7 +45,7 @@ export const PhishingBankPage = {
                                 <i class="bi bi-bank text-white text-xl"></i>
                             </div>
                             <div>
-                                <h1 class="text-2xl font-bold text-blue-900">SecureBank Online</h1>
+                                <h1 class="text-2xl font-bold text-blue-900">${this.title}</h1>
                                 <p class="text-blue-700">Your Trusted Banking Partner</p>
                             </div>
                         </div>
@@ -106,4 +106,7 @@ export const PhishingBankPage = {
             </div>
         `;
     }
-};
+}
+
+// Export as page object for compatibility
+export const PhishingBankPage = new PhishingBankPageClass().toPageObject();

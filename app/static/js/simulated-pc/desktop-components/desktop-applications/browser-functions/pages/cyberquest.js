@@ -1,33 +1,33 @@
-export const CyberQuestPage = {
-    url: 'https://cyberquest.com',
-    title: 'CyberQuest Training',
-    securityLevel: 'safe',
-    
-    // Security configuration
-    security: {
-        isHttps: true,
-        hasValidCertificate: true,
-        certificate: {
-            valid: true,
-            issuer: 'Let\'s Encrypt Authority X3',
-            expires: (() => {
-                const date = new Date();
-                date.setFullYear(date.getFullYear() + 1);
-                return date.toISOString().split('T')[0];
-            })(),
-            algorithm: 'RSA 2048-bit',
-            trusted: true,
-            extendedValidation: false
-        },
-        threats: null,
-        riskFactors: [],
-        securityFeatures: [
-            'Valid SSL/TLS certificate',
-            'Strong encryption',
-            'Regular security updates',
-            'Trusted certificate authority'
-        ]
-    },
+import { BasePage } from './base-page.js';
+
+class CyberQuestPageClass extends BasePage {
+    constructor() {
+        super({
+            url: 'https://cyberquest.com',
+            title: 'CyberQuest Training',
+            securityLevel: 'safe',
+            security: {
+                isHttps: true,
+                hasValidCertificate: true,
+                certificate: {
+                    valid: true,
+                    issuer: 'Let\'s Encrypt Authority X3',
+                    expires: BasePage.generateCertExpiration(12),
+                    algorithm: 'RSA 2048-bit',
+                    trusted: true,
+                    extendedValidation: false
+                },
+                threats: null,
+                riskFactors: [],
+                securityFeatures: [
+                    'Valid SSL/TLS certificate',
+                    'Strong encryption',
+                    'Regular security updates',
+                    'Trusted certificate authority'
+                ]
+            }
+        });
+    }
 
     createContent() {
         return `
@@ -38,7 +38,7 @@ export const CyberQuestPage = {
                             <i class="bi bi-shield-check text-white text-xl"></i>
                         </div>
                         <div>
-                            <h1 class="text-2xl font-bold text-gray-900">CyberQuest Training Platform</h1>
+                            <h1 class="text-2xl font-bold text-gray-900">${this.title}</h1>
                             <p class="text-gray-600">Professional Cybersecurity Education</p>
                         </div>
                     </div>
@@ -76,4 +76,7 @@ export const CyberQuestPage = {
             </div>
         `;
     }
-};
+}
+
+// Export as page object for compatibility
+export const CyberQuestPage = new CyberQuestPageClass().toPageObject();

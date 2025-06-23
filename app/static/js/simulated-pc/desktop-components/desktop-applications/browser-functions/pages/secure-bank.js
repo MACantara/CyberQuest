@@ -1,36 +1,36 @@
-export const ExampleBankPage = {
-    url: 'https://securebank.com',
-    title: 'SecureBank Online',
-    securityLevel: 'secure-ev',
-    
-    // Security configuration
-    security: {
-        isHttps: true,
-        hasValidCertificate: true,
-        certificate: {
-            valid: true,
-            issuer: 'DigiCert SHA2 Extended Validation Server CA',
-            expires: (() => {
-                const date = new Date();
-                date.setFullYear(date.getFullYear() + 1);
-                return date.toISOString().split('T')[0];
-            })(),
-            algorithm: 'RSA 4096-bit',
-            trusted: true,
-            extendedValidation: true,
-            organizationName: 'SecureBank Corporation',
-            country: 'US'
-        },
-        threats: null,
-        riskFactors: [],
-        securityFeatures: [
-            'Extended Validation certificate',
-            'Organization identity verified',
-            'Strong 4096-bit encryption',
-            'Premium security standards',
-            'Regular security audits'
-        ]
-    },
+import { BasePage } from './base-page.js';
+
+class ExampleBankPageClass extends BasePage {
+    constructor() {
+        super({
+            url: 'https://securebank.com',
+            title: 'SecureBank Online',
+            securityLevel: 'secure-ev',
+            security: {
+                isHttps: true,
+                hasValidCertificate: true,
+                certificate: {
+                    valid: true,
+                    issuer: 'DigiCert SHA2 Extended Validation Server CA',
+                    expires: BasePage.generateCertExpiration(12),
+                    algorithm: 'RSA 4096-bit',
+                    trusted: true,
+                    extendedValidation: true,
+                    organizationName: 'SecureBank Corporation',
+                    country: 'US'
+                },
+                threats: null,
+                riskFactors: [],
+                securityFeatures: [
+                    'Extended Validation certificate',
+                    'Organization identity verified',
+                    'Strong 4096-bit encryption',
+                    'Premium security standards',
+                    'Regular security audits'
+                ]
+            }
+        });
+    }
 
     createContent() {
         return `
@@ -42,7 +42,7 @@ export const ExampleBankPage = {
                                 <i class="bi bi-bank text-white text-xl"></i>
                             </div>
                             <div>
-                                <h1 class="text-2xl font-bold text-blue-900">SecureBank Online</h1>
+                                <h1 class="text-2xl font-bold text-blue-900">${this.title}</h1>
                                 <p class="text-blue-700">Secure Online Banking</p>
                             </div>
                         </div>
@@ -86,7 +86,17 @@ export const ExampleBankPage = {
                         </div>
                     </section>
                 </main>
+
+                <div class="mt-8 bg-green-50 border border-green-200 rounded p-4">
+                    <p class="text-green-700 text-sm">
+                        <i class="bi bi-shield-check mr-1"></i>
+                        <strong>Training Note:</strong> This is a legitimate banking website. Notice the Extended Validation certificate, professional security notices, and absence of urgent/threatening language.
+                    </p>
+                </div>
             </div>
         `;
     }
-};
+}
+
+// Export as page object for compatibility
+export const ExampleBankPage = new ExampleBankPageClass().toPageObject();

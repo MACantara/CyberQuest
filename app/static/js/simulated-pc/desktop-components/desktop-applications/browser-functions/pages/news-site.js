@@ -1,39 +1,39 @@
-export const NewsSitePage = {
-    url: 'https://news-site.com',
-    title: 'Tech News Daily',
-    securityLevel: 'secure',
-    
-    // Security configuration
-    security: {
-        isHttps: true,
-        hasValidCertificate: true,
-        certificate: {
-            valid: true,
-            issuer: 'CloudFlare Inc ECC CA-3',
-            expires: (() => {
-                const date = new Date();
-                date.setFullYear(date.getFullYear() + 1);
-                return date.toISOString().split('T')[0];
-            })(),
-            algorithm: 'ECDSA P-256',
-            trusted: true,
-            extendedValidation: false
-        },
-        threats: null,
-        riskFactors: [],
-        securityFeatures: [
-            'Modern ECC encryption',
-            'CloudFlare security protection',
-            'Content delivery network',
-            'DDoS protection'
-        ]
-    },
+import { BasePage } from './base-page.js';
+
+class NewsSitePageClass extends BasePage {
+    constructor() {
+        super({
+            url: 'https://news-site.com',
+            title: 'Tech News Daily',
+            securityLevel: 'secure',
+            security: {
+                isHttps: true,
+                hasValidCertificate: true,
+                certificate: {
+                    valid: true,
+                    issuer: 'CloudFlare Inc ECC CA-3',
+                    expires: BasePage.generateCertExpiration(12),
+                    algorithm: 'ECDSA P-256',
+                    trusted: true,
+                    extendedValidation: false
+                },
+                threats: null,
+                riskFactors: [],
+                securityFeatures: [
+                    'Modern ECC encryption',
+                    'CloudFlare security protection',
+                    'Content delivery network',
+                    'DDoS protection'
+                ]
+            }
+        });
+    }
 
     createContent() {
         return `
             <div class="p-6 text-gray-800 bg-white">
                 <header class="border-b border-gray-200 pb-4 mb-6">
-                    <h1 class="text-3xl font-bold text-gray-900">Tech News Daily</h1>
+                    <h1 class="text-3xl font-bold text-gray-900">${this.title}</h1>
                     <p class="text-gray-600">Latest in Technology and Cybersecurity</p>
                 </header>
 
@@ -59,7 +59,17 @@ export const NewsSitePage = {
                         <a href="#" class="text-blue-600 hover:underline">Read more</a>
                     </article>
                 </main>
+
+                <div class="mt-8 bg-green-50 border border-green-200 rounded p-4">
+                    <p class="text-green-700 text-sm">
+                        <i class="bi bi-info-circle mr-1"></i>
+                        <strong>Training Note:</strong> This is a legitimate news website. Notice the professional design, valid HTTPS certificate, and credible content focused on cybersecurity awareness.
+                    </p>
+                </div>
             </div>
         `;
     }
-};
+}
+
+// Export as page object for compatibility
+export const NewsSitePage = new NewsSitePageClass().toPageObject();
