@@ -1,7 +1,6 @@
 import { WindowBase } from '../window-base.js';
-import { EMAIL_FOLDERS } from './email-functions/email-data.js';
 import { EmailState } from './email-functions/email-state.js';
-import { getEmailsByFolder, getEmailById } from './email-functions/email-utils.js';
+import { LEGITIMATE_EMAILS, SUSPICIOUS_EMAILS } from './email-functions/emails/email-registry.js';
 
 export class EmailApp extends WindowBase {
     constructor() {
@@ -15,19 +14,22 @@ export class EmailApp extends WindowBase {
     createContent() {
         const currentFolder = this.state.getCurrentFolder();
         const selectedEmailId = this.state.getSelectedEmailId();
-        const emails = getEmailsByFolder(currentFolder);
-        const selectedEmail = selectedEmailId ? getEmailById(currentFolder, selectedEmailId) : null;
+        // Use centralized registry for inbox emails
+        let emails = [];
+        if (currentFolder === 'inbox') {
+            emails = [...LEGITIMATE_EMAILS, ...SUSPICIOUS_EMAILS];
+        }
+        const selectedEmail = selectedEmailId ? emails.find(e => e.id === selectedEmailId) : null;
 
+        // Only show Inbox as folder
         return `
             <div class="h-full flex">
                 <div class="w-48 bg-gray-700 border-r border-gray-600 p-3 flex flex-col">
-                    ${EMAIL_FOLDERS.map(folder => `
-                        <div class="email-folder px-3 py-2 rounded text-sm font-medium mb-1 cursor-pointer transition-colors duration-200
-                            ${currentFolder === folder.id ? 'bg-green-400 text-black' : 'text-gray-300 hover:bg-gray-600'}"
-                            data-folder="${folder.id}">
-                            ${folder.name} (${getEmailsByFolder(folder.id).length})
-                        </div>
-                    `).join('')}
+                    <div class="email-folder px-3 py-2 rounded text-sm font-medium mb-1 cursor-pointer transition-colors duration-200
+                        ${currentFolder === 'inbox' ? 'bg-green-400 text-black' : 'text-gray-300 hover:bg-gray-600'}"
+                        data-folder="inbox">
+                        Inbox (${LEGITIMATE_EMAILS.length + SUSPICIOUS_EMAILS.length})
+                    </div>
                 </div>
                 <div class="flex-1 flex flex-col">
                     <div class="flex-1 overflow-y-auto" id="email-list">
@@ -91,7 +93,7 @@ export class EmailApp extends WindowBase {
         const windowElement = this.windowElement;
         if (!windowElement) return;
 
-        // Folder switching
+        // Folder switching (only inbox)
         windowElement.querySelectorAll('.email-folder').forEach(folderEl => {
             folderEl.addEventListener('click', () => {
                 const folderId = folderEl.getAttribute('data-folder');
