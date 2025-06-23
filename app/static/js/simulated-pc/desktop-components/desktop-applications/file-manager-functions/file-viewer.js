@@ -1,10 +1,14 @@
+import { ViewerFactory } from './viewer-factory.js';
+import { WindowTracker } from './window-tracker.js';
+import { FileTypeDetector } from './file-type-detector.js';
+
 export class FileViewer {
     constructor(fileManagerApp) {
         this.fileManagerApp = fileManagerApp;
-        this.openWindows = new Set(); // Track open file viewer windows
+        this.windowTracker = new WindowTracker();
     }
 
-    openFile(fileName, fileData) {
+    async openFile(fileName, fileData) {
         // Get the window manager from the desktop
         const desktop = this.getDesktop();
         if (!desktop || !desktop.windowManager) {
@@ -12,120 +16,52 @@ export class FileViewer {
             return;
         }
 
-        // Get file content
-        const fileContent = this.fileManagerApp.navigator.getFileContent(fileName);
-        
-        // Create unique window ID to allow multiple file viewers
-        const windowId = `file-viewer-${fileName.replace(/[^a-zA-Z0-9]/g, '_')}`;
-        
         // Check if this file is already open
-        if (this.openWindows.has(windowId)) {
-            // Bring existing window to front
-            const existingWindow = desktop.windowManager.windows.get(windowId);
-            if (existingWindow) {
-                existingWindow.style.zIndex = ++desktop.windowManager.zIndex;
-                desktop.windowManager.taskbar.setActiveWindow(windowId);
-                return;
-            } else {
-                // Window was closed, remove from tracking
-                this.openWindows.delete(windowId);
+        if (this.windowTracker.bringWindowToFront(fileName, desktop)) {
+            return; // File is already open, brought to front
+        }
+
+        try {
+            // Get file content
+            const fileContent = this.fileManagerApp.navigator.getFileContent(fileName);
+            
+            // Create appropriate viewer using factory
+            const fileViewerApp = await ViewerFactory.createViewer(fileName, fileData, fileContent);
+            
+            // Create unique window ID
+            const windowId = this.windowTracker.generateWindowId(fileName);
+            
+            // Create the window using window manager
+            const windowElement = desktop.windowManager.createWindow(
+                windowId, 
+                fileViewerApp.title, 
+                fileViewerApp
+            );
+            
+            // Track the window and setup close handling
+            this.windowTracker.trackWindow(fileName, windowElement, fileViewerApp);
+            this.windowTracker.setupWindowCloseTracking(windowId, windowElement, desktop);
+            
+        } catch (error) {
+            console.error('Failed to open file viewer:', error);
+            this.showError(`Failed to open ${fileName}: ${error.message}`);
+        }
+    }
+
+    showError(message) {
+        // Create a simple error notification
+        const notification = document.createElement('div');
+        notification.className = 'fixed top-4 right-4 bg-red-600 text-white p-3 rounded shadow-lg z-50';
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        // Auto-remove after 3 seconds
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.remove();
             }
-        }
-
-        // Determine the appropriate viewer based on file type
-        this.createSpecializedViewer(fileName, fileData, fileContent, windowId, desktop);
-    }
-
-    createSpecializedViewer(fileName, fileData, fileContent, windowId, desktop) {
-        const fileExt = fileName.toLowerCase().split('.').pop();
-        
-        if (fileName.toLowerCase().endsWith('.exe')) {
-            // Use executable viewer for .exe files
-            import('../file-viewer-apps/executable-viewer-app.js').then(({ ExecutableViewerApp }) => {
-                const fileViewerApp = new ExecutableViewerApp(fileName, fileData, fileContent);
-                this.createAndTrackWindow(windowId, fileName, fileViewerApp, desktop);
-            }).catch(error => {
-                console.error('Failed to load ExecutableViewerApp:', error);
-            });
-        } else if (fileName.toLowerCase().endsWith('.pdf')) {
-            // Use PDF viewer for PDF files
-            import('../file-viewer-apps/pdf-viewer-app.js').then(({ PdfViewerApp }) => {
-                const fileViewerApp = new PdfViewerApp(fileName, fileData, fileContent);
-                this.createAndTrackWindow(windowId, fileName, fileViewerApp, desktop);
-            }).catch(error => {
-                console.error('Failed to load PdfViewerApp:', error);
-            });
-        } else if (this.isImageFile(fileName)) {
-            // Use image viewer for image files
-            import('../file-viewer-apps/image-viewer-app.js').then(({ ImageViewerApp }) => {
-                const fileViewerApp = new ImageViewerApp(fileName, fileData, fileContent);
-                this.createAndTrackWindow(windowId, fileName, fileViewerApp, desktop);
-            }).catch(error => {
-                console.error('Failed to load ImageViewerApp:', error);
-            });
-        } else if (this.isLogFile(fileName)) {
-            // Use log viewer for log files
-            import('../file-viewer-apps/log-viewer-app.js').then(({ LogViewerApp }) => {
-                const fileViewerApp = new LogViewerApp(fileName, fileData, fileContent);
-                this.createAndTrackWindow(windowId, fileName, fileViewerApp, desktop);
-            }).catch(error => {
-                console.error('Failed to load LogViewerApp:', error);
-            });
-        } else {
-            // Use text viewer for all other files
-            import('../file-viewer-apps/text-viewer-app.js').then(({ TextViewerApp }) => {
-                const fileViewerApp = new TextViewerApp(fileName, fileData, fileContent);
-                this.createAndTrackWindow(windowId, fileName, fileViewerApp, desktop);
-            }).catch(error => {
-                console.error('Failed to load TextViewerApp:', error);
-            });
-        }
-    }
-
-    createAndTrackWindow(windowId, fileName, fileViewerApp, desktop) {
-        // Create the window using window manager
-        const windowElement = desktop.windowManager.createWindow(
-            windowId, 
-            `${fileViewerApp.title}`, 
-            fileViewerApp
-        );
-        
-        // Track the window
-        this.openWindows.add(windowId);
-        
-        // Override the close method to track window closure
-        const originalCloseMethod = desktop.windowManager.closeWindow.bind(desktop.windowManager);
-        const originalCloseWindow = (id) => {
-            this.openWindows.delete(id);
-            originalCloseMethod(id);
-        };
-        
-        // Temporarily override close method for this window
-        const windowCloseBtn = windowElement?.querySelector('.close');
-        if (windowCloseBtn) {
-            windowCloseBtn.removeEventListener('click', windowCloseBtn.onclick);
-            windowCloseBtn.addEventListener('click', () => {
-                originalCloseWindow(windowId);
-            });
-        }
-    }
-
-    isImageFile(fileName) {
-        const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg', '.webp', '.tiff', '.ico'];
-        return imageExtensions.some(ext => fileName.toLowerCase().endsWith(ext));
-    }
-
-    isLogFile(fileName) {
-        const logExtensions = ['.log', '.txt'];
-        const logPatterns = ['access', 'error', 'system', 'security', 'auth', 'firewall', 'audit'];
-        
-        // Check file extension
-        if (logExtensions.some(ext => fileName.toLowerCase().endsWith(ext))) {
-            // Check if filename contains log-related keywords
-            return logPatterns.some(pattern => fileName.toLowerCase().includes(pattern));
-        }
-        
-        return false;
+        }, 3000);
     }
 
     getDesktop() {
@@ -144,23 +80,50 @@ export class FileViewer {
     }
 
     closeViewer() {
-        // Close all tracked file viewer windows
         const desktop = this.getDesktop();
-        if (desktop && desktop.windowManager) {
-            this.openWindows.forEach(windowId => {
-                desktop.windowManager.closeWindow(windowId);
-            });
-        }
-        
-        this.openWindows.clear();
+        this.windowTracker.closeAllWindows(desktop);
     }
 
     getOpenFileCount() {
-        return this.openWindows.size;
+        return this.windowTracker.getOpenFileCount();
     }
 
     isFileOpen(fileName) {
-        const windowId = `file-viewer-${fileName.replace(/[^a-zA-Z0-9]/g, '_')}`;
-        return this.openWindows.has(windowId);
+        return this.windowTracker.isFileOpen(fileName);
+    }
+
+    getAllOpenFiles() {
+        return this.windowTracker.getAllOpenWindows().map(windowId => {
+            const metadata = this.windowTracker.getWindowMetadata(windowId);
+            return {
+                fileName: metadata?.fileName,
+                windowId,
+                openedAt: metadata?.openedAt,
+                fileType: FileTypeDetector.getFileType(metadata?.fileName || ''),
+                securityRisk: FileTypeDetector.getSecurityRisk(metadata?.fileName || '', {})
+            };
+        });
+    }
+
+    getFileTypeInfo(fileName) {
+        return {
+            type: FileTypeDetector.getFileType(fileName),
+            category: FileTypeDetector.getFileCategory(fileName),
+            isSupported: ViewerFactory.isTypeSupported(fileName),
+            supportedTypes: ViewerFactory.getSupportedTypes()
+        };
+    }
+
+    // Utility methods for file type detection (exposed for external use)
+    static isImageFile(fileName) {
+        return FileTypeDetector.isImageFile(fileName);
+    }
+
+    static isLogFile(fileName) {
+        return FileTypeDetector.isLogFile(fileName);
+    }
+
+    static getFileType(fileName) {
+        return FileTypeDetector.getFileType(fileName);
     }
 }
