@@ -46,7 +46,6 @@ export class FileViewer {
                 this.createAndTrackWindow(windowId, fileName, fileViewerApp, desktop);
             }).catch(error => {
                 console.error('Failed to load ExecutableViewerApp:', error);
-                this.createFallbackViewer(fileName, fileData, fileContent, windowId, desktop);
             });
         } else if (fileName.toLowerCase().endsWith('.pdf')) {
             // Use PDF viewer for PDF files
@@ -55,7 +54,6 @@ export class FileViewer {
                 this.createAndTrackWindow(windowId, fileName, fileViewerApp, desktop);
             }).catch(error => {
                 console.error('Failed to load PdfViewerApp:', error);
-                this.createFallbackViewer(fileName, fileData, fileContent, windowId, desktop);
             });
         } else if (this.isImageFile(fileName)) {
             // Use image viewer for image files
@@ -64,7 +62,6 @@ export class FileViewer {
                 this.createAndTrackWindow(windowId, fileName, fileViewerApp, desktop);
             }).catch(error => {
                 console.error('Failed to load ImageViewerApp:', error);
-                this.createFallbackViewer(fileName, fileData, fileContent, windowId, desktop);
             });
         } else if (this.isLogFile(fileName)) {
             // Use log viewer for log files
@@ -73,7 +70,6 @@ export class FileViewer {
                 this.createAndTrackWindow(windowId, fileName, fileViewerApp, desktop);
             }).catch(error => {
                 console.error('Failed to load LogViewerApp:', error);
-                this.createFallbackViewer(fileName, fileData, fileContent, windowId, desktop);
             });
         } else {
             // Use text viewer for all other files
@@ -82,7 +78,6 @@ export class FileViewer {
                 this.createAndTrackWindow(windowId, fileName, fileViewerApp, desktop);
             }).catch(error => {
                 console.error('Failed to load TextViewerApp:', error);
-                this.createFallbackViewer(fileName, fileData, fileContent, windowId, desktop);
             });
         }
     }
@@ -113,16 +108,6 @@ export class FileViewer {
                 originalCloseWindow(windowId);
             });
         }
-    }
-
-    createFallbackViewer(fileName, fileData, fileContent, windowId, desktop) {
-        // Fallback to the basic file viewer window
-        import('../file-viewer-window.js').then(({ FileViewerWindow }) => {
-            const fileViewerApp = new FileViewerWindow(fileName, fileData, fileContent);
-            this.createAndTrackWindow(windowId, fileName, fileViewerApp, desktop);
-        }).catch(error => {
-            console.error('Failed to load fallback FileViewerWindow:', error);
-        });
     }
 
     isImageFile(fileName) {

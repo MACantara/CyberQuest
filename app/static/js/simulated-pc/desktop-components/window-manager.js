@@ -6,7 +6,6 @@ import { NetworkMonitorApp } from './desktop-applications/network-monitor-app.js
 import { SecurityToolsApp } from './desktop-applications/security-tools-app.js';
 import { SystemLogsApp } from './desktop-applications/system-logs-app.js';
 import { ControlPanelApp } from './control-panel.js';
-import { FileViewerWindow } from './desktop-applications/file-viewer-window.js';
 
 export class WindowManager {
     constructor(container, taskbar, tutorialManager = null) {
