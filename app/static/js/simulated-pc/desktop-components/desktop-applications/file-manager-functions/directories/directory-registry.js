@@ -14,6 +14,7 @@ export class DirectoryRegistry {
     constructor() {
         this.directories = new Map();
         this.fileContents = new Map();
+        this.directoryClasses = new Map(); // Store class instances
         this.initializeDirectories();
         this.initializeFileContents();
     }
@@ -91,5 +92,152 @@ export class DirectoryRegistry {
         });
 
         return stats;
+    }
+
+    // Enhanced method to get directory with metadata
+    getDirectoryWithMetadata(path) {
+        const directory = this.getDirectory(path);
+        if (!directory) return null;
+
+        return {
+            ...directory,
+            statistics: this.calculateDirectoryStats(directory),
+            securityInfo: this.analyzeDirectorySecurity(directory)
+        };
+    }
+
+    calculateDirectoryStats(directory) {
+        if (!directory.items) return null;
+
+        return {
+            totalItems: directory.items.length,
+            files: directory.items.filter(item => item.type === 'file').length,
+            directories: directory.items.filter(item => item.type === 'directory').length,
+            suspiciousItems: directory.items.filter(item => item.suspicious).length,
+            hiddenItems: directory.items.filter(item => item.hidden).length,
+            totalSize: this.calculateTotalSize(directory.items.filter(item => item.type === 'file'))
+        };
+    }
+
+    analyzeDirectorySecurity(directory) {
+        if (!directory.items) return { level: 'unknown', threats: [] };
+
+        const threats = [];
+        const suspiciousFiles = directory.items.filter(item => item.suspicious);
+        
+        if (suspiciousFiles.length > 0) {
+            threats.push({
+                type: 'suspicious_files',
+                count: suspiciousFiles.length,
+                files: suspiciousFiles.map(f => f.name)
+            });
+        }
+
+        const executableFiles = directory.items.filter(item => 
+            item.name.toLowerCase().endsWith('.exe')
+        );
+        
+        if (executableFiles.length > 0) {
+            threats.push({
+                type: 'executable_files',
+                count: executableFiles.length,
+                files: executableFiles.map(f => f.name)
+            });
+        }
+
+        const securityLevel = threats.length === 0 ? 'safe' : 
+                             threats.length <= 2 ? 'medium' : 'high';
+
+        return {
+            level: securityLevel,
+            threats: threats,
+            recommendation: this.getSecurityRecommendation(securityLevel, threats)
+        };
+    }
+
+    getSecurityRecommendation(level, threats) {
+        switch (level) {
+            case 'safe':
+                return 'Directory appears secure. Continue monitoring.';
+            case 'medium':
+                return 'Some security concerns detected. Review suspicious files.';
+            case 'high':
+                return 'Multiple security threats detected. Immediate investigation required.';
+            default:
+                return 'Security status unknown. Manual review recommended.';
+        }
+    }
+
+    calculateTotalSize(files) {
+        // Simplified size calculation for training purposes
+        return files.reduce((total, file) => {
+            const sizeStr = file.size || '0 B';
+            const sizeNum = parseFloat(sizeStr);
+            const unit = sizeStr.split(' ')[1];
+            
+            let bytes = sizeNum;
+            switch (unit) {
+                case 'KB': bytes *= 1024; break;
+                case 'MB': bytes *= 1024 * 1024; break;
+                case 'GB': bytes *= 1024 * 1024 * 1024; break;
+            }
+            
+            return total + bytes;
+        }, 0);
+    }
+
+    // Enhanced search across all directories
+    searchAllDirectories(query, options = {}) {
+        const results = [];
+        const searchOptions = {
+            includeContent: options.includeContent || false,
+            caseSensitive: options.caseSensitive || false,
+            fileTypesOnly: options.fileTypesOnly || null,
+            ...options
+        };
+
+        this.directories.forEach((directory, path) => {
+            if (directory.items) {
+                const matches = this.searchInDirectory(directory, query, searchOptions);
+                if (matches.length > 0) {
+                    results.push({
+                        path: path,
+                        directory: directory.name,
+                        matches: matches
+                    });
+                }
+            }
+        });
+
+        return results;
+    }
+
+    searchInDirectory(directory, query, options) {
+        const searchQuery = options.caseSensitive ? query : query.toLowerCase();
+        
+        return directory.items.filter(item => {
+            const itemName = options.caseSensitive ? item.name : item.name.toLowerCase();
+            
+            // Filter by file type if specified
+            if (options.fileTypesOnly && !options.fileTypesOnly.includes(item.type)) {
+                return false;
+            }
+            
+            // Search in filename
+            if (itemName.includes(searchQuery)) {
+                return true;
+            }
+            
+            // Search in file content if enabled
+            if (options.includeContent && item.type === 'file') {
+                const content = this.getFileContent(directory.path, item.name);
+                if (content) {
+                    const searchContent = options.caseSensitive ? content : content.toLowerCase();
+                    return searchContent.includes(searchQuery);
+                }
+            }
+            
+            return false;
+        });
     }
 }
