@@ -24,7 +24,9 @@ export class BootSequence {
             { text: '', type: 'info', delay: 800 }
         ];
         this.currentLine = 0;
+        this.audioEnabled = false;
         this.setupContainer();
+        this.setupAudio();
     }
 
     setupContainer() {
@@ -32,11 +34,78 @@ export class BootSequence {
         this.container.className = 'fixed inset-0 bg-black text-green-400 font-mono text-sm leading-relaxed p-10 overflow-y-auto flex flex-col justify-start items-start';
     }
 
+    setupAudio() {
+        try {
+            this.textSoundEffect = new Audio('../../../static/audio/Text_Sound_Effect.mp3');
+            this.textSoundEffect.volume = 0.2; // Reduced volume since it will play more frequently
+            this.textSoundEffect.preload = 'auto';
+        } catch (error) {
+            console.warn('Could not load text sound effect:', error);
+            this.textSoundEffect = null;
+        }
+    }
+
     async start() {
         return new Promise((resolve) => {
             this.container.innerHTML = '';
-            this.typeNextLine(resolve);
+            this.showAudioPrompt(() => {
+                this.typeNextLine(resolve);
+            });
         });
+    }
+
+    showAudioPrompt(onStart) {
+        const promptElement = document.createElement('div');
+        promptElement.className = 'text-center p-8';
+        promptElement.innerHTML = `
+            <div class="text-green-400 mb-4">
+                <i class="text-4xl mb-4 block">🔊</i>
+                <h2 class="text-xl mb-2">CyberQuest Training Environment</h2>
+                <p class="text-sm text-gray-400 mb-6">Click to enable audio and start boot sequence</p>
+                <button id="start-boot" class="px-6 py-3 bg-green-600 text-white rounded hover:bg-green-700 transition-colors cursor-pointer">
+                    Start Boot Sequence
+                </button>
+                <p class="text-xs text-gray-500 mt-4">Audio enhances the training experience but is optional</p>
+            </div>
+        `;
+        
+        this.container.appendChild(promptElement);
+        
+        const startButton = promptElement.querySelector('#start-boot');
+        startButton.addEventListener('click', async () => {
+            // Try to enable audio with user interaction
+            if (this.textSoundEffect) {
+                try {
+                    await this.textSoundEffect.play();
+                    this.textSoundEffect.pause();
+                    this.textSoundEffect.currentTime = 0;
+                    this.audioEnabled = true;
+                } catch (error) {
+                    console.warn('Audio not available:', error);
+                    this.audioEnabled = false;
+                }
+            }
+            
+            // Clear prompt and start boot sequence
+            this.container.innerHTML = '';
+            onStart();
+        });
+    }
+
+    playTextSound() {
+        if (this.textSoundEffect && this.audioEnabled) {
+            try {
+                // Clone and play the audio to allow overlapping sounds
+                const audioClone = this.textSoundEffect.cloneNode();
+                audioClone.volume = this.textSoundEffect.volume;
+                audioClone.play().catch(error => {
+                    // Silently fail if audio can't play
+                    console.debug('Audio play failed (expected in some browsers):', error);
+                });
+            } catch (error) {
+                console.debug('Error playing text sound:', error);
+            }
+        }
     }
 
     typeNextLine(onComplete) {
@@ -71,23 +140,51 @@ export class BootSequence {
                 typeClasses = 'text-green-400';
         }
         
-        lineElement.className = `boot-line opacity-0 mb-0.5 whitespace-pre-wrap ${typeClasses}`;
-        lineElement.textContent = line.text;
+        lineElement.className = `boot-line mb-0.5 whitespace-pre-wrap ${typeClasses}`;
+        lineElement.textContent = ''; // Start empty
         
         this.container.appendChild(lineElement);
         
-        // Trigger animation
-        setTimeout(() => {
-            lineElement.classList.remove('opacity-0');
-        }, 10);
+        // Type the line character by character
+        if (line.text.trim() !== '') {
+            this.typeText(lineElement, line.text, 0, () => {
+                // After typing is complete, wait for the delay then move to next line
+                this.currentLine++;
+                setTimeout(() => {
+                    this.typeNextLine(onComplete);
+                }, line.delay);
+            });
+        } else {
+            // For empty lines, just move to next immediately
+            this.currentLine++;
+            setTimeout(() => {
+                this.typeNextLine(onComplete);
+            }, line.delay);
+        }
+    }
+
+    typeText(element, text, charIndex, onComplete) {
+        if (charIndex >= text.length) {
+            // Finished typing this line
+            onComplete();
+            return;
+        }
+
+        // Add the next character
+        element.textContent += text[charIndex];
+        
+        // Play sound for each character (except spaces to reduce noise)
+        if (text[charIndex] !== ' ') {
+            this.playTextSound();
+        }
         
         // Scroll to bottom
         this.container.scrollTop = this.container.scrollHeight;
         
-        this.currentLine++;
-        
+        // Continue with next character after a short delay
+        const typingSpeed = 30; // milliseconds between characters
         setTimeout(() => {
-            this.typeNextLine(onComplete);
-        }, line.delay);
+            this.typeText(element, text, charIndex + 1, onComplete);
+        }, typingSpeed);
     }
 }
