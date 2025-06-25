@@ -2,14 +2,16 @@ import dropdownManager from './utils/dropdown-toggle.js';
 import { paginationHelper } from './utils/pagination.js';
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize dropdown manager
+    // Initialize dropdown manager first
     dropdownManager.init();
     
-    // Initialize admin functionality
-    initializeConfirmationDialogs();
-    initializeTabSwitching();
-    initializeAdminPagination();
-    initializeAdminDropdowns();
+    // Wait a bit for DOM to be fully ready, then initialize admin functionality
+    setTimeout(() => {
+        initializeConfirmationDialogs();
+        initializeTabSwitching();
+        initializeAdminPagination();
+        initializeAdminDropdowns();
+    }, 100);
 });
 
 /**
@@ -173,13 +175,31 @@ function showAdminLoadingState(message = 'Loading...') {
  * Initialize admin-specific dropdown functionality
  */
 function initializeAdminDropdowns() {
-    // Register admin-specific dropdowns with the dropdown manager
-    const adminDropdowns = document.querySelectorAll('[id*="admin"], [id*="user"]');
-    adminDropdowns.forEach(dropdown => {
-        const toggleButton = document.querySelector(`[data-dropdown-toggle="${dropdown.id}"]`);
-        if (toggleButton) {
+    // Find all user action dropdowns in admin pages
+    const userDropdowns = document.querySelectorAll('[id^="user-dropdown-"], [id^="admin-dropdown-"]');
+    
+    userDropdowns.forEach(dropdown => {
+        const dropdownId = dropdown.id;
+        const toggleButton = document.querySelector(`[data-dropdown-toggle="${dropdownId}"]`);
+        
+        if (toggleButton && dropdown) {
             // Register with dropdown manager
-            dropdownManager.register(dropdown.id, toggleButton, dropdown);
+            dropdownManager.register(dropdownId, toggleButton, dropdown);
+            console.log('Registered admin dropdown:', dropdownId);
+        } else {
+            console.warn('Missing toggle button or dropdown for:', dropdownId);
+        }
+    });
+
+    // Also handle any dropdowns with user-menu class (legacy support)
+    const userMenus = document.querySelectorAll('.user-menu');
+    userMenus.forEach(menu => {
+        const menuId = menu.id || `user-menu-${Date.now()}`;
+        menu.id = menuId;
+        
+        const toggleButton = menu.previousElementSibling;
+        if (toggleButton && toggleButton.hasAttribute('data-dropdown-toggle')) {
+            dropdownManager.register(menuId, toggleButton, menu);
         }
     });
 
@@ -187,7 +207,6 @@ function initializeAdminDropdowns() {
     document.addEventListener('dropdown:open', function(event) {
         const { dropdownId } = event.detail;
         if (dropdownId && (dropdownId.includes('admin') || dropdownId.includes('user'))) {
-            // Admin-specific logic when dropdown opens
             console.log('Admin dropdown opened:', dropdownId);
         }
     });
