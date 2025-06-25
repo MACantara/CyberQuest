@@ -1,7 +1,6 @@
 import { WindowBase } from '../window-base.js';
 import { LogManager } from './system-logs-functions/log-manager.js';
 import { LogFilter } from './system-logs-functions/log-filter.js';
-import { LogAnalyzer } from './system-logs-functions/log-analyzer.js';
 
 export class SystemLogsApp extends WindowBase {
     constructor() {
@@ -12,7 +11,6 @@ export class SystemLogsApp extends WindowBase {
         
         this.logManager = null;
         this.logFilter = null;
-        this.logAnalyzer = null;
         this.currentFilter = 'all';
         this.autoRefresh = false;
         this.refreshInterval = null;
@@ -34,9 +32,6 @@ export class SystemLogsApp extends WindowBase {
                         </select>
                         <button class="px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 transition-colors duration-200 cursor-pointer" id="refresh-btn">
                             <i class="bi bi-arrow-clockwise mr-1"></i>Refresh
-                        </button>
-                        <button class="px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors duration-200 cursor-pointer" id="analyze-btn">
-                            <i class="bi bi-graph-up mr-1"></i>Analyze
                         </button>
                     </div>
                     
@@ -147,7 +142,6 @@ export class SystemLogsApp extends WindowBase {
         // Initialize system logs components
         this.logManager = new LogManager(this);
         this.logFilter = new LogFilter(this);
-        this.logAnalyzer = new LogAnalyzer(this);
         
         this.bindEvents();
         this.updateLogCounts();
@@ -172,14 +166,6 @@ export class SystemLogsApp extends WindowBase {
         if (refreshBtn) {
             refreshBtn.addEventListener('click', () => {
                 this.refreshLogs();
-            });
-        }
-
-        // Analyze button
-        const analyzeBtn = windowElement.querySelector('#analyze-btn');
-        if (analyzeBtn) {
-            analyzeBtn.addEventListener('click', () => {
-                this.logAnalyzer.showAnalysis();
             });
         }
 
@@ -375,6 +361,20 @@ export class SystemLogsApp extends WindowBase {
         const logElement = this.createLogElement(logData);
         logsContainer.insertAdjacentHTML('afterbegin', logElement);
         
+        // Apply current filter
+        this.applyFilter();
+    }
+
+    cleanup() {
+        // Stop auto-refresh when window is closed
+        if (this.refreshInterval) {
+            clearInterval(this.refreshInterval);
+            this.refreshInterval = null;
+        }
+        
+        super.cleanup();
+    }
+}
         // Apply current filter
         this.applyFilter();
     }
