@@ -160,10 +160,54 @@ export class TerminalApp extends WindowBase {
             return;
         }
 
-        this.commandProcessor.executeCommand(command);
+        // Emit terminal command event for system logs
+        const result = this.commandProcessor.executeCommand(command);
+        const exitCode = result && result.success !== false ? 0 : 1;
+        
+        document.dispatchEvent(new CustomEvent('terminal-command', {
+            detail: { 
+                command: command.trim(), 
+                user: 'trainee',
+                exitCode: exitCode
+            }
+        }));
+
+        // Check if it's a security-related command
+        if (this.isSecurityCommand(command)) {
+            document.dispatchEvent(new CustomEvent('security-command-executed', {
+                detail: { 
+                    command: command.trim(), 
+                    result: result ? 'success' : 'failed',
+                    risk: this.getCommandRisk(command)
+                }
+            }));
+        }
+
         this.commandProcessor.history.reset();
         this.addPromptLine();
         this.scrollToBottom();
+    }
+
+    isSecurityCommand(command) {
+        const securityCommands = [
+            'sudo', 'su', 'chmod', 'chown', 'passwd', 'ssh', 'scp',
+            'netstat', 'ps', 'top', 'kill', 'nmap', 'scan',
+            'iptables', 'ufw', 'ls', 'cat', 'grep', 'find'
+        ];
+        
+        return securityCommands.some(cmd => command.trim().startsWith(cmd));
+    }
+
+    getCommandRisk(command) {
+        const highRiskCommands = ['sudo', 'su', 'chmod 777', 'rm -rf', 'passwd'];
+        const mediumRiskCommands = ['netstat', 'ps', 'kill', 'ssh'];
+        
+        if (highRiskCommands.some(cmd => command.includes(cmd))) {
+            return 'high';
+        } else if (mediumRiskCommands.some(cmd => command.includes(cmd))) {
+            return 'medium';
+        }
+        return 'low';
     }
 
     addOutput(text, className = '') {

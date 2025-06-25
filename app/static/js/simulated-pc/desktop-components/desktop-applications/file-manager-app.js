@@ -187,6 +187,35 @@ export class FileManagerApp extends WindowBase {
         const fileData = items.find(item => item.name === fileName);
         
         if (fileData) {
+            // Emit file access event for system logs
+            document.dispatchEvent(new CustomEvent('file-accessed', {
+                detail: { 
+                    fileName, 
+                    path: this.navigator.currentPath,
+                    action: 'accessed'
+                }
+            }));
+
+            // Check if file is suspicious and emit security event
+            if (fileData.suspicious) {
+                document.dispatchEvent(new CustomEvent('suspicious-file-detected', {
+                    detail: { 
+                        fileName, 
+                        reason: 'File marked as suspicious',
+                        action: 'User accessed suspicious file'
+                    }
+                }));
+            }
+
+            // Emit file open event with type information
+            document.dispatchEvent(new CustomEvent('file-opened', {
+                detail: { 
+                    fileName, 
+                    fileType: fileData.type || 'unknown',
+                    suspicious: fileData.suspicious || false
+                }
+            }));
+
             this.fileViewer.openFile(fileName, fileData);
         }
     }

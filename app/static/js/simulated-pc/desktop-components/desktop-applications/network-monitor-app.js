@@ -69,8 +69,22 @@ export class NetworkMonitorApp extends WindowBase {
             captureBtn.addEventListener('click', () => {
                 if (this.packetCapture.isCapturing) {
                     this.packetCapture.stopCapture();
+                    // Emit network monitoring event
+                    document.dispatchEvent(new CustomEvent('network-scan-started', {
+                        detail: { 
+                            action: 'stopped',
+                            target: 'All network interfaces'
+                        }
+                    }));
                 } else {
                     this.packetCapture.startCapture();
+                    // Emit network monitoring event
+                    document.dispatchEvent(new CustomEvent('network-scan-started', {
+                        detail: { 
+                            action: 'started',
+                            target: 'All network interfaces'
+                        }
+                    }));
                 }
             });
         }
@@ -108,6 +122,18 @@ export class NetworkMonitorApp extends WindowBase {
         const initialMessage = packetData.querySelector('.text-center');
         if (initialMessage) {
             initialMessage.remove();
+        }
+
+        // Check for suspicious traffic and emit event
+        if (packet.suspicious) {
+            document.dispatchEvent(new CustomEvent('suspicious-traffic-detected', {
+                detail: { 
+                    source: packet.source,
+                    destination: packet.destination,
+                    protocol: packet.protocol,
+                    reason: 'Suspicious traffic pattern detected'
+                }
+            }));
         }
 
         const packetElement = document.createElement('div');
