@@ -1,6 +1,6 @@
-import { BaseFile } from '../base-file.js';
+import { BaseIndividualFile } from '../base-file.js';
 
-export class SystemScreenshotFile extends BaseFile {
+export class SystemScreenshotFile extends BaseIndividualFile {
     constructor() {
         super({
             name: 'system_screenshot.png',

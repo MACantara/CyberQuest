@@ -1,6 +1,6 @@
-import { BaseFile } from '../base-file.js';
+import { BaseIndividualFile } from '../base-file.js';
 
-export class TrainingNotesFile extends BaseFile {
+export class TrainingNotesFile extends BaseIndividualFile {
     constructor() {
         super({
             name: 'training_notes.pdf',

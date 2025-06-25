@@ -1,6 +1,6 @@
-import { BaseFile } from '../base-file.js';
+import { BaseIndividualFile } from '../base-file.js';
 
-export class NetworkTrafficLogFile extends BaseFile {
+export class NetworkTrafficLogFile extends BaseIndividualFile {
     constructor() {
         super({
             name: 'network_traffic.log',

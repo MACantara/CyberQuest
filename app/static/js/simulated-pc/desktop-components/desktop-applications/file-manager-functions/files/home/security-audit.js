@@ -1,6 +1,6 @@
-import { BaseFile } from '../base-file.js';
+import { BaseIndividualFile } from '../base-file.js';
 
-export class SecurityAuditFile extends BaseFile {
+export class SecurityAuditFile extends BaseIndividualFile {
     constructor() {
         super({
             name: 'security_audit.log',

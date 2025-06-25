@@ -1,6 +1,6 @@
-import { BaseFile } from '../base-file.js';
+import { BaseIndividualFile } from '../base-file.js';
 
-export class SuspiciousFile extends BaseFile {
+export class SuspiciousFile extends BaseIndividualFile {
     constructor() {
         super({
             name: 'suspicious_file.txt',

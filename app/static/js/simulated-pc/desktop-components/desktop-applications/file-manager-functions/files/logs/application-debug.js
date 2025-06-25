@@ -1,6 +1,6 @@
-import { BaseFile } from '../base-file.js';
+import { BaseIndividualFile } from '../base-file.js';
 
-export class ApplicationDebugLogFile extends BaseFile {
+export class ApplicationDebugLogFile extends BaseIndividualFile {
     constructor() {
         super({
             name: 'application_debug.log',

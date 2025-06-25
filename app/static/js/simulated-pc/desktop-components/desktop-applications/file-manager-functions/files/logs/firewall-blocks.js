@@ -1,6 +1,6 @@
-import { BaseFile } from '../base-file.js';
+import { BaseIndividualFile } from '../base-file.js';
 
-export class FirewallBlocksLogFile extends BaseFile {
+export class FirewallBlocksLogFile extends BaseIndividualFile {
     constructor() {
         super({
             name: 'firewall_blocks.log',

@@ -1,6 +1,6 @@
-import { BaseFile } from '../base-file.js';
+import { BaseIndividualFile } from '../base-file.js';
 
-export class ReadmeFile extends BaseFile {
+export class ReadmeFile extends BaseIndividualFile {
     constructor() {
         super({
             name: 'readme.txt',

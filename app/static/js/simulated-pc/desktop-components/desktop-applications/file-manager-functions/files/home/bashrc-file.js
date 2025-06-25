@@ -1,6 +1,6 @@
-import { BaseFile } from '../base-file.js';
+import { BaseIndividualFile } from '../base-file.js';
 
-export class BashrcFile extends BaseFile {
+export class BashrcFile extends BaseIndividualFile {
     constructor() {
         super({
             name: '.bashrc',
