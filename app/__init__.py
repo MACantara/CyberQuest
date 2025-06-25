@@ -127,3 +127,7 @@ def create_app(config_name=None):
     app.jinja_env.globals.update(hcaptcha=hcaptcha, hcaptcha_enabled=is_hcaptcha_enabled)
     
     return app
+    from app.utils.hcaptcha_utils import hcaptcha, is_hcaptcha_enabled
+    app.jinja_env.globals.update(hcaptcha=hcaptcha, hcaptcha_enabled=is_hcaptcha_enabled)
+    
+    return app

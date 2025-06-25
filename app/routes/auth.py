@@ -9,6 +9,7 @@ from app.utils.hcaptcha_utils import verify_hcaptcha
 from app.utils.password_validator import PasswordValidator
 from argon2.exceptions import HashingError
 import re
+from urllib.parse import unquote
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -27,7 +28,25 @@ def is_valid_username(username):
 def login():
     # Redirect if already logged in
     if current_user.is_authenticated:
-        return redirect(url_for('main.home'))
+        next_page = request.args.get('next')
+        return redirect(next_page if next_page else url_for('main.home'))
+    
+    # Handle flash messages from auth state validator - only process once
+    auth_expired = request.args.get('auth_expired')
+    flash_message = request.args.get('flash_message')
+    flash_category = request.args.get('flash_category', 'warning')
+    
+    # Only show auth expired message if not already processing a POST request
+    if auth_expired and request.method == 'GET':
+        if flash_message:
+            # Decode the URL-encoded message
+            try:
+                decoded_message = unquote(flash_message)
+                flash(decoded_message, flash_category)
+            except Exception:
+                flash('Your session has expired. Please log in again to continue.', 'warning')
+        else:
+            flash('Your session has expired. Please log in again to continue.', 'warning')
     
     # Check if IP is locked out
     locked_out, minutes_remaining = check_ip_lockout()
@@ -193,6 +212,10 @@ def signup():
 
 @auth_bp.route('/logout')
 @login_required
+def logout():
+    logout_user()
+    flash('You have been logged out successfully.', 'success')
+    return redirect(url_for('main.home'))
 def logout():
     logout_user()
     flash('You have been logged out successfully.', 'success')
