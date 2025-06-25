@@ -1,4 +1,8 @@
 import { BaseDirectory } from './base-directory.js';
+import { MalwareSampleFile } from '../files/downloads/malware-sample.js';
+import { InstallerDebFile } from '../files/downloads/installer-deb.js';
+import { ProfilePhotoFile } from '../files/downloads/profile-photo.js';
+import { NetworkDiagramFile } from '../files/downloads/network-diagram.js';
 
 class DownloadsDirectoryClass extends BaseDirectory {
     constructor() {
@@ -9,32 +13,11 @@ class DownloadsDirectoryClass extends BaseDirectory {
     }
 
     initializeItems() {
-        this.addFile({
-            name: 'malware_sample.exe',
-            suspicious: true,
-            size: '2.0 KB',
-            modified: '2024-12-20 08:22'
-        });
-
-        this.addFile({
-            name: 'installer.deb',
-            icon: 'bi-file-zip',
-            color: 'text-orange-400',
-            size: '15.7 MB',
-            modified: '2024-12-18 13:10'
-        });
-
-        this.addFile({
-            name: 'profile_photo.jpg',
-            size: '850 KB',
-            modified: '2024-12-19 14:20'
-        });
-
-        this.addFile({
-            name: 'network_diagram.png',
-            size: '1.2 MB',
-            modified: '2024-12-18 16:45'
-        });
+        // Register individual files
+        this.registerFile(new MalwareSampleFile());
+        this.registerFile(new InstallerDebFile());
+        this.registerFile(new ProfilePhotoFile());
+        this.registerFile(new NetworkDiagramFile());
     }
 }
 

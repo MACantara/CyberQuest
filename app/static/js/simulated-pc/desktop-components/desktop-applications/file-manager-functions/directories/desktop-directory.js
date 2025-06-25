@@ -9,6 +9,7 @@ class DesktopDirectoryClass extends BaseDirectory {
     }
 
     initializeItems() {
+        // Add basic shortcut file (doesn't need individual file class)
         this.addFile({
             name: 'CyberQuest.lnk',
             icon: 'bi-link-45deg',

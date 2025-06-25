@@ -1,4 +1,7 @@
 import { BaseDirectory } from './base-directory.js';
+import { SecurityReportFile } from '../files/documents/security-report.js';
+import { TrainingNotesFile } from '../files/documents/training-notes.js';
+import { IncidentReportFile } from '../files/documents/incident-report.js';
 
 class DocumentsDirectoryClass extends BaseDirectory {
     constructor() {
@@ -9,26 +12,10 @@ class DocumentsDirectoryClass extends BaseDirectory {
     }
 
     initializeItems() {
-        this.addFile({
-            name: 'security_report.txt',
-            color: 'text-yellow-400',
-            size: '512 B',
-            modified: '2024-12-20 11:45'
-        });
-
-        this.addFile({
-            name: 'training_notes.pdf',
-            size: '2.1 MB',
-            modified: '2024-12-19 16:30'
-        });
-
-        this.addFile({
-            name: 'incident_report.log',
-            icon: 'bi-journal-text',
-            color: 'text-yellow-400',
-            size: '15.7 KB',
-            modified: '2024-12-20 08:45'
-        });
+        // Register individual files
+        this.registerFile(new SecurityReportFile());
+        this.registerFile(new TrainingNotesFile());
+        this.registerFile(new IncidentReportFile());
     }
 }
 

@@ -9,6 +9,7 @@ class PicturesDirectoryClass extends BaseDirectory {
     }
 
     initializeItems() {
+        // Add basic image files (these don't need individual file classes)
         this.addFile({
             name: 'conference_2024.jpg',
             size: '3.2 MB',

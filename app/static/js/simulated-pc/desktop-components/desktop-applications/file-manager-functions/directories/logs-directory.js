@@ -1,4 +1,10 @@
 import { BaseDirectory } from './base-directory.js';
+import { SystemAccessLogFile } from '../files/logs/system-access.js';
+import { SecurityEventsLogFile } from '../files/logs/security-events.js';
+import { FirewallBlocksLogFile } from '../files/logs/firewall-blocks.js';
+import { AuthFailuresLogFile } from '../files/logs/auth-failures.js';
+import { ApplicationDebugLogFile } from '../files/logs/application-debug.js';
+import { NetworkTrafficLogFile } from '../files/logs/network-traffic.js';
 
 class LogsDirectoryClass extends BaseDirectory {
     constructor() {
@@ -9,49 +15,13 @@ class LogsDirectoryClass extends BaseDirectory {
     }
 
     initializeItems() {
-        this.addFile({
-            name: 'system_access.log',
-            color: 'text-yellow-400',
-            size: '128 KB',
-            modified: '2024-12-20 14:30'
-        });
-
-        this.addFile({
-            name: 'security_events.log',
-            color: 'text-red-400',
-            suspicious: true,
-            size: '89 KB',
-            modified: '2024-12-20 13:22'
-        });
-
-        this.addFile({
-            name: 'firewall_blocks.log',
-            color: 'text-orange-400',
-            size: '256 KB',
-            modified: '2024-12-20 12:45'
-        });
-
-        this.addFile({
-            name: 'auth_failures.log',
-            color: 'text-red-400',
-            suspicious: true,
-            size: '67 KB',
-            modified: '2024-12-20 11:15'
-        });
-
-        this.addFile({
-            name: 'application_debug.log',
-            color: 'text-blue-400',
-            size: '512 KB',
-            modified: '2024-12-20 10:30'
-        });
-
-        this.addFile({
-            name: 'network_traffic.log',
-            color: 'text-green-400',
-            size: '1.2 MB',
-            modified: '2024-12-20 09:45'
-        });
+        // Register individual log files
+        this.registerFile(new SystemAccessLogFile());
+        this.registerFile(new SecurityEventsLogFile());
+        this.registerFile(new FirewallBlocksLogFile());
+        this.registerFile(new AuthFailuresLogFile());
+        this.registerFile(new ApplicationDebugLogFile());
+        this.registerFile(new NetworkTrafficLogFile());
     }
 }
 
