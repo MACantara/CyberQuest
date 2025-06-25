@@ -191,7 +191,7 @@ export class AuthStateValidator {
         
         // Redirect to login with return URL
         const returnUrl = encodeURIComponent(window.location.pathname + window.location.search);
-        const loginUrl = `/login?next=${returnUrl}`;
+        const loginUrl = `/auth/login?next=${returnUrl}`;
         
         // Use replace to prevent back button issues
         window.location.replace(loginUrl);
