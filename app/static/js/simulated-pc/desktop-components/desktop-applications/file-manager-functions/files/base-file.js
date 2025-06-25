@@ -100,11 +100,51 @@ export class BaseIndividualFile {
         this.hidden = config.hidden || false;
         this.permissions = config.permissions || 'rw-r--r--';
         this.metadata = config.metadata || {};
+        this.icon = config.icon || this.getFileIcon(config.name);
+        this.color = config.color || this.getFileColor(config.name);
     }
 
     // Abstract method - must be implemented by subclasses
     getContent() {
         throw new Error('getContent() must be implemented by subclasses');
+    }
+
+    // Get file icon based on extension
+    getFileIcon(fileName) {
+        const ext = fileName.toLowerCase().split('.').pop();
+        const iconMap = {
+            'txt': 'bi-file-text',
+            'log': 'bi-journal-text',
+            'pdf': 'bi-file-pdf',
+            'exe': 'bi-file-binary',
+            'deb': 'bi-file-zip',
+            'jpg': 'bi-file-image',
+            'png': 'bi-file-image',
+            'gif': 'bi-file-image',
+            'svg': 'bi-file-image',
+            'lnk': 'bi-link-45deg',
+            'bashrc': 'bi-file-code'
+        };
+        return iconMap[ext] || 'bi-file';
+    }
+
+    // Get file color based on type
+    getFileColor(fileName) {
+        const ext = fileName.toLowerCase().split('.').pop();
+        const colorMap = {
+            'txt': 'text-gray-400',
+            'log': 'text-yellow-400',
+            'pdf': 'text-red-400',
+            'exe': 'text-red-500',
+            'deb': 'text-orange-400',
+            'jpg': 'text-green-400',
+            'png': 'text-green-400',
+            'gif': 'text-green-400',
+            'svg': 'text-green-400',
+            'lnk': 'text-blue-400',
+            'bashrc': 'text-green-400'
+        };
+        return colorMap[ext] || 'text-gray-400';
     }
 
     // Helper methods for content creation
