@@ -67,18 +67,6 @@ CYBERSECURITY_LEVELS = [
     },
     {
         'id': 6,
-        'name': 'Digital Gold Rush',
-        'description': 'Spot financial scams and practice safe online business practices.',
-        'difficulty': 'Advanced',
-        'xp_reward': 250,
-        'icon': 'bi-credit-card-2-front',
-        'category': 'Financial Security',
-        'estimated_time': '30 minutes',
-        'skills': ['Investment Scam Detection', 'Safe Business Practices', 'Financial Fraud Prevention'],
-        'unlocked': False
-    },
-    {
-        'id': 7,
         'name': 'The Adaptive Adversary',
         'description': 'Confront AI-powered threats that adapt to your behavior patterns.',
         'difficulty': 'Advanced',
@@ -90,7 +78,7 @@ CYBERSECURITY_LEVELS = [
         'unlocked': False
     },
     {
-        'id': 8,
+        'id': 7,
         'name': 'The White Hat Test',
         'description': 'Practice ethical hacking and responsible vulnerability disclosure.',
         'difficulty': 'Expert',
@@ -102,7 +90,7 @@ CYBERSECURITY_LEVELS = [
         'unlocked': False
     },
     {
-        'id': 9,
+        'id': 8,
         'name': 'Operation Blackout',
         'description': 'Defend critical infrastructure from a coordinated DDoS attack.',
         'difficulty': 'Expert',
@@ -114,7 +102,7 @@ CYBERSECURITY_LEVELS = [
         'unlocked': False
     },
     {
-        'id': 10,
+        'id': 9,
         'name': 'The Hunt for The Null',
         'description': 'Final mission: Use advanced digital forensics to expose The Null\'s identity.',
         'difficulty': 'Master',
