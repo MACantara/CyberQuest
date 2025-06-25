@@ -3,7 +3,9 @@ export class BaseFile {
         this.directoryPath = config.directoryPath;
         this.directoryName = config.directoryName;
         this.files = new Map();
-        this.initializeFiles();
+        if (this.initializeFiles) {
+            this.initializeFiles();
+        }
     }
 
     // Abstract method - must be implemented by subclasses
@@ -85,8 +87,27 @@ export class BaseFile {
         }
         return 'Unknown size';
     }
+}
 
-    // Create training file content template
+// New base class for individual files
+export class BaseIndividualFile {
+    constructor(config) {
+        this.name = config.name;
+        this.directoryPath = config.directoryPath;
+        this.size = config.size || '0 B';
+        this.modified = config.modified || new Date().toISOString().slice(0, 16).replace('T', ' ');
+        this.suspicious = config.suspicious || false;
+        this.hidden = config.hidden || false;
+        this.permissions = config.permissions || 'rw-r--r--';
+        this.metadata = config.metadata || {};
+    }
+
+    // Abstract method - must be implemented by subclasses
+    getContent() {
+        throw new Error('getContent() must be implemented by subclasses');
+    }
+
+    // Helper methods for content creation
     createTrainingContent(fileName, description, category = 'general') {
         return `CYBERQUEST TRAINING FILE
 ========================
@@ -113,7 +134,6 @@ support@cyberquest.com
 `;
     }
 
-    // Create log file template
     createLogTemplate(logType, entries) {
         const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
         let content = `# ${logType.toUpperCase()} LOG FILE\n`;
@@ -127,7 +147,6 @@ support@cyberquest.com
         return content;
     }
 
-    // Create security alert template
     createSecurityAlert(alertType, severity, description) {
         return `SECURITY ALERT - ${alertType.toUpperCase()}
 ${'='.repeat(50)}
