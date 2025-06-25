@@ -40,6 +40,8 @@ export class DropdownManager {
      */
     setupToggleButtons() {
         const toggleButtons = document.querySelectorAll('[data-dropdown-toggle]');
+        console.log('Found toggle buttons:', toggleButtons.length);
+        
         toggleButtons.forEach(button => {
             const dropdownId = button.getAttribute('data-dropdown-toggle');
             const dropdown = document.getElementById(dropdownId);
@@ -54,6 +56,10 @@ export class DropdownManager {
                 // Remove existing listeners to prevent duplicates
                 button.removeEventListener('click', this.handleToggleClick.bind(this));
                 button.addEventListener('click', this.handleToggleClick.bind(this));
+                
+                console.log('Successfully registered dropdown:', dropdownId);
+            } else {
+                console.warn('Dropdown element not found for ID:', dropdownId);
             }
         });
     }
@@ -194,6 +200,11 @@ export class DropdownManager {
      * @param {HTMLElement} dropdown - Dropdown element
      */
     register(dropdownId, button, dropdown) {
+        if (!button || !dropdown) {
+            console.error('Invalid button or dropdown element for:', dropdownId);
+            return;
+        }
+
         this.dropdowns.set(dropdownId, {
             button: button,
             dropdown: dropdown,
@@ -208,6 +219,8 @@ export class DropdownManager {
         dropdown.addEventListener('click', (event) => {
             event.stopPropagation();
         });
+
+        console.log('Dynamically registered dropdown:', dropdownId);
     }
 
     /**
