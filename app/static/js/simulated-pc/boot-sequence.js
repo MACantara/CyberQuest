@@ -222,7 +222,7 @@ export class BootSequence {
         this.container.scrollTop = this.container.scrollHeight;
         
         // Continue with next character after a short delay
-        const typingSpeed = 30; // milliseconds between characters
+        const typingSpeed = 15; // milliseconds between characters
         setTimeout(() => {
             this.typeText(element, text, charIndex + 1, onComplete);
         }, typingSpeed);
