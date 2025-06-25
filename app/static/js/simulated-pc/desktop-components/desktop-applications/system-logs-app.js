@@ -1,7 +1,6 @@
 import { WindowBase } from '../window-base.js';
 import { LogManager } from './system-logs-functions/log-manager.js';
 import { LogFilter } from './system-logs-functions/log-filter.js';
-import { LogExporter } from './system-logs-functions/log-exporter.js';
 import { LogAnalyzer } from './system-logs-functions/log-analyzer.js';
 
 export class SystemLogsApp extends WindowBase {
@@ -13,7 +12,6 @@ export class SystemLogsApp extends WindowBase {
         
         this.logManager = null;
         this.logFilter = null;
-        this.logExporter = null;
         this.logAnalyzer = null;
         this.currentFilter = 'all';
         this.autoRefresh = false;
@@ -39,9 +37,6 @@ export class SystemLogsApp extends WindowBase {
                         </button>
                         <button class="px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition-colors duration-200 cursor-pointer" id="analyze-btn">
                             <i class="bi bi-graph-up mr-1"></i>Analyze
-                        </button>
-                        <button class="px-3 py-1 bg-purple-600 text-white text-xs rounded hover:bg-purple-700 transition-colors duration-200 cursor-pointer" id="export-btn">
-                            <i class="bi bi-download mr-1"></i>Export
                         </button>
                     </div>
                     
@@ -152,7 +147,6 @@ export class SystemLogsApp extends WindowBase {
         // Initialize system logs components
         this.logManager = new LogManager(this);
         this.logFilter = new LogFilter(this);
-        this.logExporter = new LogExporter(this);
         this.logAnalyzer = new LogAnalyzer(this);
         
         this.bindEvents();
@@ -186,14 +180,6 @@ export class SystemLogsApp extends WindowBase {
         if (analyzeBtn) {
             analyzeBtn.addEventListener('click', () => {
                 this.logAnalyzer.showAnalysis();
-            });
-        }
-
-        // Export button
-        const exportBtn = windowElement.querySelector('#export-btn');
-        if (exportBtn) {
-            exportBtn.addEventListener('click', () => {
-                this.logExporter.showExportOptions();
             });
         }
 
