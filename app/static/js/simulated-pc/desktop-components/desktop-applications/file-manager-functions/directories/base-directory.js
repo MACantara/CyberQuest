@@ -19,7 +19,26 @@ export class BaseDirectory {
         throw new Error('initializeItems() must be implemented by subclasses');
     }
 
-    // Add a file to the directory
+    // Register a file from an individual file class
+    registerFile(fileInstance) {
+        const fileItem = {
+            name: fileInstance.name,
+            type: 'file',
+            icon: fileInstance.icon || this.getFileIcon(fileInstance.name),
+            color: fileInstance.color || this.getFileColor(fileInstance.name),
+            size: fileInstance.size,
+            modified: fileInstance.modified,
+            suspicious: fileInstance.suspicious,
+            hidden: fileInstance.hidden,
+            permissions: fileInstance.permissions,
+            metadata: fileInstance.metadata
+        };
+        
+        this.items.push(fileItem);
+        return fileItem;
+    }
+
+    // Add a file to the directory (legacy method for backward compatibility)
     addFile(config) {
         const fileItem = {
             name: config.name,
