@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request, current_app
 from flask_login import current_user, login_required
 import time
+from urllib.parse import quote
 
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
@@ -45,3 +46,27 @@ def auth_heartbeat():
     except Exception as e:
         current_app.logger.error(f"Auth heartbeat error: {e}")
         return jsonify({'authenticated': False}), 401
+
+@api_bp.route('/auth/expired', methods=['POST'])
+def auth_expired():
+    """Handle authentication expiration with flash message."""
+    try:
+        data = request.get_json()
+        page_url = data.get('page_url', '')
+        
+        # Check if request is AJAX
+        if not request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'error': 'Invalid request'}), 400
+        
+        # Return flash message data for client-side handling
+        return jsonify({
+            'authenticated': False,
+            'expired': True,
+            'flash_message': 'Your session has expired. Please log in again to continue.',
+            'flash_category': 'warning',
+            'redirect_url': f"/auth/login?next={quote(page_url)}&auth_expired=true"
+        })
+        
+    except Exception as e:
+        current_app.logger.error(f"Auth expired handler error: {e}")
+        return jsonify({'authenticated': False, 'error': 'Session expired'}), 401

@@ -40,13 +40,13 @@ export class AuthStateValidator {
                     .then(isAuthenticated => {
                         if (!isAuthenticated) {
                             console.warn('Authentication expired, redirecting to login');
-                            this.redirectToLogin();
+                            this.handleAuthExpired('Page access requires authentication');
                         }
                     })
                     .catch(error => {
                         console.error('Auth check failed:', error);
                         // On error, redirect to login for safety
-                        this.redirectToLogin();
+                        this.handleAuthExpired('Session validation failed');
                     });
             }, 100);
         }
@@ -64,7 +64,7 @@ export class AuthStateValidator {
                 .then(isAuthenticated => {
                     if (!isAuthenticated) {
                         console.warn('Session expired, redirecting to login');
-                        this.redirectToLogin();
+                        this.handleAuthExpired('Your session has expired');
                     }
                 })
                 .catch(error => {
@@ -87,7 +87,7 @@ export class AuthStateValidator {
                         .then(isAuthenticated => {
                             if (!isAuthenticated) {
                                 console.warn('Session expired while away, redirecting to login');
-                                this.redirectToLogin();
+                                this.handleAuthExpired('Session expired while you were away');
                             }
                         })
                         .catch(error => {
@@ -96,6 +96,45 @@ export class AuthStateValidator {
                 }
             }
         });
+    }
+
+    /**
+     * Handle authentication expiration with proper flash messaging
+     * @param {string} reason - Reason for authentication failure
+     */
+    async handleAuthExpired(reason = 'Authentication required') {
+        try {
+            // Clear any auth-related storage
+            this.clearAuthData();
+            
+            // Send expiration notice to server for proper flash message handling
+            const response = await fetch('/api/auth/expired', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({
+                    page_url: window.location.pathname + window.location.search,
+                    reason: reason
+                }),
+                credentials: 'same-origin'
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.redirect_url) {
+                    // Use server-provided redirect URL with flash message
+                    window.location.replace(data.redirect_url);
+                    return;
+                }
+            }
+        } catch (error) {
+            console.error('Error handling auth expiration:', error);
+        }
+
+        // Fallback to direct redirect with URL parameters
+        this.redirectToLogin();
     }
 
     /**
@@ -189,9 +228,13 @@ export class AuthStateValidator {
         // Clear any auth-related storage
         this.clearAuthData();
         
-        // Redirect to login with return URL
+        // Create flash message parameters for the login redirect
         const returnUrl = encodeURIComponent(window.location.pathname + window.location.search);
-        const loginUrl = `/auth/login?next=${returnUrl}`;
+        const flashMessage = encodeURIComponent('Your session has expired. Please log in again to continue.');
+        const flashCategory = 'warning';
+        
+        // Redirect to login with return URL and flash message
+        const loginUrl = `/auth/login?next=${returnUrl}&flash_message=${flashMessage}&flash_category=${flashCategory}&auth_expired=true`;
         
         // Use replace to prevent back button issues
         window.location.replace(loginUrl);
