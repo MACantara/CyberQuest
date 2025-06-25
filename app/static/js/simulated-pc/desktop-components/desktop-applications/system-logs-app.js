@@ -375,17 +375,3 @@ export class SystemLogsApp extends WindowBase {
         super.cleanup();
     }
 }
-        // Apply current filter
-        this.applyFilter();
-    }
-
-    cleanup() {
-        // Stop auto-refresh when window is closed
-        if (this.refreshInterval) {
-            clearInterval(this.refreshInterval);
-            this.refreshInterval = null;
-        }
-        
-        super.cleanup();
-    }
-}
