@@ -5,10 +5,10 @@ import { DesktopDirectory } from './desktop-directory.js';
 import { PicturesDirectory } from './pictures-directory.js';
 import { LogsDirectory } from './logs-directory.js';
 
-import { HomeFileContents } from './file-contents/home-files.js';
-import { DocumentsFileContents } from './file-contents/documents-files.js';
-import { DownloadsFileContents } from './file-contents/downloads-files.js';
-import { LogsFileContents } from './file-contents/logs-files.js';
+import { HomeFileContents } from '../files/home/home-files.js';
+import { DocumentsFileContents } from '../files/documents/documents-files.js';
+import { DownloadsFileContents } from '../files/downloads/downloads-files.js';
+import { LogsFileContents } from '../files/logs/logs-files.js';
 
 export class DirectoryRegistry {
     constructor() {
