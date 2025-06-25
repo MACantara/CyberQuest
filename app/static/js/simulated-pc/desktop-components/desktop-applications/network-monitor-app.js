@@ -104,6 +104,12 @@ export class NetworkMonitorApp extends WindowBase {
         const packetData = this.windowElement?.querySelector('#packet-data');
         if (!packetData) return;
 
+        // Hide initial message if it exists
+        const initialMessage = packetData.querySelector('.text-center');
+        if (initialMessage) {
+            initialMessage.remove();
+        }
+
         const packetElement = document.createElement('div');
         
         // Special styling for alert packets
@@ -152,7 +158,13 @@ export class NetworkMonitorApp extends WindowBase {
     clearPacketList() {
         const packetData = this.windowElement?.querySelector('#packet-data');
         if (packetData) {
-            packetData.innerHTML = '';
+            packetData.innerHTML = `
+                <div class="p-4 text-center text-gray-400">
+                    <i class="bi bi-play-circle text-2xl mb-2"></i>
+                    <p>Start live capture to monitor network traffic</p>
+                    <p class="text-xs mt-1">Traffic will appear when you browse websites or check emails</p>
+                </div>
+            `;
         }
     }
 
