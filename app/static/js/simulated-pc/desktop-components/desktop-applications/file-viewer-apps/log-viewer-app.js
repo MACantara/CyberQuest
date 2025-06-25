@@ -78,26 +78,42 @@ export class LogViewerApp extends WindowBase {
 
     generateLineNumbers() {
         const lines = this.fileContent.split('\n');
-        return lines.map((_, index) => (index + 1).toString().padStart(4, ' ')).join('\n');
-    }
-
-    renderLogContent() {
-        const lines = this.fileContent.split('\n');
-        return lines.map((line, index) => {
+        const lineNumberElements = [];
+        
+        lines.forEach((line, index) => {
             const logLevel = this.detectLogLevel(line);
             const isMatch = this.searchTerm === '' || line.toLowerCase().includes(this.searchTerm.toLowerCase());
             const shouldShow = (this.filterLevel === 'all' || logLevel === this.filterLevel) && isMatch;
             
-            if (!shouldShow) return '';
+            if (shouldShow) {
+                lineNumberElements.push(`<div class="line-number text-xs py-1 text-right pr-2">${(index + 1).toString().padStart(4, ' ')}</div>`);
+            }
+        });
+        
+        return lineNumberElements.join('');
+    }
+
+    renderLogContent() {
+        const lines = this.fileContent.split('\n');
+        const visibleLines = [];
+        
+        lines.forEach((line, index) => {
+            const logLevel = this.detectLogLevel(line);
+            const isMatch = this.searchTerm === '' || line.toLowerCase().includes(this.searchTerm.toLowerCase());
+            const shouldShow = (this.filterLevel === 'all' || logLevel === this.filterLevel) && isMatch;
             
-            return `
-                <div class="log-line font-mono text-xs py-1 ${this.getLogLineClass(logLevel, line)}" data-line="${index + 1}">
-                    <span class="text-gray-500 mr-2">[${this.extractTimestamp(line) || 'No Time'}]</span>
-                    <span class="log-level-badge ${this.getLevelBadgeClass(logLevel)}">${logLevel.toUpperCase()}</span>
-                    <span class="ml-2">${this.highlightSuspiciousContent(line)}</span>
-                </div>
-            `;
-        }).join('');
+            if (shouldShow) {
+                visibleLines.push(`
+                    <div class="log-line font-mono text-xs py-1 ${this.getLogLineClass(logLevel, line)}" data-line="${index + 1}">
+                        <span class="text-gray-500 mr-2">[${this.extractTimestamp(line) || 'No Time'}]</span>
+                        <span class="log-level-badge ${this.getLevelBadgeClass(logLevel)}">${logLevel.toUpperCase()}</span>
+                        <span class="ml-2">${this.highlightSuspiciousContent(line)}</span>
+                    </div>
+                `);
+            }
+        });
+        
+        return visibleLines.join('');
     }
 
     detectLogLevel(line) {
@@ -246,20 +262,30 @@ export class LogViewerApp extends WindowBase {
         }
         
         if (lineNumbers) {
-            lineNumbers.textContent = this.generateLineNumbers();
+            lineNumbers.innerHTML = this.generateLineNumbers();
         }
         
         this.updateStats();
     }
 
     updateStats() {
+        const lines = this.fileContent.split('\n');
+        const visibleLines = lines.filter((line) => {
+            const logLevel = this.detectLogLevel(line);
+            const isMatch = this.searchTerm === '' || line.toLowerCase().includes(this.searchTerm.toLowerCase());
+            return (this.filterLevel === 'all' || logLevel === this.filterLevel) && isMatch;
+        });
+        
+        const visibleErrors = visibleLines.filter(line => this.detectLogLevel(line) === 'error').length;
+        const visibleWarnings = visibleLines.filter(line => this.detectLogLevel(line) === 'warning').length;
+        
         const totalLines = this.windowElement?.querySelector('#total-lines');
         const errorCount = this.windowElement?.querySelector('#error-count');
         const warningCount = this.windowElement?.querySelector('#warning-count');
         
-        if (totalLines) totalLines.textContent = `Total: ${this.getTotalLines()}`;
-        if (errorCount) errorCount.textContent = `Errors: ${this.getErrorCount()}`;
-        if (warningCount) warningCount.textContent = `Warnings: ${this.getWarningCount()}`;
+        if (totalLines) totalLines.textContent = `Visible: ${visibleLines.length}/${this.getTotalLines()}`;
+        if (errorCount) errorCount.textContent = `Errors: ${visibleErrors}`;
+        if (warningCount) warningCount.textContent = `Warnings: ${visibleWarnings}`;
     }
 
     selectLogLine(logLine) {
