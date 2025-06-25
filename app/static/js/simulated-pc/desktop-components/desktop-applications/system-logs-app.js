@@ -172,6 +172,204 @@ export class SystemLogsApp extends WindowBase {
         this.setupActivityMonitoring();
     }
 
+    bindEvents() {
+        const windowElement = this.windowElement;
+        if (!windowElement) return;
+
+        // Level filter dropdown
+        const levelSelect = windowElement.querySelector('#level-filter');
+        if (levelSelect) {
+            levelSelect.addEventListener('change', (e) => {
+                this.currentLevelFilter = e.target.value;
+                this.applyFilters();
+            });
+        }
+
+        // Source filter dropdown
+        const sourceSelect = windowElement.querySelector('#source-filter');
+        if (sourceSelect) {
+            sourceSelect.addEventListener('change', (e) => {
+                this.currentSourceFilter = e.target.value;
+                this.applyFilters();
+            });
+        }
+
+        // Category filter dropdown
+        const categorySelect = windowElement.querySelector('#category-filter');
+        if (categorySelect) {
+            categorySelect.addEventListener('change', (e) => {
+                this.currentCategoryFilter = e.target.value;
+                this.applyFilters();
+            });
+        }
+
+        // Refresh button
+        const refreshBtn = windowElement.querySelector('#refresh-btn');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', () => {
+                this.refreshLogs();
+            });
+        }
+
+        // Auto-refresh checkbox
+        const autoRefreshCheckbox = windowElement.querySelector('#auto-refresh');
+        if (autoRefreshCheckbox) {
+            autoRefreshCheckbox.addEventListener('change', (e) => {
+                this.toggleAutoRefresh(e.target.checked);
+            });
+        }
+
+        // Log entry clicks
+        const logsContainer = windowElement.querySelector('#logs-container');
+        if (logsContainer) {
+            logsContainer.addEventListener('click', (e) => {
+                const logEntry = e.target.closest('.log-entry');
+                if (logEntry) {
+                    this.selectLogEntry(logEntry);
+                }
+            });
+        }
+    }
+
+    applyFilters() {
+        const entries = this.windowElement?.querySelectorAll('.log-entry');
+        if (!entries) return;
+
+        entries.forEach(entry => {
+            const level = entry.dataset.level;
+            const source = entry.dataset.source;
+            const category = entry.dataset.category;
+            
+            let shouldShow = true;
+            
+            // Level filter
+            if (this.currentLevelFilter !== 'all' && level !== this.currentLevelFilter) {
+                shouldShow = false;
+            }
+            
+            // Source filter
+            if (this.currentSourceFilter !== 'all' && source !== this.currentSourceFilter) {
+                shouldShow = false;
+            }
+            
+            // Category filter
+            if (this.currentCategoryFilter !== 'all' && category !== this.currentCategoryFilter) {
+                shouldShow = false;
+            }
+            
+            entry.style.display = shouldShow ? 'grid' : 'none';
+        });
+        
+        this.updateLogCounts();
+    }
+
+    refreshLogs() {
+        const refreshBtn = this.windowElement?.querySelector('#refresh-btn');
+        if (refreshBtn) {
+            refreshBtn.innerHTML = '<i class="bi bi-arrow-clockwise animate-spin mr-1"></i>Refreshing...';
+            refreshBtn.disabled = true;
+        }
+
+        // Simulate refresh with new log entries
+        setTimeout(() => {
+            this.logManager.generateNewLogs();
+            this.updateLogCounts();
+            this.updateLastUpdate();
+            
+            if (refreshBtn) {
+                refreshBtn.innerHTML = '<i class="bi bi-arrow-clockwise mr-1"></i>Refresh';
+                refreshBtn.disabled = false;
+            }
+        }, 1500);
+    }
+
+    toggleAutoRefresh(enabled) {
+        this.autoRefresh = enabled;
+        
+        if (enabled) {
+            this.refreshInterval = setInterval(() => {
+                this.refreshLogs();
+            }, 30000); // Refresh every 30 seconds
+        } else {
+            if (this.refreshInterval) {
+                clearInterval(this.refreshInterval);
+                this.refreshInterval = null;
+            }
+        }
+    }
+
+    selectLogEntry(entry) {
+        // Remove previous selection
+        const selected = this.windowElement?.querySelector('.log-entry.selected');
+        if (selected) {
+            selected.classList.remove('selected', 'bg-blue-900');
+        }
+        
+        // Select new entry
+        entry.classList.add('selected', 'bg-blue-900');
+        
+        // Show details for security-related logs
+        const category = entry.dataset.category;
+        const level = entry.dataset.level;
+        
+        if (category === 'security' || category === 'malware' || level === 'critical') {
+            this.showLogDetails(entry);
+        }
+    }
+
+    showLogDetails(entry) {
+        const timestamp = entry.children[0].textContent;
+        const level = entry.children[1].textContent;
+        const message = entry.children[4].textContent;
+        const details = entry.children[5].textContent;
+        
+        const overlay = document.createElement('div');
+        overlay.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+        overlay.innerHTML = `
+            <div class="bg-gray-800 rounded-lg p-6 max-w-2xl mx-4">
+                <div class="text-center">
+                    <i class="bi bi-exclamation-triangle text-yellow-400 text-4xl mb-3"></i>
+                    <h3 class="text-white text-lg font-semibold mb-2">Log Entry Details</h3>
+                    <div class="bg-black p-4 rounded text-left mb-4">
+                        <div class="grid grid-cols-2 gap-2 text-sm">
+                            <span class="text-gray-400">Timestamp:</span>
+                            <span class="text-white">${timestamp}</span>
+                            <span class="text-gray-400">Level:</span>
+                            <span class="text-white">${level}</span>
+                            <span class="text-gray-400">Message:</span>
+                            <span class="text-white">${message}</span>
+                            <span class="text-gray-400">Details:</span>
+                            <span class="text-white">${details}</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-300 text-sm mb-4">
+                        Review this log entry for potential security implications.
+                    </p>
+                    <button onclick="this.closest('.fixed').remove()" 
+                            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors cursor-pointer">
+                        Close
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    }
+
+    addLogEntry(logData) {
+        const logsContainer = this.windowElement?.querySelector('#logs-container');
+        if (!logsContainer) return;
+
+        const logElement = this.createLogElement(logData);
+        // Add new logs at the bottom (most recent)
+        logsContainer.insertAdjacentHTML('beforeend', logElement);
+        
+        // Apply current filters
+        this.applyFilters();
+        
+        // Auto-scroll to bottom to show newest log
+        logsContainer.scrollTop = logsContainer.scrollHeight;
+    }
+
     setupActivityMonitoring() {
         // Listen for browser activity
         document.addEventListener('browser-navigate', (e) => {
