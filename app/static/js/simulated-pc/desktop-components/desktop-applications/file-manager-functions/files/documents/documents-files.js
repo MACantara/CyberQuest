@@ -1,6 +1,6 @@
-import { BaseFileContent } from './base-file-content.js';
+import { BaseFile } from '../base-file.js';
 
-class DocumentsFileContentClass extends BaseFileContent {
+class DocumentsFileContentClass extends BaseFile {
     constructor() {
         super({
             directoryPath: '/home/trainee/Documents',
