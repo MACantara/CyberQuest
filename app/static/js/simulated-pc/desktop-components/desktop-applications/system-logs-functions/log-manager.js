@@ -28,6 +28,7 @@ export class LogManager {
     }
 
     createLogFromTemplate(template) {
+        // Generate timestamp that's always newer than existing logs
         const now = new Date();
         const timestamp = now.toISOString().slice(0, 19).replace('T', ' ');
         
@@ -94,5 +95,63 @@ export class LogManager {
                 message: entry.children[4].textContent,
                 details: entry.children[5].textContent
             }));
+    }
+
+    getLogsByTimeRange(hours = 24) {
+        const entries = this.app.windowElement?.querySelectorAll('.log-entry');
+        if (!entries) return [];
+        
+        const cutoffTime = new Date();
+        cutoffTime.setHours(cutoffTime.getHours() - hours);
+        
+        return Array.from(entries)
+            .filter(entry => {
+                const timestamp = entry.children[0].textContent;
+                const logTime = new Date(timestamp);
+                return logTime >= cutoffTime;
+            })
+            .map(entry => ({
+                timestamp: entry.children[0].textContent,
+                level: entry.children[1].textContent,
+                source: entry.children[2].textContent,
+                category: entry.children[3].textContent,
+                message: entry.children[4].textContent,
+                details: entry.children[5].textContent
+            }));
+    }
+
+    getLogStatistics() {
+        const entries = this.app.windowElement?.querySelectorAll('.log-entry');
+        if (!entries) return {};
+        
+        const stats = {
+            total: entries.length,
+            byLevel: {},
+            bySource: {},
+            byCategory: {},
+            visible: 0
+        };
+        
+        entries.forEach(entry => {
+            const level = entry.dataset.level;
+            const source = entry.dataset.source;
+            const category = entry.dataset.category;
+            
+            // Count by level
+            stats.byLevel[level] = (stats.byLevel[level] || 0) + 1;
+            
+            // Count by source
+            stats.bySource[source] = (stats.bySource[source] || 0) + 1;
+            
+            // Count by category
+            stats.byCategory[category] = (stats.byCategory[category] || 0) + 1;
+            
+            // Count visible entries
+            if (entry.style.display !== 'none') {
+                stats.visible++;
+            }
+        });
+        
+        return stats;
     }
 }
