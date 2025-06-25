@@ -81,6 +81,9 @@ export class LogViewerApp extends WindowBase {
         const lineNumberElements = [];
         
         lines.forEach((line, index) => {
+            const hasTimestamp = this.extractTimestamp(line) !== null;
+            if (!hasTimestamp) return; // Skip lines without timestamps
+            
             const logLevel = this.detectLogLevel(line);
             const isMatch = this.searchTerm === '' || line.toLowerCase().includes(this.searchTerm.toLowerCase());
             const shouldShow = (this.filterLevel === 'all' || logLevel === this.filterLevel) && isMatch;
@@ -98,6 +101,9 @@ export class LogViewerApp extends WindowBase {
         const visibleLines = [];
         
         lines.forEach((line, index) => {
+            const hasTimestamp = this.extractTimestamp(line) !== null;
+            if (!hasTimestamp) return; // Skip lines without timestamps
+            
             const logLevel = this.detectLogLevel(line);
             const isMatch = this.searchTerm === '' || line.toLowerCase().includes(this.searchTerm.toLowerCase());
             const shouldShow = (this.filterLevel === 'all' || logLevel === this.filterLevel) && isMatch;
@@ -105,7 +111,7 @@ export class LogViewerApp extends WindowBase {
             if (shouldShow) {
                 visibleLines.push(`
                     <div class="log-line font-mono text-xs py-1 ${this.getLogLineClass(logLevel, line)}" data-line="${index + 1}">
-                        <span class="text-gray-500 mr-2">[${this.extractTimestamp(line) || 'No Time'}]</span>
+                        <span class="text-gray-500 mr-2">[${this.extractTimestamp(line)}]</span>
                         <span class="log-level-badge ${this.getLevelBadgeClass(logLevel)}">${logLevel.toUpperCase()}</span>
                         <span class="ml-2">${this.highlightSuspiciousContent(line)}</span>
                     </div>
@@ -197,15 +203,19 @@ export class LogViewerApp extends WindowBase {
     }
 
     getTotalLines() {
-        return this.fileContent.split('\n').length;
+        return this.fileContent.split('\n').filter(line => this.extractTimestamp(line) !== null).length;
     }
 
     getErrorCount() {
-        return this.fileContent.split('\n').filter(line => this.detectLogLevel(line) === 'error').length;
+        return this.fileContent.split('\n')
+            .filter(line => this.extractTimestamp(line) !== null)
+            .filter(line => this.detectLogLevel(line) === 'error').length;
     }
 
     getWarningCount() {
-        return this.fileContent.split('\n').filter(line => this.detectLogLevel(line) === 'warning').length;
+        return this.fileContent.split('\n')
+            .filter(line => this.extractTimestamp(line) !== null)
+            .filter(line => this.detectLogLevel(line) === 'warning').length;
     }
 
     initialize() {
@@ -269,7 +279,7 @@ export class LogViewerApp extends WindowBase {
     }
 
     updateStats() {
-        const lines = this.fileContent.split('\n');
+        const lines = this.fileContent.split('\n').filter(line => this.extractTimestamp(line) !== null);
         const visibleLines = lines.filter((line) => {
             const logLevel = this.detectLogLevel(line);
             const isMatch = this.searchTerm === '' || line.toLowerCase().includes(this.searchTerm.toLowerCase());
