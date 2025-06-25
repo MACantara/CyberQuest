@@ -51,7 +51,7 @@ export class LogViewerApp extends WindowBase {
                 <!-- Log Content -->
                 <div class="flex-1 overflow-hidden flex">
                     <!-- Line Numbers -->
-                    <div class="bg-gray-900 border-r border-gray-600 p-2 text-gray-500 text-xs font-mono whitespace-pre select-none w-16" id="line-numbers">
+                    <div class="bg-gray-900 border-r border-gray-600 p-2 text-gray-500 text-xs font-mono select-none w-16" id="line-numbers">
                         ${this.generateLineNumbers()}
                     </div>
                     
