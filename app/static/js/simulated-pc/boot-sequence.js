@@ -25,8 +25,19 @@ export class BootSequence {
         ];
         this.currentLine = 0;
         this.audioEnabled = false;
+        this.autoStartAudio = this.checkAutoStartAudio();
         this.setupContainer();
         this.setupAudio();
+    }
+
+    checkAutoStartAudio() {
+        // Check if coming from level detail page
+        const referrer = document.referrer;
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        return referrer.includes('/levels/') || 
+               urlParams.get('autostart') === 'true' ||
+               sessionStorage.getItem('cyberquest_auto_audio') === 'true';
     }
 
     setupContainer() {
@@ -48,10 +59,39 @@ export class BootSequence {
     async start() {
         return new Promise((resolve) => {
             this.container.innerHTML = '';
-            this.showAudioPrompt(() => {
-                this.typeNextLine(resolve);
-            });
+            
+            if (this.autoStartAudio) {
+                // Auto-enable audio and start immediately
+                this.enableAudioAndStart(() => {
+                    this.typeNextLine(resolve);
+                });
+            } else {
+                // Show audio prompt
+                this.showAudioPrompt(() => {
+                    this.typeNextLine(resolve);
+                });
+            }
         });
+    }
+
+    async enableAudioAndStart(onStart) {
+        if (this.textSoundEffect) {
+            try {
+                // Try to enable audio
+                await this.textSoundEffect.play();
+                this.textSoundEffect.pause();
+                this.textSoundEffect.currentTime = 0;
+                this.audioEnabled = true;
+            } catch (error) {
+                console.warn('Auto audio not available, will try user interaction:', error);
+                this.audioEnabled = false;
+            }
+        }
+        
+        // Clear any session storage flag
+        sessionStorage.removeItem('cyberquest_auto_audio');
+        
+        onStart();
     }
 
     showAudioPrompt(onStart) {
