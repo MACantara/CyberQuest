@@ -31,7 +31,8 @@ export class BaseDirectory {
             suspicious: config.suspicious || false,
             hidden: config.hidden || false,
             permissions: config.permissions || 'rw-r--r--',
-            metadata: config.metadata || {}
+            metadata: config.metadata || {},
+            content: config.content || '' // Add content property
         };
         
         this.items.push(fileItem);
