@@ -87,19 +87,41 @@ export class LogFilter {
         overlay.remove();
     }
 
+    applyFilters(levelFilter, sourceFilter, categoryFilter) {
+        this.filters.level = levelFilter;
+        this.filters.source = sourceFilter;
+        this.filters.category = categoryFilter;
+        
+        const entries = this.app.windowElement?.querySelectorAll('.log-entry');
+        if (!entries) return;
+
+        entries.forEach(entry => {
+            const shouldShow = this.evaluateEntry(entry);
+            entry.style.display = shouldShow ? 'grid' : 'none';
+        });
+        
+        this.app.updateLogCounts();
+    }
+
     evaluateEntry(entry) {
         const entryLevel = entry.dataset.level;
         const entrySource = entry.dataset.source;
+        const entryCategory = entry.dataset.category;
         const entryMessage = entry.children[4].textContent.toLowerCase();
-        const entryTimestamp = entry.children[0].textContent;
         
         // Level filter
-        if (this.filters.level !== 'all') {
-            const levelPriority = { 'info': 1, 'warn': 2, 'error': 3, 'critical': 4 };
-            const filterPriority = levelPriority[this.filters.level];
-            const entryPriority = levelPriority[entryLevel];
-            
-            if (entryPriority < filterPriority) return false;
+        if (this.filters.level !== 'all' && entryLevel !== this.filters.level) {
+            return false;
+        }
+        
+        // Source filter
+        if (this.filters.source !== 'all' && entrySource !== this.filters.source) {
+            return false;
+        }
+        
+        // Category filter
+        if (this.filters.category !== 'all' && entryCategory !== this.filters.category) {
+            return false;
         }
         
         // Search term filter
@@ -108,13 +130,24 @@ export class LogFilter {
             return false;
         }
         
-        // Time range filter (simplified)
-        if (this.filters.timeRange !== 'all') {
-            // In a real implementation, this would check actual timestamps
-            // For simulation, we'll show all entries
-        }
-        
         return true;
+    }
+
+    setSearchTerm(searchTerm) {
+        this.filters.searchTerm = searchTerm.toLowerCase();
+        this.applyCurrentFilters();
+    }
+
+    applyCurrentFilters() {
+        const entries = this.app.windowElement?.querySelectorAll('.log-entry');
+        if (!entries) return;
+
+        entries.forEach(entry => {
+            const shouldShow = this.evaluateEntry(entry);
+            entry.style.display = shouldShow ? 'grid' : 'none';
+        });
+        
+        this.app.updateLogCounts();
     }
 
     clearAllFilters() {
@@ -126,13 +159,81 @@ export class LogFilter {
             searchTerm: ''
         };
         
-        const entries = this.app.windowElement?.querySelectorAll('.log-entry');
-        if (entries) {
-            entries.forEach(entry => {
-                entry.style.display = 'grid';
-            });
+        // Reset filter dropdowns
+        const levelSelect = this.app.windowElement?.querySelector('#level-filter');
+        const sourceSelect = this.app.windowElement?.querySelector('#source-filter');
+        const categorySelect = this.app.windowElement?.querySelector('#category-filter');
+        
+        if (levelSelect) levelSelect.value = 'all';
+        if (sourceSelect) sourceSelect.value = 'all';
+        if (categorySelect) categorySelect.value = 'all';
+        
+        this.applyCurrentFilters();
+    }
+
+    getFilterSummary() {
+        const activeFilters = [];
+        
+        if (this.filters.level !== 'all') {
+            activeFilters.push(`Level: ${this.filters.level}`);
         }
         
-        this.app.updateLogCounts();
+        if (this.filters.source !== 'all') {
+            activeFilters.push(`Source: ${this.filters.source}`);
+        }
+        
+        if (this.filters.category !== 'all') {
+            activeFilters.push(`Category: ${this.filters.category}`);
+        }
+        
+        if (this.filters.searchTerm) {
+            activeFilters.push(`Search: "${this.filters.searchTerm}"`);
+        }
+        
+        return activeFilters.length > 0 ? activeFilters.join(', ') : 'No filters active';
+    }
+
+    getFilteredCount() {
+        const entries = this.app.windowElement?.querySelectorAll('.log-entry');
+        if (!entries) return 0;
+        
+        return Array.from(entries).filter(entry => entry.style.display !== 'none').length;
+    }
+
+    // Advanced filter methods for potential future use
+    getAvailableSources() {
+        const entries = this.app.windowElement?.querySelectorAll('.log-entry');
+        if (!entries) return [];
+        
+        const sources = new Set();
+        entries.forEach(entry => {
+            sources.add(entry.dataset.source);
+        });
+        
+        return Array.from(sources).sort();
+    }
+
+    getAvailableCategories() {
+        const entries = this.app.windowElement?.querySelectorAll('.log-entry');
+        if (!entries) return [];
+        
+        const categories = new Set();
+        entries.forEach(entry => {
+            categories.add(entry.dataset.category);
+        });
+        
+        return Array.from(categories).sort();
+    }
+
+    getAvailableLevels() {
+        const entries = this.app.windowElement?.querySelectorAll('.log-entry');
+        if (!entries) return [];
+        
+        const levels = new Set();
+        entries.forEach(entry => {
+            levels.add(entry.dataset.level);
+        });
+        
+        return Array.from(levels).sort();
     }
 }
