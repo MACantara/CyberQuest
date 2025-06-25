@@ -228,13 +228,9 @@ export class AuthStateValidator {
         // Clear any auth-related storage
         this.clearAuthData();
         
-        // Create flash message parameters for the login redirect
+        // Redirect to login with return URL - let the server handle flash message
         const returnUrl = encodeURIComponent(window.location.pathname + window.location.search);
-        const flashMessage = encodeURIComponent('Your session has expired. Please log in again to continue.');
-        const flashCategory = 'warning';
-        
-        // Redirect to login with return URL and flash message
-        const loginUrl = `/auth/login?next=${returnUrl}&flash_message=${flashMessage}&flash_category=${flashCategory}&auth_expired=true`;
+        const loginUrl = `/auth/login?next=${returnUrl}&auth_expired=true`;
         
         // Use replace to prevent back button issues
         window.location.replace(loginUrl);
@@ -285,6 +281,10 @@ if (document.readyState === 'loading') {
 
 export default authStateValidator;
 
+// Global export for non-module usage
+if (typeof window !== 'undefined') {
+    window.authStateValidator = authStateValidator;
+}
 // Global export for non-module usage
 if (typeof window !== 'undefined') {
     window.authStateValidator = authStateValidator;

@@ -58,12 +58,10 @@ def auth_expired():
         if not request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             return jsonify({'error': 'Invalid request'}), 400
         
-        # Return flash message data for client-side handling
+        # Return redirect URL without flash message - let the login route handle it
         return jsonify({
             'authenticated': False,
             'expired': True,
-            'flash_message': 'Your session has expired. Please log in again to continue.',
-            'flash_category': 'warning',
             'redirect_url': f"/auth/login?next={quote(page_url)}&auth_expired=true"
         })
         

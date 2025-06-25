@@ -31,18 +31,22 @@ def login():
         next_page = request.args.get('next')
         return redirect(next_page if next_page else url_for('main.home'))
     
-    # Handle flash messages from auth state validator
+    # Handle flash messages from auth state validator - only process once
+    auth_expired = request.args.get('auth_expired')
     flash_message = request.args.get('flash_message')
     flash_category = request.args.get('flash_category', 'warning')
-    auth_expired = request.args.get('auth_expired')
     
-    if flash_message and auth_expired:
-        # Decode the URL-encoded message
-        try:
-            decoded_message = unquote(flash_message)
-            flash(decoded_message, flash_category)
-        except Exception:
-            flash('Please log in to continue.', 'info')
+    # Only show auth expired message if not already processing a POST request
+    if auth_expired and request.method == 'GET':
+        if flash_message:
+            # Decode the URL-encoded message
+            try:
+                decoded_message = unquote(flash_message)
+                flash(decoded_message, flash_category)
+            except Exception:
+                flash('Your session has expired. Please log in again to continue.', 'warning')
+        else:
+            flash('Your session has expired. Please log in again to continue.', 'warning')
     
     # Check if IP is locked out
     locked_out, minutes_remaining = check_ip_lockout()
@@ -116,14 +120,6 @@ def login():
         else:
             attempts_remaining = get_remaining_attempts()
             flash(f'Invalid username/email or password. {attempts_remaining} attempts remaining.', 'error')
-    
-    # Handle flash messages from auth state validator
-    flash_message = request.args.get('flash_message')
-    flash_category = request.args.get('flash_category', 'info')
-    auth_expired = request.args.get('auth_expired')
-    
-    if flash_message and auth_expired:
-        flash(flash_message, flash_category)
     
     return render_template('auth/login.html')
 
@@ -216,6 +212,10 @@ def signup():
 
 @auth_bp.route('/logout')
 @login_required
+def logout():
+    logout_user()
+    flash('You have been logged out successfully.', 'success')
+    return redirect(url_for('main.home'))
 def logout():
     logout_user()
     flash('You have been logged out successfully.', 'success')
