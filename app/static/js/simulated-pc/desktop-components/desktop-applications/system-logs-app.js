@@ -370,6 +370,40 @@ export class SystemLogsApp extends WindowBase {
         logsContainer.scrollTop = logsContainer.scrollHeight;
     }
 
+    updateLogCounts() {
+        const entries = this.windowElement?.querySelectorAll('.log-entry');
+        if (!entries) return;
+
+        const visible = Array.from(entries).filter(entry => entry.style.display !== 'none');
+        const errors = visible.filter(entry => ['error', 'critical'].includes(entry.dataset.level));
+        const warnings = visible.filter(entry => entry.dataset.level === 'warn');
+        const security = visible.filter(entry => 
+            entry.dataset.source === 'security' || 
+            entry.dataset.category === 'authentication' || 
+            entry.dataset.category === 'malware'
+        );
+
+        const totalElement = this.windowElement?.querySelector('#total-logs');
+        const errorElement = this.windowElement?.querySelector('#error-logs');
+        const warningElement = this.windowElement?.querySelector('#warning-logs');
+        const securityElement = this.windowElement?.querySelector('#security-logs');
+        const countElement = this.windowElement?.querySelector('#log-count');
+
+        if (totalElement) totalElement.textContent = `Total: ${visible.length}`;
+        if (errorElement) errorElement.textContent = `Errors: ${errors.length}`;
+        if (warningElement) warningElement.textContent = `Warnings: ${warnings.length}`;
+        if (securityElement) securityElement.textContent = `Security: ${security.length}`;
+        if (countElement) countElement.textContent = `${visible.length} entries`;
+    }
+
+    updateLastUpdate() {
+        const now = new Date().toLocaleTimeString();
+        const lastUpdateElement = this.windowElement?.querySelector('#last-update');
+        if (lastUpdateElement) {
+            lastUpdateElement.textContent = `Last updated: ${now}`;
+        }
+    }
+
     setupActivityMonitoring() {
         // Listen for browser activity
         document.addEventListener('browser-navigate', (e) => {
