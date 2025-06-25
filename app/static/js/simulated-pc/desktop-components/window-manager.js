@@ -3,7 +3,6 @@ import { TerminalApp } from './desktop-applications/terminal-app.js';
 import { FileManagerApp } from './desktop-applications/file-manager-app.js';
 import { EmailApp } from './desktop-applications/email-app.js';
 import { NetworkMonitorApp } from './desktop-applications/network-monitor-app.js';
-import { SecurityToolsApp } from './desktop-applications/security-tools-app.js';
 import { SystemLogsApp } from './desktop-applications/system-logs-app.js';
 import { ControlPanelApp } from './control-panel.js';
 
@@ -23,7 +22,6 @@ export class WindowManager {
             'files': { class: FileManagerApp, storageKey: 'cyberquest_filemanager_opened', tutorialMethod: 'shouldAutoStartFileManager', startMethod: 'startFileManagerTutorial' },
             'email': { class: EmailApp, storageKey: 'cyberquest_email_opened', tutorialMethod: 'shouldAutoStartEmail', startMethod: 'startEmailTutorial' },
             'wireshark': { class: NetworkMonitorApp, storageKey: 'cyberquest_networkmonitor_opened', tutorialMethod: 'shouldAutoStartNetworkMonitor', startMethod: 'startNetworkMonitorTutorial' },
-            'security': { class: SecurityToolsApp, storageKey: 'cyberquest_securitytools_opened', tutorialMethod: 'shouldAutoStartSecurityTools', startMethod: 'startSecurityToolsTutorial' },
             'logs': { class: SystemLogsApp, storageKey: 'cyberquest_systemlogs_opened', tutorialMethod: 'shouldAutoStartSystemLogs', startMethod: 'startSystemLogsTutorial' }
         };
     }
@@ -171,7 +169,6 @@ export class WindowManager {
             'files': 'folder',
             'email': 'envelope',
             'wireshark': 'router',
-            'security': 'shield-check',
             'logs': 'journal-text',
             'help': 'question-circle',
             'hint': 'lightbulb',
@@ -430,10 +427,6 @@ export class WindowManager {
 
     async openNetworkMonitor() {
         await this.openApplication('wireshark', 'Network Monitor');
-    }
-
-    async openSecurityTools() {
-        await this.openApplication('security', 'Security Tools');
     }
 
     async openSystemLogs() {

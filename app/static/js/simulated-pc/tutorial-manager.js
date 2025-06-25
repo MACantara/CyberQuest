@@ -301,18 +301,6 @@ export class TutorialManager {
         return this.restartTutorial('network-monitor', 'NetworkMonitorTutorial', 'startNetworkMonitorTutorial');
     }
 
-    async startSecurityToolsTutorial() {
-        return this.startTutorial('security-tools', 'SecurityToolsTutorial', 'securityToolsTutorial');
-    }
-
-    async shouldAutoStartSecurityTools() {
-        return this.shouldAutoStart('security-tools', 'SecurityToolsTutorial');
-    }
-
-    async restartSecurityToolsTutorial() {
-        return this.restartTutorial('security-tools', 'SecurityToolsTutorial', 'startSecurityToolsTutorial');
-    }
-
     async startSystemLogsTutorial() {
         return this.startTutorial('system-logs', 'SystemLogsTutorial', 'systemLogsTutorial');
     }
@@ -345,7 +333,6 @@ export class TutorialManager {
             { name: 'browser', class: 'BrowserTutorial', title: 'Web Security' },
             { name: 'file-manager', class: 'FileManagerTutorial', title: 'File Security' },
             { name: 'network-monitor', class: 'NetworkMonitorTutorial', title: 'Network Analysis' },
-            { name: 'security-tools', class: 'SecurityToolsTutorial', title: 'Security Tools' },
             { name: 'system-logs', class: 'SystemLogsTutorial', title: 'Log Analysis' },
             { name: 'terminal', class: 'TerminalTutorial', title: 'Command Line' }
         ];

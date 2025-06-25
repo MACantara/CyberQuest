@@ -9,7 +9,6 @@ export class DesktopIcons {
             { id: 'files', name: 'File Manager', icon: 'bi-folder', action: 'openFileManager' },
             { id: 'email', name: 'Email Client', icon: 'bi-envelope', action: 'openEmailClient' },
             { id: 'wireshark', name: 'Network Monitor', icon: 'bi-router', action: 'openNetworkMonitor' },
-            { id: 'security', name: 'Security Tools', icon: 'bi-shield-check', action: 'openSecurityTools' },
             { id: 'logs', name: 'System Logs', icon: 'bi-journal-text', action: 'openSystemLogs' }
         ];
         this.init();
