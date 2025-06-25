@@ -5,23 +5,25 @@ export class BootSequence {
             { text: 'CyberQuest Security Training Environment v2.1.0', type: 'info', delay: 200 },
             { text: 'Copyright (c) 2025 CyberQuest Training Systems', type: 'info', delay: 300 },
             { text: '', type: 'info', delay: 100 },
-            { text: 'Initializing secure training environment...', type: 'info', delay: 500 },
-            { text: 'Loading kernel modules...', type: 'info', delay: 800 },
-            { text: '[  OK  ] Started Network Manager', type: 'success', delay: 400 },
-            { text: '[  OK  ] Started Security Monitor Service', type: 'success', delay: 300 },
-            { text: '[  OK  ] Started Firewall Protection', type: 'success', delay: 250 },
-            { text: '[  OK  ] Started Intrusion Detection System', type: 'success', delay: 300 },
-            { text: '[ WARN ] Unknown device detected on network', type: 'warning', delay: 400 },
-            { text: '[  OK  ] Security scan completed', type: 'success', delay: 350 },
-            { text: '', type: 'info', delay: 200 },
-            { text: 'Starting training simulation...', type: 'info', delay: 600 },
-            { text: 'Loading scenario data...', type: 'info', delay: 500 },
-            { text: 'Preparing virtual environment...', type: 'info', delay: 400 },
-            { text: '[  OK  ] Training environment ready', type: 'success', delay: 300 },
-            { text: '', type: 'info', delay: 400 },
-            { text: 'Welcome to the CyberQuest Training Lab', type: 'success', delay: 600 },
+            { text: 'Initializing secure training environment', type: 'info', delay: 400, hasStatus: true, status: '[  OK  ]' },
+            { text: 'Loading kernel modules and core services', type: 'info', delay: 600, hasStatus: true, status: '[  OK  ]' },
+            { text: '', type: 'info', delay: 100 },
+            { text: 'Starting security services', type: 'success', delay: 300, hasStatus: true, status: '[  OK  ]', bundle: 'security' },
+            { text: '  Loading Network Manager', type: 'success', delay: 150, hasStatus: false, bundle: 'security' },
+            { text: '  Loading Firewall Protection', type: 'success', delay: 150, hasStatus: false, bundle: 'security' },
+            { text: '  Loading Intrusion Detection System', type: 'success', delay: 150, hasStatus: false, bundle: 'security' },
+            { text: '  Loading Security Monitor Service', type: 'success', delay: 150, hasStatus: false, bundle: 'security' },
+            { text: 'Scanning for network devices', type: 'warning', delay: 400, hasStatus: true, status: '[ WARN ]' },
+            { text: 'Running security scan', type: 'success', delay: 300, hasStatus: true, status: '[  OK  ]' },
+            { text: '', type: 'info', delay: 150 },
+            { text: 'Preparing training environment', type: 'info', delay: 300, hasStatus: true, status: '[  OK  ]', bundle: 'training' },
+            { text: '  Loading scenario data', type: 'info', delay: 100, hasStatus: false, bundle: 'training' },
+            { text: '  Preparing virtual environment', type: 'info', delay: 100, hasStatus: false, bundle: 'training' },
+            { text: '  Finalizing training setup', type: 'success', delay: 200, hasStatus: false, bundle: 'training' },
+            { text: '', type: 'info', delay: 300 },
+            { text: 'Welcome to the CyberQuest Training Lab', type: 'success', delay: 400 },
             { text: 'Type "help" for available commands', type: 'info', delay: 200 },
-            { text: '', type: 'info', delay: 800 }
+            { text: '', type: 'info', delay: 500 }
         ];
         this.currentLine = 0;
         this.audioEnabled = false;
@@ -157,7 +159,7 @@ export class BootSequence {
             
             setTimeout(() => {
                 onComplete();
-            }, 1500); // Increased from 1000ms
+            }, 1000); // Reduced from 1500ms
             return;
         }
 
@@ -180,20 +182,32 @@ export class BootSequence {
                 typeClasses = 'text-green-400';
         }
         
-        lineElement.className = `boot-line mb-0.5 whitespace-pre-wrap ${typeClasses}`;
+        // Add indentation for bundled items
+        const indentClass = line.bundle && !line.hasStatus ? 'ml-4' : '';
+        lineElement.className = `boot-line mb-0.5 whitespace-pre-wrap ${typeClasses} ${indentClass}`;
         lineElement.textContent = ''; // Start empty
         
         this.container.appendChild(lineElement);
         
         // Type the line character by character
         if (line.text.trim() !== '') {
-            this.typeText(lineElement, line.text, 0, () => {
-                // After typing is complete, wait for the delay then move to next line
-                this.currentLine++;
-                setTimeout(() => {
-                    this.typeNextLine(onComplete);
-                }, line.delay);
-            });
+            if (line.hasStatus) {
+                // For lines with status, type text first, then show loading dots, then status
+                this.typeTextWithStatus(lineElement, line, () => {
+                    this.currentLine++;
+                    setTimeout(() => {
+                        this.typeNextLine(onComplete);
+                    }, line.delay);
+                });
+            } else {
+                // Normal typing for lines without status (bundled items)
+                this.typeText(lineElement, line.text, 0, () => {
+                    this.currentLine++;
+                    setTimeout(() => {
+                        this.typeNextLine(onComplete);
+                    }, line.delay);
+                });
+            }
         } else {
             // For empty lines, just move to next immediately
             this.currentLine++;
@@ -201,6 +215,58 @@ export class BootSequence {
                 this.typeNextLine(onComplete);
             }, line.delay);
         }
+    }
+
+    showLoadingDots(element, onComplete) {
+        const dotsElement = document.createElement('span');
+        dotsElement.className = 'loading-dots ml-2 text-gray-400';
+        element.appendChild(dotsElement);
+        
+        let dotCount = 0;
+        const maxDots = 3;
+        const dotInterval = 200; // Reduced from 300ms for faster loading
+        
+        const addDot = () => {
+            if (dotCount < maxDots) {
+                dotsElement.textContent += '.';
+                dotCount++;
+                
+                // Play sound for each dot
+                if (this.textSoundEffect && this.audioEnabled) {
+                    this.playTextSound();
+                }
+                
+                setTimeout(addDot, dotInterval);
+            } else {
+                // Wait a bit before completing
+                setTimeout(onComplete, 150); // Reduced from 200ms
+            }
+        };
+        
+        // Start adding dots after a short delay
+        setTimeout(addDot, 150); // Reduced from 200ms
+    }
+
+    typeTextWithStatus(element, line, onComplete) {
+        // First, type the main text
+        this.typeText(element, line.text, 0, () => {
+            // Add loading dots
+            this.showLoadingDots(element, () => {
+                // Clear the dots and add status
+                const dotsElement = element.querySelector('.loading-dots');
+                if (dotsElement) {
+                    dotsElement.remove();
+                }
+                
+                // Add status with appropriate color (all green except warnings)
+                const statusElement = document.createElement('span');
+                statusElement.className = `ml-2 ${line.type === 'warning' ? 'text-yellow-400' : 'text-green-400'}`;
+                statusElement.textContent = line.status;
+                element.appendChild(statusElement);
+                
+                onComplete();
+            });
+        });
     }
 
     typeText(element, text, charIndex, onComplete) {
@@ -222,7 +288,7 @@ export class BootSequence {
         this.container.scrollTop = this.container.scrollHeight;
         
         // Continue with next character after a short delay
-        const typingSpeed = 15; // milliseconds between characters
+        const typingSpeed = 12; // Reduced from 15ms for faster typing
         setTimeout(() => {
             this.typeText(element, text, charIndex + 1, onComplete);
         }, typingSpeed);
