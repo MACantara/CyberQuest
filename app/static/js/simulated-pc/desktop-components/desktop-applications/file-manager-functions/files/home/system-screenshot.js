@@ -7,7 +7,9 @@ export class SystemScreenshotFile extends BaseIndividualFile {
             directoryPath: '/home/trainee',
             size: '2.1 MB',
             modified: '2024-12-20 11:30',
-            suspicious: false
+            suspicious: false,
+            icon: 'bi-file-image',
+            color: 'text-green-400'
         });
     }
 

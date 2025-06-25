@@ -8,7 +8,9 @@ export class BashrcFile extends BaseIndividualFile {
             size: '128 B',
             modified: '2024-12-19 14:22',
             suspicious: false,
-            hidden: true
+            hidden: true,
+            icon: 'bi-file-code',
+            color: 'text-green-400'
         });
     }
 

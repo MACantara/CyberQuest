@@ -7,7 +7,9 @@ export class SecurityAuditFile extends BaseIndividualFile {
             directoryPath: '/home/trainee',
             size: '45.2 KB',
             modified: '2024-12-20 12:15',
-            suspicious: false
+            suspicious: false,
+            icon: 'bi-journal-text',
+            color: 'text-yellow-400'
         });
     }
 

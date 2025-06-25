@@ -7,7 +7,9 @@ export class ApplicationDebugLogFile extends BaseIndividualFile {
             directoryPath: '/home/trainee/Logs',
             size: '512 KB',
             modified: '2024-12-20 10:30',
-            suspicious: false
+            suspicious: false,
+            icon: 'bi-journal-text',
+            color: 'text-blue-400'
         });
     }
 

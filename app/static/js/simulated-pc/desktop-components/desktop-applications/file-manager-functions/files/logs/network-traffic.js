@@ -7,7 +7,9 @@ export class NetworkTrafficLogFile extends BaseIndividualFile {
             directoryPath: '/home/trainee/Logs',
             size: '1.2 MB',
             modified: '2024-12-20 09:45',
-            suspicious: false
+            suspicious: false,
+            icon: 'bi-journal-text',
+            color: 'text-green-400'
         });
     }
 

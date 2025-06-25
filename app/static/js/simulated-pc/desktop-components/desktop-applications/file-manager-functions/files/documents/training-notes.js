@@ -7,7 +7,9 @@ export class TrainingNotesFile extends BaseIndividualFile {
             directoryPath: '/home/trainee/Documents',
             size: '2.1 MB',
             modified: '2024-12-19 16:30',
-            suspicious: false
+            suspicious: false,
+            icon: 'bi-file-pdf',
+            color: 'text-red-400'
         });
     }
 

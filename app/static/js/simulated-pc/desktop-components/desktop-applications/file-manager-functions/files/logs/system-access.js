@@ -7,7 +7,9 @@ export class SystemAccessLogFile extends BaseIndividualFile {
             directoryPath: '/home/trainee/Logs',
             size: '128 KB',
             modified: '2024-12-20 14:30',
-            suspicious: false
+            suspicious: false,
+            icon: 'bi-journal-text',
+            color: 'text-yellow-400'
         });
     }
 

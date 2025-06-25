@@ -7,7 +7,9 @@ export class FirewallBlocksLogFile extends BaseIndividualFile {
             directoryPath: '/home/trainee/Logs',
             size: '256 KB',
             modified: '2024-12-20 12:45',
-            suspicious: false
+            suspicious: false,
+            icon: 'bi-journal-text',
+            color: 'text-orange-400'
         });
     }
 

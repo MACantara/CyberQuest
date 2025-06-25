@@ -7,7 +7,9 @@ export class SecurityReportFile extends BaseIndividualFile {
             directoryPath: '/home/trainee/Documents',
             size: '3.2 KB',
             modified: '2024-12-20 11:45',
-            suspicious: false
+            suspicious: false,
+            icon: 'bi-file-text',
+            color: 'text-yellow-400'
         });
     }
 

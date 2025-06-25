@@ -7,7 +7,9 @@ export class AuthFailuresLogFile extends BaseIndividualFile {
             directoryPath: '/home/trainee/Logs',
             size: '67 KB',
             modified: '2024-12-20 11:15',
-            suspicious: true
+            suspicious: true,
+            icon: 'bi-journal-text',
+            color: 'text-red-400'
         });
     }
 

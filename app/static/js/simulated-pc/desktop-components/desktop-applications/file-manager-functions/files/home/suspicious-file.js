@@ -7,7 +7,9 @@ export class SuspiciousFile extends BaseIndividualFile {
             directoryPath: '/home/trainee',
             size: '1.3 KB',
             modified: '2024-12-20 10:31',
-            suspicious: true
+            suspicious: true,
+            icon: 'bi-file-text',
+            color: 'text-red-400'
         });
     }
 

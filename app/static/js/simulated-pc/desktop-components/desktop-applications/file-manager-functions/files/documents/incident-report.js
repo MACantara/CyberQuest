@@ -7,7 +7,9 @@ export class IncidentReportFile extends BaseIndividualFile {
             directoryPath: '/home/trainee/Documents',
             size: '15.7 KB',
             modified: '2024-12-20 08:45',
-            suspicious: false
+            suspicious: false,
+            icon: 'bi-journal-text',
+            color: 'text-yellow-400'
         });
     }
 

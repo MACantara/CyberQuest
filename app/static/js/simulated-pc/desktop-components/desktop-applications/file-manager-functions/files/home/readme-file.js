@@ -7,7 +7,9 @@ export class ReadmeFile extends BaseIndividualFile {
             directoryPath: '/home/trainee',
             size: '256 B',
             modified: '2024-12-20 09:15',
-            suspicious: false
+            suspicious: false,
+            icon: 'bi-file-text',
+            color: 'text-gray-400'
         });
     }
 
