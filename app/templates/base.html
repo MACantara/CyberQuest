@@ -5,6 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CyberQuest - {% block title %}Home{% endblock %}</title>
     
+    <!-- Cache Control Headers for Authenticated Pages -->
+    {% if current_user.is_authenticated %}
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="robots" content="noindex, nofollow">
+    {% endif %}
+    
+    <!-- Authentication State Indicator -->
+    {% if current_user.is_authenticated %}
+    <meta name="auth-state" content="authenticated" data-requires-auth="true">
+    {% else %}
+    <meta name="auth-state" content="anonymous">
+    {% endif %}
+    
     <!-- Critical theme initialization to prevent FOUC -->
     <script src="{{ url_for('static', filename='js/utils/theme/theme-initializator.js') }}"></script>
     
@@ -58,6 +73,33 @@
     <!-- Main JavaScript as ES6 module -->
     <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script type="module" src="{{ url_for('static', filename='js/components/toast.js') }}"></script>
+    
+    <!-- Auth State Validator - Load on all pages -->
+    <script type="module" src="{{ url_for('static', filename='js/utils/auth-state-validator.js') }}"></script>
+    
+    <!-- Page-specific authentication validation -->
+    {% if current_user.is_authenticated %}
+    <script>
+        // Additional auth validation for authenticated pages
+        window.addEventListener('pageshow', function(event) {
+            // Handle back/forward cache
+            if (event.persisted) {
+                console.log('Page loaded from cache, validating auth state');
+                if (window.authStateValidator) {
+                    window.authStateValidator.validateAuthOnLoad();
+                }
+            }
+        });
+        
+        // Prevent caching of this page
+        window.addEventListener('beforeunload', function() {
+            // Force page refresh on next visit
+            if (window.performance && window.performance.navigation.type === 2) {
+                window.location.reload();
+            }
+        });
+    </script>
+    {% endif %}
 
     {% block extra_js %}{% endblock %}
 </body>
