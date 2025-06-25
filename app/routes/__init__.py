@@ -9,6 +9,7 @@ from .profile import profile_bp
 from .admin import admin_bp
 from .logs import logs_bp
 from .levels import levels_bp
+from .api import api_bp
 
 def register_blueprints(app):
     """Register all blueprints with the Flask app."""
@@ -22,3 +23,4 @@ def register_blueprints(app):
     app.register_blueprint(admin_bp)
     app.register_blueprint(logs_bp)
     app.register_blueprint(levels_bp)
+    app.register_blueprint(api_bp)
