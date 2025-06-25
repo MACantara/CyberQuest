@@ -1,4 +1,4 @@
-import { BaseFile } from '../../directories/base-file-content.js';
+import { BaseFile } from '../base-file.js';
 
 class HomeFileContentClass extends BaseFile {
     constructor() {
