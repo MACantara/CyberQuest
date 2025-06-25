@@ -1,4 +1,4 @@
-export class BaseFileContent {
+export class BaseFile {
     constructor(config) {
         this.directoryPath = config.directoryPath;
         this.directoryName = config.directoryName;
