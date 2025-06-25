@@ -11,7 +11,9 @@ export class SystemLogsApp extends WindowBase {
         
         this.logManager = null;
         this.logFilter = null;
-        this.currentFilter = 'all';
+        this.currentLevelFilter = 'all';
+        this.currentSourceFilter = 'all';
+        this.currentCategoryFilter = 'all';
         this.autoRefresh = false;
         this.refreshInterval = null;
     }
@@ -22,13 +24,31 @@ export class SystemLogsApp extends WindowBase {
                 <!-- Toolbar -->
                 <div class="bg-gray-700 p-2 border-b border-gray-600 flex items-center justify-between flex-shrink-0">
                     <div class="flex items-center space-x-2">
-                        <select class="px-2 py-1 bg-black border border-gray-600 rounded text-white text-xs cursor-pointer" id="log-filter">
-                            <option value="all">All Logs</option>
-                            <option value="security">Security</option>
+                        <select class="px-2 py-1 bg-black border border-gray-600 rounded text-white text-xs cursor-pointer" id="level-filter">
+                            <option value="all">All Levels</option>
+                            <option value="critical">Critical</option>
+                            <option value="error">Error</option>
+                            <option value="warn">Warning</option>
+                            <option value="info">Info</option>
+                            <option value="debug">Debug</option>
+                        </select>
+                        <select class="px-2 py-1 bg-black border border-gray-600 rounded text-white text-xs cursor-pointer" id="source-filter">
+                            <option value="all">All Sources</option>
                             <option value="system">System</option>
+                            <option value="security">Security</option>
                             <option value="network">Network</option>
-                            <option value="auth">Authentication</option>
-                            <option value="error">Errors Only</option>
+                        </select>
+                        <select class="px-2 py-1 bg-black border border-gray-600 rounded text-white text-xs cursor-pointer" id="category-filter">
+                            <option value="all">All Categories</option>
+                            <option value="startup">Startup</option>
+                            <option value="service">Service</option>
+                            <option value="authentication">Authentication</option>
+                            <option value="connection">Connection</option>
+                            <option value="malware">Malware</option>
+                            <option value="traffic">Traffic</option>
+                            <option value="update">Update</option>
+                            <option value="disk">Disk</option>
+                            <option value="scan">Scan</option>
                         </select>
                         <button class="px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 transition-colors duration-200 cursor-pointer" id="refresh-btn">
                             <i class="bi bi-arrow-clockwise mr-1"></i>Refresh
@@ -81,6 +101,7 @@ export class SystemLogsApp extends WindowBase {
     }
 
     generateInitialLogs() {
+        // Sort logs from oldest to newest (reverse chronological order)
         const logs = [
             { timestamp: '2024-12-20 14:30:15', level: 'INFO', source: 'system', category: 'startup', message: 'System boot completed successfully', details: 'Boot time: 45.2s' },
             { timestamp: '2024-12-20 14:30:20', level: 'WARN', source: 'security', category: 'authentication', message: 'Multiple failed login attempts detected', details: 'User: admin, IP: 192.168.1.100' },
@@ -152,12 +173,30 @@ export class SystemLogsApp extends WindowBase {
         const windowElement = this.windowElement;
         if (!windowElement) return;
 
-        // Filter dropdown
-        const filterSelect = windowElement.querySelector('#log-filter');
-        if (filterSelect) {
-            filterSelect.addEventListener('change', (e) => {
-                this.currentFilter = e.target.value;
-                this.applyFilter();
+        // Level filter dropdown
+        const levelSelect = windowElement.querySelector('#level-filter');
+        if (levelSelect) {
+            levelSelect.addEventListener('change', (e) => {
+                this.currentLevelFilter = e.target.value;
+                this.applyFilters();
+            });
+        }
+
+        // Source filter dropdown
+        const sourceSelect = windowElement.querySelector('#source-filter');
+        if (sourceSelect) {
+            sourceSelect.addEventListener('change', (e) => {
+                this.currentSourceFilter = e.target.value;
+                this.applyFilters();
+            });
+        }
+
+        // Category filter dropdown
+        const categorySelect = windowElement.querySelector('#category-filter');
+        if (categorySelect) {
+            categorySelect.addEventListener('change', (e) => {
+                this.currentCategoryFilter = e.target.value;
+                this.applyFilters();
             });
         }
 
@@ -189,7 +228,7 @@ export class SystemLogsApp extends WindowBase {
         }
     }
 
-    applyFilter() {
+    applyFilters() {
         const entries = this.windowElement?.querySelectorAll('.log-entry');
         if (!entries) return;
 
@@ -200,26 +239,19 @@ export class SystemLogsApp extends WindowBase {
             
             let shouldShow = true;
             
-            switch (this.currentFilter) {
-                case 'security':
-                    shouldShow = source === 'security' || category === 'authentication' || category === 'malware';
-                    break;
-                case 'system':
-                    shouldShow = source === 'system';
-                    break;
-                case 'network':
-                    shouldShow = source === 'network';
-                    break;
-                case 'auth':
-                    shouldShow = category === 'authentication';
-                    break;
-                case 'error':
-                    shouldShow = level === 'error' || level === 'critical';
-                    break;
-                case 'all':
-                default:
-                    shouldShow = true;
-                    break;
+            // Level filter
+            if (this.currentLevelFilter !== 'all' && level !== this.currentLevelFilter) {
+                shouldShow = false;
+            }
+            
+            // Source filter
+            if (this.currentSourceFilter !== 'all' && source !== this.currentSourceFilter) {
+                shouldShow = false;
+            }
+            
+            // Category filter
+            if (this.currentCategoryFilter !== 'all' && category !== this.currentCategoryFilter) {
+                shouldShow = false;
             }
             
             entry.style.display = shouldShow ? 'grid' : 'none';
@@ -359,10 +391,14 @@ export class SystemLogsApp extends WindowBase {
         if (!logsContainer) return;
 
         const logElement = this.createLogElement(logData);
-        logsContainer.insertAdjacentHTML('afterbegin', logElement);
+        // Add new logs at the bottom (most recent)
+        logsContainer.insertAdjacentHTML('beforeend', logElement);
         
-        // Apply current filter
-        this.applyFilter();
+        // Apply current filters
+        this.applyFilters();
+        
+        // Auto-scroll to bottom to show newest log
+        logsContainer.scrollTop = logsContainer.scrollHeight;
     }
 
     cleanup() {
