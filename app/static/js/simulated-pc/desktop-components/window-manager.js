@@ -207,18 +207,31 @@ export class WindowManager {
     makeDraggable(window) {
         const header = window.querySelector('.window-header');
         let isDragging = false;
+        let dragStarted = false;
         let startX, startY, startLeft, startTop;
+        let windowApp = null;
+
+        // Get the window app instance if it exists
+        this.applications.forEach((app, id) => {
+            if (app.windowElement === window) {
+                windowApp = app;
+            }
+        });
 
         header.addEventListener('mousedown', (e) => {
             if (e.target.closest('.window-controls')) return;
             
             isDragging = true;
+            dragStarted = false;
             startX = e.clientX;
             startY = e.clientY;
             startLeft = window.offsetLeft;
             startTop = window.offsetTop;
             
             header.style.cursor = 'grabbing';
+            
+            // Bring window to front
+            window.style.zIndex = ++this.zIndex;
         });
 
         document.addEventListener('mousemove', (e) => {
@@ -227,13 +240,48 @@ export class WindowManager {
             const deltaX = e.clientX - startX;
             const deltaY = e.clientY - startY;
             
-            window.style.left = `${startLeft + deltaX}px`;
-            window.style.top = `${startTop + deltaY}px`;
+            // Check if this is the start of dragging and window is maximized
+            if (!dragStarted && windowApp && windowApp.getMaximizedState()) {
+                // Handle drag start on maximized window
+                const newPosition = windowApp.handleDragStartOnMaximized(e.clientX, e.clientY);
+                if (newPosition) {
+                    startLeft = newPosition.left;
+                    startTop = newPosition.top;
+                    // Reset the start position to current mouse position for smooth dragging
+                    startX = e.clientX;
+                    startY = e.clientY;
+                }
+                dragStarted = true;
+                return; // Don't apply normal drag movement on first frame
+            }
+            
+            dragStarted = true;
+            
+            const newLeft = startLeft + deltaX;
+            const newTop = startTop + deltaY;
+            
+            // Ensure window doesn't go off-screen
+            const maxLeft = Math.max(0, window.parentElement.offsetWidth - window.offsetWidth);
+            const maxTop = Math.max(0, window.parentElement.offsetHeight - window.offsetHeight);
+            
+            window.style.left = `${Math.max(0, Math.min(maxLeft, newLeft))}px`;
+            window.style.top = `${Math.max(0, Math.min(maxTop, newTop))}px`;
         });
 
-        document.addEventListener('mouseup', () => {
-            isDragging = false;
-            header.style.cursor = 'grab';
+        document.addEventListener('mouseup', (e) => {
+            if (isDragging) {
+                isDragging = false;
+                dragStarted = false;
+                header.style.cursor = 'grab';
+                
+                // Double-click detection for maximize/restore
+                if (Math.abs(e.clientX - startX) < 5 && Math.abs(e.clientY - startY) < 5) {
+                    // This was a click, not a drag - check for double-click
+                    if (windowApp && e.detail === 2) { // Double-click
+                        windowApp.maximize();
+                    }
+                }
+            }
         });
     }
 
@@ -370,7 +418,12 @@ export class WindowManager {
 
     maximizeWindow(id) {
         const window = this.windows.get(id);
-        if (window) {
+        const app = this.applications.get(id);
+        
+        if (app && typeof app.maximize === 'function') {
+            app.maximize();
+        } else if (window) {
+            // Legacy maximize for non-app windows
             if (window.dataset.maximized === 'true') {
                 // Restore
                 window.style.width = window.dataset.originalWidth;

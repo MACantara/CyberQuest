@@ -275,6 +275,14 @@ export class WindowBase {
         this.windowElement.style.left = `${Math.random() * 20 + 10}%`;
         this.windowElement.style.top = `${Math.random() * 20 + 10}%`;
 
+        // Store original dimensions for restore functionality
+        this.originalDimensions = {
+            width: this.options.width,
+            height: this.options.height,
+            left: this.windowElement.style.left,
+            top: this.windowElement.style.top
+        };
+
         this.windowElement.innerHTML = `
             <div class="window-header bg-gradient-to-r from-gray-700 to-gray-600 px-3 py-2 flex justify-between items-center border-b border-gray-600 cursor-grab select-none">
                 <div class="window-title text-white text-sm font-semibold flex items-center space-x-2">
@@ -308,6 +316,93 @@ export class WindowBase {
         `;
 
         return this.windowElement;
+    }
+
+    // Store current dimensions as original (for maximize/restore)
+    storeOriginalDimensions() {
+        if (this.windowElement && !this.isMaximized) {
+            this.originalDimensions = {
+                width: this.windowElement.style.width,
+                height: this.windowElement.style.height,
+                left: this.windowElement.style.left,
+                top: this.windowElement.style.top
+            };
+        }
+    }
+
+    // Restore window to original dimensions
+    restoreOriginalDimensions() {
+        if (this.windowElement && this.originalDimensions) {
+            this.windowElement.style.width = this.originalDimensions.width;
+            this.windowElement.style.height = this.originalDimensions.height;
+            this.windowElement.style.left = this.originalDimensions.left;
+            this.windowElement.style.top = this.originalDimensions.top;
+            this.isMaximized = false;
+        }
+    }
+
+    // Maximize window
+    maximize() {
+        if (this.windowElement) {
+            if (this.isMaximized) {
+                // Restore from maximized
+                this.restoreOriginalDimensions();
+            } else {
+                // Store current dimensions before maximizing
+                this.storeOriginalDimensions();
+                
+                // Maximize
+                this.windowElement.style.width = '100%';
+                this.windowElement.style.height = 'calc(100% - 50px)';
+                this.windowElement.style.left = '0';
+                this.windowElement.style.top = '0';
+                this.isMaximized = true;
+            }
+        }
+    }
+
+    // Check if window is maximized
+    getMaximizedState() {
+        return this.isMaximized;
+    }
+
+    // Method to handle drag start on maximized window
+    handleDragStartOnMaximized(mouseX, mouseY) {
+        if (this.isMaximized && this.originalDimensions) {
+            // Calculate the relative position where the mouse should be after restore
+            const windowWidth = parseInt(this.originalDimensions.width);
+            
+            // Convert percentage width to pixels if needed
+            let actualWidth = windowWidth;
+            if (this.originalDimensions.width.includes('%')) {
+                const percentage = parseFloat(this.originalDimensions.width) / 100;
+                actualWidth = window.innerWidth * percentage;
+            }
+            
+            // Restore window size first
+            this.restoreOriginalDimensions();
+            
+            // Position the window so the mouse cursor is in the center of the title bar
+            // This feels more natural than trying to maintain relative position
+            const newLeft = mouseX - (actualWidth / 2);
+            const newTop = mouseY - 20; // Offset for header height
+            
+            // Ensure window doesn't go off-screen
+            const maxLeft = window.innerWidth - actualWidth;
+            const maxTop = window.innerHeight - parseInt(this.originalDimensions.height);
+            
+            const finalLeft = Math.max(0, Math.min(maxLeft, newLeft));
+            const finalTop = Math.max(0, Math.min(maxTop, newTop));
+            
+            this.windowElement.style.left = `${finalLeft}px`;
+            this.windowElement.style.top = `${finalTop}px`;
+            
+            return {
+                left: finalLeft,
+                top: finalTop
+            };
+        }
+        return null;
     }
 
     // Initialize the window after creation
