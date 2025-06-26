@@ -371,21 +371,35 @@ export class WindowBase {
         if (this.isMaximized && this.originalDimensions) {
             // Calculate the relative position where the mouse should be after restore
             const windowWidth = parseInt(this.originalDimensions.width);
-            const mouseRatio = mouseX / window.innerWidth;
+            
+            // Convert percentage width to pixels if needed
+            let actualWidth = windowWidth;
+            if (this.originalDimensions.width.includes('%')) {
+                const percentage = parseFloat(this.originalDimensions.width) / 100;
+                actualWidth = window.innerWidth * percentage;
+            }
             
             // Restore window size first
             this.restoreOriginalDimensions();
             
-            // Position the window so the mouse stays relative to where it was
-            const newLeft = mouseX - (windowWidth * mouseRatio);
+            // Position the window so the mouse cursor is in the center of the title bar
+            // This feels more natural than trying to maintain relative position
+            const newLeft = mouseX - (actualWidth / 2);
             const newTop = mouseY - 20; // Offset for header height
             
-            this.windowElement.style.left = `${Math.max(0, newLeft)}px`;
-            this.windowElement.style.top = `${Math.max(0, newTop)}px`;
+            // Ensure window doesn't go off-screen
+            const maxLeft = window.innerWidth - actualWidth;
+            const maxTop = window.innerHeight - parseInt(this.originalDimensions.height);
+            
+            const finalLeft = Math.max(0, Math.min(maxLeft, newLeft));
+            const finalTop = Math.max(0, Math.min(maxTop, newTop));
+            
+            this.windowElement.style.left = `${finalLeft}px`;
+            this.windowElement.style.top = `${finalTop}px`;
             
             return {
-                left: parseInt(this.windowElement.style.left),
-                top: parseInt(this.windowElement.style.top)
+                left: finalLeft,
+                top: finalTop
             };
         }
         return null;

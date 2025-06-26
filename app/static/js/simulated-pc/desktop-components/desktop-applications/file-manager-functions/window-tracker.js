@@ -114,23 +114,35 @@ export class WindowTracker {
         if (metadata && metadata.isMaximized && metadata.originalDimensions && desktop) {
             const window = desktop.windowManager.windows.get(windowId);
             if (window) {
-                // Calculate relative position
+                // Calculate window width in pixels
                 const windowWidth = parseInt(metadata.originalDimensions.width);
-                const mouseRatio = mouseX / window.innerWidth;
+                let actualWidth = windowWidth;
+                
+                if (metadata.originalDimensions.width.includes('%')) {
+                    const percentage = parseFloat(metadata.originalDimensions.width) / 100;
+                    actualWidth = window.innerWidth * percentage;
+                }
                 
                 // Restore window
                 this.restoreWindow(windowId, desktop);
                 
-                // Position window under mouse
-                const newLeft = mouseX - (windowWidth * mouseRatio);
+                // Center window under mouse cursor
+                const newLeft = mouseX - (actualWidth / 2);
                 const newTop = mouseY - 20; // Header height offset
                 
-                window.style.left = `${Math.max(0, newLeft)}px`;
-                window.style.top = `${Math.max(0, newTop)}px`;
+                // Ensure window stays on screen
+                const maxLeft = window.innerWidth - actualWidth;
+                const maxTop = window.innerHeight - parseInt(metadata.originalDimensions.height);
+                
+                const finalLeft = Math.max(0, Math.min(maxLeft, newLeft));
+                const finalTop = Math.max(0, Math.min(maxTop, newTop));
+                
+                window.style.left = `${finalLeft}px`;
+                window.style.top = `${finalTop}px`;
                 
                 return {
-                    left: parseInt(window.style.left),
-                    top: parseInt(window.style.top)
+                    left: finalLeft,
+                    top: finalTop
                 };
             }
         }

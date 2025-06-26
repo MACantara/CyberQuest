@@ -247,11 +247,12 @@ export class WindowManager {
                 if (newPosition) {
                     startLeft = newPosition.left;
                     startTop = newPosition.top;
+                    // Reset the start position to current mouse position for smooth dragging
                     startX = e.clientX;
                     startY = e.clientY;
                 }
                 dragStarted = true;
-                return;
+                return; // Don't apply normal drag movement on first frame
             }
             
             dragStarted = true;
@@ -260,8 +261,8 @@ export class WindowManager {
             const newTop = startTop + deltaY;
             
             // Ensure window doesn't go off-screen
-            const maxLeft = window.parentElement.offsetWidth - window.offsetWidth;
-            const maxTop = window.parentElement.offsetHeight - window.offsetHeight;
+            const maxLeft = Math.max(0, window.parentElement.offsetWidth - window.offsetWidth);
+            const maxTop = Math.max(0, window.parentElement.offsetHeight - window.offsetHeight);
             
             window.style.left = `${Math.max(0, Math.min(maxLeft, newLeft))}px`;
             window.style.top = `${Math.max(0, Math.min(maxTop, newTop))}px`;
