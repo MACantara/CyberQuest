@@ -95,8 +95,9 @@ def contact_page():
         subject = request.form.get('subject', '').strip()
         message = request.form.get('message', '').strip()
         
-        # Verify hCaptcha
-        if not verify_hcaptcha():
+        # Verify hCaptcha only if enabled
+        from app.utils.hcaptcha_utils import is_hcaptcha_enabled
+        if is_hcaptcha_enabled() and not verify_hcaptcha():
             flash('Please complete the captcha verification.', 'error')
             return render_template('contact.html')
         

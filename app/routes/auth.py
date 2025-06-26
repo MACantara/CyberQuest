@@ -62,8 +62,9 @@ def login():
             flash('Please provide both username/email and password.', 'error')
             return render_template('auth/login.html')
         
-        # Verify hCaptcha
-        if not verify_hcaptcha():
+        # Verify hCaptcha only if enabled
+        from app.utils.hcaptcha_utils import is_hcaptcha_enabled
+        if is_hcaptcha_enabled() and not verify_hcaptcha():
             flash('Please complete the captcha verification.', 'error')
             return render_template('auth/login.html')
         
@@ -140,8 +141,9 @@ def signup():
             flash('User registration is not available in this deployment environment.', 'warning')
             return render_template('auth/signup.html')
         
-        # Verify hCaptcha
-        if not verify_hcaptcha():
+        # Verify hCaptcha only if enabled
+        from app.utils.hcaptcha_utils import is_hcaptcha_enabled
+        if is_hcaptcha_enabled() and not verify_hcaptcha():
             flash('Please complete the captcha verification.', 'error')
             return render_template('auth/signup.html')
         

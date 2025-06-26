@@ -299,8 +299,9 @@ def forgot_password():
             flash('Please provide your email address.', 'error')
             return render_template('password/forgot-password.html')
         
-        # Verify hCaptcha
-        if not verify_hcaptcha():
+        # Verify hCaptcha only if enabled
+        from app.utils.hcaptcha_utils import is_hcaptcha_enabled
+        if is_hcaptcha_enabled() and not verify_hcaptcha():
             flash('Please complete the captcha verification.', 'error')
             return render_template('password/forgot-password.html')
         
@@ -347,8 +348,9 @@ def reset_password(token):
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
         
-        # Verify hCaptcha
-        if not verify_hcaptcha():
+        # Verify hCaptcha only if enabled
+        from app.utils.hcaptcha_utils import is_hcaptcha_enabled
+        if is_hcaptcha_enabled() and not verify_hcaptcha():
             flash('Please complete the captcha verification.', 'error')
             return render_template('password/reset-password.html', token=token)
         
