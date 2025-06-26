@@ -33,13 +33,6 @@ export class BrowserTutorial extends BaseTutorial {
                 position: 'bottom'
             },
             {
-                target: '#timer-display',
-                title: 'Fake Urgency Tactics',
-                content: 'Scammers use countdown timers to create false urgency and pressure you into making quick decisions without thinking. Real legitimate offers don\'t use these pressure tactics.',
-                action: 'highlight',
-                position: 'top'
-            },
-            {
                 target: '#scam-button',
                 title: 'Dangerous Action Buttons',
                 content: 'Scam sites use flashy, pulsing buttons with urgent language like "CLAIM NOW" to pressure you into clicking quickly without thinking. Never click suspicious "free money" buttons!',
@@ -51,20 +44,6 @@ export class BrowserTutorial extends BaseTutorial {
                 title: 'False Reassurances',
                 content: 'Phrases like "No catch, totally legitimate" are actually red flags! Real legitimate sites don\'t need to convince you they\'re legitimate with desperate language.',
                 action: 'highlight',
-                position: 'top'
-            },
-            {
-                target: '#fake-testimonial-1',
-                title: 'Fake Testimonials',
-                content: 'These testimonials are completely fabricated! Scam sites often use fake customer reviews with generic names and photos to appear trustworthy.',
-                action: 'highlight',
-                position: 'right'
-            },
-            {
-                target: '#urgency-message',
-                title: 'Pressure Tactics',
-                content: 'Messages like "Act fast - offer expires soon!" are designed to prevent you from thinking critically. Legitimate businesses give you time to make informed decisions.',
-                action: 'pulse',
                 position: 'top'
             },
             {
