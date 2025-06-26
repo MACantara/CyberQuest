@@ -113,50 +113,10 @@ export class BrowserTutorial extends BaseTutorial {
 
     // Enhanced completion with browser-specific actions
     complete() {
-        // Show completion modal with security tips
-        this.showCompletionModal();
-        
         super.complete();
         
         // Store completion in localStorage
         localStorage.setItem('cyberquest_browser_tutorial_completed', 'true');
-    }
-
-    showCompletionModal() {
-        const overlay = document.createElement('div');
-        overlay.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50';
-        overlay.innerHTML = `
-            <div class="bg-gray-800 rounded-xl p-8 max-w-md mx-4 border border-green-500">
-                <div class="text-center">
-                    <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="bi bi-shield-check text-white text-2xl"></i>
-                    </div>
-                    <h3 class="text-white text-xl font-bold mb-4">Browser Security Training Complete!</h3>
-                    <div class="bg-gray-700 rounded-lg p-4 mb-6 text-left">
-                        <h4 class="text-green-400 font-semibold mb-2">Key Security Tips Learned:</h4>
-                        <ul class="text-gray-300 text-sm space-y-1">
-                            <li>• Always verify website URLs before trusting</li>
-                            <li>• Be suspicious of "too good to be true" offers</li>
-                            <li>• Recognize fake urgency and pressure tactics</li>
-                            <li>• Don't trust fake testimonials and reviews</li>
-                            <li>• Never click suspicious "free money" buttons</li>
-                        </ul>
-                    </div>
-                    <button onclick="this.closest('.fixed').remove()" 
-                            class="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors cursor-pointer font-semibold">
-                        Continue Training
-                    </button>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(overlay);
-        
-        // Auto-remove after 8 seconds
-        setTimeout(() => {
-            if (overlay.parentNode) {
-                overlay.remove();
-            }
-        }, 8000);
     }
 
     // Static methods
