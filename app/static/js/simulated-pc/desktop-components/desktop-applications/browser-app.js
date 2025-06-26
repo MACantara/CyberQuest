@@ -73,12 +73,12 @@ export class BrowserApp extends WindowBase {
                             <span>Tech News</span>
                         </button>
                         <button class="bookmark-item px-2 py-1 bg-gray-700 hover:bg-red-400 text-white rounded border border-gray-500 transition-colors duration-200 cursor-pointer flex items-center space-x-1 whitespace-nowrap" 
-                                data-url="https://suspicious-site.com" title="Suspicious Site (Training)">
+                                data-url="https://suspicious-site.com" title="Suspicious Site (Training)" id="suspicious-bookmark">
                             <i class="bi bi-exclamation-triangle text-red-400 text-xs"></i>
                             <span>Suspicious Site</span>
                         </button>
                         <button class="bookmark-item px-2 py-1 bg-gray-700 hover:bg-red-500 text-white rounded border border-gray-500 transition-colors duration-200 cursor-pointer flex items-center space-x-1 whitespace-nowrap" 
-                                data-url="https://secure-verify-support.com" title="Secure Verify Support">
+                                data-url="https://secure-verify-support.com" title="Secure Verify Support" id="phishing-bookmark">
                             <i class="bi bi-shield-x text-red-500 text-xs"></i>
                             <span>Secure Verify Support</span>
                         </button>

@@ -131,8 +131,13 @@ export class FileManagerApp extends WindowBase {
         const suspiciousClass = item.suspicious ? 'border border-red-500 bg-red-900 bg-opacity-20' : '';
         const animationClass = item.suspicious ? 'animate-pulse' : '';
         
+        // Generate unique ID based on item name for tutorial targeting
+        const itemId = item.name.toLowerCase().replace(/[^a-zA-Z0-9]/g, '-') + 
+                      (item.type === 'directory' ? '-folder' : '-file');
+        
         return `
             <div class="flex flex-col items-center p-3 rounded hover:bg-gray-700 cursor-pointer transition-colors duration-200 max-w-24 ${suspiciousClass}" 
+                 id="${itemId}"
                  data-name="${item.name}" 
                  data-type="${item.type}"
                  title="${item.name}${item.size ? ' (' + item.size + ')' : ''}">

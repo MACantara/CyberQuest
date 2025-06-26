@@ -12,51 +12,44 @@ export class TerminalTutorial extends BaseTutorial {
                 position: 'bottom'
             },
             {
-                target: '#whoami-command',
-                title: 'User Identity Command',
-                content: 'The "whoami" command shows your current user identity. This is useful for verifying who you are logged in as during security investigations.',
+                target: '#terminal-output',
+                title: 'Terminal Output Area',
+                content: 'This area displays the results of your commands and system messages. Notice the welcome message and help instructions already shown.',
                 action: 'highlight',
                 position: 'right'
             },
             {
-                target: '#whoami-result',
-                title: 'Current User',
-                content: 'You are currently logged in as "trainee" - a limited-privilege user account designed for safe cybersecurity training.',
+                target: '#input-prompt',
+                title: 'Command Prompt',
+                content: 'The prompt shows your current user (trainee) and system (cyberquest). This indicates you\'re logged in as a limited-privilege training account.',
                 action: 'highlight',
-                position: 'right'
-            },
-            {
-                target: '#ls-command',
-                title: 'File Listing Command',
-                content: 'The "ls -la" command lists all files and directories with detailed permissions. The "-la" flags show hidden files and detailed information.',
-                action: 'pulse',
-                position: 'right'
-            },
-            {
-                target: '#documents-dir',
-                title: 'Normal Directory',
-                content: 'This shows a normal directory with standard permissions (drwxr-xr-x). The "d" indicates it\'s a directory, followed by read/write/execute permissions.',
-                action: 'highlight',
-                position: 'right'
-            },
-            {
-                target: '#suspicious-file-entry',
-                title: '⚠️ Suspicious File Found',
-                content: 'ALERT! This file appears suspicious - notice the red highlighting and unusual file size (1337 bytes). Always investigate unexpected files!',
-                action: 'pulse',
                 position: 'right'
             },
             {
                 target: '#command-input',
-                title: 'Command Input',
-                content: 'Type commands here to interact with the system. Try commands like "cat suspicious_file.txt" to examine suspicious files safely.',
+                title: 'Command Input Field',
+                content: 'Type commands here to interact with the system. Try typing "help" to see available commands, or "ls" to list files and directories.',
                 action: 'pulse',
                 position: 'top'
             },
             {
+                target: '#terminal-input-area',
+                title: 'Interactive Command Line',
+                content: 'This is where you enter commands. Use arrow keys to navigate command history, Tab for auto-completion, and Enter to execute commands.',
+                action: 'highlight',
+                position: 'top'
+            },
+            {
                 target: '#terminal-output',
-                title: 'Terminal Security Complete',
-                content: 'You\'ve learned terminal basics! Use commands like ls, cat, grep, and ps to investigate security incidents and monitor system activity.',
+                title: 'Security Command Practice',
+                content: 'Try security-related commands like "whoami" to check your identity, "ls -la" to see file permissions, or "ps" to view running processes.',
+                action: 'highlight',
+                position: 'left'
+            },
+            {
+                target: '#terminal-container',
+                title: 'Terminal Security Training Complete!',
+                content: 'Excellent! You\'ve learned terminal basics. Use commands like ls, cat, grep, ps, and whoami to investigate security incidents and monitor system activity. The terminal is essential for cybersecurity work.',
                 action: 'highlight',
                 position: 'left',
                 final: true
@@ -75,6 +68,42 @@ export class TerminalTutorial extends BaseTutorial {
             this.createOverlay();
             this.showStep();
         }, 1000);
+    }
+
+    // Override to add terminal-specific tutorial behaviors
+    showStep() {
+        if (this.currentStep >= this.steps.length) {
+            this.complete();
+            return;
+        }
+
+        const step = this.steps[this.currentStep];
+        
+        // Special handling for command input step - ensure input is focused
+        if (step.target === '#command-input') {
+            const input = document.querySelector('#command-input');
+            if (input) {
+                // Give the input focus after a brief delay
+                setTimeout(() => {
+                    input.focus();
+                }, 300);
+            }
+        }
+
+        // Special handling for terminal output - ensure it has some content
+        if (step.target === '#terminal-output') {
+            const output = document.querySelector('#terminal-output');
+            if (output && output.children.length < 3) {
+                // If terminal output is empty, add some example content
+                const terminalApp = window.currentSimulation?.desktop?.windowManager?.applications?.get('terminal');
+                if (terminalApp) {
+                    terminalApp.addOutput('Type "help" to see available commands', 'text-gray-400');
+                    terminalApp.addOutput('Use "ls" to list files, "whoami" to check user identity', 'text-gray-400');
+                }
+            }
+        }
+
+        super.showStep();
     }
 
     // Override base class methods
