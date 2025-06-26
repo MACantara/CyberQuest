@@ -7,7 +7,7 @@ import { LogsDirectory } from './logs-directory.js';
 
 import { HomeFileContents } from '../files/home/home-files.js';
 import { DocumentsFileContents } from '../files/documents/documents-files.js';
-import { DownloadsFileContents } from '../files/downloads/downloads-files.js';
+import { DownloadsFileContents } from '../files/downloads-files/downloads-files.js';
 import { LogsFileContents } from '../files/logs/logs-files.js';
 
 export class DirectoryRegistry {

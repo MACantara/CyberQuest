@@ -1,8 +1,8 @@
 import { BaseDirectory } from './base-directory.js';
-import { MalwareSampleFile } from '../files/downloads/malware-sample.js';
-import { InstallerDebFile } from '../files/downloads/installer-deb.js';
-import { ProfilePhotoFile } from '../files/downloads/profile-photo.js';
-import { NetworkDiagramFile } from '../files/downloads/network-diagram.js';
+import { MalwareSampleFile } from '../files/downloads-files/malware-sample.js';
+import { InstallerDebFile } from '../files/downloads-files/installer-deb.js';
+import { ProfilePhotoFile } from '../files/downloads-files/profile-photo.js';
+import { NetworkDiagramFile } from '../files/downloads-files/network-diagram.js';
 
 class DownloadsDirectoryClass extends BaseDirectory {
     constructor() {
