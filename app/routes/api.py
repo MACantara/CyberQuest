@@ -68,3 +68,21 @@ def auth_expired():
     except Exception as e:
         current_app.logger.error(f"Auth expired handler error: {e}")
         return jsonify({'authenticated': False, 'error': 'Session expired'}), 401
+
+@api_bp.route('/features/status', methods=['GET'])
+def features_status():
+    """Get current feature flags status."""
+    try:
+        from app.utils.hcaptcha_utils import get_hcaptcha_status
+        
+        features = current_app.config.get('FEATURES', {})
+        
+        return jsonify({
+            'features': features,
+            'hcaptcha': get_hcaptcha_status(),
+            'environment': current_app.config.get('ENV', 'unknown')
+        })
+        
+    except Exception as e:
+        current_app.logger.error(f"Features status error: {e}")
+        return jsonify({'error': 'Unable to get features status'}), 500
