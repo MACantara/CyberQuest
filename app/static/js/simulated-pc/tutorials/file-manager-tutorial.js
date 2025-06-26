@@ -40,14 +40,14 @@ export class FileManagerTutorial extends BaseTutorial {
                 position: 'right'
             },
             {
-                target: '#suspicious-file',
+                target: '#suspicious-file-txt-file',
                 title: '⚠️ Suspicious File Alert',
                 content: 'WARNING! This file has been flagged as suspicious. Notice the red border, red text, and pulsing animation - these are clear indicators to never open suspicious files!',
                 action: 'pulse',
                 position: 'right'
             },
             {
-                target: '#readme-file',
+                target: '#readme-txt-file',
                 title: 'Safe System Files',
                 content: 'Files like readme.txt are typically safe documentation files. Gray icons usually indicate text files. Always verify file sources and be cautious with executables (.exe, .bat, .scr).',
                 action: 'highlight',
