@@ -7,42 +7,56 @@ export class FileManagerTutorial extends BaseTutorial {
             {
                 target: '#file-toolbar',
                 title: 'File Manager Toolbar',
-                content: 'This is the file manager toolbar with navigation buttons and address bar. It helps you navigate through different directories.',
+                content: 'This is the file manager toolbar with navigation buttons and address bar. It helps you navigate through different directories and provides quick access to common actions.',
                 action: 'highlight',
                 position: 'bottom'
             },
             {
                 target: '#address-bar',
                 title: 'Address Bar',
-                content: 'The address bar shows your current location in the file system. You\'re currently in /home/trainee directory.',
+                content: 'The address bar shows your current location in the file system. You\'re currently in /home/trainee directory, which is the user\'s home folder.',
                 action: 'highlight',
                 position: 'bottom'
             },
             {
+                target: '#file-grid',
+                title: 'File Grid Overview',
+                content: 'This is the main file area where you can see all files and folders. Notice the different icons and colors that help identify file types and security status.',
+                action: 'highlight',
+                position: 'right'
+            },
+            {
                 target: '#documents-folder',
                 title: 'Safe Folders',
-                content: 'Standard folders like Documents and Downloads are generally safe. These contain your regular files and downloaded content.',
+                content: 'Standard folders like Documents and Downloads are generally safe. These contain your regular files and downloaded content. Blue folder icons indicate directories.',
+                action: 'highlight',
+                position: 'right'
+            },
+            {
+                target: '#downloads-folder',
+                title: 'Downloads Folder',
+                content: 'The Downloads folder contains files downloaded from the internet. Always be cautious with files in this folder as they may contain malware or suspicious content.',
                 action: 'highlight',
                 position: 'right'
             },
             {
                 target: '#suspicious-file',
                 title: '⚠️ Suspicious File Alert',
-                content: 'WARNING! This file has been flagged as suspicious. Notice the red border and pulsing effect - never open files that look suspicious!',
+                content: 'WARNING! This file has been flagged as suspicious. Notice the red border, red text, and pulsing animation - these are clear indicators to never open suspicious files!',
                 action: 'pulse',
                 position: 'right'
             },
             {
                 target: '#readme-file',
-                title: 'Safe Files',
-                content: 'Files like readme.txt are typically safe documentation files. Always be cautious with executable files (.exe, .bat, .scr) from unknown sources.',
+                title: 'Safe System Files',
+                content: 'Files like readme.txt are typically safe documentation files. Gray icons usually indicate text files. Always verify file sources and be cautious with executables (.exe, .bat, .scr).',
                 action: 'highlight',
                 position: 'right'
             },
             {
                 target: '#file-grid',
-                title: 'File Security Complete',
-                content: 'You\'ve learned to identify suspicious files! Always check file sources, avoid suspicious executables, and trust your instincts when something looks wrong.',
+                title: 'File Security Training Complete!',
+                content: 'Excellent! You\'ve learned to identify file security indicators: folder types, suspicious file warnings, and safe documentation files. Always trust visual security cues and verify unknown files before opening.',
                 action: 'highlight',
                 position: 'left',
                 final: true
@@ -61,6 +75,36 @@ export class FileManagerTutorial extends BaseTutorial {
             this.createOverlay();
             this.showStep();
         }, 1000);
+    }
+
+    // Override to add file manager specific tutorial behaviors
+    showStep() {
+        if (this.currentStep >= this.steps.length) {
+            this.complete();
+            return;
+        }
+
+        const step = this.steps[this.currentStep];
+        
+        // Special handling for file grid step - ensure we're in the home directory
+        if (step.target === '#file-grid') {
+            // Make sure we're in the home directory view
+            const addressBar = document.querySelector('#address-bar');
+            if (addressBar && !addressBar.textContent.includes('/home/trainee')) {
+                // Navigate back to home if needed
+                const homeBtn = document.querySelector('#home-btn');
+                if (homeBtn) {
+                    homeBtn.click();
+                    // Wait a moment for the view to update
+                    setTimeout(() => {
+                        super.showStep();
+                    }, 300);
+                    return;
+                }
+            }
+        }
+
+        super.showStep();
     }
 
     // Override base class methods
