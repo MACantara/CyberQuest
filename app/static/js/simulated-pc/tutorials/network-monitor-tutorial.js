@@ -19,6 +19,27 @@ export class NetworkMonitorTutorial extends BaseTutorial {
                 position: 'bottom'
             },
             {
+                target: '#filters-btn',
+                title: 'Packet Filtering',
+                content: 'Use filters to focus on specific types of network traffic. This helps identify suspicious activity among normal network communications.',
+                action: 'highlight',
+                position: 'bottom'
+            },
+            {
+                target: '#statistics-btn',
+                title: 'Network Statistics',
+                content: 'View network statistics to analyze traffic patterns and identify potential security threats or network anomalies.',
+                action: 'highlight',
+                position: 'bottom'
+            },
+            {
+                target: '#clear-packets-btn',
+                title: 'Clear Packet History',
+                content: 'Use this button to clear the packet history when you need a fresh start for monitoring new network activity.',
+                action: 'highlight',
+                position: 'bottom'
+            },
+            {
                 target: '#packet-headers',
                 title: 'Packet Information Headers',
                 content: 'These columns show packet details: Time (when sent), Source (sender IP), Destination (receiver IP), Protocol (communication type), and Info (packet contents).',
@@ -26,30 +47,16 @@ export class NetworkMonitorTutorial extends BaseTutorial {
                 position: 'bottom'
             },
             {
-                target: '#normal-packet-1',
-                title: 'Normal Network Traffic',
-                content: 'This is normal DNS traffic - your computer asking Google\'s DNS server (8.8.8.8) to resolve "google.com". This type of traffic is completely normal.',
-                action: 'highlight',
-                position: 'right'
-            },
-            {
-                target: '#malicious-packet',
-                title: '🚨 MALICIOUS TRAFFIC DETECTED',
-                content: 'ALERT! This packet shows suspicious activity - someone is trying to download malware.exe from a malicious site. Notice the red highlighting indicating danger!',
-                action: 'pulse',
-                position: 'right'
-            },
-            {
-                target: '#normal-packet-2',
-                title: 'Normal TCP Traffic',
-                content: 'This is normal TCP acknowledgment traffic between your router (192.168.1.1) and your computer. Green indicates safe, standard network communication.',
+                target: '#packet-data',
+                title: 'Packet Analysis Area',
+                content: 'This area displays captured network packets. Look for suspicious destinations, unusual protocols, or unexpected file transfers that could indicate security threats.',
                 action: 'highlight',
                 position: 'right'
             },
             {
                 target: '#packet-list',
-                title: 'Network Security Complete',
-                content: 'You\'ve learned to identify malicious network traffic! Watch for suspicious destinations, unusual file downloads, and unexpected connections.',
+                title: 'Network Security Complete!',
+                content: 'Excellent! You\'ve learned to use network monitoring tools. Watch for red-highlighted suspicious traffic, unusual destinations, and unexpected protocols to identify security threats.',
                 action: 'highlight',
                 position: 'left',
                 final: true
@@ -68,6 +75,35 @@ export class NetworkMonitorTutorial extends BaseTutorial {
             this.createOverlay();
             this.showStep();
         }, 1000);
+    }
+
+    // Override to add network monitor specific tutorial behaviors
+    showStep() {
+        if (this.currentStep >= this.steps.length) {
+            this.complete();
+            return;
+        }
+
+        const step = this.steps[this.currentStep];
+        
+        // Special handling for live capture step - ensure capture is ready
+        if (step.target === '#live-capture-btn') {
+            // Make sure the network monitor is ready for capture
+            const captureBtn = document.querySelector('#live-capture-btn');
+            if (captureBtn && captureBtn.textContent.includes('Stop')) {
+                // If already capturing, that's fine - continue with tutorial
+            }
+        }
+
+        // Special handling for packet data area - ensure it's visible
+        if (step.target === '#packet-data') {
+            const packetData = document.querySelector('#packet-data');
+            if (packetData && packetData.querySelector('.text-center')) {
+                // If showing initial message, that's expected - continue
+            }
+        }
+
+        super.showStep();
     }
 
     // Override base class methods
