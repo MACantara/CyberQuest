@@ -260,12 +260,9 @@ export class WindowManager {
             const newLeft = startLeft + deltaX;
             const newTop = startTop + deltaY;
             
-            // Ensure window doesn't go off-screen
-            const maxLeft = Math.max(0, window.parentElement.offsetWidth - window.offsetWidth);
-            const maxTop = Math.max(0, window.parentElement.offsetHeight - window.offsetHeight);
-            
-            window.style.left = `${Math.max(0, Math.min(maxLeft, newLeft))}px`;
-            window.style.top = `${Math.max(0, Math.min(maxTop, newTop))}px`;
+            // Allow window to be dragged beyond screen edges
+            window.style.left = `${newLeft}px`;
+            window.style.top = `${newTop}px`;
         });
 
         document.addEventListener('mouseup', (e) => {
@@ -366,7 +363,8 @@ export class WindowManager {
                     break;
             }
 
-            // Apply new dimensions and position
+            // Apply new dimensions and position without any boundary constraints
+            // This allows resizing even when window is partially off-screen
             window.style.width = `${newWidth}px`;
             window.style.height = `${newHeight}px`;
             window.style.left = `${newLeft}px`;
