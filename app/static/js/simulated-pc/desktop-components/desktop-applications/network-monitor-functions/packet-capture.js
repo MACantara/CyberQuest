@@ -29,8 +29,8 @@ export class PacketCapture {
             const isSecure = page.url.startsWith('https://');
             const suspicious = page.securityLevel === 'dangerous';
             
-            // Generate realistic IP addresses based on domain
-            const ip = this.generateIPFromDomain(domain);
+            // Use the IP address from the page configuration
+            const ip = page.ipAddress || this.generateIPFromDomain(domain);
             
             // Build traffic patterns based on page security level
             const patterns = this.buildWebsitePatterns(page, isSecure, suspicious);
@@ -326,29 +326,26 @@ export class PacketCapture {
             // Generate a realistic sequence of packets for this website
             website.patterns.forEach((pattern, index) => {
                 setTimeout(() => {
+                    // Outgoing packet
                     const packet = {
                         id: Date.now() + Math.random(),
                         time: new Date().toTimeString().split(' ')[0],
                         source: '192.168.1.100',
-                        destination: website.domain,
+                        destination: website.ip, // Use the IP from page configuration
                         protocol: pattern.protocol,
                         info: pattern.info,
                         suspicious: website.suspicious
                     };
                     this.packetQueue.push(packet);
                     this.app.addPacketToList(packet);
-                }, index * 200);
-            });
-            
-            // Add response packets after a delay
-            setTimeout(() => {
-                website.patterns.forEach((pattern, index) => {
+                    
+                    // Simulate response if it's an HTTP/HTTPS request
                     if (pattern.protocol === 'HTTP' || pattern.protocol === 'HTTPS') {
                         setTimeout(() => {
                             const responsePacket = {
                                 id: Date.now() + Math.random(),
                                 time: new Date().toTimeString().split(' ')[0],
-                                source: website.domain,
+                                source: website.ip, // Use the IP from page configuration
                                 destination: '192.168.1.100',
                                 protocol: pattern.protocol,
                                 info: pattern.info.replace('GET', 'Response: 200 OK').replace('POST', 'Response: 200 OK'),
@@ -358,8 +355,8 @@ export class PacketCapture {
                             this.app.addPacketToList(responsePacket);
                         }, index * 150);
                     }
-                });
-            }, 1000);
+                }, index * 200);
+            });
         }
     }
 

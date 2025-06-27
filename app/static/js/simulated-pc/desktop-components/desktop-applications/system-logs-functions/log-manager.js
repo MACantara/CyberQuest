@@ -17,20 +17,27 @@ export class LogManager {
         ];
     }
 
-    generateNewLogs() {
+    generateNewLogs(page = null) {
         const count = Math.floor(Math.random() * 3) + 1; // 1-3 new logs
         
         for (let i = 0; i < count; i++) {
             const template = this.logTemplates[Math.floor(Math.random() * this.logTemplates.length)];
-            const logEntry = this.createLogFromTemplate(template);
+            const logEntry = this.createLogFromTemplate(template, page);
             this.app.addLogEntry(logEntry);
         }
     }
 
-    createLogFromTemplate(template) {
+    createLogFromTemplate(template, page = null) {
         // Generate timestamp that's always newer than existing logs
         const now = new Date();
         const timestamp = now.toISOString().slice(0, 19).replace('T', ' ');
+        
+        // If a page is provided, include its IP address in the log context
+        const context = {};
+        if (page && page.ipAddress) {
+            context.ip = page.ipAddress;
+            context.domain = page.url.replace(/^https?:\/\//, '').split('/')[0];
+        }
         
         return {
             timestamp: timestamp,
@@ -38,16 +45,19 @@ export class LogManager {
             source: template.source,
             category: template.category,
             message: template.message,
-            details: this.fillTemplateDetails(template.details)
+            details: this.fillTemplateDetails(template.details, context),
+            context: context
         };
     }
 
-    fillTemplateDetails(template) {
+    fillTemplateDetails(template, context = {}) {
+        // Use provided context or generate random values
         const replacements = {
             '{pid}': Math.floor(Math.random() * 9999) + 1000,
             '{user}': ['admin', 'guest', 'user1', 'backup'][Math.floor(Math.random() * 4)],
-            '{ip}': this.generateRandomIP(),
-            '{target}': this.generateRandomTarget(),
+            '{ip}': context.ip || this.generateRandomIP(),
+            '{domain}': context.domain || this.generateRandomDomain(),
+            '{target}': context.domain ? `https://${context.domain}` : this.generateRandomTarget(),
             '{file}': ['suspicious.exe', 'malware.dat', 'trojan.bin', 'virus.tmp'][Math.floor(Math.random() * 4)],
             '{sig}': ['TR-' + Math.floor(Math.random() * 9999), 'VIR-' + Math.floor(Math.random() * 9999)][Math.floor(Math.random() * 2)],
             '{version}': '2.1.' + Math.floor(Math.random() * 100),
