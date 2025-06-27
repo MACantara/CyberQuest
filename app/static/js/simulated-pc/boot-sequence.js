@@ -9,17 +9,17 @@ export class BootSequence {
             { text: 'Loading kernel modules and core services', type: 'info', delay: 600, hasStatus: true, status: '[  OK  ]' },
             { text: '', type: 'info', delay: 100 },
             { text: 'Starting security services', type: 'success', delay: 300, hasStatus: true, status: '[  OK  ]', bundle: 'security' },
-            { text: '  Loading Network Manager', type: 'success', delay: 150, hasStatus: false, bundle: 'security' },
-            { text: '  Loading Firewall Protection', type: 'success', delay: 150, hasStatus: false, bundle: 'security' },
-            { text: '  Loading Intrusion Detection System', type: 'success', delay: 150, hasStatus: false, bundle: 'security' },
-            { text: '  Loading Security Monitor Service', type: 'success', delay: 150, hasStatus: false, bundle: 'security' },
+            { text: 'Loading Network Manager', type: 'success', delay: 150, hasStatus: false, bundle: 'security' },
+            { text: 'Loading Firewall Protection', type: 'success', delay: 150, hasStatus: false, bundle: 'security' },
+            { text: 'Loading Intrusion Detection System', type: 'success', delay: 150, hasStatus: false, bundle: 'security' },
+            { text: 'Loading Security Monitor Service', type: 'success', delay: 150, hasStatus: false, bundle: 'security' },
             { text: 'Scanning for network devices', type: 'warning', delay: 400, hasStatus: true, status: '[ WARN ]' },
             { text: 'Running security scan', type: 'success', delay: 300, hasStatus: true, status: '[  OK  ]' },
             { text: '', type: 'info', delay: 150 },
             { text: 'Preparing training environment', type: 'info', delay: 300, hasStatus: true, status: '[  OK  ]', bundle: 'training' },
-            { text: '  Loading scenario data', type: 'info', delay: 100, hasStatus: false, bundle: 'training' },
-            { text: '  Preparing virtual environment', type: 'info', delay: 100, hasStatus: false, bundle: 'training' },
-            { text: '  Finalizing training setup', type: 'success', delay: 200, hasStatus: false, bundle: 'training' },
+            { text: 'Loading scenario data', type: 'info', delay: 100, hasStatus: false, bundle: 'training' },
+            { text: 'Preparing virtual environment', type: 'info', delay: 100, hasStatus: false, bundle: 'training' },
+            { text: 'Finalizing training setup', type: 'success', delay: 200, hasStatus: false, bundle: 'training' },
             { text: '', type: 'info', delay: 300 },
             { text: 'Welcome to the CyberQuest Training Lab', type: 'success', delay: 400 },
             { text: 'Type "help" for available commands', type: 'info', delay: 200 },
@@ -182,9 +182,7 @@ export class BootSequence {
                 typeClasses = 'text-green-400';
         }
         
-        // Add indentation for bundled items
-        const indentClass = line.bundle && !line.hasStatus ? 'ml-4' : '';
-        lineElement.className = `boot-line mb-0.5 whitespace-pre-wrap ${typeClasses} ${indentClass}`;
+        lineElement.className = `boot-line mb-0.5 whitespace-pre-wrap ${typeClasses}`;
         lineElement.textContent = ''; // Start empty
         
         this.container.appendChild(lineElement);
@@ -219,7 +217,7 @@ export class BootSequence {
 
     showLoadingDots(element, onComplete) {
         const dotsElement = document.createElement('span');
-        dotsElement.className = 'loading-dots ml-2 text-gray-400';
+        dotsElement.className = 'loading-dots ml-2 text-green-400';
         element.appendChild(dotsElement);
         
         let dotCount = 0;
