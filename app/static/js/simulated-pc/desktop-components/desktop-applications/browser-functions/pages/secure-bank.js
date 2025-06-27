@@ -5,6 +5,7 @@ class ExampleBankPageClass extends BasePage {
         super({
             url: 'https://securebank.com',
             title: 'SecureBank Online',
+            ipAddress: '192.0.78.24',
             securityLevel: 'secure-ev',
             security: {
                 isHttps: true,

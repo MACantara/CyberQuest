@@ -5,6 +5,7 @@ class CyberQuestPageClass extends BasePage {
         super({
             url: 'https://cyberquest.com',
             title: 'CyberQuest Training',
+            ipAddress: '104.26.10.72',
             securityLevel: 'safe',
             security: {
                 isHttps: true,

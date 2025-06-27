@@ -124,8 +124,32 @@ export class SystemLogsApp extends WindowBase {
         // Set up activity monitoring
         this.activityMonitor.setupActivityMonitoring();
         
+        // Set up page navigation listener
+        this.setupPageNavigationListener();
+        
         // Re-render initial logs now that renderer is available
         this.updateContent();
+    }
+    
+    setupPageNavigationListener() {
+        // Listen for page navigation events
+        document.addEventListener('pageNavigated', (event) => {
+            if (event.detail && event.detail.page) {
+                this.onPageNavigated(event.detail.page);
+            }
+        });
+    }
+    
+    onPageNavigated(page) {
+        if (!this.logManager) return;
+        
+        // Generate logs related to the page navigation
+        this.logManager.generateNewLogs(page);
+        
+        // If auto-refresh is enabled, update the display
+        if (this.autoRefresh) {
+            this.applyFilters();
+        }
     }
 
     // Delegate methods to appropriate modules

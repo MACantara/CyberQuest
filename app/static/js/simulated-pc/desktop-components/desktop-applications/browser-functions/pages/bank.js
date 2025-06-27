@@ -5,6 +5,7 @@ class PhishingBankPageClass extends BasePage {
         super({
             url: 'https://secure-verify-support.com',
             title: 'Secure Banking - Login',
+            ipAddress: '185.199.108.153',
             securityLevel: 'dangerous',
             security: {
                 isHttps: true,
