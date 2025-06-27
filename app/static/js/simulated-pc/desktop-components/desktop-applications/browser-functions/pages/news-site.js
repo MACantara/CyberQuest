@@ -5,6 +5,7 @@ class NewsSitePageClass extends BasePage {
         super({
             url: 'https://news-site.com',
             title: 'Tech News Daily',
+            ipAddress: '104.21.92.161',
             securityLevel: 'secure',
             security: {
                 isHttps: true,

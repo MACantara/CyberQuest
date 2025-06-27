@@ -5,6 +5,7 @@ class SuspiciousSitePageClass extends BasePage {
         super({
             url: 'https://suspicious-site.com',
             title: 'WIN BIG NOW!',
+            ipAddress: '45.227.253.144',
             securityLevel: 'dangerous',
             security: {
                 isHttps: true,
