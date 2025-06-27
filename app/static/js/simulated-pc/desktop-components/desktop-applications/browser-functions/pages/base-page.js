@@ -54,6 +54,7 @@ export class BasePage {
         return {
             url: this.url,
             title: this.title,
+            ipAddress: this.ipAddress,
             securityLevel: this.securityLevel,
             security: this.security,
             createContent: () => this.createContent()
