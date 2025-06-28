@@ -10,16 +10,21 @@ export class WindowSnapManager {
     }
 
     initializeSnapZones() {
+        // Get taskbar height (typically 50px)
+        const taskbarHeight = 50;
+        const availableHeight = `calc(100% - ${taskbarHeight}px)`;
+        const halfAvailableHeight = `calc(50% - ${taskbarHeight / 2}px)`;
+        
         this.snapZones = {
-            left: { x: 0, y: 0, width: '50%', height: '100%' },
-            right: { x: '50%', y: 0, width: '50%', height: '100%' },
-            top: { x: 0, y: 0, width: '100%', height: '50%' },
-            bottom: { x: 0, y: '50%', width: '100%', height: '50%' },
-            topLeft: { x: 0, y: 0, width: '50%', height: '50%' },
-            topRight: { x: '50%', y: 0, width: '50%', height: '50%' },
-            bottomLeft: { x: 0, y: '50%', width: '50%', height: '50%' },
-            bottomRight: { x: '50%', y: '50%', width: '50%', height: '50%' },
-            maximize: { x: 0, y: 0, width: '100%', height: 'calc(100% - 50px)' }
+            left: { x: 0, y: 0, width: '50%', height: availableHeight },
+            right: { x: '50%', y: 0, width: '50%', height: availableHeight },
+            top: { x: 0, y: 0, width: '100%', height: halfAvailableHeight },
+            bottom: { x: 0, y: halfAvailableHeight, width: '100%', height: halfAvailableHeight },
+            topLeft: { x: 0, y: 0, width: '50%', height: halfAvailableHeight },
+            topRight: { x: '50%', y: 0, width: '50%', height: halfAvailableHeight },
+            bottomLeft: { x: 0, y: halfAvailableHeight, width: '50%', height: halfAvailableHeight },
+            bottomRight: { x: '50%', y: halfAvailableHeight, width: '50%', height: halfAvailableHeight },
+            maximize: { x: 0, y: 0, width: '100%', height: availableHeight }
         };
     }
 
@@ -66,6 +71,7 @@ export class WindowSnapManager {
 
         const containerRect = this.container.getBoundingClientRect();
         const zone = this.snapZones[snapZone];
+        const taskbarHeight = 50;
         
         // Calculate absolute positions
         const left = typeof zone.x === 'string' 
@@ -73,7 +79,7 @@ export class WindowSnapManager {
             : containerRect.left + zone.x;
         
         const top = typeof zone.y === 'string'
-            ? containerRect.top + (parseFloat(zone.y) / 100) * containerRect.height
+            ? containerRect.top + (parseFloat(zone.y) / 100) * (containerRect.height - taskbarHeight)
             : containerRect.top + zone.y;
         
         const width = typeof zone.width === 'string'
@@ -82,11 +88,23 @@ export class WindowSnapManager {
                 : (parseFloat(zone.width) / 100) * containerRect.width
             : zone.width;
         
-        const height = typeof zone.height === 'string'
-            ? zone.height.includes('calc')
-                ? containerRect.height - 50 // Account for taskbar
-                : (parseFloat(zone.height) / 100) * containerRect.height
-            : zone.height;
+        let height;
+        if (typeof zone.height === 'string') {
+            if (zone.height.includes('calc')) {
+                // Parse calc expressions for height
+                if (zone.height.includes('100%')) {
+                    height = containerRect.height - taskbarHeight;
+                } else if (zone.height.includes('50%')) {
+                    height = (containerRect.height - taskbarHeight) / 2;
+                } else {
+                    height = containerRect.height - taskbarHeight;
+                }
+            } else {
+                height = (parseFloat(zone.height) / 100) * (containerRect.height - taskbarHeight);
+            }
+        } else {
+            height = zone.height;
+        }
 
         this.snapIndicator.style.left = `${left}px`;
         this.snapIndicator.style.top = `${top}px`;
@@ -124,7 +142,7 @@ export class WindowSnapManager {
             windowElement.dataset.snapOriginalTop = windowElement.style.top;
         }
 
-        // Apply snap position and size
+        // Apply snap position and size with taskbar consideration
         const left = typeof zone.x === 'string' && zone.x.includes('%')
             ? zone.x
             : typeof zone.x === 'string'
