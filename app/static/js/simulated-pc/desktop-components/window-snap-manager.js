@@ -42,7 +42,7 @@ export class WindowSnapManager {
         
         const { width, height } = containerRect;
         const taskbarHeight = 50;
-        const effectiveHeight = height - taskbarHeight; // Don't count taskbar area
+        const effectiveHeight = height - taskbarHeight; // Don't count taskbar area for main content
         
         // Increased threshold for better corner detection
         const cornerThreshold = 30; // pixels for corners
@@ -58,7 +58,8 @@ export class WindowSnapManager {
         const nearLeftCorner = relativeX <= cornerThreshold;
         const nearRightCorner = relativeX >= width - cornerThreshold;
         const nearTopCorner = relativeY <= cornerThreshold;
-        const nearBottomCorner = relativeY >= effectiveHeight - cornerThreshold && relativeY < effectiveHeight;
+        // Include taskbar area for bottom corners - extend detection to full height
+        const nearBottomCorner = relativeY >= effectiveHeight - cornerThreshold && relativeY <= height;
         
         // Corner snapping (priority) - use larger threshold
         if (nearLeftCorner && nearTopCorner) return 'topLeft';
