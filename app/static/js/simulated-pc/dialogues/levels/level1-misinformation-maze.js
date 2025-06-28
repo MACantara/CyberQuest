@@ -22,15 +22,31 @@ export class Level1MisinformationMazeDialogue extends BaseDialogue {
         ];
     }
 
-    onComplete() {
+    async onComplete() {
         // Store completion in localStorage
         localStorage.setItem('cyberquest_level_1_completed', 'true');
         
-        // Start the level simulation
-        if (this.desktop?.levelManager) {
-            setTimeout(async () => {
-                await this.desktop.levelManager.startLevel(1);
-            }, 500);
+        // Start the level simulation by opening the browser to the tutorial
+        if (this.desktop?.windowManager) {
+            try {
+                // Open the browser application
+                await this.desktop.windowManager.openApplication('browser', 'Web Browser');
+                
+                // Get the browser instance from the applications map
+                const browserApp = this.desktop.windowManager.applications.get('browser');
+                if (browserApp) {
+                    // Wait a moment for the browser to initialize
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    
+                    // Navigate to the tutorial page using the navigation component
+                    browserApp.navigation.navigateToUrl('https://cyberquest.academy/level/1/tutorial');
+                }
+                
+                // Mark the tutorial as started
+                localStorage.setItem('cyberquest_level_1_tutorial_started', 'true');
+            } catch (error) {
+                console.error('Failed to open browser:', error);
+            }
         }
     }
 
