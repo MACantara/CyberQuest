@@ -58,11 +58,12 @@ export class Desktop {
             }
         };
 
-        // Make dialogue restart functions globally accessible
+        // Make dialogue restart function globally accessible
         window.restartDialogues = () => {
-            localStorage.removeItem('cyberquest_welcome_dialogue_completed');
-            localStorage.removeItem('cyberquest_tutorial_intro_completed');
-            localStorage.removeItem('cyberquest_mission_briefing_completed');
+            if (this.dialogueIntegration) {
+                return this.dialogueIntegration.restartDialogues();
+            }
+            return 'Dialogue system not initialized yet.';
         };
 
         // Initialize dialogue flow first, then tutorials

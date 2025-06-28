@@ -78,4 +78,27 @@ export class DialogueIntegration {
     async triggerTrainingReminder() {
         await this.dialogueManager.startDialogueByName('tutorial-intro', 'instructor');
     }
+
+    // Reset dialogue completion flags in localStorage
+    restartDialogues() {
+        localStorage.removeItem('cyberquest_welcome_dialogue_completed');
+        localStorage.removeItem('cyberquest_tutorial_intro_completed');
+        localStorage.removeItem('cyberquest_mission_briefing_completed');
+        
+        // Also clear any tutorial completion flags to ensure proper flow
+        const tutorialKeys = [
+            'cyberquest_tutorial_completed',
+            'cyberquest_email_tutorial_completed',
+            'cyberquest_browser_tutorial_completed',
+            'cyberquest_filemanager_tutorial_completed',
+            'cyberquest_networkmonitor_tutorial_completed',
+            'cyberquest_securitytools_tutorial_completed',
+            'cyberquest_systemlogs_tutorial_completed',
+            'cyberquest_terminal_tutorial_completed'
+        ];
+        
+        tutorialKeys.forEach(key => localStorage.removeItem(key));
+        
+        return 'Dialogues and tutorials have been reset. Refresh the page to see the welcome dialogue again.';
+    }
 }
