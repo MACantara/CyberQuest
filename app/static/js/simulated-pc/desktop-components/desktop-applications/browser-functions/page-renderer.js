@@ -14,6 +14,9 @@ export class PageRenderer {
             contentElement.innerHTML = pageConfig.createContent();
             this.updatePageTitle(pageConfig.title);
             this.bindPageEvents(url);
+            
+            // Reset scroll position to top
+            contentElement.scrollTop = 0;
         }
     }
 
