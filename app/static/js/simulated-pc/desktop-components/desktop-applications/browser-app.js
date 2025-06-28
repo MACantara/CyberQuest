@@ -2,6 +2,7 @@ import { WindowBase } from '../window-base.js';
 import { BrowserNavigation } from './browser-functions/navigation.js';
 import { PageRenderer } from './browser-functions/page-renderer.js';
 import { SecurityChecker } from './browser-functions/security-checker.js';
+import { NavigationUtil } from '../shared-utils/navigation-util.js';
 
 export class BrowserApp extends WindowBase {
     constructor() {
@@ -265,22 +266,8 @@ export class BrowserApp extends WindowBase {
             });
         }
 
-        // Handle navigation buttons with data-url attributes
-        windowElement.addEventListener('click', (e) => {
-            const target = e.target.closest('[data-url]');
-            if (target && target.hasAttribute('data-url')) {
-                const url = target.getAttribute('data-url');
-                if (url) {
-                    this.navigation.navigateToUrl(url);
-                    // Emit navigation event
-                    document.dispatchEvent(new CustomEvent('browser-navigate', {
-                        detail: { url: url }
-                    }));
-                    // Update security status after navigation
-                    setTimeout(() => this.updateSecurityStatus(url), 200);
-                }
-            }
-        });
+        // Use shared navigation utility for data-url handling
+        NavigationUtil.bindDataUrlHandlers(windowElement, { source: 'browser' });
     }
 
     cleanup() {
