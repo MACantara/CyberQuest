@@ -6,29 +6,123 @@ export class DialogueIntegration {
         this.initializeLevelDialogues();
     }
 
+    // Helper method to add a level dialogue
+    addLevelDialogue(levelNum, name, displayName, category, xp, estimatedTime, description) {
+        const className = `Level${levelNum}${name.split('-').map(word => 
+            word.charAt(0).toUpperCase() + word.slice(1)
+        ).join('').replace(/[^a-zA-Z0-9]/g, '')}Dialogue`;
+        
+        this.levelDialogues.set(levelNum, {
+            name: `level${levelNum}-${name}`,
+            className,
+            displayName,
+            category,
+            xp,
+            estimatedTime,
+            description
+        });
+    }
+
     // Initialize level dialogues
     initializeLevelDialogues() {
         // Level 1: The Misinformation Maze
-        this.levelDialogues.set(1, {
-            name: 'level1-misinformation-maze',
-            className: 'Level1MisinformationMazeDialogue',
-            displayName: 'The Misinformation Maze',
-            category: 'Information Literacy',
-            xp: 100,
-            estimatedTime: '15 minutes',
-            description: 'Debunk fake news and stop misinformation from influencing an election.'
-        });
+        this.addLevelDialogue(
+            1,
+            'misinformation-maze',
+            'The Misinformation Maze',
+            'Information Literacy',
+            100,
+            '15 minutes',
+            'Debunk fake news and stop misinformation from influencing an election.'
+        );
 
         // Level 2: Shadow in the Inbox
-        this.levelDialogues.set(2, {
-            name: 'level2-shadow-inbox',
-            className: 'Level2ShadowInboxDialogue',
-            displayName: 'Shadow in the Inbox',
-            category: 'Email Security',
-            xp: 150,
-            estimatedTime: '20 minutes',
-            description: 'Spot phishing attempts and practice safe email protocols.'
-        });
+        this.addLevelDialogue(
+            2,
+            'shadow-inbox',
+            'Shadow in the Inbox',
+            'Email Security',
+            150,
+            '20 minutes',
+            'Spot phishing attempts and practice safe email protocols.'
+        );
+
+        // Level 3: Malware Mayhem
+        this.addLevelDialogue(
+            3,
+            'malware-mayhem',
+            'Malware Mayhem',
+            'Threat Detection',
+            200,
+            '25 minutes',
+            'Isolate infections and perform digital cleanup during a gaming tournament.'
+        );
+
+        // Level 4: The Password Heist
+        this.addLevelDialogue(
+            4,
+            'password-heist',
+            'The Password Heist',
+            'Authentication',
+            175,
+            '20 minutes',
+            'Defend against brute-force attacks and implement strong password practices.'
+        );
+
+        // Level 5: The Social Web
+        this.addLevelDialogue(
+            5,
+            'social-web',
+            'The Social Web',
+            'Privacy Protection',
+            180,
+            '25 minutes',
+            'Navigate ethical social media behavior and protect your digital footprint.'
+        );
+
+        // Level 6: The Adaptive Adversary
+        this.addLevelDialogue(
+            6,
+            'adaptive-adversary',
+            'The Adaptive Adversary',
+            'AI Security',
+            300,
+            '25 minutes',
+            'Confront AI-powered threats that adapt to your behavior patterns.'
+        );
+
+        // Level 7: The White Hat Test
+        this.addLevelDialogue(
+            7,
+            'white-hat-test',
+            'The White Hat Test',
+            'Ethical Hacking',
+            350,
+            '30 minutes',
+            'Practice ethical hacking and responsible vulnerability disclosure.'
+        );
+
+        // Level 8: Operation Blackout
+        this.addLevelDialogue(
+            8,
+            'operation-blackout',
+            'Operation Blackout',
+            'Incident Response',
+            400,
+            '35 minutes',
+            'Defend critical infrastructure from a coordinated DDoS attack.'
+        );
+
+        // Level 9: The Hunt for The Null
+        this.addLevelDialogue(
+            9,
+            'hunt-for-the-null',
+            'The Hunt for The Null',
+            'Digital Forensics',
+            500,
+            '40 minutes',
+            'Final mission: Use advanced digital forensics to expose The Null\'s identity.'
+        );
     }
 
     // Initialize dialogue flow on desktop startup
