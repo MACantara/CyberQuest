@@ -40,7 +40,7 @@ CYBERSECURITY_LEVELS = [
         'category': 'Threat Detection',
         'estimated_time': '25 minutes',
         'skills': ['Malware Recognition', 'System Security', 'Threat Analysis'],
-        'unlocked': False
+        'unlocked': True
     },
     {
         'id': 4,
@@ -52,7 +52,7 @@ CYBERSECURITY_LEVELS = [
         'category': 'Authentication',
         'estimated_time': '20 minutes',
         'skills': ['Password Security', 'MFA Setup', 'Access Control'],
-        'unlocked': False
+        'unlocked': True
     },
     {
         'id': 5,
@@ -64,7 +64,7 @@ CYBERSECURITY_LEVELS = [
         'category': 'Privacy Protection',
         'estimated_time': '25 minutes',
         'skills': ['Privacy Settings', 'Social Engineering Defense', 'Digital Footprint'],
-        'unlocked': False
+        'unlocked': True
     },
     {
         'id': 6,
@@ -76,7 +76,7 @@ CYBERSECURITY_LEVELS = [
         'category': 'AI Security',
         'estimated_time': '25 minutes',
         'skills': ['AI Threat Recognition', 'Advanced Defense', 'Adaptive Security'],
-        'unlocked': False
+        'unlocked': True
     },
     {
         'id': 7,
@@ -88,7 +88,7 @@ CYBERSECURITY_LEVELS = [
         'category': 'Ethical Hacking',
         'estimated_time': '30 minutes',
         'skills': ['Penetration Testing', 'Vulnerability Assessment', 'Ethical Hacking'],
-        'unlocked': False
+        'unlocked': True
     },
     {
         'id': 8,
@@ -100,7 +100,7 @@ CYBERSECURITY_LEVELS = [
         'category': 'Incident Response',
         'estimated_time': '35 minutes',
         'skills': ['Incident Response', 'Crisis Management', 'Damage Control'],
-        'unlocked': False
+        'unlocked': True
     },
     {
         'id': 9,
@@ -112,7 +112,7 @@ CYBERSECURITY_LEVELS = [
         'category': 'Digital Forensics',
         'estimated_time': '40 minutes',
         'skills': ['Digital Forensics', 'Evidence Analysis', 'Advanced Investigation'],
-        'unlocked': False
+        'unlocked': True
     }
 ]
 
