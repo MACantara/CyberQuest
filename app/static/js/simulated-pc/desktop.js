@@ -24,6 +24,17 @@ export class Desktop {
         // Store reference to desktop on the element
         this.desktopElement.desktop = this;
         
+        // Store level information from the simulation
+        console.log('[Desktop] Initializing with window.currentSimulation:', window.currentSimulation);
+        const simulation = window.currentSimulation;
+        if (simulation && simulation.level) {
+            console.log('[Desktop] Found simulation level:', simulation.level);
+            this.level = simulation.level.id || simulation.level;
+            console.log('[Desktop] Set desktop level to:', this.level);
+        } else {
+            console.log('[Desktop] No simulation level found');
+        }
+        
         this.container.appendChild(this.desktopElement);        
         
         // Initialize components
@@ -58,11 +69,12 @@ export class Desktop {
             }
         };
 
-        // Make dialogue restart functions globally accessible
+        // Make dialogue restart function globally accessible
         window.restartDialogues = () => {
-            localStorage.removeItem('cyberquest_welcome_dialogue_completed');
-            localStorage.removeItem('cyberquest_tutorial_intro_completed');
-            localStorage.removeItem('cyberquest_mission_briefing_completed');
+            if (this.dialogueIntegration) {
+                return this.dialogueIntegration.restartDialogues();
+            }
+            return 'Dialogue system not initialized yet.';
         };
 
         // Initialize dialogue flow first, then tutorials
