@@ -218,6 +218,7 @@
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
     backdrop-filter: blur(4px);
+    z-index: 9999; /* Ensure it's above other elements */
 }
 
 .snap-indicator::before {
@@ -255,4 +256,13 @@
 
 .snap-indicator[style*="opacity: 1"] {
     animation: snapPreview 0.2s ease-out;
+}
+
+/* Ensure the snap indicator is visible */
+.snap-indicator {
+    pointer-events: none;
+    position: fixed;
+    border: 2px solid #3b82f6;
+    background-color: rgba(59, 130, 246, 0.2);
+    transition: opacity 0.2s ease-in-out;
 }
