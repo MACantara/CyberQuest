@@ -98,11 +98,32 @@
 {% endblock %}
 
 {% block extra_js %}
+<!-- Store level data in a JSON object that will be parsed by JavaScript -->
+<script id="level-data" type="application/json">
+{
+    "id": {{ level.id if level else 'null' }},
+    "name": "{{ level.name | default('') | safe }}",
+    "description": "{{ level.description | default('') | safe }}",
+    "category": "{{ level.category | default('') | safe }}",
+    "difficulty": "{{ level.difficulty | default('') | safe }}",
+    "xp_reward": {{ level.xp_reward if level else 0 }}
+}
+</script>
+
 <script type="module">
     import { SimulatedPC } from '{{ url_for("static", filename="js/simulated-pc/main.js") }}';
     
-    // Level data from server
-    const levelData = {{ level_data | tojson if level_data else '{}' }};
+    // Get level data from the JSON script tag
+    const levelDataElement = document.getElementById('level-data');
+    const levelData = JSON.parse(levelDataElement.textContent);
+    
+    console.log('Level data loaded:', levelData);
+    
+    // Initialize the simulation with the level data
+    window.currentSimulation = {
+        level: levelData || null
+    };
+    console.log('Initialized simulation with level data:', window.currentSimulation.level);
     
     // Initialize simulation
     async function initSimulation() {
