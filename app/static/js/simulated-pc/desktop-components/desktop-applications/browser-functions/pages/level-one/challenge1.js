@@ -36,7 +36,7 @@ class Challenge1PageClass extends BasePage {
 
                 <div class="prose max-w-none">
                     <div class="float-right ml-6 mb-4 w-1/3 bg-gray-100 p-4 rounded-lg">
-                        <img src="https://via.placeholder.com/400x250?text=SENATOR+JOHNSON" alt="Senator Johnson" class="w-full h-auto rounded mb-2">
+                        <img src="/static/images/level-one/senator-johnson.jpeg" alt="Senator Johnson" class="w-full h-auto rounded mb-2">
                         <p class="text-sm text-gray-600 italic">Senator Johnson in a private meeting (allegedly)</p>
                     </div>
 
