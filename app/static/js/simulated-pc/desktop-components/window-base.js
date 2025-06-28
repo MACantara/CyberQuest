@@ -21,7 +21,7 @@ export class WindowBase {
         const link = document.createElement('link');
         link.id = 'window-scrollbar-styles';
         link.rel = 'stylesheet';
-        link.href = '/static/css/window-scrollbars.css';
+        link.href = '/static/css/simulated-pc/windows.css';
         document.head.appendChild(link);
     }
 

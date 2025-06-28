@@ -5,6 +5,7 @@ import { EmailApp } from './desktop-applications/email-app.js';
 import { NetworkMonitorApp } from './desktop-applications/network-monitor-app.js';
 import { SystemLogsApp } from './desktop-applications/system-logs-app.js';
 import { ControlPanelApp } from './control-panel.js';
+import { WindowSnapManager } from './window-snap-manager.js';
 
 export class WindowManager {
     constructor(container, taskbar, tutorialManager = null) {
@@ -14,6 +15,7 @@ export class WindowManager {
         this.windows = new Map();
         this.applications = new Map();
         this.zIndex = 1000;
+        this.snapManager = new WindowSnapManager(container);
         
         // Application registry for easier management
         this.appRegistry = {
@@ -210,6 +212,7 @@ export class WindowManager {
         let dragStarted = false;
         let startX, startY, startLeft, startTop;
         let windowApp = null;
+        let currentSnapZone = null;
 
         // Get the window app instance if it exists
         this.applications.forEach((app, id) => {
@@ -240,29 +243,29 @@ export class WindowManager {
             const deltaX = e.clientX - startX;
             const deltaY = e.clientY - startY;
             
-            // Check if this is the start of dragging and window is maximized
-            if (!dragStarted && windowApp && windowApp.getMaximizedState()) {
-                // Handle drag start on maximized window
-                const newPosition = windowApp.handleDragStartOnMaximized(e.clientX, e.clientY);
-                if (newPosition) {
-                    startLeft = newPosition.left;
-                    startTop = newPosition.top;
-                    // Reset the start position to current mouse position for smooth dragging
+            // Check if this is the start of dragging
+            if (!dragStarted) {
+                // Handle snap unsnapping or maximized window dragging
+                const snapResult = this.snapManager.handleDragStart(window, e.clientX, e.clientY, windowApp);
+                if (snapResult) {
+                    startLeft = snapResult.left;
+                    startTop = snapResult.top;
                     startX = e.clientX;
                     startY = e.clientY;
                 }
                 dragStarted = true;
-                return; // Don't apply normal drag movement on first frame
+                return;
             }
-            
-            dragStarted = true;
             
             const newLeft = startLeft + deltaX;
             const newTop = startTop + deltaY;
             
-            // Allow window to be dragged beyond screen edges
+            // Update window position
             window.style.left = `${newLeft}px`;
             window.style.top = `${newTop}px`;
+            
+            // Show snap preview
+            currentSnapZone = this.snapManager.handleDragMove(e.clientX, e.clientY);
         });
 
         document.addEventListener('mouseup', (e) => {
@@ -271,11 +274,23 @@ export class WindowManager {
                 dragStarted = false;
                 header.style.cursor = 'grab';
                 
+                // Handle window snapping
+                if (currentSnapZone) {
+                    this.snapManager.handleDragEnd(window, e.clientX, e.clientY, windowApp);
+                } else {
+                    this.snapManager.hideSnapPreview();
+                }
+                currentSnapZone = null;
+                
                 // Double-click detection for maximize/restore
                 if (Math.abs(e.clientX - startX) < 5 && Math.abs(e.clientY - startY) < 5) {
-                    // This was a click, not a drag - check for double-click
-                    if (windowApp && e.detail === 2) { // Double-click
-                        windowApp.maximize();
+                    if (windowApp && e.detail === 2) {
+                        // Check if window is snapped, if so unsnap first
+                        if (this.snapManager.isWindowSnapped(window)) {
+                            this.snapManager.unSnapWindow(window, windowApp);
+                        } else {
+                            windowApp.maximize();
+                        }
                     }
                 }
             }
@@ -419,10 +434,17 @@ export class WindowManager {
         const app = this.applications.get(id);
         
         if (app && typeof app.maximize === 'function') {
-            app.maximize();
+            // Check if window is snapped first
+            if (this.snapManager.isWindowSnapped(window)) {
+                this.snapManager.unSnapWindow(window, app);
+            } else {
+                app.maximize();
+            }
         } else if (window) {
             // Legacy maximize for non-app windows
-            if (window.dataset.maximized === 'true') {
+            if (this.snapManager.isWindowSnapped(window)) {
+                this.snapManager.unSnapWindow(window);
+            } else if (window.dataset.maximized === 'true') {
                 // Restore
                 window.style.width = window.dataset.originalWidth;
                 window.style.height = window.dataset.originalHeight;
@@ -488,6 +510,7 @@ export class WindowManager {
     closeAllWindows() {
         const windowIds = Array.from(this.windows.keys());
         windowIds.forEach(id => this.closeWindow(id));
+        this.snapManager.cleanup();
     }
 
     minimizeAllWindows() {
