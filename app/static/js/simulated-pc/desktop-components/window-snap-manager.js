@@ -41,18 +41,30 @@ export class WindowSnapManager {
         const relativeY = mouseY - containerRect.top;
         
         const { width, height } = containerRect;
+        const taskbarHeight = 50;
+        const effectiveHeight = height - taskbarHeight; // Don't count taskbar area
+        
+        // Increased threshold for better corner detection
+        const cornerThreshold = 30; // pixels for corners
+        const edgeThreshold = this.snapThreshold; // pixels for edges
         
         // Edge detection with threshold
-        const nearLeft = relativeX <= this.snapThreshold;
-        const nearRight = relativeX >= width - this.snapThreshold;
-        const nearTop = relativeY <= this.snapThreshold;
-        const nearBottom = relativeY >= height - this.snapThreshold;
+        const nearLeft = relativeX <= edgeThreshold;
+        const nearRight = relativeX >= width - edgeThreshold;
+        const nearTop = relativeY <= edgeThreshold;
+        const nearBottom = relativeY >= effectiveHeight - edgeThreshold && relativeY < effectiveHeight;
         
-        // Corner snapping (priority)
-        if (nearLeft && nearTop) return 'topLeft';
-        if (nearRight && nearTop) return 'topRight';
-        if (nearLeft && nearBottom) return 'bottomLeft';
-        if (nearRight && nearBottom) return 'bottomRight';
+        // Corner detection with larger threshold for easier access
+        const nearLeftCorner = relativeX <= cornerThreshold;
+        const nearRightCorner = relativeX >= width - cornerThreshold;
+        const nearTopCorner = relativeY <= cornerThreshold;
+        const nearBottomCorner = relativeY >= effectiveHeight - cornerThreshold && relativeY < effectiveHeight;
+        
+        // Corner snapping (priority) - use larger threshold
+        if (nearLeftCorner && nearTopCorner) return 'topLeft';
+        if (nearRightCorner && nearTopCorner) return 'topRight';
+        if (nearLeftCorner && nearBottomCorner) return 'bottomLeft';
+        if (nearRightCorner && nearBottomCorner) return 'bottomRight';
         
         // Edge snapping
         if (nearLeft) return 'left';
@@ -78,13 +90,32 @@ export class WindowSnapManager {
             ? containerRect.left + (parseFloat(zone.x) / 100) * containerRect.width
             : containerRect.left + zone.x;
         
-        const top = typeof zone.y === 'string'
-            ? containerRect.top + (parseFloat(zone.y) / 100) * (containerRect.height - taskbarHeight)
-            : containerRect.top + zone.y;
+        let top;
+        if (typeof zone.y === 'string') {
+            if (zone.y.includes('calc')) {
+                // Handle calc expressions properly
+                if (zone.y.includes('50%')) {
+                    top = containerRect.top + (containerRect.height - taskbarHeight) / 2;
+                } else {
+                    top = containerRect.top;
+                }
+            } else {
+                const percentage = parseFloat(zone.y) / 100;
+                if (percentage >= 0.5) {
+                    // Bottom half positioning
+                    top = containerRect.top + (containerRect.height - taskbarHeight) / 2;
+                } else {
+                    // Top half positioning
+                    top = containerRect.top + percentage * (containerRect.height - taskbarHeight);
+                }
+            }
+        } else {
+            top = containerRect.top + zone.y;
+        }
         
         const width = typeof zone.width === 'string'
             ? zone.width.includes('calc')
-                ? containerRect.width // Simplified for calc expressions
+                ? containerRect.width
                 : (parseFloat(zone.width) / 100) * containerRect.width
             : zone.width;
         
