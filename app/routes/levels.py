@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, current_app, flash, redirect, url_for
 from flask_login import login_required, current_user
+import json
 
 levels_bp = Blueprint('levels', __name__, url_prefix='/levels')
 
@@ -173,6 +174,10 @@ def start_level(level_id):
         'skills': level['skills']
     }
     
+    # Convert level data to JSON string for direct JavaScript usage
+    level_json = json.dumps(level_data, default=str)
+    
     return render_template('simulated-pc/simulation.html', 
                          level=level, 
-                         level_data=level_data)
+                         level_data=level_data,
+                         level_json=level_json)
