@@ -1,3 +1,5 @@
+// TODO: Replace the multiple choice practice scenario into a practical example
+
 import { BasePage } from '../base-page.js';
 
 class TutorialPageClass extends BasePage {

@@ -1,3 +1,6 @@
+// TODO: Replace the multiple choice practice scenario into a practical example
+// TODO: Add profile pictures
+
 import { BasePage } from '../base-page.js';
 
 class Challenge4PageClass extends BasePage {

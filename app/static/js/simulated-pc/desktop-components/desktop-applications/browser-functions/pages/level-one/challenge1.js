@@ -1,3 +1,7 @@
+// TODO: Add webside header and footer sections
+// TODO: Replace the multiple choice practice scenario into a practical example
+// TODO: Create a realistic leaked email instead of directly saying it
+
 import { BasePage } from '../base-page.js';
 
 class Challenge1PageClass extends BasePage {
