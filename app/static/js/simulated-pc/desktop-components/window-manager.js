@@ -15,6 +15,9 @@ export class WindowManager {
         this.windows = new Map();
         this.applications = new Map();
         this.zIndex = 1000;
+        
+        // Ensure CSS is loaded before creating snap manager
+        this.ensureWindowStylesLoaded();
         this.snapManager = new WindowSnapManager(container);
         
         // Application registry for easier management
@@ -26,6 +29,17 @@ export class WindowManager {
             'wireshark': { class: NetworkMonitorApp, storageKey: 'cyberquest_networkmonitor_opened', tutorialMethod: 'shouldAutoStartNetworkMonitor', startMethod: 'startNetworkMonitorTutorial' },
             'logs': { class: SystemLogsApp, storageKey: 'cyberquest_systemlogs_opened', tutorialMethod: 'shouldAutoStartSystemLogs', startMethod: 'startSystemLogsTutorial' }
         };
+    }
+
+    // Ensure window styles are loaded
+    ensureWindowStylesLoaded() {
+        if (document.getElementById('window-scrollbar-styles')) return;
+
+        const link = document.createElement('link');
+        link.id = 'window-scrollbar-styles';
+        link.rel = 'stylesheet';
+        link.href = '/static/css/simulated-pc/windows.css';
+        document.head.appendChild(link);
     }
 
     // Generic application opener that handles tutorial logic
