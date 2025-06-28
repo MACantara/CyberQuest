@@ -4,6 +4,13 @@ import { ExampleBankPage } from './secure-bank.js';
 import { PhishingBankPage } from './bank.js';
 import { NewsSitePage } from './news-site.js';
 
+// Import Level 1 Challenge Pages
+import { TutorialPage } from './level-one/tutorial.js';
+import { Challenge1Page } from './level-one/challenge1.js';
+import { Challenge2Page } from './level-one/challenge2.js';
+import { Challenge3Page } from './level-one/challenge3.js';
+import { Challenge4Page } from './level-one/challenge4.js';
+
 export class PageRegistry {
     constructor() {
         this.pages = new Map();
@@ -17,6 +24,13 @@ export class PageRegistry {
         this.registerPage(ExampleBankPage);
         this.registerPage(PhishingBankPage);
         this.registerPage(NewsSitePage);
+        
+        // Register Level 1 Challenge Pages
+        this.registerPage(TutorialPage);
+        this.registerPage(Challenge1Page);
+        this.registerPage(Challenge2Page);
+        this.registerPage(Challenge3Page);
+        this.registerPage(Challenge4Page);
     }
 
     registerPage(pageConfig) {
