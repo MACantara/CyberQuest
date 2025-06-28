@@ -49,7 +49,7 @@ class Challenge4PageClass extends BasePage {
                         <div class="flex items-start mb-3">
                             <div class="w-12 h-12 bg-gray-300 rounded-full"></div>
                             <div class="ml-3">
-                                <div class="font-semibold">TruthSeeker42</div>
+                                <div class="font-semibold text-black">TruthSeeker42</div>
                                 <div class="text-gray-500 text-sm">@realtalk_truth · 2h</div>
                             </div>
                             <button class="ml-auto text-gray-500 hover:text-gray-700">
@@ -60,7 +60,7 @@ class Challenge4PageClass extends BasePage {
                         </div>
                         
                         <div class="mb-4">
-                            <p class="text-lg mb-3">🚨 BREAKING: Major pharmaceutical company ADMITS their new vaccine causes severe side effects in 87% of recipients! The mainstream media is SILENT on this! #BigPharmaLies #MedicalFreedom</p>
+                            <p class="text-black text-lg mb-3">🚨 BREAKING: Major pharmaceutical company ADMITS their new vaccine causes severe side effects in 87% of recipients! The mainstream media is SILENT on this! #BigPharmaLies #MedicalFreedom</p>
                             
                             <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
                                 <div class="flex">
@@ -109,24 +109,24 @@ class Challenge4PageClass extends BasePage {
                                     <div class="flex items-start">
                                         <div class="w-8 h-8 bg-gray-300 rounded-full mr-2"></div>
                                         <div class="bg-gray-50 rounded-lg p-2 flex-1">
-                                            <div class="font-semibold text-sm">HealthExpert22</div>
-                                            <p class="text-sm">This is completely false. The study was retracted due to flawed methodology. Please stop spreading misinformation.</p>
+                                            <div class="font-semibold text-sm text-black">HealthExpert22</div>
+                                            <p class="text-sm text-black">This is completely false. The study was retracted due to flawed methodology. Please stop spreading misinformation.</p>
                                         </div>
                                     </div>
                                     
                                     <div class="flex items-start">
                                         <div class="w-8 h-8 bg-gray-300 rounded-full mr-2"></div>
                                         <div class="bg-gray-50 rounded-lg p-2 flex-1">
-                                            <div class="font-semibold text-sm">ConspiracyTheorist</div>
-                                            <p class="text-sm">I KNEW IT! They've been lying to us all along! #WakeUpSheeple</p>
+                                            <div class="font-semibold text-sm text-black">ConspiracyTheorist</div>
+                                            <p class="text-sm text-black">I KNEW IT! They've been lying to us all along! #WakeUpSheeple</p>
                                         </div>
                                     </div>
                                     
                                     <div class="flex items-start">
                                         <div class="w-8 h-8 bg-gray-300 rounded-full mr-2"></div>
                                         <div class="bg-gray-50 rounded-lg p-2 flex-1">
-                                            <div class="font-semibold text-sm">ScienceLover</div>
-                                            <p class="text-sm">Can you provide a link to the actual study? The numbers don't match any published research I've seen.</p>
+                                            <div class="font-semibold text-sm text-black">ScienceLover</div>
+                                            <p class="text-sm text-black">Can you provide a link to the actual study? The numbers don't match any published research I've seen.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -141,61 +141,61 @@ class Challenge4PageClass extends BasePage {
                     
                     <!-- Analysis Section -->
                     <div class="bg-white rounded-lg shadow p-6">
-                        <h2 class="text-xl font-semibold mb-4">Social Media Analysis</h2>
+                        <h2 class="text-xl font-semibold mb-4 text-black">Social Media Analysis</h2>
                         
                         <div class="space-y-6">
                             <div>
-                                <h3 class="font-medium mb-2">1. What red flags indicate this might be misinformation?</h3>
+                                <h3 class="font-medium mb-2 text-black">1. What red flags indicate this might be misinformation?</h3>
                                 <div class="space-y-2">
                                     <div class="flex items-start">
                                         <input type="checkbox" id="redflag1" class="mt-1 mr-2">
-                                        <label for="redflag1" class="cursor-pointer">Use of all caps and alarmist language</label>
+                                        <label for="redflag1" class="cursor-pointer text-black">Use of all caps and alarmist language</label>
                                     </div>
                                     <div class="flex items-start">
                                         <input type="checkbox" id="redflag2" class="mt-1 mr-2">
-                                        <label for="redflag2" class="cursor-pointer">Vague references without specific sources</label>
+                                        <label for="redflag2" class="cursor-pointer text-black">Vague references without specific sources</label>
                                     </div>
                                     <div class="flex items-start">
                                         <input type="checkbox" id="redflag3" class="mt-1 mr-2">
-                                        <label for="redflag3" class="cursor-pointer">Claim of media cover-up without evidence</label>
+                                        <label for="redflag3" class="cursor-pointer text-black">Claim of media cover-up without evidence</label>
                                     </div>
                                     <div class="flex items-start">
                                         <input type="checkbox" id="redflag4" class="mt-1 mr-2">
-                                        <label for="redflag4" class="cursor-pointer">Use of emotional language and hashtags</label>
+                                        <label for="redflag4" class="cursor-pointer text-black">Use of emotional language and hashtags</label>
                                     </div>
                                 </div>
                             </div>
                             
                             <div>
-                                <h3 class="font-medium mb-2">2. How would you verify the claims made in this post?</h3>
-                                <textarea class="w-full p-2 border border-gray-300 rounded text-sm" rows="3" placeholder="List your verification steps..."></textarea>
+                                <h3 class="font-medium mb-2 text-black">2. How would you verify the claims made in this post?</h3>
+                                <textarea class="w-full p-2 border border-gray-300 rounded text-sm text-black" rows="3" placeholder="List your verification steps..."></textarea>
                             </div>
                             
                             <div>
-                                <h3 class="font-medium mb-2">3. What would be an appropriate way to respond to this post?</h3>
+                                <h3 class="font-medium mb-2 text-black">3. What would be an appropriate way to respond to this post?</h3>
                                 <div class="space-y-2">
                                     <div class="flex items-start">
                                         <input type="radio" id="response1" name="response" class="mt-1 mr-2">
-                                        <label for="response1" class="cursor-pointer">Share it immediately to warn others</label>
+                                        <label for="response1" class="cursor-pointer text-black">Share it immediately to warn others</label>
                                     </div>
                                     <div class="flex items-start">
                                         <input type="radio" id="response2" name="response" class="mt-1 mr-2">
-                                        <label for="response2" class="cursor-pointer">Report it as misinformation</label>
+                                        <label for="response2" class="cursor-pointer text-black">Report it as misinformation</label>
                                     </div>
                                     <div class="flex items-start">
                                         <input type="radio" id="response3" name="response" class="mt-1 mr-2">
-                                        <label for="response3" class="cursor-pointer">Comment with verified information and sources</label>
+                                        <label for="response3" class="cursor-pointer text-black">Comment with verified information and sources</label>
                                     </div>
                                     <div class="flex items-start">
                                         <input type="radio" id="response4" name="response" class="mt-1 mr-2">
-                                        <label for="response4" class="cursor-pointer">Ignore it and move on</label>
+                                        <label for="response4" class="cursor-pointer text-black">Ignore it and move on</label>
                                     </div>
                                 </div>
                             </div>
                             
                             <div>
-                                <h3 class="font-medium mb-2">4. What makes this post potentially harmful?</h3>
-                                <textarea class="w-full p-2 border border-gray-300 rounded text-sm" rows="2"></textarea>
+                                <h3 class="font-medium mb-2 text-black">4. What makes this post potentially harmful?</h3>
+                                <textarea class="w-full p-2 border border-gray-300 rounded text-sm text-black" rows="2"></textarea>
                             </div>
                             
                             <button id="submitBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors duration-200">
