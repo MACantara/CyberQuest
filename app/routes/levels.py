@@ -27,7 +27,7 @@ CYBERSECURITY_LEVELS = [
         'category': 'Email Security',
         'estimated_time': '20 minutes',
         'skills': ['Phishing Detection', 'Email Analysis', 'Social Engineering'],
-        'unlocked': False
+        'unlocked': True
     },
     {
         'id': 3,
