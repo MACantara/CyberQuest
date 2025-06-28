@@ -109,14 +109,19 @@ export class DialogueManager {
     // Utility method to get all available dialogues
     getDialogueList() {
         return [
-            { name: 'welcome', class: 'WelcomeDialogue', title: 'Welcome Message', defaultCharacter: 'agent' },
-            { name: 'mission-briefing', class: 'MissionBriefingDialogue', title: 'Mission Briefing', defaultCharacter: 'commander' },
-            { name: 'tutorial-intro', class: 'TutorialIntroDialogue', title: 'Tutorial Introduction', defaultCharacter: 'instructor' }
+            { name: 'welcome', class: 'WelcomeDialogue', title: 'Welcome Message', defaultCharacter: 'agent' }
+            // Removed other dialogue types as they were deleted
         ];
     }
 
     // Utility method to start any dialogue by name
     async startDialogueByName(dialogueName, character = null) {
+        // Check if this is a level dialogue
+        if (dialogueName.startsWith('level')) {
+            return this.startLevelDialogue(dialogueName, character);
+        }
+
+        // Handle regular dialogues
         const dialogueInfo = this.getDialogueList().find(d => d.name === dialogueName);
         if (!dialogueInfo) {
             throw new Error(`Dialogue '${dialogueName}' not found`);
@@ -130,6 +135,57 @@ export class DialogueManager {
             return await this[methodName](character || dialogueInfo.defaultCharacter);
         } else {
             throw new Error(`Method '${methodName}' not found`);
+        }
+    }
+
+    // Start a level dialogue by name
+    async startLevelDialogue(levelDialogueName, character = 'instructor') {
+        console.log(`[DialogueManager] Starting level dialogue: ${levelDialogueName}`);
+        try {
+            // Dynamic import of the level dialogue module
+            const modulePath = `/static/js/simulated-pc/dialogues/levels/${levelDialogueName}.js`;
+            console.log(`[DialogueManager] Importing module from: ${modulePath}`);
+            const module = await import(modulePath);
+            
+            // Generate the class name by capitalizing each word and appending 'Dialogue'
+            const className = levelDialogueName.split('-').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join('') + 'Dialogue';
+            console.log(`[DialogueManager] Looking for class: ${className}`);
+            
+            console.log(`Looking for dialogue class: ${className} in module:`, module);
+            const dialogueClass = module[className];
+            if (!dialogueClass) {
+                const availableExports = Object.keys(module).join(', ');
+                throw new Error(`Dialogue class '${className}' not found in module. Available exports: ${availableExports}`);
+            }
+            
+            // Create and start the dialogue
+            const dialogue = new dialogueClass(this.desktop, character);
+            if (typeof dialogue.start === 'function') {
+                // Store reference for event handlers
+                window.currentDialogue = dialogue;
+                // Store reference in manager for cleanup
+                this.currentDialogue = dialogue;
+                
+                // Ensure cleanup on completion
+                const originalComplete = dialogue.complete.bind(dialogue);
+                dialogue.complete = () => {
+                    if (window.currentDialogue === dialogue) {
+                        window.currentDialogue = null;
+                    }
+                    return originalComplete();
+                };
+                
+                // Start the dialogue
+                dialogue.start();
+                return dialogue;
+            } else {
+                throw new Error('Dialogue class must implement start() method');
+            }
+        } catch (error) {
+            console.error(`Error loading level dialogue '${levelDialogueName}':`, error);
+            throw new Error(`Failed to load dialogue '${levelDialogueName}': ${error.message}`);
         }
     }
 
