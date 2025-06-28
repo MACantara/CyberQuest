@@ -58,7 +58,7 @@ class Challenge3PageClass extends BasePage {
                                     Reverse Image Search
                                 </h3>
                                 <p class="text-sm text-gray-600 mb-3">Search for other instances of this image online to check its original context.</p>
-                                <button id="reverseSearchBtn" class="bg-blue-600 hover:bg-blue-700 text-white text-sm py-1 px-3 rounded">
+                                <button id="reverseSearchBtn" class="bg-blue-600 hover:bg-blue-700 text-white text-sm py-1 px-3 rounded cursor-pointer">
                                     Search for this image
                                 </button>
                                 <div id="searchResults" class="mt-3 text-sm text-gray-700 hidden">
@@ -82,7 +82,7 @@ class Challenge3PageClass extends BasePage {
                                     Image Metadata
                                 </h3>
                                 <p class="text-sm text-gray-600 mb-3">View the technical details embedded in the image file.</p>
-                                <button id="viewMetadataBtn" class="bg-green-600 hover:bg-green-700 text-white text-sm py-1 px-3 rounded">
+                                <button id="viewMetadataBtn" class="bg-green-600 hover:bg-green-700 text-white text-sm py-1 px-3 rounded cursor-pointer">
                                     View Metadata
                                 </button>
                                 <div id="metadataResults" class="mt-3 text-sm text-gray-700 hidden">
@@ -105,7 +105,7 @@ class Challenge3PageClass extends BasePage {
                             <div class="grid md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Check Weather Data</label>
-                                    <button id="weatherBtn" class="bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm py-1 px-3 rounded w-full text-left">
+                                    <button id="weatherBtn" class="bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm py-1 px-3 rounded w-full text-left cursor-pointer">
                                         <span class="flex items-center">
                                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
@@ -116,7 +116,7 @@ class Challenge3PageClass extends BasePage {
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Check Location</label>
-                                    <button id="locationBtn" class="bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm py-1 px-3 rounded w-full text-left">
+                                    <button id="locationBtn" class="bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm py-1 px-3 rounded w-full text-left cursor-pointer">
                                         <span class="flex items-center">
                                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
@@ -179,7 +179,7 @@ class Challenge3PageClass extends BasePage {
                                 </div>
                             </div>
                             
-                            <button id="submitBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors duration-200 mt-4">
+                            <button id="submitBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors duration-200 mt-4 cursor-pointer">
                                 Submit Analysis
                             </button>
                         </div>

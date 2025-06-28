@@ -198,7 +198,7 @@ class Challenge4PageClass extends BasePage {
                                 <textarea class="w-full p-2 border border-gray-300 rounded text-sm text-black" rows="2"></textarea>
                             </div>
                             
-                            <button id="submitBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors duration-200">
+                            <button id="submitBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors duration-200 cursor-pointer">
                                 Submit Analysis
                             </button>
                         </div>

@@ -115,10 +115,10 @@ class Challenge2PageClass extends BasePage {
                         </div>
                         
                         <div class="mt-6 flex justify-between">
-                            <button id="hintBtn" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                            <button id="hintBtn" class="text-blue-600 hover:text-blue-800 text-sm font-medium cursor-pointer">
                                 Need a hint?
                             </button>
-                            <button id="submitBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors duration-200">
+                            <button id="submitBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors duration-200 cursor-pointer">
                                 Submit Analysis
                             </button>
                         </div>

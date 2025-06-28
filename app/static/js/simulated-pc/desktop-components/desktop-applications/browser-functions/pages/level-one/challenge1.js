@@ -100,7 +100,7 @@ class Challenge1PageClass extends BasePage {
                                 </div>
                             </div>
                             
-                            <button id="submitAnalysis" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors duration-200">
+                            <button id="submitAnalysis" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors duration-200 cursor-pointer">
                                 Submit Analysis
                             </button>
                         </div>

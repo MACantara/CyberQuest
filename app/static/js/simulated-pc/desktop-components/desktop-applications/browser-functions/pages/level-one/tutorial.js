@@ -117,7 +117,7 @@ class TutorialPageClass extends BasePage {
                     <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500 mt-8">
                         <h3 class="font-semibold text-green-800 mb-2">Ready to test your skills?</h3>
                         <p class="text-green-700 mb-4">In the next exercise, you'll analyze a real-world example and apply what you've learned.</p>
-                        <button id="startChallenge" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded transition-colors duration-200" data-url="https://daily-politico-news.com/breaking-news">
+                        <button id="startChallenge" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded transition-colors duration-200 cursor-pointer" data-url="https://daily-politico-news.com/breaking-news">
                             Start Challenge 1
                         </button>
                     </div>
