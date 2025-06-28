@@ -5,6 +5,7 @@ class Challenge2PageClass extends BasePage {
         super({
             url: 'https://cyberquest.academy/level/1/challenge2',
             title: 'Source Comparison - CyberQuest Academy',
+            ipAddress: '198.51.100.15',
             securityLevel: 'secure',
             security: {
                 isHttps: true,

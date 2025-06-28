@@ -5,6 +5,7 @@ class Challenge1PageClass extends BasePage {
         super({
             url: 'https://daily-politico-news.com/breaking-news',
             title: 'BREAKING: Senator Johnson Hacking Scandal - Daily Politico News',
+            ipAddress: '192.0.2.47',
             securityLevel: 'suspicious',
             security: {
                 isHttps: false,

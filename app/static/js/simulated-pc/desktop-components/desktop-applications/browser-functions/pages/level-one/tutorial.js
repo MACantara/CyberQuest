@@ -5,6 +5,7 @@ class TutorialPageClass extends BasePage {
         super({
             url: 'https://cyberquest.academy/level/1/tutorial',
             title: 'Media Literacy 101 - CyberQuest Academy',
+            ipAddress: '198.51.100.15',
             securityLevel: 'secure',
             security: {
                 isHttps: true,

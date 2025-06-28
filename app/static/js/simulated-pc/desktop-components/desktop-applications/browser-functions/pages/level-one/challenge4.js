@@ -5,6 +5,7 @@ class Challenge4PageClass extends BasePage {
         super({
             url: 'https://social.cyberquest.academy/posts/controversial-claim',
             title: 'Social Media Analysis - CyberQuest Academy',
+            ipAddress: '198.51.100.16',
             securityLevel: 'warning',
             security: {
                 isHttps: true,
