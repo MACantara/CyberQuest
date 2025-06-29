@@ -31,6 +31,14 @@ export class PageRenderer {
         const contentElement = this.browserApp.windowElement?.querySelector('#browser-content');
         if (!contentElement) return;
 
+        // Get the page configuration for event binding
+        const pageConfig = this.pageRegistry.getPage(url);
+        
+        // Bind page-specific events if the page has a bindEvents method
+        if (pageConfig && typeof pageConfig.bindEvents === 'function') {
+            pageConfig.bindEvents(contentElement);
+        }
+
         // Handle scam button clicks
         const scamButton = contentElement.querySelector('#scam-button');
         if (scamButton) {
