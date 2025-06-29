@@ -11,6 +11,10 @@ import { Challenge2Page } from './level-one/challenge2.js';
 import { Challenge3Page } from './level-one/challenge3.js';
 import { Challenge4Page } from './level-one/challenge4.js';
 
+// Import Leve 1 Tool Pages
+import { CrossReferenceToolPage } from './level-one/cross-reference-tool.js';
+import { ReverseImageSearchPage } from './level-one/reverse-image-search.js';
+
 export class PageRegistry {
     constructor() {
         this.pages = new Map();
@@ -31,6 +35,10 @@ export class PageRegistry {
         this.registerPage(Challenge2Page);
         this.registerPage(Challenge3Page);
         this.registerPage(Challenge4Page);
+
+        // Register Level 1 Tool Pages
+        this.registerPage(CrossReferenceToolPage);
+        this.registerPage(ReverseImageSearchPage);
     }
 
     registerPage(pageConfig) {
