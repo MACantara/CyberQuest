@@ -259,16 +259,52 @@ export class WindowManager {
             
             // Check if this is the start of dragging
             if (!dragStarted) {
-                // Handle snap unsnapping or maximized window dragging
-                const snapResult = this.snapManager.handleDragStart(window, e.clientX, e.clientY, windowApp);
-                if (snapResult) {
-                    startLeft = snapResult.left;
-                    startTop = snapResult.top;
-                    startX = e.clientX;
-                    startY = e.clientY;
+                // Check if window is maximized first (WindowBase apps)
+                if (windowApp && windowApp.getMaximizedState && windowApp.getMaximizedState()) {
+                    const result = windowApp.handleDragStartOnMaximized(e.clientX, e.clientY);
+                    if (result) {
+                        startLeft = result.left;
+                        startTop = result.top;
+                        startX = e.clientX;
+                        startY = e.clientY;
+                    }
                 }
+                // Check if window is snapped
+                else if (this.snapManager.isWindowSnapped(window)) {
+                    const snapResult = this.snapManager.handleDragStart(window, e.clientX, e.clientY, windowApp);
+                    if (snapResult) {
+                        startLeft = snapResult.left;
+                        startTop = snapResult.top;
+                        startX = e.clientX;
+                        startY = e.clientY;
+                    }
+                }
+                // Check legacy maximized state
+                else if (window.dataset.maximized === 'true') {
+                    // Handle legacy maximized windows
+                    const originalWidth = window.dataset.originalWidth;
+                    const originalHeight = window.dataset.originalHeight;
+                    const originalLeft = window.dataset.originalLeft;
+                    const originalTop = window.dataset.originalTop;
+                    
+                    if (originalWidth && originalHeight) {
+                        // Restore original size
+                        window.style.width = originalWidth;
+                        window.style.height = originalHeight;
+                        window.style.left = originalLeft;
+                        window.style.top = originalTop;
+                        window.dataset.maximized = 'false';
+                        
+                        // Update start position
+                        startLeft = parseInt(originalLeft);
+                        startTop = parseInt(originalTop);
+                        startX = e.clientX;
+                        startY = e.clientY;
+                    }
+                }
+                
                 dragStarted = true;
-                return;
+                return; // Don't apply normal drag movement on first frame
             }
             
             const newLeft = startLeft + deltaX;

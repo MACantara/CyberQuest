@@ -119,8 +119,13 @@ export class WindowTracker {
         if (metadata && desktop) {
             const window = desktop.windowManager.windows.get(windowId);
             if (window) {
-                // Check if window is snapped first
+                // Check if window is snapped first - let snap manager handle it
                 if (window.dataset.snapped && desktop.windowManager.snapManager) {
+                    // For snapped windows that are maximized, clean up our state and let snap manager handle
+                    if (window.dataset.snapped === 'maximize') {
+                        metadata.isMaximized = false;
+                        return null; // Let snap manager handle
+                    }
                     return desktop.windowManager.snapManager.handleDragStart(window, mouseX, mouseY, metadata.viewerApp);
                 }
                 

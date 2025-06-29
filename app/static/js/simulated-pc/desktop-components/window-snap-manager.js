@@ -248,10 +248,13 @@ export class WindowSnapManager {
             const wasMaximized = windowElement.dataset.snapped === 'maximize';
             
             if (wasMaximized && windowApp && typeof windowApp.handleDragStartOnMaximized === 'function') {
-                // Use existing maximized drag logic
-                const result = windowApp.handleDragStartOnMaximized(mouseX, mouseY);
+                // Don't handle here - let WindowBase handle maximized state
+                // Just clean up snap state
                 delete windowElement.dataset.snapped;
-                return result;
+                if (windowApp) {
+                    windowApp.isMaximized = false;
+                }
+                return null; // Let the window manager handle the maximized drag
             } else {
                 // Regular unsnap
                 this.unSnapWindow(windowElement, windowApp);
