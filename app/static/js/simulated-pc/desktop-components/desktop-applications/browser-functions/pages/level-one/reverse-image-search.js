@@ -152,180 +152,205 @@ class ReverseImageSearchPageClass extends BasePage {
                     </section>
                 </div>
             </div>
-            
-            <script>
-                // Handle file upload
-                document.getElementById('upload-btn').addEventListener('click', function() {
-                    document.getElementById('image-upload').click();
-                });
-                
-                document.getElementById('image-upload').addEventListener('change', function(e) {
-                    if (e.target.files && e.target.files[0]) {
-                        const file = e.target.files[0];
-                        performImageSearch('upload', file.name);
-                    }
-                });
-                
-                // Handle URL search
-                document.getElementById('url-search-btn').addEventListener('click', function() {
-                    const url = document.getElementById('image-url').value.trim();
-                    if (!url) {
-                        alert('Please enter an image URL.');
-                        return;
-                    }
-                    performImageSearch('url', url);
-                });
-                
-                // Handle demo image clicks
-                document.querySelectorAll('.demo-image').forEach(img => {
-                    img.addEventListener('click', function() {
-                        const demoType = this.getAttribute('data-demo');
-                        performImageSearch('demo', demoType);
-                    });
-                });
-                
-                function performImageSearch(type, data) {
-                    const resultsSection = document.getElementById('search-results');
-                    const analyzedImage = document.getElementById('analyzed-image');
-                    const imageInfo = document.getElementById('image-info');
-                    const imageMatches = document.getElementById('image-matches');
-                    const imageTimeline = document.getElementById('image-timeline');
-                    const verificationAnalysis = document.getElementById('verification-analysis');
-                    
-                    // Show loading state
-                    resultsSection.classList.remove('hidden');
-                    resultsSection.scrollIntoView({ behavior: 'smooth' });
-                    
-                    // Simulate different scenarios based on demo type
-                    if (type === 'demo' && data === 'protest') {
-                        // Protest image scenario (misused old image)
-                        analyzedImage.innerHTML = \`
-                            <img src="https://via.placeholder.com/200x150?text=Protest+Scene" 
-                                 alt="Analyzed image" 
-                                 class="w-48 h-36 object-cover rounded border">
-                        \`;
-                        
-                        imageInfo.innerHTML = \`
-                            <div class="space-y-2">
-                                <p><strong>Image Dimensions:</strong> 1920x1080 pixels</p>
-                                <p><strong>File Type:</strong> JPEG</p>
-                                <p><strong>Estimated Date:</strong> May 15, 2018</p>
-                                <p><strong>Camera Info:</strong> Canon EOS 5D Mark IV</p>
-                            </div>
-                        \`;
-                        
-                        imageMatches.innerHTML = \`
-                            <div class="bg-white p-4 border border-blue-200 rounded">
-                                <div class="flex items-start justify-between mb-2">
-                                    <h4 class="font-semibold text-blue-800">Reuters</h4>
-                                    <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">Original Source</span>
-                                </div>
-                                <p class="text-sm text-gray-700 mb-2">"Protest in Madrid, Spain" - May 15, 2018</p>
-                                <p class="text-xs text-gray-500">First appearance: May 15, 2018, 3:42 PM</p>
-                            </div>
-                            <div class="bg-white p-4 border border-blue-200 rounded">
-                                <div class="flex items-start justify-between mb-2">
-                                    <h4 class="font-semibold text-blue-800">Getty Images</h4>
-                                    <span class="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded">Stock Photo</span>
-                                </div>
-                                <p class="text-sm text-gray-700 mb-2">Licensed for editorial use - Madrid protest coverage</p>
-                                <p class="text-xs text-gray-500">Available since: May 16, 2018</p>
-                            </div>
-                            <div class="bg-white p-4 border border-red-200 rounded">
-                                <div class="flex items-start justify-between mb-2">
-                                    <h4 class="font-semibold text-red-800">Social Media Posts</h4>
-                                    <span class="text-xs text-red-600 bg-red-100 px-2 py-1 rounded">Misused</span>
-                                </div>
-                                <p class="text-sm text-gray-700 mb-2">Used in 47 recent posts claiming "yesterday's protest" (incorrect context)</p>
-                                <p class="text-xs text-gray-500">Recent misuse: Last 72 hours</p>
-                            </div>
-                        \`;
-                        
-                        imageTimeline.innerHTML = \`
-                            <div class="relative">
-                                <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-green-300"></div>
-                                <div class="relative flex items-center mb-4">
-                                    <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-4">
-                                        <i class="bi bi-camera text-white text-sm"></i>
-                                    </div>
-                                    <div>
-                                        <p class="font-semibold">May 15, 2018</p>
-                                        <p class="text-sm text-gray-600">Original photo taken during Madrid protest</p>
-                                    </div>
-                                </div>
-                                <div class="relative flex items-center mb-4">
-                                    <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-4">
-                                        <i class="bi bi-newspaper text-white text-sm"></i>
-                                    </div>
-                                    <div>
-                                        <p class="font-semibold">May 15, 2018</p>
-                                        <p class="text-sm text-gray-600">Published by Reuters with proper context</p>
-                                    </div>
-                                </div>
-                                <div class="relative flex items-center">
-                                    <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center mr-4">
-                                        <i class="bi bi-exclamation-triangle text-white text-sm"></i>
-                                    </div>
-                                    <div>
-                                        <p class="font-semibold">Recent (2024)</p>
-                                        <p class="text-sm text-gray-600">Misused in social media posts with false context</p>
-                                    </div>
-                                </div>
-                            </div>
-                        \`;
-                        
-                        verificationAnalysis.innerHTML = \`
-                            <div class="p-3 bg-red-100 border border-red-300 rounded mb-3">
-                                <p class="font-semibold text-red-800">⚠️ IMAGE BEING MISUSED</p>
-                                <p class="text-red-700 text-sm mt-1">This image is from 2018 and is being used out of context in recent social media posts.</p>
-                            </div>
-                            <ul class="space-y-2 text-gray-700">
-                                <li class="flex items-start">
-                                    <i class="bi bi-check-circle text-green-500 mr-2 mt-0.5"></i>
-                                    <span>Original source identified: Reuters (May 15, 2018)</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <i class="bi bi-x-circle text-red-500 mr-2 mt-0.5"></i>
-                                    <span>Image is 6+ years old, not from recent events</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <i class="bi bi-exclamation-triangle text-yellow-500 mr-2 mt-0.5"></i>
-                                    <span>Being shared with false context claiming recent events</span>
-                                </li>
-                            </ul>
-                        \`;
-                    } else {
-                        // Default scenario for other searches
-                        analyzedImage.innerHTML = \`
-                            <img src="https://via.placeholder.com/200x150?text=Analyzing..." 
-                                 alt="Analyzing..." 
-                                 class="w-48 h-36 object-cover rounded border">
-                        \`;
-                        
-                        imageInfo.innerHTML = \`
-                            <div class="space-y-2">
-                                <p><strong>Status:</strong> Analyzing image...</p>
-                                <p class="text-sm text-gray-600">This tool helps verify images by finding their original source and tracking their usage across the web.</p>
-                            </div>
-                        \`;
-                        
-                        imageMatches.innerHTML = \`
-                            <div class="bg-white p-4 border border-blue-200 rounded">
-                                <p class="text-sm text-gray-700">Searching for matches across the web...</p>
-                            </div>
-                        \`;
-                        
-                        imageTimeline.innerHTML = \`
-                            <p class="text-gray-700">Building timeline of image appearances...</p>
-                        \`;
-                        
-                        verificationAnalysis.innerHTML = \`
-                            <p class="text-gray-700">Try clicking on the "Protest Scene" demo image to see how this tool identifies misused images.</p>
-                        \`;
-                    }
-                }
-            </script>
         `;
+    }
+
+    // Method to bind events after content is rendered
+    bindEvents(contentElement) {
+        // Handle file upload
+        const uploadBtn = contentElement.querySelector('#upload-btn');
+        const imageUpload = contentElement.querySelector('#image-upload');
+        
+        if (uploadBtn) {
+            uploadBtn.addEventListener('click', () => {
+                imageUpload.click();
+            });
+        }
+        
+        if (imageUpload) {
+            imageUpload.addEventListener('change', (e) => {
+                if (e.target.files && e.target.files[0]) {
+                    const file = e.target.files[0];
+                    this.performImageSearch('upload', file.name, contentElement);
+                }
+            });
+        }
+        
+        // Handle URL search
+        const urlSearchBtn = contentElement.querySelector('#url-search-btn');
+        if (urlSearchBtn) {
+            urlSearchBtn.addEventListener('click', () => {
+                const url = contentElement.querySelector('#image-url').value.trim();
+                if (!url) {
+                    alert('Please enter an image URL.');
+                    return;
+                }
+                this.performImageSearch('url', url, contentElement);
+            });
+        }
+        
+        // Handle demo image clicks
+        contentElement.querySelectorAll('.demo-image').forEach(img => {
+            img.addEventListener('click', () => {
+                const demoType = img.getAttribute('data-demo');
+                this.performImageSearch('demo', demoType, contentElement);
+            });
+        });
+    }
+
+    performImageSearch(type, data, contentElement) {
+        const resultsSection = contentElement.querySelector('#search-results');
+        const analyzedImage = contentElement.querySelector('#analyzed-image');
+        const imageInfo = contentElement.querySelector('#image-info');
+        const imageMatches = contentElement.querySelector('#image-matches');
+        const imageTimeline = contentElement.querySelector('#image-timeline');
+        const verificationAnalysis = contentElement.querySelector('#verification-analysis');
+        
+        // Show loading state
+        resultsSection.classList.remove('hidden');
+        resultsSection.scrollIntoView({ behavior: 'smooth' });
+        
+        // Simulate different scenarios based on demo type
+        if (type === 'demo' && data === 'protest') {
+            // Protest image scenario (misused old image)
+            analyzedImage.innerHTML = `
+                <img src="https://via.placeholder.com/200x150?text=Protest+Scene" 
+                     alt="Analyzed image" 
+                     class="w-48 h-36 object-cover rounded border">
+            `;
+            
+            imageInfo.innerHTML = `
+                <div class="space-y-2">
+                    <p><strong>Image Dimensions:</strong> 1920x1080 pixels</p>
+                    <p><strong>File Type:</strong> JPEG</p>
+                    <p><strong>Estimated Date:</strong> May 15, 2018</p>
+                    <p><strong>Camera Info:</strong> Canon EOS 5D Mark IV</p>
+                </div>
+            `;
+            
+            imageMatches.innerHTML = `
+                <div class="bg-white p-4 border border-blue-200 rounded">
+                    <div class="flex items-start justify-between mb-2">
+                        <h4 class="font-semibold text-blue-800">Reuters</h4>
+                        <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded">Original Source</span>
+                    </div>
+                    <p class="text-sm text-gray-700 mb-2">"Protest in Madrid, Spain" - May 15, 2018</p>
+                    <p class="text-xs text-gray-500">First appearance: May 15, 2018, 3:42 PM</p>
+                </div>
+                <div class="bg-white p-4 border border-blue-200 rounded">
+                    <div class="flex items-start justify-between mb-2">
+                        <h4 class="font-semibold text-blue-800">Getty Images</h4>
+                        <span class="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded">Stock Photo</span>
+                    </div>
+                    <p class="text-sm text-gray-700 mb-2">Licensed for editorial use - Madrid protest coverage</p>
+                    <p class="text-xs text-gray-500">Available since: May 16, 2018</p>
+                </div>
+                <div class="bg-white p-4 border border-red-200 rounded">
+                    <div class="flex items-start justify-between mb-2">
+                        <h4 class="font-semibold text-red-800">Social Media Posts</h4>
+                        <span class="text-xs text-red-600 bg-red-100 px-2 py-1 rounded">Misused</span>
+                    </div>
+                    <p class="text-sm text-gray-700 mb-2">Used in 47 recent posts claiming "yesterday's protest" (incorrect context)</p>
+                    <p class="text-xs text-gray-500">Recent misuse: Last 72 hours</p>
+                </div>
+            `;
+            
+            imageTimeline.innerHTML = `
+                <div class="relative">
+                    <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-green-300"></div>
+                    <div class="relative flex items-center mb-4">
+                        <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-4">
+                            <i class="bi bi-camera text-white text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold">May 15, 2018</p>
+                            <p class="text-sm text-gray-600">Original photo taken during Madrid protest</p>
+                        </div>
+                    </div>
+                    <div class="relative flex items-center mb-4">
+                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center mr-4">
+                            <i class="bi bi-newspaper text-white text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold">May 15, 2018</p>
+                            <p class="text-sm text-gray-600">Published by Reuters with proper context</p>
+                        </div>
+                    </div>
+                    <div class="relative flex items-center">
+                        <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center mr-4">
+                            <i class="bi bi-exclamation-triangle text-white text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Recent (2024)</p>
+                            <p class="text-sm text-gray-600">Misused in social media posts with false context</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            verificationAnalysis.innerHTML = `
+                <div class="p-3 bg-red-100 border border-red-300 rounded mb-3">
+                    <p class="font-semibold text-red-800">⚠️ IMAGE BEING MISUSED</p>
+                    <p class="text-red-700 text-sm mt-1">This image is from 2018 and is being used out of context in recent social media posts.</p>
+                </div>
+                <ul class="space-y-2 text-gray-700">
+                    <li class="flex items-start">
+                        <i class="bi bi-check-circle text-green-500 mr-2 mt-0.5"></i>
+                        <span>Original source identified: Reuters (May 15, 2018)</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="bi bi-x-circle text-red-500 mr-2 mt-0.5"></i>
+                        <span>Image is 6+ years old, not from recent events</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="bi bi-exclamation-triangle text-yellow-500 mr-2 mt-0.5"></i>
+                        <span>Being shared with false context claiming recent events</span>
+                    </li>
+                </ul>
+            `;
+        } else {
+            // Default scenario for other searches
+            analyzedImage.innerHTML = `
+                <img src="https://via.placeholder.com/200x150?text=Analyzing..." 
+                     alt="Analyzing..." 
+                     class="w-48 h-36 object-cover rounded border">
+            `;
+            
+            imageInfo.innerHTML = `
+                <div class="space-y-2">
+                    <p><strong>Status:</strong> Analyzing image...</p>
+                    <p class="text-sm text-gray-600">This tool helps verify images by finding their original source and tracking their usage across the web.</p>
+                </div>
+            `;
+            
+            imageMatches.innerHTML = `
+                <div class="bg-white p-4 border border-blue-200 rounded">
+                    <p class="text-sm text-gray-700">Searching for matches across the web...</p>
+                </div>
+            `;
+            
+            imageTimeline.innerHTML = `
+                <p class="text-gray-700">Building timeline of image appearances...</p>
+            `;
+            
+            verificationAnalysis.innerHTML = `
+                <p class="text-gray-700">Try clicking on the "Protest Scene" demo image to see how this tool identifies misused images.</p>
+            `;
+        }
+    }
+
+    // Create page object compatible with existing system
+    toPageObject() {
+        const pageInstance = this;
+        return {
+            url: this.url,
+            title: this.title,
+            ipAddress: this.ipAddress,
+            securityLevel: this.securityLevel,
+            security: this.security,
+            createContent: () => this.createContent(),
+            bindEvents: (contentElement) => pageInstance.bindEvents(contentElement)
+        };
     }
 }
 
