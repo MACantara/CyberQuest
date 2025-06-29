@@ -6,6 +6,7 @@ import { NetworkMonitorApp } from './desktop-applications/network-monitor-app.js
 import { SystemLogsApp } from './desktop-applications/system-logs-app.js';
 import { ControlPanelApp } from './control-panel.js';
 import { WindowSnapManager } from './window-snap-manager.js';
+import { WindowResizeManager } from './window-resize-manager.js';
 
 export class WindowManager {
     constructor(container, taskbar, tutorialManager = null) {
@@ -16,9 +17,10 @@ export class WindowManager {
         this.applications = new Map();
         this.zIndex = 1000;
         
-        // Ensure CSS is loaded before creating snap manager
+        // Ensure CSS is loaded before creating managers
         this.ensureWindowStylesLoaded();
         this.snapManager = new WindowSnapManager(container);
+        this.resizeManager = new WindowResizeManager(this);
         
         // Application registry for easier management
         this.appRegistry = {
@@ -124,7 +126,7 @@ export class WindowManager {
 
         // Make window draggable and resizable
         this.makeDraggable(windowElement);
-        this.makeResizable(windowElement);
+        this.resizeManager.makeResizable(windowElement);
 
         // Initialize application if it exists
         if (app && typeof app.initialize === 'function') {
@@ -347,108 +349,6 @@ export class WindowManager {
         });
     }
 
-    makeResizable(window) {
-        const resizeHandles = window.querySelectorAll('.resize-handle');
-        let isResizing = false;
-        let resizeDirection = '';
-        let startX, startY, startWidth, startHeight, startLeft, startTop;
-
-        resizeHandles.forEach(handle => {
-            handle.addEventListener('mousedown', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                isResizing = true;
-                resizeDirection = handle.classList[1]; // resize-n, resize-s, etc.
-                
-                startX = e.clientX;
-                startY = e.clientY;
-                startWidth = parseInt(window.offsetWidth, 10);
-                startHeight = parseInt(window.offsetHeight, 10);
-                startLeft = parseInt(window.offsetLeft, 10);
-                startTop = parseInt(window.offsetTop, 10);
-                
-                // Bring window to front
-                window.style.zIndex = ++this.zIndex;
-                
-                document.body.style.cursor = handle.style.cursor;
-                document.body.style.userSelect = 'none';
-            });
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (!isResizing) return;
-
-            const deltaX = e.clientX - startX;
-            const deltaY = e.clientY - startY;
-            
-            let newWidth = startWidth;
-            let newHeight = startHeight;
-            let newLeft = startLeft;
-            let newTop = startTop;
-            
-            // Minimum window size
-            const minWidth = 300;
-            const minHeight = 200;
-
-            switch (resizeDirection) {
-                case 'resize-n':
-                    newHeight = Math.max(minHeight, startHeight - deltaY);
-                    newTop = startTop + (startHeight - newHeight);
-                    break;
-                case 'resize-s':
-                    newHeight = Math.max(minHeight, startHeight + deltaY);
-                    break;
-                case 'resize-w':
-                    newWidth = Math.max(minWidth, startWidth - deltaX);
-                    newLeft = startLeft + (startWidth - newWidth);
-                    break;
-                case 'resize-e':
-                    newWidth = Math.max(minWidth, startWidth + deltaX);
-                    break;
-                case 'resize-nw':
-                    newWidth = Math.max(minWidth, startWidth - deltaX);
-                    newHeight = Math.max(minHeight, startHeight - deltaY);
-                    newLeft = startLeft + (startWidth - newWidth);
-                    newTop = startTop + (startHeight - newHeight);
-                    break;
-                case 'resize-ne':
-                    newWidth = Math.max(minWidth, startWidth + deltaX);
-                    newHeight = Math.max(minHeight, startHeight - deltaY);
-                    newTop = startTop + (startHeight - newHeight);
-                    break;
-                case 'resize-sw':
-                    newWidth = Math.max(minWidth, startWidth - deltaX);
-                    newHeight = Math.max(minHeight, startHeight + deltaY);
-                    newLeft = startLeft + (startWidth - newWidth);
-                    break;
-                case 'resize-se':
-                    newWidth = Math.max(minWidth, startWidth + deltaX);
-                    newHeight = Math.max(minHeight, startHeight + deltaY);
-                    break;
-            }
-
-            // Apply new dimensions and position without any boundary constraints
-            // This allows resizing even when window is partially off-screen
-            window.style.width = `${newWidth}px`;
-            window.style.height = `${newHeight}px`;
-            window.style.left = `${newLeft}px`;
-            window.style.top = `${newTop}px`;
-            
-            // Reset maximized state if resizing
-            window.dataset.maximized = 'false';
-        });
-
-        document.addEventListener('mouseup', () => {
-            if (isResizing) {
-                isResizing = false;
-                resizeDirection = '';
-                document.body.style.cursor = '';
-                document.body.style.userSelect = '';
-            }
-        });
-    }
-
     closeWindow(id) {
         const window = this.windows.get(id);
         const app = this.applications.get(id);
@@ -561,6 +461,7 @@ export class WindowManager {
         const windowIds = Array.from(this.windows.keys());
         windowIds.forEach(id => this.closeWindow(id));
         this.snapManager.cleanup();
+        this.resizeManager.cleanup();
     }
 
     minimizeAllWindows() {
