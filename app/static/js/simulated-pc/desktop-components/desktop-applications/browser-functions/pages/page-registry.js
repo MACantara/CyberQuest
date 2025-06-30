@@ -14,6 +14,9 @@ import { Challenge4Page } from './level-one/challenge4.js';
 // Import Level 1 Tool Pages
 import { CrossReferenceToolPage } from './level-one/cross-reference-tool.js';
 import { ReverseImageSearchPage } from './level-one/reverse-image-search.js';
+import { MetadataAnalyzerPage } from './level-one/metadata-analyzer.js';
+import { WeatherVerifyPage } from './level-one/weather-verify.js';
+import { LocationVerifyPage } from './level-one/location-verify.js';
 
 export class PageRegistry {
     constructor() {
@@ -39,6 +42,9 @@ export class PageRegistry {
         // Register Level 1 Tool Pages
         this.registerPage(CrossReferenceToolPage);
         this.registerPage(ReverseImageSearchPage);
+        this.registerPage(MetadataAnalyzerPage);
+        this.registerPage(WeatherVerifyPage);
+        this.registerPage(LocationVerifyPage);
     }
 
     registerPage(pageConfig) {
