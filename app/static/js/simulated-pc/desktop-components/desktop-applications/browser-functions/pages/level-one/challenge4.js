@@ -152,7 +152,7 @@ class Challenge4PageClass extends BasePage {
                                     <i class="bi bi-person-badge text-blue-500 mr-2"></i>
                                     Profile Analysis
                                 </h3>
-                                <p class="text-sm text-gray-600 mb-3">Investigate the account that posted this claim</p>
+                                <p class="text-sm text-black mb-3">Investigate the account that posted this claim</p>
                                 <button id="analyze-profile" 
                                         class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-3 rounded text-sm transition-colors duration-200 cursor-pointer">
                                     Analyze @realtalk_truth
@@ -165,7 +165,7 @@ class Challenge4PageClass extends BasePage {
                                     <i class="bi bi-search text-green-500 mr-2"></i>
                                     Claim Verification
                                 </h3>
-                                <p class="text-sm text-gray-600 mb-3">Cross-reference the medical claims with credible sources</p>
+                                <p class="text-sm text-black mb-3">Cross-reference the medical claims with credible sources</p>
                                 <button id="verify-claims" 
                                         class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-3 rounded text-sm transition-colors duration-200 cursor-pointer"
                                         data-url="https://fact-checker.cyberquest.academy/cross-reference">
@@ -181,7 +181,7 @@ class Challenge4PageClass extends BasePage {
                                     <i class="bi bi-graph-up text-purple-500 mr-2"></i>
                                     Engagement Analysis
                                 </h3>
-                                <p class="text-sm text-gray-600 mb-3">Analyze sharing patterns and bot activity</p>
+                                <p class="text-sm text-black mb-3">Analyze sharing patterns and bot activity</p>
                                 <button id="analyze-engagement" 
                                         class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-3 rounded text-sm transition-colors duration-200 cursor-pointer">
                                     Analyze Engagement
@@ -194,7 +194,7 @@ class Challenge4PageClass extends BasePage {
                                     <i class="bi bi-chat-quote text-orange-500 mr-2"></i>
                                     Language Analysis
                                 </h3>
-                                <p class="text-sm text-gray-600 mb-3">Detect emotional manipulation and bias indicators</p>
+                                <p class="text-sm text-black mb-3">Detect emotional manipulation and bias indicators</p>
                                 <button id="analyze-language" 
                                         class="w-full bg-orange-600 hover:bg-orange-700 text-white py-2 px-3 rounded text-sm transition-colors duration-200 cursor-pointer">
                                     Analyze Language
@@ -220,27 +220,27 @@ class Challenge4PageClass extends BasePage {
                             
                             <div class="space-y-6">
                                 <div class="bg-white p-4 rounded-lg border border-gray-200">
-                                    <h4 class="font-semibold mb-3 text-gray-800">Investigation Report</h4>
+                                    <h4 class="font-semibold mb-3 text-black">Investigation Report</h4>
                                     
                                     <div class="space-y-4">
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">1. Account Credibility Assessment</label>
+                                            <label class="block text-sm font-medium text-black mb-2">1. Account Credibility Assessment</label>
                                             <div class="grid md:grid-cols-2 gap-4">
                                                 <div>
                                                     <input type="text" 
-                                                           class="w-full p-2 border border-gray-300 rounded text-sm"
+                                                           class="w-full p-2 border border-gray-300 rounded text-sm text-black"
                                                            placeholder="Account creation date"
                                                            id="account-age">
                                                 </div>
                                                 <div>
                                                     <input type="text" 
-                                                           class="w-full p-2 border border-gray-300 rounded text-sm"
+                                                           class="w-full p-2 border border-gray-300 rounded text-sm text-black"
                                                            placeholder="Follower count pattern"
                                                            id="follower-pattern">
                                                 </div>
                                             </div>
                                             <div class="mt-2">
-                                                <textarea class="w-full p-2 border border-gray-300 rounded text-sm" 
+                                                <textarea class="w-full p-2 border border-gray-300 rounded text-sm text-black" 
                                                           rows="2" 
                                                           placeholder="Describe suspicious account behaviors (e.g., new account, fake profile, bot activity)"
                                                           id="account-assessment"></textarea>
@@ -248,58 +248,58 @@ class Challenge4PageClass extends BasePage {
                                         </div>
                                         
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">2. Claim Verification Results</label>
-                                            <textarea class="w-full p-2 border border-gray-300 rounded text-sm" 
+                                            <label class="block text-sm font-medium text-black mb-2">2. Claim Verification Results</label>
+                                            <textarea class="w-full p-2 border border-gray-300 rounded text-sm text-black" 
                                                       rows="3" 
                                                       placeholder="Document your fact-checking findings - what did credible medical sources say about these claims?"
                                                       id="claim-verification"></textarea>
                                         </div>
                                         
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">3. Emotional Manipulation Indicators</label>
+                                            <label class="block text-sm font-medium text-black mb-2">3. Emotional Manipulation Indicators</label>
                                             <div class="grid md:grid-cols-2 gap-4">
                                                 <div class="space-y-2">
                                                     <div class="flex items-center">
                                                         <input type="checkbox" id="caps-usage" class="mr-2">
-                                                        <label for="caps-usage" class="text-sm">Excessive use of ALL CAPS</label>
+                                                        <label for="caps-usage" class="text-sm text-black">Excessive use of ALL CAPS</label>
                                                     </div>
                                                     <div class="flex items-center">
                                                         <input type="checkbox" id="urgent-language" class="mr-2">
-                                                        <label for="urgent-language" class="text-sm">Urgent/alarmist language</label>
+                                                        <label for="urgent-language" class="text-sm text-black">Urgent/alarmist language</label>
                                                     </div>
                                                     <div class="flex items-center">
                                                         <input type="checkbox" id="conspiracy-hashtags" class="mr-2">
-                                                        <label for="conspiracy-hashtags" class="text-sm">Conspiracy-related hashtags</label>
+                                                        <label for="conspiracy-hashtags" class="text-sm text-black">Conspiracy-related hashtags</label>
                                                     </div>
                                                 </div>
                                                 <div class="space-y-2">
                                                     <div class="flex items-center">
                                                         <input type="checkbox" id="fear-mongering" class="mr-2">
-                                                        <label for="fear-mongering" class="text-sm">Fear-mongering content</label>
+                                                        <label for="fear-mongering" class="text-sm text-black">Fear-mongering content</label>
                                                     </div>
                                                     <div class="flex items-center">
                                                         <input type="checkbox" id="us-vs-them" class="mr-2">
-                                                        <label for="us-vs-them" class="text-sm">"Us vs. them" framing</label>
+                                                        <label for="us-vs-them" class="text-sm text-black">"Us vs. them" framing</label>
                                                     </div>
                                                     <div class="flex items-center">
                                                         <input type="checkbox" id="vague-sources" class="mr-2">
-                                                        <label for="vague-sources" class="text-sm">Vague source references</label>
+                                                        <label for="vague-sources" class="text-sm text-black">Vague source references</label>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">4. Response Strategy</label>
-                                            <textarea class="w-full p-2 border border-gray-300 rounded text-sm" 
+                                            <label class="block text-sm font-medium text-black mb-2">4. Response Strategy</label>
+                                            <textarea class="w-full p-2 border border-gray-300 rounded text-sm text-black" 
                                                       rows="3" 
                                                       placeholder="How would you professionally respond to this misinformation? Include specific sources and evidence."
                                                       id="response-strategy"></textarea>
                                         </div>
                                         
                                         <div>
-                                            <label class="block text-sm font-medium text-gray-700 mb-2">5. Harm Assessment</label>
-                                            <textarea class="w-full p-2 border border-gray-300 rounded text-sm" 
+                                            <label class="block text-sm font-medium text-black mb-2">5. Harm Assessment</label>
+                                            <textarea class="w-full p-2 border border-gray-300 rounded text-sm text-black" 
                                                       rows="2" 
                                                       placeholder="What potential harm could this misinformation cause to public health or society?"
                                                       id="harm-assessment"></textarea>
