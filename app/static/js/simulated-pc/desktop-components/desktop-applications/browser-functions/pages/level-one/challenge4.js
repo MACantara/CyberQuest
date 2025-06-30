@@ -12,13 +12,14 @@ class Challenge4PageClass extends BasePage {
             security: {
                 isHttps: true,
                 hasValidCertificate: true,
-                threats: ['Potential misinformation', 'Unverified claims'],
-                riskFactors: [
-                    'Emotionally charged language',
-                    'Lack of credible sources',
-                    'Viral sharing patterns',
-                    'Anonymous author'
-                ]
+                certificate: {
+                    valid: true,
+                    issuer: 'CyberQuest Academy',
+                    expires: BasePage.generateCertExpiration(12),
+                    algorithm: 'RSA-2048',
+                    trusted: true,
+                    extendedValidation: false
+                },
             }
         });
     }
