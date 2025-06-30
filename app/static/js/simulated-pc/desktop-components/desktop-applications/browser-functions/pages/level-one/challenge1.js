@@ -1,5 +1,4 @@
 // TODO: Add webside header and footer sections
-// TODO: Replace the multiple choice practice scenario into a practical example
 // TODO: Create a realistic leaked email instead of directly saying it
 
 import { BasePage } from '../base-page.js';
@@ -74,44 +73,239 @@ class Challenge1PageClass extends BasePage {
                     </div>
 
                     <div class="mt-12 pt-6 border-t border-gray-200">
-                        <h3 class="text-lg font-semibold mb-3">Analyze This Article</h3>
-                        <div class="space-y-4">
-                            <div class="p-4 bg-gray-50 rounded-lg">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">1. What makes you question the credibility of this article?</label>
-                                <textarea class="w-full p-2 border border-gray-300 rounded" rows="3" placeholder="Type your analysis here..."></textarea>
+                        <h3 class="text-xl font-semibold mb-4 text-red-600">🕵️ FACT-CHECK THIS STORY</h3>
+                        <p class="mb-4 text-gray-700">Before sharing or believing this story, use the verification tools below to investigate these claims. This is your chance to practice real fact-checking techniques!</p>
+                        
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <!-- Cross-Reference Tool -->
+                            <div class="bg-white p-4 border border-gray-200 rounded-lg hover:border-blue-400 transition-colors shadow-sm">
+                                <h4 class="font-semibold mb-2 flex items-center">
+                                    <i class="bi bi-search text-blue-500 mr-2"></i>
+                                    Cross-Reference This Story
+                                </h4>
+                                <p class="text-sm text-gray-600 mb-3">Check if credible news sources are reporting the same information about Senator Johnson's emails.</p>
+                                <div class="mb-3">
+                                    <p class="text-xs text-gray-500 mb-1">Try searching for:</p>
+                                    <code class="bg-gray-100 px-2 py-1 rounded text-xs">"Senator Johnson email scandal"</code>
+                                </div>
+                                <button id="try-cross-reference" 
+                                        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-3 rounded text-sm transition-colors duration-200 cursor-pointer"
+                                        data-url="https://fact-checker.cyberquest.academy/cross-reference">
+                                    Use Cross-Reference Tool
+                                </button>
                             </div>
                             
-                            <div class="p-4 bg-gray-50 rounded-lg">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">2. What evidence would you look for to verify these claims?</label>
-                                <textarea class="w-full p-2 border border-gray-300 rounded" rows="3" placeholder="List the types of evidence..."></textarea>
+                            <!-- Image Verification -->
+                            <div class="bg-white p-4 border border-gray-200 rounded-lg hover:border-purple-400 transition-colors shadow-sm">
+                                <h4 class="font-semibold mb-2 flex items-center">
+                                    <i class="bi bi-camera text-purple-500 mr-2"></i>
+                                    Verify the Photo
+                                </h4>
+                                <p class="text-sm text-gray-600 mb-3">Check if the image of Senator Johnson is authentic and being used in the correct context.</p>
+                                <div class="mb-3">
+                                    <p class="text-xs text-gray-500 mb-1">Tips:</p>
+                                    <ul class="text-xs text-gray-500 list-disc pl-4">
+                                        <li>Look for reverse image search results</li>
+                                        <li>Check the image metadata</li>
+                                    </ul>
+                                </div>
+                                <button id="try-image-search" 
+                                        class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-3 rounded text-sm transition-colors duration-200 cursor-pointer"
+                                        data-url="https://image-verify.cyberquest.academy/reverse-search">
+                                    Use Image Verification
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Results Section -->
+                        <div id="verification-results" class="hidden">
+                            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500 mb-4">
+                                <h4 class="font-semibold text-blue-800 mb-2">✅ Investigation Complete!</h4>
+                                <p class="text-blue-700">After using the verification tools, what did you discover about this story?</p>
                             </div>
                             
-                            <div class="p-4 bg-gray-50 rounded-lg">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">3. How would you respond if someone shared this with you?</label>
-                                <div class="space-y-2">
-                                    <div class="flex items-start">
-                                        <input type="radio" id="response1" name="response" class="mt-1 mr-2">
-                                        <label for="response1" class="cursor-pointer">Share it immediately</label>
+                            <div class="space-y-4">
+                                <div class="p-4 bg-gray-50 rounded-lg">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">What did the Cross-Reference Tool reveal?</label>
+                                    <textarea class="w-full p-2 border border-gray-300 rounded" rows="2" placeholder="Describe what you found when searching for this story across different news sources..."></textarea>
+                                </div>
+                                
+                                <div class="p-4 bg-gray-50 rounded-lg">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">What red flags indicate this might be misinformation?</label>
+                                    <div class="space-y-2">
+                                        <div class="flex items-start">
+                                            <input type="checkbox" id="redflag1" class="mt-1 mr-2">
+                                            <label for="redflag1" class="cursor-pointer text-sm">No coverage by major news outlets</label>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <input type="checkbox" id="redflag2" class="mt-1 mr-2">
+                                            <label for="redflag2" class="cursor-pointer text-sm">Sensational, emotionally charged language</label>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <input type="checkbox" id="redflag3" class="mt-1 mr-2">
+                                            <label for="redflag3" class="cursor-pointer text-sm">Vague sources ("anonymous hackers")</label>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <input type="checkbox" id="redflag4" class="mt-1 mr-2">
+                                            <label for="redflag4" class="cursor-pointer text-sm">Urgent call to action to share immediately</label>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <input type="checkbox" id="redflag5" class="mt-1 mr-2">
+                                            <label for="redflag5" class="cursor-pointer text-sm">Suspicious domain name</label>
+                                        </div>
                                     </div>
-                                    <div class="flex items-start">
-                                        <input type="radio" id="response2" name="response" class="mt-1 mr-2">
-                                        <label for="response2" class="cursor-pointer">Report it as misinformation</label>
-                                    </div>
-                                    <div class="flex items-start">
-                                        <input type="radio" id="response3" name="response" class="mt-1 mr-2">
-                                        <label for="response3" class="cursor-pointer">Research the claims before sharing</label>
+                                </div>
+                                
+                                <div class="p-4 bg-gray-50 rounded-lg">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Based on your investigation, is this story credible?</label>
+                                    <div class="space-y-2">
+                                        <div class="flex items-start">
+                                            <input type="radio" id="credible-yes" name="credible" class="mt-1 mr-2">
+                                            <label for="credible-yes" class="cursor-pointer text-sm">Yes, it appears to be credible</label>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <input type="radio" id="credible-no" name="credible" class="mt-1 mr-2">
+                                            <label for="credible-no" class="cursor-pointer text-sm">No, it appears to be misinformation</label>
+                                        </div>
+                                        <div class="flex items-start">
+                                            <input type="radio" id="credible-unsure" name="credible" class="mt-1 mr-2">
+                                            <label for="credible-unsure" class="cursor-pointer text-sm">Unsure, need more investigation</label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             
-                            <button id="submitAnalysis" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors duration-200 cursor-pointer">
-                                Submit Analysis
+                            <button id="submitAnalysis" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded transition-colors duration-200 cursor-pointer mt-4">
+                                Submit Investigation Results
                             </button>
+                        </div>
+                        
+                        <!-- Hint Section -->
+                        <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-400 mt-6">
+                            <h4 class="font-semibold text-yellow-800 mb-2">💡 Investigation Tips</h4>
+                            <ul class="text-yellow-700 text-sm space-y-1">
+                                <li>• Use both verification tools to get a complete picture</li>
+                                <li>• Pay attention to what credible sources are (or aren't) reporting</li>
+                                <li>• Look for specific red flags in the language and presentation</li>
+                                <li>• Consider the source of this website itself</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
         `;
+    }
+
+    // Method to bind events after content is rendered
+    bindEvents(contentElement) {
+        // Handle cross-reference tool button
+        const crossRefBtn = contentElement.querySelector('#try-cross-reference');
+        if (crossRefBtn) {
+            crossRefBtn.addEventListener('click', () => {
+                const url = crossRefBtn.getAttribute('data-url');
+                window.dispatchEvent(new CustomEvent('navigate-browser', { detail: { url } }));
+                this.showVerificationResults(contentElement);
+            });
+        }
+
+        // Handle image search tool button
+        const imageSearchBtn = contentElement.querySelector('#try-image-search');
+        if (imageSearchBtn) {
+            imageSearchBtn.addEventListener('click', () => {
+                const url = imageSearchBtn.getAttribute('data-url');
+                window.dispatchEvent(new CustomEvent('navigate-browser', { detail: { url } }));
+                this.showVerificationResults(contentElement);
+            });
+        }
+
+        // Handle submit analysis button
+        const submitBtn = contentElement.querySelector('#submitAnalysis');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', () => {
+                this.showAnalysisResults(contentElement);
+            });
+        }
+    }
+
+    showVerificationResults(contentElement) {
+        // Show the results section after a short delay to simulate tool usage
+        setTimeout(() => {
+            const resultsSection = contentElement.querySelector('#verification-results');
+            if (resultsSection) {
+                resultsSection.classList.remove('hidden');
+                resultsSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }, 1000);
+    }
+
+    showAnalysisResults(contentElement) {
+        const credibleChoice = contentElement.querySelector('input[name="credible"]:checked');
+        
+        let message = '';
+        let bgColor = '';
+        let textColor = '';
+        
+        if (credibleChoice) {
+            if (credibleChoice.id === 'credible-no') {
+                message = '🎉 Excellent work! You correctly identified this as misinformation. The cross-reference tool shows no credible sources are reporting this story, and it has multiple red flags.';
+                bgColor = 'bg-green-100';
+                textColor = 'text-green-800';
+            } else if (credibleChoice.id === 'credible-yes') {
+                message = '⚠️ Not quite. This story is actually misinformation. Review the cross-reference results - no credible news sources are reporting this story, which is a major red flag.';
+                bgColor = 'bg-orange-100';
+                textColor = 'text-orange-800';
+            } else {
+                message = '🤔 Good to be cautious! The verification tools show clear evidence this is misinformation - check the cross-reference results showing zero credible sources.';
+                bgColor = 'bg-blue-100';
+                textColor = 'text-blue-800';
+            }
+        } else {
+            message = 'Please select whether you think this story is credible based on your investigation.';
+            bgColor = 'bg-gray-100';
+            textColor = 'text-gray-800';
+            return;
+        }
+
+        // Show results modal
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50';
+        modal.innerHTML = `
+            <div class="bg-white rounded-lg p-6 max-w-lg mx-4">
+                <div class="text-center">
+                    <div class="${bgColor} p-4 rounded-lg mb-4">
+                        <p class="${textColor} font-medium">${message}</p>
+                    </div>
+                    <div class="text-sm text-gray-600 mb-4">
+                        <p><strong>Key Learning Points:</strong></p>
+                        <ul class="text-left mt-2 space-y-1">
+                            <li>• Always cross-reference suspicious claims with credible sources</li>
+                            <li>• Be wary of emotional language and urgent calls to action</li>
+                            <li>• Check the website's credibility and security status</li>
+                            <li>• Verify images and their original context</li>
+                        </ul>
+                    </div>
+                    <button onclick="this.closest('.fixed').remove()" 
+                            class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors">
+                        Continue Training
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+
+    // Create page object compatible with existing system
+    toPageObject() {
+        const pageInstance = this;
+        return {
+            url: this.url,
+            title: this.title,
+            ipAddress: this.ipAddress,
+            securityLevel: this.securityLevel,
+            security: this.security,
+            createContent: () => this.createContent(),
+            bindEvents: (contentElement) => pageInstance.bindEvents(contentElement)
+        };
     }
 }
 
