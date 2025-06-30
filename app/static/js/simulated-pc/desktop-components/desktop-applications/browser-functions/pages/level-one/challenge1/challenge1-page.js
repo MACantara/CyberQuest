@@ -69,6 +69,18 @@ class Challenge1PageClass extends BasePage {
         this.eventHandlers.bindAllEvents(contentElement);
     }
 
+    triggerChallenge2Dialogue() {
+        // Import and trigger challenge 2 dialogue
+        import('../../../../../../dialogues/levels/level1-misinformation-maze.js').then(module => {
+            const Level1Dialogue = module.Level1MisinformationMazeDialogue;
+            if (Level1Dialogue.startChallenge2Dialogue && window.desktop) {
+                Level1Dialogue.startChallenge2Dialogue(window.desktop);
+            }
+        }).catch(error => {
+            console.error('Failed to load challenge 2 dialogue:', error);
+        });
+    }
+
     // Create page object compatible with existing system
     toPageObject() {
         const pageInstance = this;
