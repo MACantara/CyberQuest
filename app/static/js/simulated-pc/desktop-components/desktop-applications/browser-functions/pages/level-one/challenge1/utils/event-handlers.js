@@ -57,16 +57,12 @@ export class EventHandlers {
 
         // Trigger challenge 2 dialogue after a delay
         setTimeout(() => {
-            this.triggerChallenge2Dialogue();
+            this.pageInstance.triggerChallenge2Dialogue();
         }, 2000);
     }
 
     triggerChallenge2Dialogue() {
-        import('../../../../../../../dialogues/levels/level1-misinformation-maze.js').then(module => {
-            const Level1Dialogue = module.Level1MisinformationMazeDialogue;
-            if (Level1Dialogue.startChallenge2Dialogue && window.desktop) {
-                Level1Dialogue.startChallenge2Dialogue(window.desktop);
-            }
-        });
+        // This method is now deprecated - use pageInstance method instead
+        this.pageInstance.triggerChallenge2Dialogue();
     }
 }
