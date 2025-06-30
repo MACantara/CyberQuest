@@ -92,38 +92,74 @@ export class EventHandlers {
     }
 
     submitAnalysis(contentElement) {
-        const responseChoice = contentElement.querySelector('input[name="response"]:checked');
-        
-        if (!responseChoice) {
-            alert('Please select how you would respond to this misinformation.');
+        // Collect form data from the practical investigation form
+        const formData = {
+            originalSource: contentElement.querySelector('#original-source')?.value || '',
+            originalDate: contentElement.querySelector('#original-date')?.value || '',
+            originalLocation: contentElement.querySelector('#original-location')?.value || '',
+            misuseEvidence: contentElement.querySelector('#misuse-evidence')?.value || '',
+            responseStrategy: contentElement.querySelector('#response-strategy')?.value || '',
+            sourceLink: contentElement.querySelector('#source-link')?.value || '',
+            factcheckLink: contentElement.querySelector('#factcheck-link')?.value || '',
+            usedReverseSearch: contentElement.querySelector('#used-reverse-search')?.checked || false,
+            usedMetadata: contentElement.querySelector('#used-metadata')?.checked || false,
+            usedWeather: contentElement.querySelector('#used-weather')?.checked || false,
+            usedLocation: contentElement.querySelector('#used-location')?.checked || false
+        };
+
+        // Validate required fields
+        if (!formData.originalSource || !formData.misuseEvidence || !formData.responseStrategy) {
+            alert('Please complete all required fields: Original Source, Evidence of Misuse, and Response Strategy.');
             return;
         }
 
-        const feedback = AnalysisForm.generateFeedback(responseChoice.id);
+        const feedback = AnalysisForm.generateFeedback(formData);
 
-        // Show results modal
+        // Show detailed results modal
         const modal = document.createElement('div');
         modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50';
         modal.innerHTML = `
-            <div class="bg-white rounded-lg p-6 max-w-lg mx-4">
-                <div class="text-center">
+            <div class="bg-white rounded-lg p-6 max-w-2xl mx-4 max-h-[80vh] overflow-y-auto">
+                <div class="text-center mb-4">
                     <div class="${feedback.bgColor} p-4 rounded-lg mb-4">
+                        <h3 class="${feedback.textColor} text-xl font-bold mb-2">${feedback.level}</h3>
                         <p class="${feedback.textColor} font-medium">${feedback.message}</p>
+                        <div class="mt-2">
+                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                <div class="bg-green-500 h-3 rounded-full transition-all duration-500" style="width: ${feedback.score}%"></div>
+                            </div>
+                            <p class="text-sm mt-1 ${feedback.textColor}">Score: ${feedback.score}/100</p>
+                        </div>
                     </div>
-                    <div class="text-sm text-gray-600 mb-4">
-                        <p><strong>Key Learning Points:</strong></p>
-                        <ul class="text-left mt-2 space-y-1">
-                            <li>• Use reverse image search to find original sources</li>
-                            <li>• Check metadata for creation dates and location data</li>
-                            <li>• Verify weather conditions match historical records</li>
-                            <li>• Confirm location details through landmark analysis</li>
-                            <li>• Always provide sources when correcting misinformation</li>
+                    
+                    <div class="text-left">
+                        <h4 class="font-semibold text-gray-800 mb-3">Detailed Feedback:</h4>
+                        <div class="bg-gray-50 p-4 rounded text-sm space-y-1">
+                            ${feedback.feedback.split('\n').map(line => `<p>${line}</p>`).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="text-left mt-4">
+                        <h4 class="font-semibold text-gray-800 mb-2">Key Learning Points:</h4>
+                        <ul class="text-sm text-gray-700 space-y-1 list-disc pl-5">
+                            <li>Always use multiple verification tools for comprehensive analysis</li>
+                            <li>Document original sources with specific dates and locations</li>
+                            <li>Provide clear evidence when correcting misinformation</li>
+                            <li>Develop professional response strategies that educate others</li>
+                            <li>Include credible source links to support your corrections</li>
                         </ul>
                     </div>
-                    <button onclick="this.closest('.fixed').remove()" 
-                            class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors">
-                        Continue Training
-                    </button>
+                    
+                    <div class="mt-6 flex space-x-3 justify-center">
+                        <button onclick="this.closest('.fixed').remove()" 
+                                class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 transition-colors">
+                            Close
+                        </button>
+                        <button onclick="window.print(); this.closest('.fixed').remove();" 
+                                class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors">
+                            Print Report
+                        </button>
+                    </div>
                 </div>
             </div>
         `;
