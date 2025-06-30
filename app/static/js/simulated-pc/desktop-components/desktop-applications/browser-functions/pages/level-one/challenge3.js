@@ -1,9 +1,4 @@
-// TODO: Replace the multiple choice practice scenario into a practical example
 // TODO: Add protest image
-// TODO: Implement reverse image search
-// TODO: Implement metadata analysis
-// TODO: Implement weather detail verification
-// TODO: Implement location detail verification
 
 import { BasePage } from '../base-page.js';
 
@@ -437,4 +432,5 @@ class Challenge3PageClass extends BasePage {
     }
 }
 
+export const Challenge3Page = new Challenge3PageClass().toPageObject();
 export const Challenge3Page = new Challenge3PageClass().toPageObject();
