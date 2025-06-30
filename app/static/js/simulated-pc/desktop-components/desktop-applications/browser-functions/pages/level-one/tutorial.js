@@ -91,34 +91,58 @@ class TutorialPageClass extends BasePage {
                     </section>
 
                     <section class="mb-8">
-                        <h2 class="text-2xl font-semibold mb-4">Practice Scenario</h2>
+                        <h2 class="text-2xl font-semibold mb-4">Hands-On Practice</h2>
                         <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-400 mb-6">
                             <p class="font-medium text-yellow-800">Breaking News: Senator's Private Emails Leaked!</p>
                             <p class="text-yellow-700">A website you've never heard of claims to have exclusive access to private emails from a senator's personal account.</p>
                         </div>
                         
                         <div class="space-y-4">
-                            <p class="font-medium">What would you do?</p>
-                            <div class="space-y-2">
-                                <div class="flex items-start">
-                                    <input type="radio" id="option1" name="scenario" class="mt-1 mr-2" checked>
-                                    <label for="option1" class="cursor-pointer">Share it immediately because it's important people know</label>
+                            <p class="font-medium">Try the verification tools to investigate this claim:</p>
+                            
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="bg-white p-4 border border-gray-200 rounded-lg hover:border-blue-400 transition-colors">
+                                    <h4 class="font-semibold mb-2 flex items-center">
+                                        <i class="bi bi-search text-blue-500 mr-2"></i>
+                                        Cross-Reference Tool
+                                    </h4>
+                                    <p class="text-sm text-gray-600 mb-3">Check if credible news sources are reporting this story</p>
+                                    <button id="try-cross-reference" 
+                                            class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-3 rounded text-sm transition-colors duration-200 cursor-pointer"
+                                            data-url="https://fact-checker.cyberquest.academy/cross-reference">
+                                        Try Cross-Reference
+                                    </button>
                                 </div>
-                                <div class="flex items-start">
-                                    <input type="radio" id="option2" name="scenario" class="mt-1 mr-2">
-                                    <label for="option2" class="cursor-pointer">Check if reputable news sources are reporting the same information</label>
+                                
+                                <div class="bg-white p-4 border border-gray-200 rounded-lg hover:border-purple-400 transition-colors">
+                                    <h4 class="font-semibold mb-2 flex items-center">
+                                        <i class="bi bi-camera text-purple-500 mr-2"></i>
+                                        Image Verification
+                                    </h4>
+                                    <p class="text-sm text-gray-600 mb-3">Verify if images are authentic and in correct context</p>
+                                    <button id="try-image-search" 
+                                            class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-3 rounded text-sm transition-colors duration-200 cursor-pointer"
+                                            data-url="https://image-verify.cyberquest.academy/reverse-search">
+                                        Try Image Search
+                                    </button>
                                 </div>
-                                <div class="flex items-start">
-                                    <input type="radio" id="option3" name="scenario" class="mt-1 mr-2">
-                                    <label for="option3" class="cursor-pointer">Look for the original source and verify its credibility</label>
-                                </div>
+                            </div>
+                            
+                            <div class="bg-gray-50 p-4 rounded-lg mt-4">
+                                <h4 class="font-semibold mb-2 text-gray-800">Quick Tips for This Scenario:</h4>
+                                <ul class="text-sm text-gray-700 space-y-1">
+                                    <li>• Look up "Senator Johnson email scandal" in the cross-reference tool</li>
+                                    <li>• Check if major news outlets like Reuters, BBC, or AP are covering this</li>
+                                    <li>• Be suspicious of stories that only appear on unknown websites</li>
+                                    <li>• Verify any images associated with the story</li>
+                                </ul>
                             </div>
                         </div>
                     </section>
 
                     <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500 mt-8">
-                        <h3 class="font-semibold text-green-800 mb-2">Ready to test your skills?</h3>
-                        <p class="text-green-700 mb-4">In the next exercise, you'll analyze a real-world example and apply what you've learned.</p>
+                        <h3 class="font-semibold text-green-800 mb-2">Ready for the real challenge?</h3>
+                        <p class="text-green-700 mb-4">After practicing with the tools above, test your skills on the actual suspicious news story.</p>
                         <button id="startChallenge" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded transition-colors duration-200 cursor-pointer" data-url="https://daily-politico-news.com/breaking-news">
                             Start Challenge 1
                         </button>
@@ -126,6 +150,52 @@ class TutorialPageClass extends BasePage {
                 </div>
             </div>
         `;
+    }
+
+    // Method to bind events after content is rendered
+    bindEvents(contentElement) {
+        // Handle cross-reference tool button
+        const crossRefBtn = contentElement.querySelector('#try-cross-reference');
+        if (crossRefBtn) {
+            crossRefBtn.addEventListener('click', () => {
+                const url = crossRefBtn.getAttribute('data-url');
+                // Navigate to cross-reference tool (this will be handled by the browser navigation)
+                window.dispatchEvent(new CustomEvent('navigate-browser', { detail: { url } }));
+            });
+        }
+
+        // Handle image search tool button
+        const imageSearchBtn = contentElement.querySelector('#try-image-search');
+        if (imageSearchBtn) {
+            imageSearchBtn.addEventListener('click', () => {
+                const url = imageSearchBtn.getAttribute('data-url');
+                // Navigate to image search tool
+                window.dispatchEvent(new CustomEvent('navigate-browser', { detail: { url } }));
+            });
+        }
+
+        // Handle start challenge button
+        const startBtn = contentElement.querySelector('#startChallenge');
+        if (startBtn) {
+            startBtn.addEventListener('click', () => {
+                const url = startBtn.getAttribute('data-url');
+                window.dispatchEvent(new CustomEvent('navigate-browser', { detail: { url } }));
+            });
+        }
+    }
+
+    // Create page object compatible with existing system
+    toPageObject() {
+        const pageInstance = this;
+        return {
+            url: this.url,
+            title: this.title,
+            ipAddress: this.ipAddress,
+            securityLevel: this.securityLevel,
+            security: this.security,
+            createContent: () => this.createContent(),
+            bindEvents: (contentElement) => pageInstance.bindEvents(contentElement)
+        };
     }
 }
 
