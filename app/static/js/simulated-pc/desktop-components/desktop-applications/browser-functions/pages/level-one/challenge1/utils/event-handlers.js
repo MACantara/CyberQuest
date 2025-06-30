@@ -46,23 +46,47 @@ export class EventHandlers {
                         Great work! You've successfully identified this as misinformation. 
                         You're ready for the next challenge involving source comparison.
                     </p>
-                    <button onclick="this.closest('.fixed').remove()" 
+                    <button onclick="this.closest('.fixed').remove(); window.challenge1EventHandlers?.navigateToChallenge2?.()" 
                             class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition-colors">
-                        Continue
+                        Continue to Challenge 2
                     </button>
                 </div>
             </div>
         `;
         document.body.appendChild(modal);
 
-        // Trigger challenge 2 dialogue after a delay
-        setTimeout(() => {
-            this.pageInstance.triggerChallenge2Dialogue();
-        }, 2000);
+        // Store reference for cleanup
+        window.challenge1EventHandlers = this;
+    }
+
+    navigateToChallenge2() {
+        // First navigate to challenge 2 page
+        if (window.desktop?.windowManager) {
+            try {
+                const browserApp = window.desktop.windowManager.applications.get('browser');
+                if (browserApp) {
+                    // Navigate to challenge 2 page
+                    browserApp.navigation.navigateToUrl('https://cyberquest.academy/level/1/challenge2');
+                    
+                    // Wait for page to load, then trigger challenge 2 dialogue
+                    setTimeout(() => {
+                        this.triggerChallenge2Dialogue();
+                    }, 1500);
+                }
+            } catch (error) {
+                console.error('Failed to navigate to challenge 2:', error);
+            }
+        }
     }
 
     triggerChallenge2Dialogue() {
-        // This method is now deprecated - use pageInstance method instead
-        this.pageInstance.triggerChallenge2Dialogue();
+        import('../../../../../../../dialogues/levels/level1-misinformation-maze.js').then(module => {
+            const Level1Dialogue = module.Level1MisinformationMazeDialogue;
+            if (Level1Dialogue.startChallenge2Dialogue && window.desktop) {
+                Level1Dialogue.startChallenge2Dialogue(window.desktop);
+            }
+        }).catch(error => {
+            console.error('Failed to load challenge 2 dialogue:', error);
+        });
     }
 }
