@@ -157,7 +157,6 @@ class TutorialPageClass extends BasePage {
         if (crossRefBtn) {
             crossRefBtn.addEventListener('click', () => {
                 const url = crossRefBtn.getAttribute('data-url');
-                // Navigate to cross-reference tool (this will be handled by the browser navigation)
                 window.dispatchEvent(new CustomEvent('navigate-browser', { detail: { url } }));
             });
         }
@@ -167,7 +166,6 @@ class TutorialPageClass extends BasePage {
         if (imageSearchBtn) {
             imageSearchBtn.addEventListener('click', () => {
                 const url = imageSearchBtn.getAttribute('data-url');
-                // Navigate to image search tool
                 window.dispatchEvent(new CustomEvent('navigate-browser', { detail: { url } }));
             });
         }
@@ -176,10 +174,30 @@ class TutorialPageClass extends BasePage {
         const startBtn = contentElement.querySelector('#startChallenge');
         if (startBtn) {
             startBtn.addEventListener('click', () => {
+                // Mark tutorial as completed
+                localStorage.setItem('cyberquest_tutorial_completed', 'true');
+                
                 const url = startBtn.getAttribute('data-url');
                 window.dispatchEvent(new CustomEvent('navigate-browser', { detail: { url } }));
+                
+                // Trigger challenge 1 dialogue
+                setTimeout(() => {
+                    this.triggerChallenge1Dialogue();
+                }, 1000);
             });
         }
+    }
+
+    triggerChallenge1Dialogue() {
+        // Import and trigger challenge 1 dialogue - fix the import path
+        import('../../../../../../simulated-pc/dialogues/levels/level1-misinformation-maze.js').then(module => {
+            const Level1Dialogue = module.Level1MisinformationMazeDialogue;
+            if (Level1Dialogue.startChallenge1Dialogue && window.desktop) {
+                Level1Dialogue.startChallenge1Dialogue(window.desktop);
+            }
+        }).catch(error => {
+            console.error('Failed to load level dialogue:', error);
+        });
     }
 
     // Create page object compatible with existing system
