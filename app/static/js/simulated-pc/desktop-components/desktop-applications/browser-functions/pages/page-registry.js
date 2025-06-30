@@ -7,7 +7,7 @@ import { NewsSitePage } from './news-site.js';
 // Import Level 1 Challenge Pages
 import { TutorialPage } from './level-one/tutorial.js';
 import { Challenge1Page } from './level-one/challenge1/challenge1-page.js';
-import { Challenge2Page } from './level-one/challenge2.js';
+import { Challenge2Page } from './level-one/challenge2/challenge2-page.js';
 import { Challenge3Page } from './level-one/challenge3.js';
 import { Challenge4Page } from './level-one/challenge4.js';
 
