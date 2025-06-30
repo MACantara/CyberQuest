@@ -7,92 +7,54 @@ export class EventHandlers {
     }
 
     bindAllEvents(contentElement) {
-        this.bindVerificationToolEvents(contentElement);
-        this.bindAnalysisEvents(contentElement);
+        this.bindVerificationTools(contentElement);
+        this.bindSubmitButton(contentElement);
     }
 
-    bindVerificationToolEvents(contentElement) {
-        // Handle reverse image search tool
-        const reverseSearchBtn = contentElement.querySelector('#try-reverse-search');
-        if (reverseSearchBtn) {
-            reverseSearchBtn.addEventListener('click', () => {
-                const url = reverseSearchBtn.getAttribute('data-url');
-                window.dispatchEvent(new CustomEvent('navigate-browser', { detail: { url } }));
-                this.showVerificationResults(contentElement, 'reverse-search');
-            });
-        }
+    bindVerificationTools(contentElement) {
+        // Handle verification tool buttons
+        const toolButtons = [
+            '#try-reverse-search',
+            '#try-metadata-analysis', 
+            '#try-weather-check',
+            '#try-location-check'
+        ];
 
-        // Handle metadata analysis tool
-        const metadataBtn = contentElement.querySelector('#try-metadata-analysis');
-        if (metadataBtn) {
-            metadataBtn.addEventListener('click', () => {
-                const url = metadataBtn.getAttribute('data-url');
-                window.dispatchEvent(new CustomEvent('navigate-browser', { detail: { url } }));
-                this.showVerificationResults(contentElement, 'metadata');
-            });
-        }
-
-        // Handle weather verification tool
-        const weatherBtn = contentElement.querySelector('#try-weather-check');
-        if (weatherBtn) {
-            weatherBtn.addEventListener('click', () => {
-                const url = weatherBtn.getAttribute('data-url');
-                window.dispatchEvent(new CustomEvent('navigate-browser', { detail: { url } }));
-                this.showVerificationResults(contentElement, 'weather');
-            });
-        }
-
-        // Handle location verification tool
-        const locationBtn = contentElement.querySelector('#try-location-check');
-        if (locationBtn) {
-            locationBtn.addEventListener('click', () => {
-                const url = locationBtn.getAttribute('data-url');
-                window.dispatchEvent(new CustomEvent('navigate-browser', { detail: { url } }));
-                this.showVerificationResults(contentElement, 'location');
-            });
-        }
+        toolButtons.forEach(selector => {
+            const btn = contentElement.querySelector(selector);
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    const url = btn.getAttribute('data-url');
+                    if (url) {
+                        window.dispatchEvent(new CustomEvent('navigate-browser', { detail: { url } }));
+                    }
+                    this.pageInstance.showVerificationResults(contentElement, this.getToolType(selector));
+                });
+            }
+        });
     }
 
-    bindAnalysisEvents(contentElement) {
-        // Handle submit analysis button
+    bindSubmitButton(contentElement) {
         const submitBtn = contentElement.querySelector('#submitBtn');
         if (submitBtn) {
             submitBtn.addEventListener('click', () => {
-                this.submitAnalysis(contentElement);
+                this.handleSubmitAnalysis(contentElement);
             });
         }
     }
 
-    showVerificationResults(contentElement, toolType) {
-        setTimeout(() => {
-            const resultsSection = contentElement.querySelector('#verification-results');
-            const resultsContent = contentElement.querySelector('#results-content');
-            
-            if (resultsContent) {
-                const toolResults = VerificationTools.getToolResults(toolType);
-                
-                // Add or update tool results
-                let existingResult = resultsContent.querySelector(`#result-${toolType}`);
-                if (existingResult) {
-                    existingResult.innerHTML = toolResults;
-                } else {
-                    const resultDiv = document.createElement('div');
-                    resultDiv.id = `result-${toolType}`;
-                    resultDiv.className = 'bg-white p-4 border border-gray-200 rounded-lg';
-                    resultDiv.innerHTML = toolResults;
-                    resultsContent.appendChild(resultDiv);
-                }
-            }
-            
-            if (resultsSection) {
-                resultsSection.classList.remove('hidden');
-                resultsSection.scrollIntoView({ behavior: 'smooth' });
-            }
-        }, 1500);
+    getToolType(selector) {
+        const mapping = {
+            '#try-reverse-search': 'reverse-search',
+            '#try-metadata-analysis': 'metadata',
+            '#try-weather-check': 'weather',
+            '#try-location-check': 'location'
+        };
+        return mapping[selector] || 'unknown';
     }
 
-    submitAnalysis(contentElement) {
-        // Collect form data from the practical investigation form
+    handleSubmitAnalysis(contentElement) {
+        // Collect form data with correct field IDs
         const formData = {
             originalSource: contentElement.querySelector('#original-source')?.value || '',
             originalDate: contentElement.querySelector('#original-date')?.value || '',
@@ -104,18 +66,31 @@ export class EventHandlers {
             usedReverseSearch: contentElement.querySelector('#used-reverse-search')?.checked || false,
             usedMetadata: contentElement.querySelector('#used-metadata')?.checked || false,
             usedWeather: contentElement.querySelector('#used-weather')?.checked || false,
-            usedLocation: contentElement.querySelector('#used-location')?.checked || false
+            usedLocation: contentElement.querySelector('#used-location')?.checked || false,
+            checkMetadata: contentElement.querySelector('#check-metadata')?.checked || false,
+            checkReverse: contentElement.querySelector('#check-reverse')?.checked || false,
+            checkWeather: contentElement.querySelector('#check-weather')?.checked || false,
+            checkLocation: contentElement.querySelector('#check-location')?.checked || false,
+            checkContext: contentElement.querySelector('#check-context')?.checked || false
         };
 
         // Validate required fields
         if (!formData.originalSource || !formData.misuseEvidence || !formData.responseStrategy) {
-            alert('Please complete all required fields: Original Source, Evidence of Misuse, and Response Strategy.');
+            alert('Please complete the required fields: Original Source, Evidence of Misuse, and Response Strategy.');
             return;
         }
 
+        // Mark challenge 3 as completed
+        localStorage.setItem('cyberquest_challenge3_completed', 'true');
+        
+        // Generate feedback based on responses
         const feedback = AnalysisForm.generateFeedback(formData);
 
-        // Show detailed results modal
+        // Show completion message with feedback
+        this.showCompletionModal(feedback);
+    }
+
+    showCompletionModal(feedback) {
         const modal = document.createElement('div');
         modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50';
         modal.innerHTML = `
@@ -128,12 +103,12 @@ export class EventHandlers {
                             <div class="w-full bg-gray-200 rounded-full h-3">
                                 <div class="bg-green-500 h-3 rounded-full transition-all duration-500" style="width: ${feedback.score}%"></div>
                             </div>
-                            <p class="text-sm mt-1 ${feedback.textColor}">Score: ${feedback.score}/100</p>
+                            <p class="text-sm mt-1 ${feedback.textColor}">Investigation Score: ${feedback.score}/100</p>
                         </div>
                     </div>
                     
                     <div class="text-left">
-                        <h4 class="font-semibold text-gray-800 mb-3">Detailed Feedback:</h4>
+                        <h4 class="font-semibold text-gray-800 mb-3">Investigation Feedback:</h4>
                         <div class="bg-gray-50 p-4 rounded text-sm space-y-1">
                             ${feedback.feedback.split('\n').map(line => `<p>${line}</p>`).join('')}
                         </div>
@@ -142,27 +117,62 @@ export class EventHandlers {
                     <div class="text-left mt-4">
                         <h4 class="font-semibold text-gray-800 mb-2">Key Learning Points:</h4>
                         <ul class="text-sm text-gray-700 space-y-1 list-disc pl-5">
-                            <li>Always use multiple verification tools for comprehensive analysis</li>
-                            <li>Document original sources with specific dates and locations</li>
-                            <li>Provide clear evidence when correcting misinformation</li>
-                            <li>Develop professional response strategies that educate others</li>
-                            <li>Include credible source links to support your corrections</li>
+                            <li>Use reverse image search to find original sources</li>
+                            <li>Check metadata for creation dates and location data</li>
+                            <li>Verify weather conditions match historical records</li>
+                            <li>Confirm location details through landmark analysis</li>
+                            <li>Always provide sources when correcting misinformation</li>
                         </ul>
                     </div>
                     
                     <div class="mt-6 flex space-x-3 justify-center">
-                        <button onclick="this.closest('.fixed').remove()" 
-                                class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 transition-colors">
-                            Close
-                        </button>
-                        <button onclick="window.print(); this.closest('.fixed').remove();" 
-                                class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors">
-                            Print Report
+                        <button onclick="this.closest('.fixed').remove(); window.challenge3EventHandlers?.navigateToChallenge4?.()" 
+                                class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition-colors">
+                            Continue to Challenge 4
                         </button>
                     </div>
                 </div>
             </div>
         `;
         document.body.appendChild(modal);
+
+        // Store reference for cleanup
+        window.challenge3EventHandlers = this;
+
+        // Auto-trigger challenge 4 navigation after a delay if user doesn't click
+        setTimeout(() => {
+            this.navigateToChallenge4();
+        }, 8000);
+    }
+
+    navigateToChallenge4() {
+        // First navigate to challenge 4 page
+        if (window.desktop?.windowManager) {
+            try {
+                const browserApp = window.desktop.windowManager.applications.get('browser');
+                if (browserApp) {
+                    // Navigate to challenge 4 page
+                    browserApp.navigation.navigateToUrl('https://social.cyberquest.academy/posts/controversial-claim');
+                    
+                    // Wait for page to load, then trigger challenge 4 dialogue
+                    setTimeout(() => {
+                        this.triggerChallenge4Dialogue();
+                    }, 1500);
+                }
+            } catch (error) {
+                console.error('Failed to navigate to challenge 4:', error);
+            }
+        }
+    }
+
+    triggerChallenge4Dialogue() {
+        import('../../../../../../../dialogues/levels/level1-misinformation-maze.js').then(module => {
+            const Level1Dialogue = module.Level1MisinformationMazeDialogue;
+            if (Level1Dialogue.startChallenge4Dialogue && window.desktop) {
+                Level1Dialogue.startChallenge4Dialogue(window.desktop);
+            }
+        }).catch(error => {
+            console.error('Failed to load challenge 4 dialogue:', error);
+        });
     }
 }
