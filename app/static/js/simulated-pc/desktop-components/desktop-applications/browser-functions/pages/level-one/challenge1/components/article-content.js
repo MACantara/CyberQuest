@@ -29,9 +29,43 @@ export class ArticleContent {
                     <h2 class="text-2xl font-bold mt-6 mb-3 text-black">The Leaked Documents</h2>
                     <p class="mb-4 text-black">According to the leaked emails, Senator Johnson has been secretly communicating with representatives from a foreign government, promising political favors in exchange for financial contributions to his campaign.</p>
                     
-                    <div class="bg-yellow-50 p-4 my-6 border-l-4 border-yellow-400">
-                        <p class="font-medium text-black">"The time has come to move forward with our plan. The payment will be processed through the usual channels. - MJ"</p>
-                        <p class="text-sm text-gray-600 mt-1">- Alleged email from Senator Johnson's account</p>
+                    <div class="bg-gray-50 p-4 my-6 border border-gray-300 rounded-lg">
+                        <h3 class="font-semibold text-gray-800 mb-3 flex items-center">
+                            <i class="bi bi-envelope text-gray-600 mr-2"></i>
+                            Leaked Email Communication
+                        </h3>
+                        <div class="bg-white border border-gray-200 rounded p-4 font-mono text-sm">
+                            <div class="border-b border-gray-200 pb-2 mb-3">
+                                <div class="flex items-center mb-1">
+                                    <span class="text-gray-600 text-xs w-16">From:</span>
+                                    <span class="text-black">mj.senate@email-server.gov</span>
+                                </div>
+                                <div class="flex items-center mb-1">
+                                    <span class="text-gray-600 text-xs w-16">To:</span>
+                                    <span class="text-black">delegate.kozlov@international-affairs.org</span>
+                                </div>
+                                <div class="flex items-center mb-1">
+                                    <span class="text-gray-600 text-xs w-16">Date:</span>
+                                    <span class="text-black">October 15, 2024, 11:47 PM</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="text-gray-600 text-xs w-16">Subject:</span>
+                                    <span class="text-black">Re: Infrastructure Discussion - Phase 2</span>
+                                </div>
+                            </div>
+                            <div class="text-black">
+                                <p class="mb-2">Dmitri,</p>
+                                <p class="mb-2">The committee meeting went as expected. The energy bill will be on the floor next Tuesday.</p>
+                                <p class="mb-2">As we discussed, the time has come to move forward with our arrangement. The consulting payment of $2.5M will be processed through the usual channels within 48 hours of the vote.</p>
+                                <p class="mb-2">Remember - discretion is key. No direct communication until after the legislation passes.</p>
+                                <p class="mb-2">The Senator appreciates your organization's continued partnership.</p>
+                                <p class="mt-4">- MJ</p>
+                                <div class="mt-4 pt-2 border-t border-gray-200 text-xs text-gray-500">
+                                    <p>CONFIDENTIAL - This email contains privileged and confidential information</p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2 italic">- Email allegedly from Senator Johnson's private account, leaked by anonymous hackers</p>
                     </div>
 
                     <h2 class="text-2xl font-bold mt-8 mb-3 text-black">What This Means for the Election</h2>
