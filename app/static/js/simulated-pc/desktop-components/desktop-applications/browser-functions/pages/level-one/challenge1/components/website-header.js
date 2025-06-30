@@ -16,7 +16,7 @@ export class WebsiteHeader {
                         </div>
                         <div class="hidden md:flex items-center space-x-6 text-sm">
                             <span>📅 ${new Date().toLocaleDateString()}</span>
-                            <span>🌡️ 72°F</span>
+                            <span>🌡️ 24°C</span>
                             <span>📊 Market: +2.1%</span>
                         </div>
                     </div>
