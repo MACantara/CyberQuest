@@ -1,4 +1,3 @@
-// TODO: Replace the multiple choice practice scenario into a practical example
 // TODO: Add profile pictures
 
 import { BasePage } from '../base-page.js';
@@ -24,7 +23,6 @@ class Challenge4PageClass extends BasePage {
         });
     }
 
-
     createContent() {
         return `
             <div class="bg-gray-100 min-h-screen">
@@ -37,7 +35,7 @@ class Challenge4PageClass extends BasePage {
                             </svg>
                             <span class="ml-2 font-bold text-xl">SocialMedia</span>
                         </div>
-                        <div class="flex space-x-4
+                        <div class="flex space-x-4">
                             <button class="text-blue-500 font-semibold">Home</button>
                             <button class="text-gray-600 hover:text-gray-900">Explore</button>
                             <button class="text-gray-600 hover:text-gray-900">Notifications</button>
@@ -142,91 +140,539 @@ class Challenge4PageClass extends BasePage {
                         </div>
                     </div>
                     
-                    <!-- Analysis Section -->
+                    <!-- Practical Investigation Section -->
                     <div class="bg-white rounded-lg shadow p-6">
-                        <h2 class="text-xl font-semibold mb-4 text-black">Social Media Analysis</h2>
+                        <h2 class="text-xl font-semibold mb-4 text-black">Social Media Investigation Tools</h2>
+                        <p class="text-gray-600 mb-6">Use the verification tools below to investigate this post and its claims.</p>
                         
-                        <div class="space-y-6">
-                            <div>
-                                <h3 class="font-medium mb-2 text-black">1. What red flags indicate this might be misinformation?</h3>
-                                <div class="space-y-2">
-                                    <div class="flex items-start">
-                                        <input type="checkbox" id="redflag1" class="mt-1 mr-2">
-                                        <label for="redflag1" class="cursor-pointer text-black">Use of all caps and alarmist language</label>
-                                    </div>
-                                    <div class="flex items-start">
-                                        <input type="checkbox" id="redflag2" class="mt-1 mr-2">
-                                        <label for="redflag2" class="cursor-pointer text-black">Vague references without specific sources</label>
-                                    </div>
-                                    <div class="flex items-start">
-                                        <input type="checkbox" id="redflag3" class="mt-1 mr-2">
-                                        <label for="redflag3" class="cursor-pointer text-black">Claim of media cover-up without evidence</label>
-                                    </div>
-                                    <div class="flex items-start">
-                                        <input type="checkbox" id="redflag4" class="mt-1 mr-2">
-                                        <label for="redflag4" class="cursor-pointer text-black">Use of emotional language and hashtags</label>
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <!-- Profile Analysis Tool -->
+                            <div class="bg-white p-4 border border-gray-200 rounded-lg hover:border-blue-400 transition-colors shadow-sm">
+                                <h3 class="font-semibold text-lg mb-2 flex items-center">
+                                    <i class="bi bi-person-badge text-blue-500 mr-2"></i>
+                                    Profile Analysis
+                                </h3>
+                                <p class="text-sm text-gray-600 mb-3">Investigate the account that posted this claim</p>
+                                <button id="analyze-profile" 
+                                        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-3 rounded text-sm transition-colors duration-200 cursor-pointer">
+                                    Analyze @realtalk_truth
+                                </button>
+                            </div>
+                            
+                            <!-- Claim Verification -->
+                            <div class="bg-white p-4 border border-gray-200 rounded-lg hover:border-green-400 transition-colors shadow-sm">
+                                <h3 class="font-semibold text-lg mb-2 flex items-center">
+                                    <i class="bi bi-search text-green-500 mr-2"></i>
+                                    Claim Verification
+                                </h3>
+                                <p class="text-sm text-gray-600 mb-3">Cross-reference the medical claims with credible sources</p>
+                                <button id="verify-claims" 
+                                        class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-3 rounded text-sm transition-colors duration-200 cursor-pointer"
+                                        data-url="https://fact-checker.cyberquest.academy/cross-reference">
+                                    Verify Medical Claims
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-6 mb-6">
+                            <!-- Engagement Analysis -->
+                            <div class="bg-white p-4 border border-gray-200 rounded-lg hover:border-purple-400 transition-colors shadow-sm">
+                                <h3 class="font-semibold text-lg mb-2 flex items-center">
+                                    <i class="bi bi-graph-up text-purple-500 mr-2"></i>
+                                    Engagement Analysis
+                                </h3>
+                                <p class="text-sm text-gray-600 mb-3">Analyze sharing patterns and bot activity</p>
+                                <button id="analyze-engagement" 
+                                        class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-3 rounded text-sm transition-colors duration-200 cursor-pointer">
+                                    Analyze Engagement
+                                </button>
+                            </div>
+                            
+                            <!-- Language Analysis -->
+                            <div class="bg-white p-4 border border-gray-200 rounded-lg hover:border-orange-400 transition-colors shadow-sm">
+                                <h3 class="font-semibold text-lg mb-2 flex items-center">
+                                    <i class="bi bi-chat-quote text-orange-500 mr-2"></i>
+                                    Language Analysis
+                                </h3>
+                                <p class="text-sm text-gray-600 mb-3">Detect emotional manipulation and bias indicators</p>
+                                <button id="analyze-language" 
+                                        class="w-full bg-orange-600 hover:bg-orange-700 text-white py-2 px-3 rounded text-sm transition-colors duration-200 cursor-pointer">
+                                    Analyze Language
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Results Section -->
+                        <div id="investigation-results" class="hidden">
+                            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500 mb-4">
+                                <h4 class="font-semibold text-blue-800 mb-2">✅ Investigation Complete!</h4>
+                                <p class="text-blue-700">Review your findings and complete your professional assessment below.</p>
+                            </div>
+                            
+                            <div id="results-content" class="space-y-4 mb-6">
+                                <!-- Results will be populated here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Professional Assessment Form -->
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-black">Professional Social Media Assessment</h3>
+                            
+                            <div class="space-y-6">
+                                <div class="bg-white p-4 rounded-lg border border-gray-200">
+                                    <h4 class="font-semibold mb-3 text-gray-800">Investigation Report</h4>
+                                    
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">1. Account Credibility Assessment</label>
+                                            <div class="grid md:grid-cols-2 gap-4">
+                                                <div>
+                                                    <input type="text" 
+                                                           class="w-full p-2 border border-gray-300 rounded text-sm"
+                                                           placeholder="Account creation date"
+                                                           id="account-age">
+                                                </div>
+                                                <div>
+                                                    <input type="text" 
+                                                           class="w-full p-2 border border-gray-300 rounded text-sm"
+                                                           placeholder="Follower count pattern"
+                                                           id="follower-pattern">
+                                                </div>
+                                            </div>
+                                            <div class="mt-2">
+                                                <textarea class="w-full p-2 border border-gray-300 rounded text-sm" 
+                                                          rows="2" 
+                                                          placeholder="Describe suspicious account behaviors (e.g., new account, fake profile, bot activity)"
+                                                          id="account-assessment"></textarea>
+                                            </div>
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">2. Claim Verification Results</label>
+                                            <textarea class="w-full p-2 border border-gray-300 rounded text-sm" 
+                                                      rows="3" 
+                                                      placeholder="Document your fact-checking findings - what did credible medical sources say about these claims?"
+                                                      id="claim-verification"></textarea>
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">3. Emotional Manipulation Indicators</label>
+                                            <div class="grid md:grid-cols-2 gap-4">
+                                                <div class="space-y-2">
+                                                    <div class="flex items-center">
+                                                        <input type="checkbox" id="caps-usage" class="mr-2">
+                                                        <label for="caps-usage" class="text-sm">Excessive use of ALL CAPS</label>
+                                                    </div>
+                                                    <div class="flex items-center">
+                                                        <input type="checkbox" id="urgent-language" class="mr-2">
+                                                        <label for="urgent-language" class="text-sm">Urgent/alarmist language</label>
+                                                    </div>
+                                                    <div class="flex items-center">
+                                                        <input type="checkbox" id="conspiracy-hashtags" class="mr-2">
+                                                        <label for="conspiracy-hashtags" class="text-sm">Conspiracy-related hashtags</label>
+                                                    </div>
+                                                </div>
+                                                <div class="space-y-2">
+                                                    <div class="flex items-center">
+                                                        <input type="checkbox" id="fear-mongering" class="mr-2">
+                                                        <label for="fear-mongering" class="text-sm">Fear-mongering content</label>
+                                                    </div>
+                                                    <div class="flex items-center">
+                                                        <input type="checkbox" id="us-vs-them" class="mr-2">
+                                                        <label for="us-vs-them" class="text-sm">"Us vs. them" framing</label>
+                                                    </div>
+                                                    <div class="flex items-center">
+                                                        <input type="checkbox" id="vague-sources" class="mr-2">
+                                                        <label for="vague-sources" class="text-sm">Vague source references</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">4. Response Strategy</label>
+                                            <textarea class="w-full p-2 border border-gray-300 rounded text-sm" 
+                                                      rows="3" 
+                                                      placeholder="How would you professionally respond to this misinformation? Include specific sources and evidence."
+                                                      id="response-strategy"></textarea>
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="block text-sm font-medium text-gray-700 mb-2">5. Harm Assessment</label>
+                                            <textarea class="w-full p-2 border border-gray-300 rounded text-sm" 
+                                                      rows="2" 
+                                                      placeholder="What potential harm could this misinformation cause to public health or society?"
+                                                      id="harm-assessment"></textarea>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            
-                            <div>
-                                <h3 class="font-medium mb-2 text-black">2. How would you verify the claims made in this post?</h3>
-                                <textarea class="w-full p-2 border border-gray-300 rounded text-sm text-black" rows="3" placeholder="List your verification steps..."></textarea>
-                            </div>
-                            
-                            <div>
-                                <h3 class="font-medium mb-2 text-black">3. What would be an appropriate way to respond to this post?</h3>
-                                <div class="space-y-2">
-                                    <div class="flex items-start">
-                                        <input type="radio" id="response1" name="response" class="mt-1 mr-2">
-                                        <label for="response1" class="cursor-pointer text-black">Share it immediately to warn others</label>
-                                    </div>
-                                    <div class="flex items-start">
-                                        <input type="radio" id="response2" name="response" class="mt-1 mr-2">
-                                        <label for="response2" class="cursor-pointer text-black">Report it as misinformation</label>
-                                    </div>
-                                    <div class="flex items-start">
-                                        <input type="radio" id="response3" name="response" class="mt-1 mr-2">
-                                        <label for="response3" class="cursor-pointer text-black">Comment with verified information and sources</label>
-                                    </div>
-                                    <div class="flex items-start">
-                                        <input type="radio" id="response4" name="response" class="mt-1 mr-2">
-                                        <label for="response4" class="cursor-pointer text-black">Ignore it and move on</label>
+                                
+                                <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                                    <h4 class="font-semibold text-blue-800 mb-2">Social Media Investigation Checklist</h4>
+                                    <div class="space-y-2 text-sm">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="check-profile" class="mr-2">
+                                            <label for="check-profile" class="text-blue-700">Analyzed account profile and posting history</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="check-claims" class="mr-2">
+                                            <label for="check-claims" class="text-blue-700">Fact-checked claims with credible medical sources</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="check-engagement" class="mr-2">
+                                            <label for="check-engagement" class="text-blue-700">Examined engagement patterns for bot activity</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="check-language" class="mr-2">
+                                            <label for="check-language" class="text-blue-700">Identified emotional manipulation techniques</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="check-harm" class="mr-2">
+                                            <label for="check-harm" class="text-blue-700">Assessed potential societal harm</label>
+                                        </div>
                                     </div>
                                 </div>
+                                
+                                <button id="submit-assessment" class="bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-8 rounded transition-colors duration-200 mt-4 cursor-pointer">
+                                    Submit Professional Assessment
+                                </button>
                             </div>
-                            
-                            <div>
-                                <h3 class="font-medium mb-2 text-black">4. What makes this post potentially harmful?</h3>
-                                <textarea class="w-full p-2 border border-gray-300 rounded text-sm text-black" rows="2"></textarea>
-                            </div>
-                            
-                            <button id="submitBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded transition-colors duration-200 cursor-pointer">
-                                Submit Analysis
-                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <style>
-                /* Add any additional styles here */
-            </style>
-            
-            <script>
-                // Add any interactive functionality here
-                document.addEventListener('DOMContentLoaded', function() {
-                    // Example: Add click handler for submit button
-                    const submitBtn = document.getElementById('submitBtn');
-                    if (submitBtn) {
-                        submitBtn.addEventListener('click', function() {
-                            // Validate form and submit
-                            alert('Analysis submitted!');
-                        });
-                    }
-                });
-            </script>
         `;
+    }
+
+    // Method to bind events after content is rendered
+    bindEvents(contentElement) {
+        // Handle profile analysis
+        const profileBtn = contentElement.querySelector('#analyze-profile');
+        if (profileBtn) {
+            profileBtn.addEventListener('click', () => {
+                this.showInvestigationResults(contentElement, 'profile');
+            });
+        }
+
+        // Handle claim verification
+        const claimsBtn = contentElement.querySelector('#verify-claims');
+        if (claimsBtn) {
+            claimsBtn.addEventListener('click', () => {
+                const url = claimsBtn.getAttribute('data-url');
+                window.dispatchEvent(new CustomEvent('navigate-browser', { detail: { url } }));
+                this.showInvestigationResults(contentElement, 'claims');
+            });
+        }
+
+        // Handle engagement analysis
+        const engagementBtn = contentElement.querySelector('#analyze-engagement');
+        if (engagementBtn) {
+            engagementBtn.addEventListener('click', () => {
+                this.showInvestigationResults(contentElement, 'engagement');
+            });
+        }
+
+        // Handle language analysis
+        const languageBtn = contentElement.querySelector('#analyze-language');
+        if (languageBtn) {
+            languageBtn.addEventListener('click', () => {
+                this.showInvestigationResults(contentElement, 'language');
+            });
+        }
+
+        // Handle submit assessment
+        const submitBtn = contentElement.querySelector('#submit-assessment');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', () => {
+                this.submitAssessment(contentElement);
+            });
+        }
+    }
+
+    showInvestigationResults(contentElement, toolType) {
+        setTimeout(() => {
+            const resultsSection = contentElement.querySelector('#investigation-results');
+            const resultsContent = contentElement.querySelector('#results-content');
+            
+            if (resultsContent) {
+                const toolResults = this.getToolResults(toolType);
+                
+                // Add or update tool results
+                let existingResult = resultsContent.querySelector(`#result-${toolType}`);
+                if (existingResult) {
+                    existingResult.innerHTML = toolResults;
+                } else {
+                    const resultDiv = document.createElement('div');
+                    resultDiv.id = `result-${toolType}`;
+                    resultDiv.className = 'bg-white p-4 border border-gray-200 rounded-lg';
+                    resultDiv.innerHTML = toolResults;
+                    resultsContent.appendChild(resultDiv);
+                }
+            }
+            
+            if (resultsSection) {
+                resultsSection.classList.remove('hidden');
+                resultsSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }, 1500);
+    }
+
+    getToolResults(toolType) {
+        const results = {
+            'profile': `
+                <h4 class="font-semibold mb-3 flex items-center">
+                    <i class="bi bi-person-badge text-blue-500 mr-2"></i>
+                    Profile Analysis Results
+                </h4>
+                <div class="space-y-3">
+                    <div class="bg-red-50 p-3 rounded border-l-4 border-red-500">
+                        <p class="font-medium text-red-800">🚨 Suspicious Account Activity</p>
+                        <ul class="text-sm text-red-700 mt-2 space-y-1">
+                            <li>• Account created: 3 weeks ago (very recent)</li>
+                            <li>• Only 47 followers, but claims go viral</li>
+                            <li>• No profile bio or verification</li>
+                            <li>• Generic profile picture</li>
+                            <li>• Primarily posts controversial content</li>
+                        </ul>
+                    </div>
+                    <div class="bg-yellow-50 p-3 rounded border-l-4 border-yellow-500">
+                        <p class="font-medium text-yellow-800">Bot Indicators Detected</p>
+                        <p class="text-sm text-yellow-700">Posting frequency and engagement patterns suggest possible automation or coordinated behavior.</p>
+                    </div>
+                </div>
+            `,
+            'claims': `
+                <h4 class="font-semibold mb-3 flex items-center">
+                    <i class="bi bi-search text-green-500 mr-2"></i>
+                    Claim Verification Results
+                </h4>
+                <div class="space-y-3">
+                    <div class="bg-red-50 p-3 rounded border-l-4 border-red-500">
+                        <p class="font-medium text-red-800">FALSE CLAIM DETECTED</p>
+                        <p class="text-sm text-red-700 mb-2">No credible medical sources support the "87% severe side effects" claim</p>
+                        <div class="text-xs text-red-600">
+                            <p><strong>CDC:</strong> No such data reported</p>
+                            <p><strong>WHO:</strong> No supporting evidence found</p>
+                            <p><strong>Medical journals:</strong> No studies with these findings</p>
+                        </div>
+                    </div>
+                    <div class="bg-blue-50 p-3 rounded border-l-4 border-blue-500">
+                        <p class="font-medium text-blue-800">Fact-Check Results</p>
+                        <p class="text-sm text-blue-700">Multiple fact-checking organizations have debunked similar claims. Current safety data shows different results.</p>
+                    </div>
+                </div>
+            `,
+            'engagement': `
+                <h4 class="font-semibold mb-3 flex items-center">
+                    <i class="bi bi-graph-up text-purple-500 mr-2"></i>
+                    Engagement Analysis Results
+                </h4>
+                <div class="space-y-3">
+                    <div class="bg-orange-50 p-3 rounded border-l-4 border-orange-500">
+                        <p class="font-medium text-orange-800">Suspicious Engagement Patterns</p>
+                        <ul class="text-sm text-orange-700 mt-2 space-y-1">
+                            <li>• 73% of shares occurred within first hour</li>
+                            <li>• Many sharing accounts created recently</li>
+                            <li>• Similar retweet patterns across accounts</li>
+                            <li>• Limited genuine discussion in comments</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded">
+                        <p class="font-medium text-gray-800">Amplification Analysis</p>
+                        <p class="text-sm text-gray-700">Post appears to be artificially amplified rather than organically viral. Suggests coordinated sharing campaign.</p>
+                    </div>
+                </div>
+            `,
+            'language': `
+                <h4 class="font-semibold mb-3 flex items-center">
+                    <i class="bi bi-chat-quote text-orange-500 mr-2"></i>
+                    Language Analysis Results
+                </h4>
+                <div class="space-y-3">
+                    <div class="bg-red-50 p-3 rounded border-l-4 border-red-500">
+                        <p class="font-medium text-red-800">High Emotional Manipulation Score</p>
+                        <ul class="text-sm text-red-700 mt-2 space-y-1">
+                            <li>• "BREAKING" and urgent language (fear appeal)</li>
+                            <li>• ALL CAPS for emphasis (attention grabbing)</li>
+                            <li>• "ADMITS" implies guilt without evidence</li>
+                            <li>• "SILENT" suggests media conspiracy</li>
+                            <li>• Uses inflammatory hashtags</li>
+                        </ul>
+                    </div>
+                    <div class="bg-yellow-50 p-3 rounded border-l-4 border-yellow-500">
+                        <p class="font-medium text-yellow-800">Propaganda Techniques Identified</p>
+                        <p class="text-sm text-yellow-700">Fear-mongering, false authority claims, and us-vs-them framing designed to bypass critical thinking.</p>
+                    </div>
+                </div>
+            `
+        };
+        
+        return results[toolType] || '<p>Analysis in progress...</p>';
+    }
+
+    submitAssessment(contentElement) {
+        // Collect form data
+        const formData = {
+            accountAge: contentElement.querySelector('#account-age')?.value || '',
+            followerPattern: contentElement.querySelector('#follower-pattern')?.value || '',
+            accountAssessment: contentElement.querySelector('#account-assessment')?.value || '',
+            claimVerification: contentElement.querySelector('#claim-verification')?.value || '',
+            responseStrategy: contentElement.querySelector('#response-strategy')?.value || '',
+            harmAssessment: contentElement.querySelector('#harm-assessment')?.value || '',
+            manipulationChecks: {
+                caps: contentElement.querySelector('#caps-usage')?.checked || false,
+                urgent: contentElement.querySelector('#urgent-language')?.checked || false,
+                conspiracy: contentElement.querySelector('#conspiracy-hashtags')?.checked || false,
+                fear: contentElement.querySelector('#fear-mongering')?.checked || false,
+                divisive: contentElement.querySelector('#us-vs-them')?.checked || false,
+                vague: contentElement.querySelector('#vague-sources')?.checked || false
+            }
+        };
+
+        // Validate required fields
+        if (!formData.accountAssessment || !formData.claimVerification || !formData.responseStrategy) {
+            alert('Please complete all required assessment fields.');
+            return;
+        }
+
+        // Generate feedback based on responses
+        const feedback = this.generateAssessmentFeedback(formData);
+
+        // Show results modal
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50';
+        modal.innerHTML = `
+            <div class="bg-white rounded-lg p-6 max-w-2xl mx-4 max-h-[80vh] overflow-y-auto">
+                <div class="text-center mb-4">
+                    <div class="${feedback.bgColor} p-4 rounded-lg mb-4">
+                        <h3 class="${feedback.textColor} text-xl font-bold mb-2">${feedback.level}</h3>
+                        <p class="${feedback.textColor} font-medium">${feedback.message}</p>
+                        <div class="mt-2">
+                            <div class="w-full bg-gray-200 rounded-full h-3">
+                                <div class="bg-green-500 h-3 rounded-full transition-all duration-500" style="width: ${feedback.score}%"></div>
+                            </div>
+                            <p class="text-sm mt-1 ${feedback.textColor}">Assessment Score: ${feedback.score}/100</p>
+                        </div>
+                    </div>
+                    
+                    <div class="text-left">
+                        <h4 class="font-semibold text-gray-800 mb-3">Assessment Feedback:</h4>
+                        <div class="bg-gray-50 p-4 rounded text-sm space-y-1">
+                            ${feedback.feedback.split('\n').map(line => `<p>${line}</p>`).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="text-left mt-4">
+                        <h4 class="font-semibold text-gray-800 mb-2">Key Learning Points:</h4>
+                        <ul class="text-sm text-gray-700 space-y-1 list-disc pl-5">
+                            <li>Social media misinformation often uses emotional manipulation</li>
+                            <li>New or suspicious accounts frequently spread false claims</li>
+                            <li>Always verify medical claims with official health organizations</li>
+                            <li>Look for bot-like behavior and coordinated sharing campaigns</li>
+                            <li>Respond professionally with facts and credible sources</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="mt-6 flex space-x-3 justify-center">
+                        <button onclick="this.closest('.fixed').remove()" 
+                                class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 transition-colors">
+                            Close Assessment
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+
+    generateAssessmentFeedback(formData) {
+        let score = 0;
+        let feedback = [];
+
+        // Check account assessment
+        if (formData.accountAssessment.toLowerCase().includes('new') || formData.accountAssessment.toLowerCase().includes('recent')) {
+            score += 20;
+            feedback.push("✅ Correctly identified suspicious account age/patterns");
+        } else {
+            feedback.push("❌ Account age analysis needs improvement - check account creation date");
+        }
+
+        // Check claim verification
+        if (formData.claimVerification.toLowerCase().includes('false') || formData.claimVerification.toLowerCase().includes('no evidence')) {
+            score += 25;
+            feedback.push("✅ Properly fact-checked the medical claims");
+        } else {
+            feedback.push("❌ Claim verification incomplete - check official health sources");
+        }
+
+        // Check manipulation indicators
+        const manipulationScore = Object.values(formData.manipulationChecks).filter(Boolean).length;
+        if (manipulationScore >= 4) {
+            score += 20;
+            feedback.push("✅ Identified multiple emotional manipulation techniques");
+        } else if (manipulationScore >= 2) {
+            score += 10;
+            feedback.push("⚠️ Some manipulation techniques identified, but look for more");
+        } else {
+            feedback.push("❌ Need to identify more emotional manipulation indicators");
+        }
+
+        // Check response strategy
+        if (formData.responseStrategy.length > 100 && formData.responseStrategy.toLowerCase().includes('source')) {
+            score += 20;
+            feedback.push("✅ Developed comprehensive response with sources");
+        } else {
+            feedback.push("⚠️ Response strategy needs more detail and credible sources");
+        }
+
+        // Check harm assessment
+        if (formData.harmAssessment.length > 50) {
+            score += 15;
+            feedback.push("✅ Recognized potential societal harm");
+        } else {
+            feedback.push("⚠️ Harm assessment could be more detailed");
+        }
+
+        let level = 'Needs Development';
+        let bgColor = 'bg-orange-100';
+        let textColor = 'text-orange-800';
+
+        if (score >= 85) {
+            level = 'Expert Analyst';
+            bgColor = 'bg-green-100';
+            textColor = 'text-green-800';
+        } else if (score >= 70) {
+            level = 'Proficient Investigator';
+            bgColor = 'bg-blue-100';
+            textColor = 'text-blue-800';
+        } else if (score >= 50) {
+            level = 'Developing Skills';
+            bgColor = 'bg-yellow-100';
+            textColor = 'text-yellow-800';
+        }
+
+        return {
+            score,
+            level,
+            bgColor,
+            textColor,
+            feedback: feedback.join('\n'),
+            message: `Social media investigation complete! Your analysis skills are at ${level} level.`
+        };
+    }
+
+    // Create page object compatible with existing system
+    toPageObject() {
+        const pageInstance = this;
+        return {
+            url: this.url,
+            title: this.title,
+            ipAddress: this.ipAddress,
+            securityLevel: this.securityLevel,
+            security: this.security,
+            createContent: () => this.createContent(),
+            bindEvents: (contentElement) => pageInstance.bindEvents(contentElement)
+        };
     }
 }
 
