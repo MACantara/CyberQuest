@@ -9,7 +9,7 @@ import { TutorialPage } from './level-one/tutorial.js';
 import { Challenge1Page } from './level-one/challenge1/challenge1-page.js';
 import { Challenge2Page } from './level-one/challenge2/challenge2-page.js';
 import { Challenge3Page } from './level-one/challenge3/challenge3-page.js';
-import { Challenge4Page } from './level-one/challenge4.js';
+import { Challenge4Page } from './level-one/challenge4/challenge4-page.js';
 
 // Import Level 1 Tool Pages
 import { CrossReferenceToolPage } from './level-one/cross-reference-tool.js';
