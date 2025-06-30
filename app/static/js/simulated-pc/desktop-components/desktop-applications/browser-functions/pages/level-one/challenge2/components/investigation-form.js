@@ -51,7 +51,7 @@ export class InvestigationForm {
                     </div>
                 </div>
                 
-                <button id="submit-analysis" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded transition-colors duration-200 cursor-pointer mt-4">
+                <button id="submit-comparison" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-6 rounded transition-colors duration-200 cursor-pointer mt-4">
                     Submit Analysis
                 </button>
             </div>
