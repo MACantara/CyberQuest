@@ -1,6 +1,5 @@
 import { BaseDialogue } from '../../base-dialogue.js';
 import { 
-    TutorialDialogue, 
     Challenge1Dialogue, 
     Challenge2Dialogue, 
     Challenge3Dialogue, 
@@ -75,16 +74,6 @@ export class Level1MisinformationMazeDialogue extends BaseDialogue {
 
     static markLevelCompleted(levelId) {
         localStorage.setItem(`cyberquest_level_${levelId}_completed`, 'true');
-    }
-
-    // Methods to trigger specific dialogues
-    static async startTutorialDialogue(desktop) {
-        if (TutorialDialogue.shouldAutoStart()) {
-            const dialogue = new TutorialDialogue(desktop);
-            window.currentDialogue = dialogue;
-            dialogue.start();
-            TutorialDialogue.markStarted();
-        }
     }
 
     static async startChallenge1Dialogue(desktop) {
