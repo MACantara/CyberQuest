@@ -150,51 +150,51 @@ export class AnalysisForm {
             score += 20;
             feedback.push("✅ Correctly identified the original date (May 15, 2018)");
         } else {
-            feedback.push("❌ Original date not identified - check image metadata results");
+            feedback.push("❌ Original date incorrect - check metadata analysis results");
         }
 
         if (hasCorrectLocation) {
-            score += 20;
-            feedback.push("✅ Correctly identified Madrid, Spain as the original location");
+            score += 15;
+            feedback.push("✅ Correctly identified Madrid as the original location");
         } else {
             feedback.push("❌ Original location not identified - check location verification results");
         }
 
         if (hasMisuseEvidence) {
-            score += 15;
+            score += 20;
             feedback.push("✅ Provided detailed evidence of image misuse");
         } else {
-            feedback.push("⚠️ Need more detailed explanation of how the image is being misused");
+            feedback.push("⚠️ Evidence description needs more detail");
         }
 
         if (hasGoodStrategy) {
             score += 15;
-            feedback.push("✅ Developed a comprehensive response strategy");
+            feedback.push("✅ Developed comprehensive response strategy");
         } else {
-            feedback.push("⚠️ Response strategy needs more detail about sources and evidence");
+            feedback.push("⚠️ Response strategy needs more detail and specific sources");
         }
 
         if (usedMultipleTools) {
             score += 10;
-            feedback.push("✅ Used multiple verification tools for thorough analysis");
+            feedback.push("✅ Used multiple verification tools");
         } else {
             feedback.push("⚠️ Try using more verification tools for complete analysis");
         }
 
-        let level = 'Needs Improvement';
+        let level = 'Developing Investigator';
         let bgColor = 'bg-orange-100';
         let textColor = 'text-orange-800';
 
-        if (score >= 80) {
-            level = 'Expert Level';
+        if (score >= 85) {
+            level = 'Expert Image Analyst';
             bgColor = 'bg-green-100';
             textColor = 'text-green-800';
-        } else if (score >= 60) {
-            level = 'Proficient';
+        } else if (score >= 70) {
+            level = 'Skilled Investigator';
             bgColor = 'bg-blue-100';
             textColor = 'text-blue-800';
-        } else if (score >= 40) {
-            level = 'Developing';
+        } else if (score >= 50) {
+            level = 'Competent Analyst';
             bgColor = 'bg-yellow-100';
             textColor = 'text-yellow-800';
         }
@@ -205,7 +205,7 @@ export class AnalysisForm {
             bgColor,
             textColor,
             feedback: feedback.join('\n'),
-            message: `Investigation complete! Your verification skills are at ${level} (${score}/100 points).`
+            message: `Image verification investigation complete! Your analysis skills are at ${level} level.`
         };
     }
 }
