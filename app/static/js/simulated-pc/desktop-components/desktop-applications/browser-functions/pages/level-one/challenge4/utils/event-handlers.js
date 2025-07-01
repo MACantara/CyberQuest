@@ -168,11 +168,6 @@ export class EventHandlers {
 
         // Store reference for cleanup
         window.challengeEventHandlers = this;
-
-        // Auto-trigger level completion after a delay if user doesn't click
-        setTimeout(() => {
-            this.triggerLevelCompletion();
-        }, 10000);
     }
 
     triggerLevelCompletion() {
