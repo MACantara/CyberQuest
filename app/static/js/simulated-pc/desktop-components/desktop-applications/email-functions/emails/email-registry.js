@@ -1,21 +1,13 @@
-// Centralized registry for all legitimate and suspicious emails
+// Centralized registry for all emails
 
-import { LegitimateEmail } from './legitimate-emails/cyberquest-welcome-email.js';
-import { BankEmail } from './suspicious-emails/bank-email.js';
-import { SuspiciousEmail } from './suspicious-emails/nigerian-prince-email.js';
+import { CyberquestWelcomeEmail } from './cyberquest-welcome-email.js';
+import { BankEmail } from './bank-email.js';
+import { NigerianPrinceEmail } from './nigerian-prince-email.js';
 
-// Add new emails here as needed
-export const LEGITIMATE_EMAILS = [
-    LegitimateEmail
-];
-
-export const SUSPICIOUS_EMAILS = [
-    BankEmail,
-    SuspiciousEmail
-];
-
-// Optionally, for all emails in one array:
+// All emails in one collection for unified inbox
 export const ALL_EMAILS = [
-    ...LEGITIMATE_EMAILS,
-    ...SUSPICIOUS_EMAILS
+    CyberquestWelcomeEmail,
+    BankEmail,
+    NigerianPrinceEmail
 ];
+
