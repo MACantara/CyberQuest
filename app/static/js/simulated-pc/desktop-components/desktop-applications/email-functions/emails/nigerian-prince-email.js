@@ -1,6 +1,6 @@
-import { BaseEmail } from '../base-email.js';
+import { BaseEmail } from './base-email.js';
 
-class SuspiciousEmailClass extends BaseEmail {
+class NigerianPrinceEmailClass extends BaseEmail {
     constructor() {
         super({
             id: 'suspicious-email',
@@ -60,4 +60,4 @@ class SuspiciousEmailClass extends BaseEmail {
 }
 
 // Export as email object for compatibility
-export const SuspiciousEmail = new SuspiciousEmailClass().toEmailObject();
+export const NigerianPrinceEmail = new NigerianPrinceEmailClass().toEmailObject();
