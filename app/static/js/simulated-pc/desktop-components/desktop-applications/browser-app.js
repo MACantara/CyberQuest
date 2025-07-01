@@ -2,6 +2,7 @@ import { WindowBase } from '../window-base.js';
 import { BrowserNavigation } from './browser-functions/navigation.js';
 import { PageRenderer } from './browser-functions/page-renderer.js';
 import { SecurityChecker } from './browser-functions/security-checker.js';
+import { NavigationUtil } from '../shared-utils/navigation-util.js';
 
 export class BrowserApp extends WindowBase {
     constructor() {
@@ -63,14 +64,14 @@ export class BrowserApp extends WindowBase {
                             <span>CyberQuest</span>
                         </button>
                         <button class="bookmark-item px-2 py-1 bg-gray-700 hover:bg-gray-500 text-white rounded border border-gray-500 transition-colors duration-200 cursor-pointer flex items-center space-x-1 whitespace-nowrap" 
-                                data-url="https://securebank.com" title="SecureBank Online">
-                            <i class="bi bi-bank text-blue-400 text-xs"></i>
-                            <span>SecureBank</span>
+                                data-url="https://fact-checker.cyberquest.academy/cross-reference" title="Cross-Reference Tool">
+                            <i class="bi bi-search text-blue-400 text-xs"></i>
+                            <span>Cross-Reference</span>
                         </button>
                         <button class="bookmark-item px-2 py-1 bg-gray-700 hover:bg-gray-500 text-white rounded border border-gray-500 transition-colors duration-200 cursor-pointer flex items-center space-x-1 whitespace-nowrap" 
-                                data-url="https://news-site.com" title="Tech News Daily">
-                            <i class="bi bi-newspaper text-gray-400 text-xs"></i>
-                            <span>Tech News</span>
+                                data-url="https://image-verify.cyberquest.academy/reverse-search" title="Reverse Image Search">
+                            <i class="bi bi-camera text-purple-400 text-xs"></i>
+                            <span>Image Search</span>
                         </button>
                         <button class="bookmark-item px-2 py-1 bg-gray-700 hover:bg-red-400 text-white rounded border border-gray-500 transition-colors duration-200 cursor-pointer flex items-center space-x-1 whitespace-nowrap" 
                                 data-url="https://suspicious-site.com" title="Suspicious Site (Training)" id="suspicious-bookmark">
@@ -264,6 +265,9 @@ export class BrowserApp extends WindowBase {
                 }
             });
         }
+
+        // Use shared navigation utility for data-url handling
+        NavigationUtil.bindDataUrlHandlers(windowElement, { source: 'browser' });
     }
 
     cleanup() {

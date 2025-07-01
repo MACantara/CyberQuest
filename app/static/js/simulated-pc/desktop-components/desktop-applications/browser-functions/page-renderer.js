@@ -14,6 +14,9 @@ export class PageRenderer {
             contentElement.innerHTML = pageConfig.createContent();
             this.updatePageTitle(pageConfig.title);
             this.bindPageEvents(url);
+            
+            // Reset scroll position to top
+            contentElement.scrollTop = 0;
         }
     }
 
@@ -27,6 +30,14 @@ export class PageRenderer {
     bindPageEvents(url) {
         const contentElement = this.browserApp.windowElement?.querySelector('#browser-content');
         if (!contentElement) return;
+
+        // Get the page configuration for event binding
+        const pageConfig = this.pageRegistry.getPage(url);
+        
+        // Bind page-specific events if the page has a bindEvents method
+        if (pageConfig && typeof pageConfig.bindEvents === 'function') {
+            pageConfig.bindEvents(contentElement);
+        }
 
         // Handle scam button clicks
         const scamButton = contentElement.querySelector('#scam-button');

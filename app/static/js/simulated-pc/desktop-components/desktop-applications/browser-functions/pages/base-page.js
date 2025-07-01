@@ -51,13 +51,19 @@ export class BasePage {
 
     // Create page object compatible with existing system
     toPageObject() {
+        const pageInstance = this;
         return {
             url: this.url,
             title: this.title,
             ipAddress: this.ipAddress,
             securityLevel: this.securityLevel,
             security: this.security,
-            createContent: () => this.createContent()
+            createContent: () => this.createContent(),
+            bindEvents: (contentElement) => {
+                if (typeof pageInstance.bindEvents === 'function') {
+                    pageInstance.bindEvents(contentElement);
+                }
+            }
         };
     }
 }

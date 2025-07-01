@@ -5,6 +5,8 @@ import { EmailApp } from './desktop-applications/email-app.js';
 import { NetworkMonitorApp } from './desktop-applications/network-monitor-app.js';
 import { SystemLogsApp } from './desktop-applications/system-logs-app.js';
 import { ControlPanelApp } from './control-panel.js';
+import { WindowSnapManager } from './window-snap-manager.js';
+import { WindowResizeManager } from './window-resize-manager.js';
 
 export class WindowManager {
     constructor(container, taskbar, tutorialManager = null) {
@@ -15,6 +17,11 @@ export class WindowManager {
         this.applications = new Map();
         this.zIndex = 1000;
         
+        // Ensure CSS is loaded before creating managers
+        this.ensureWindowStylesLoaded();
+        this.snapManager = new WindowSnapManager(container);
+        this.resizeManager = new WindowResizeManager(this);
+        
         // Application registry for easier management
         this.appRegistry = {
             'browser': { class: BrowserApp, storageKey: 'cyberquest_browser_opened', tutorialMethod: 'shouldAutoStartBrowser', startMethod: 'startBrowserTutorial' },
@@ -24,6 +31,17 @@ export class WindowManager {
             'wireshark': { class: NetworkMonitorApp, storageKey: 'cyberquest_networkmonitor_opened', tutorialMethod: 'shouldAutoStartNetworkMonitor', startMethod: 'startNetworkMonitorTutorial' },
             'logs': { class: SystemLogsApp, storageKey: 'cyberquest_systemlogs_opened', tutorialMethod: 'shouldAutoStartSystemLogs', startMethod: 'startSystemLogsTutorial' }
         };
+    }
+
+    // Ensure window styles are loaded
+    ensureWindowStylesLoaded() {
+        if (document.getElementById('window-scrollbar-styles')) return;
+
+        const link = document.createElement('link');
+        link.id = 'window-scrollbar-styles';
+        link.rel = 'stylesheet';
+        link.href = '/static/css/simulated-pc/windows.css';
+        document.head.appendChild(link);
     }
 
     // Generic application opener that handles tutorial logic
@@ -108,7 +126,7 @@ export class WindowManager {
 
         // Make window draggable and resizable
         this.makeDraggable(windowElement);
-        this.makeResizable(windowElement);
+        this.resizeManager.makeResizable(windowElement);
 
         // Initialize application if it exists
         if (app && typeof app.initialize === 'function') {
@@ -210,6 +228,7 @@ export class WindowManager {
         let dragStarted = false;
         let startX, startY, startLeft, startTop;
         let windowApp = null;
+        let currentSnapZone = null;
 
         // Get the window app instance if it exists
         this.applications.forEach((app, id) => {
@@ -240,29 +259,65 @@ export class WindowManager {
             const deltaX = e.clientX - startX;
             const deltaY = e.clientY - startY;
             
-            // Check if this is the start of dragging and window is maximized
-            if (!dragStarted && windowApp && windowApp.getMaximizedState()) {
-                // Handle drag start on maximized window
-                const newPosition = windowApp.handleDragStartOnMaximized(e.clientX, e.clientY);
-                if (newPosition) {
-                    startLeft = newPosition.left;
-                    startTop = newPosition.top;
-                    // Reset the start position to current mouse position for smooth dragging
-                    startX = e.clientX;
-                    startY = e.clientY;
+            // Check if this is the start of dragging
+            if (!dragStarted) {
+                // Check if window is maximized first (WindowBase apps)
+                if (windowApp && windowApp.getMaximizedState && windowApp.getMaximizedState()) {
+                    const result = windowApp.handleDragStartOnMaximized(e.clientX, e.clientY);
+                    if (result) {
+                        startLeft = result.left;
+                        startTop = result.top;
+                        startX = e.clientX;
+                        startY = e.clientY;
+                    }
                 }
+                // Check if window is snapped
+                else if (this.snapManager.isWindowSnapped(window)) {
+                    const snapResult = this.snapManager.handleDragStart(window, e.clientX, e.clientY, windowApp);
+                    if (snapResult) {
+                        startLeft = snapResult.left;
+                        startTop = snapResult.top;
+                        startX = e.clientX;
+                        startY = e.clientY;
+                    }
+                }
+                // Check legacy maximized state
+                else if (window.dataset.maximized === 'true') {
+                    // Handle legacy maximized windows
+                    const originalWidth = window.dataset.originalWidth;
+                    const originalHeight = window.dataset.originalHeight;
+                    const originalLeft = window.dataset.originalLeft;
+                    const originalTop = window.dataset.originalTop;
+                    
+                    if (originalWidth && originalHeight) {
+                        // Restore original size
+                        window.style.width = originalWidth;
+                        window.style.height = originalHeight;
+                        window.style.left = originalLeft;
+                        window.style.top = originalTop;
+                        window.dataset.maximized = 'false';
+                        
+                        // Update start position
+                        startLeft = parseInt(originalLeft);
+                        startTop = parseInt(originalTop);
+                        startX = e.clientX;
+                        startY = e.clientY;
+                    }
+                }
+                
                 dragStarted = true;
                 return; // Don't apply normal drag movement on first frame
             }
             
-            dragStarted = true;
-            
             const newLeft = startLeft + deltaX;
             const newTop = startTop + deltaY;
             
-            // Allow window to be dragged beyond screen edges
+            // Update window position
             window.style.left = `${newLeft}px`;
             window.style.top = `${newTop}px`;
+            
+            // Show snap preview
+            currentSnapZone = this.snapManager.handleDragMove(e.clientX, e.clientY);
         });
 
         document.addEventListener('mouseup', (e) => {
@@ -271,115 +326,25 @@ export class WindowManager {
                 dragStarted = false;
                 header.style.cursor = 'grab';
                 
+                // Handle window snapping
+                if (currentSnapZone) {
+                    this.snapManager.handleDragEnd(window, e.clientX, e.clientY, windowApp);
+                } else {
+                    this.snapManager.hideSnapPreview();
+                }
+                currentSnapZone = null;
+                
                 // Double-click detection for maximize/restore
                 if (Math.abs(e.clientX - startX) < 5 && Math.abs(e.clientY - startY) < 5) {
-                    // This was a click, not a drag - check for double-click
-                    if (windowApp && e.detail === 2) { // Double-click
-                        windowApp.maximize();
+                    if (windowApp && e.detail === 2) {
+                        // Check if window is snapped, if so unsnap first
+                        if (this.snapManager.isWindowSnapped(window)) {
+                            this.snapManager.unSnapWindow(window, windowApp);
+                        } else {
+                            windowApp.maximize();
+                        }
                     }
                 }
-            }
-        });
-    }
-
-    makeResizable(window) {
-        const resizeHandles = window.querySelectorAll('.resize-handle');
-        let isResizing = false;
-        let resizeDirection = '';
-        let startX, startY, startWidth, startHeight, startLeft, startTop;
-
-        resizeHandles.forEach(handle => {
-            handle.addEventListener('mousedown', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                isResizing = true;
-                resizeDirection = handle.classList[1]; // resize-n, resize-s, etc.
-                
-                startX = e.clientX;
-                startY = e.clientY;
-                startWidth = parseInt(window.offsetWidth, 10);
-                startHeight = parseInt(window.offsetHeight, 10);
-                startLeft = parseInt(window.offsetLeft, 10);
-                startTop = parseInt(window.offsetTop, 10);
-                
-                // Bring window to front
-                window.style.zIndex = ++this.zIndex;
-                
-                document.body.style.cursor = handle.style.cursor;
-                document.body.style.userSelect = 'none';
-            });
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (!isResizing) return;
-
-            const deltaX = e.clientX - startX;
-            const deltaY = e.clientY - startY;
-            
-            let newWidth = startWidth;
-            let newHeight = startHeight;
-            let newLeft = startLeft;
-            let newTop = startTop;
-            
-            // Minimum window size
-            const minWidth = 300;
-            const minHeight = 200;
-
-            switch (resizeDirection) {
-                case 'resize-n':
-                    newHeight = Math.max(minHeight, startHeight - deltaY);
-                    newTop = startTop + (startHeight - newHeight);
-                    break;
-                case 'resize-s':
-                    newHeight = Math.max(minHeight, startHeight + deltaY);
-                    break;
-                case 'resize-w':
-                    newWidth = Math.max(minWidth, startWidth - deltaX);
-                    newLeft = startLeft + (startWidth - newWidth);
-                    break;
-                case 'resize-e':
-                    newWidth = Math.max(minWidth, startWidth + deltaX);
-                    break;
-                case 'resize-nw':
-                    newWidth = Math.max(minWidth, startWidth - deltaX);
-                    newHeight = Math.max(minHeight, startHeight - deltaY);
-                    newLeft = startLeft + (startWidth - newWidth);
-                    newTop = startTop + (startHeight - newHeight);
-                    break;
-                case 'resize-ne':
-                    newWidth = Math.max(minWidth, startWidth + deltaX);
-                    newHeight = Math.max(minHeight, startHeight - deltaY);
-                    newTop = startTop + (startHeight - newHeight);
-                    break;
-                case 'resize-sw':
-                    newWidth = Math.max(minWidth, startWidth - deltaX);
-                    newHeight = Math.max(minHeight, startHeight + deltaY);
-                    newLeft = startLeft + (startWidth - newWidth);
-                    break;
-                case 'resize-se':
-                    newWidth = Math.max(minWidth, startWidth + deltaX);
-                    newHeight = Math.max(minHeight, startHeight + deltaY);
-                    break;
-            }
-
-            // Apply new dimensions and position without any boundary constraints
-            // This allows resizing even when window is partially off-screen
-            window.style.width = `${newWidth}px`;
-            window.style.height = `${newHeight}px`;
-            window.style.left = `${newLeft}px`;
-            window.style.top = `${newTop}px`;
-            
-            // Reset maximized state if resizing
-            window.dataset.maximized = 'false';
-        });
-
-        document.addEventListener('mouseup', () => {
-            if (isResizing) {
-                isResizing = false;
-                resizeDirection = '';
-                document.body.style.cursor = '';
-                document.body.style.userSelect = '';
             }
         });
     }
@@ -419,10 +384,17 @@ export class WindowManager {
         const app = this.applications.get(id);
         
         if (app && typeof app.maximize === 'function') {
-            app.maximize();
+            // Check if window is snapped first
+            if (this.snapManager.isWindowSnapped(window)) {
+                this.snapManager.unSnapWindow(window, app);
+            } else {
+                app.maximize();
+            }
         } else if (window) {
             // Legacy maximize for non-app windows
-            if (window.dataset.maximized === 'true') {
+            if (this.snapManager.isWindowSnapped(window)) {
+                this.snapManager.unSnapWindow(window);
+            } else if (window.dataset.maximized === 'true') {
                 // Restore
                 window.style.width = window.dataset.originalWidth;
                 window.style.height = window.dataset.originalHeight;
@@ -488,6 +460,8 @@ export class WindowManager {
     closeAllWindows() {
         const windowIds = Array.from(this.windows.keys());
         windowIds.forEach(id => this.closeWindow(id));
+        this.snapManager.cleanup();
+        this.resizeManager.cleanup();
     }
 
     minimizeAllWindows() {

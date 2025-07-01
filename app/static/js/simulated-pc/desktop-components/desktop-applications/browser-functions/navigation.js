@@ -61,7 +61,13 @@ export class BrowserNavigation {
     }
 
     refresh() {
-        this.loadPage(this.getCurrentUrl(), true);
+        const currentUrl = this.getCurrentUrl();
+        this.loadPage(currentUrl, true);
+        
+        // Emit refresh event for network monitoring
+        document.dispatchEvent(new CustomEvent('browser-navigate', {
+            detail: { url: currentUrl, action: 'refresh' }
+        }));
     }
 
     navigateToUrl(url) {

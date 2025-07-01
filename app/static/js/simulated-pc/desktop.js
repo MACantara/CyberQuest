@@ -84,6 +84,9 @@ export class Desktop {
     }
 
     async initializeUserFlow() {
+        // Store desktop reference globally for dialogues
+        window.desktop = this;
+        
         // Start with dialogue flow - this handles the narrative introduction
         await this.dialogueIntegration.initializeDialogueFlow();
         

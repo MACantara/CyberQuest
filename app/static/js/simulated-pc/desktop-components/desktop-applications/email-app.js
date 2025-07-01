@@ -1,6 +1,7 @@
 import { WindowBase } from '../window-base.js';
 import { EmailState } from './email-functions/email-state.js';
 import { LEGITIMATE_EMAILS, SUSPICIOUS_EMAILS } from './email-functions/emails/email-registry.js';
+import { NavigationUtil } from '../shared-utils/navigation-util.js';
 
 export class EmailApp extends WindowBase {
     constructor() {
@@ -158,40 +159,7 @@ export class EmailApp extends WindowBase {
             });
         }
 
-        // Handle in-app browser link clicks (phishing simulation)
-        windowElement.querySelectorAll('.open-browser-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const url = link.getAttribute('data-url');
-                
-                // Emit email link click event for network monitoring
-                document.dispatchEvent(new CustomEvent('email-link-clicked', {
-                    detail: { 
-                        url: url,
-                        suspicious: true // Email links are typically suspicious
-                    }
-                }));
-                
-                // Open the browser app and navigate to the phishing page
-                if (window.currentSimulation && window.currentSimulation.desktop && window.currentSimulation.desktop.windowManager) {
-                    window.currentSimulation.desktop.windowManager.openBrowser();
-                    setTimeout(() => {
-                        // Find the browser window and set the URL bar
-                        const browserWindows = document.querySelectorAll('.window-title span');
-                        let browserWindow = null;
-                        browserWindows.forEach(span => {
-                            if (span.textContent.includes('Web Browser')) {
-                                browserWindow = span.closest('.absolute');
-                            }
-                        });
-                        const urlBar = browserWindow?.querySelector('#browser-url-bar');
-                        if (urlBar) {
-                            urlBar.value = url;
-                            urlBar.dispatchEvent(new KeyboardEvent('keypress', { key: 'Enter' }));
-                        }
-                    }, 500);
-                }
-            });
-        });
+        // Use shared navigation utility for email link handling
+        NavigationUtil.bindEmailLinkHandlers(windowElement);
     }
 }

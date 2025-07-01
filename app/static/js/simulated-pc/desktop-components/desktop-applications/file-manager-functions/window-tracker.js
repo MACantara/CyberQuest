@@ -27,7 +27,7 @@ export class WindowTracker {
         return windowId;
     }
 
-    // Track window maximize state
+    // Track window maximize/snap state
     updateMaximizedState(windowId, isMaximized, originalDimensions = null) {
         const metadata = this.windowMetadata.get(windowId);
         if (metadata) {
@@ -38,10 +38,15 @@ export class WindowTracker {
         }
     }
 
-    // Get window maximize state
+    // Get window maximize/snap state
     getMaximizedState(windowId) {
         const metadata = this.windowMetadata.get(windowId);
-        return metadata ? metadata.isMaximized : false;
+        if (metadata) {
+            // Check if window is snapped or maximized
+            const window = metadata.windowElement;
+            return metadata.isMaximized || (window && window.dataset.snapped);
+        }
+        return false;
     }
 
     // Get original dimensions for a window
@@ -108,52 +113,66 @@ export class WindowTracker {
         return false;
     }
 
-    // Handle drag start on maximized window
+    // Handle drag start on maximized/snapped window
     handleDragStartOnMaximized(windowId, mouseX, mouseY, desktop) {
         const metadata = this.windowMetadata.get(windowId);
-        if (metadata && metadata.isMaximized && metadata.originalDimensions && desktop) {
+        if (metadata && desktop) {
             const window = desktop.windowManager.windows.get(windowId);
             if (window) {
-                // Calculate window width in pixels
-                const windowWidth = parseInt(metadata.originalDimensions.width);
-                let actualWidth = windowWidth;
-                
-                if (metadata.originalDimensions.width.includes('%')) {
-                    const percentage = parseFloat(metadata.originalDimensions.width) / 100;
-                    actualWidth = window.innerWidth * percentage;
+                // Check if window is snapped first - let snap manager handle it
+                if (window.dataset.snapped && desktop.windowManager.snapManager) {
+                    // For snapped windows that are maximized, clean up our state and let snap manager handle
+                    if (window.dataset.snapped === 'maximize') {
+                        metadata.isMaximized = false;
+                        return null; // Let snap manager handle
+                    }
+                    return desktop.windowManager.snapManager.handleDragStart(window, mouseX, mouseY, metadata.viewerApp);
                 }
                 
-                // Restore window
-                this.restoreWindow(windowId, desktop);
-                
-                // Center window under mouse cursor
-                const newLeft = mouseX - (actualWidth / 2);
-                const newTop = mouseY - 20; // Header height offset
-                
-                // Ensure window stays on screen
-                const maxLeft = window.innerWidth - actualWidth;
-                const maxTop = window.innerHeight - parseInt(metadata.originalDimensions.height);
-                
-                const finalLeft = Math.max(0, Math.min(maxLeft, newLeft));
-                const finalTop = Math.max(0, Math.min(maxTop, newTop));
-                
-                window.style.left = `${finalLeft}px`;
-                window.style.top = `${finalTop}px`;
-                
-                return {
-                    left: finalLeft,
-                    top: finalTop
-                };
+                // Handle regular maximized state
+                if (metadata.isMaximized && metadata.originalDimensions) {
+                    // Calculate window width in pixels
+                    const windowWidth = parseInt(metadata.originalDimensions.width);
+                    let actualWidth = windowWidth;
+                    
+                    if (metadata.originalDimensions.width.includes('%')) {
+                        const percentage = parseFloat(metadata.originalDimensions.width) / 100;
+                        actualWidth = window.innerWidth * percentage;
+                    }
+                    
+                    // Restore window
+                    this.restoreWindow(windowId, desktop);
+                    
+                    // Center window under mouse cursor
+                    const newLeft = mouseX - (actualWidth / 2);
+                    const newTop = mouseY - 20; // Header height offset
+                    
+                    // Ensure window stays on screen
+                    const maxLeft = window.innerWidth - actualWidth;
+                    const maxTop = window.innerHeight - parseInt(metadata.originalDimensions.height);
+                    
+                    const finalLeft = Math.max(0, Math.min(maxLeft, newLeft));
+                    const finalTop = Math.max(0, Math.min(maxTop, newTop));
+                    
+                    window.style.left = `${finalLeft}px`;
+                    window.style.top = `${finalTop}px`;
+                    
+                    return {
+                        left: finalLeft,
+                        top: finalTop
+                    };
+                }
             }
         }
         return null;
     }
 
-    // Get window statistics including maximized state
+    // Get window statistics including snap state
     getWindowStatistics() {
         const stats = {
             total: this.openWindows.size,
             maximized: 0,
+            snapped: 0,
             restored: 0,
             byFileType: {},
             averageOpenTime: 0
@@ -163,7 +182,11 @@ export class WindowTracker {
         const now = new Date();
 
         this.windowMetadata.forEach(metadata => {
-            if (metadata.isMaximized) {
+            const window = metadata.windowElement;
+            
+            if (window && window.dataset.snapped) {
+                stats.snapped++;
+            } else if (metadata.isMaximized) {
                 stats.maximized++;
             } else {
                 stats.restored++;

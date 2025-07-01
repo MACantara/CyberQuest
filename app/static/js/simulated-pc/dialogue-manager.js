@@ -142,10 +142,16 @@ export class DialogueManager {
     async startLevelDialogue(levelDialogueName, character = 'instructor') {
         console.log(`[DialogueManager] Starting level dialogue: ${levelDialogueName}`);
         try {
-            // Dynamic import of the level dialogue module
-            const modulePath = `/static/js/simulated-pc/dialogues/levels/${levelDialogueName}.js`;
-            console.log(`[DialogueManager] Importing module from: ${modulePath}`);
-            const module = await import(modulePath);
+            // First try the direct relative path from dialogue-manager location
+            let module;
+            try {
+                module = await import(`./dialogues/levels/${levelDialogueName}.js`);
+            } catch (relativeError) {
+                console.log(`[DialogueManager] Relative import failed, trying absolute path...`);
+                // Try absolute path as fallback
+                const absolutePath = `/static/js/simulated-pc/dialogues/levels/${levelDialogueName}.js`;
+                module = await import(absolutePath);
+            }
             
             // Generate the class name by capitalizing each word and appending 'Dialogue'
             const className = levelDialogueName.split('-').map(word => 
@@ -185,8 +191,37 @@ export class DialogueManager {
             }
         } catch (error) {
             console.error(`Error loading level dialogue '${levelDialogueName}':`, error);
+            
+            // If it's a missing file error, provide helpful guidance
+            if (error.message.includes('Failed to fetch')) {
+                console.error(`[DialogueManager] File not found: ${levelDialogueName}.js`);
+                console.error(`[DialogueManager] Expected location: /static/js/simulated-pc/dialogues/levels/${levelDialogueName}.js`);
+                
+                // Try to provide alternative suggestions
+                const suggestions = this.getSuggestedDialogues(levelDialogueName);
+                if (suggestions.length > 0) {
+                    console.error(`[DialogueManager] Did you mean: ${suggestions.join(', ')}?`);
+                }
+            }
+            
             throw new Error(`Failed to load dialogue '${levelDialogueName}': ${error.message}`);
         }
+    }
+
+    // Helper method to suggest alternative dialogue names
+    getSuggestedDialogues(missingDialogue) {
+        const commonDialogues = [
+            'level1-misinformation-maze',
+            'welcome',
+            'mission-briefing',
+            'tutorial-intro'
+        ];
+        
+        // Simple fuzzy matching
+        return commonDialogues.filter(dialogue => 
+            dialogue.includes(missingDialogue.toLowerCase()) || 
+            missingDialogue.toLowerCase().includes(dialogue)
+        );
     }
 
     // Character avatar management
