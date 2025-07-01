@@ -76,8 +76,28 @@ export class Level1MisinformationMazeDialogue extends BaseDialogue {
         localStorage.setItem(`cyberquest_level_${levelId}_completed`, 'true');
     }
 
+    // Methods to trigger specific dialogues
+    static async startTutorialDialogue(desktop) {
+        if (TutorialDialogue.shouldAutoStart()) {
+            // Ensure no other dialogue is active
+            if (window.currentDialogue) {
+                window.currentDialogue.cleanup();
+            }
+            
+            const dialogue = new TutorialDialogue(desktop);
+            window.currentDialogue = dialogue;
+            dialogue.start();
+            TutorialDialogue.markStarted();
+        }
+    }
+
     static async startChallenge1Dialogue(desktop) {
         if (Challenge1Dialogue.shouldAutoStart()) {
+            // Ensure no other dialogue is active
+            if (window.currentDialogue) {
+                window.currentDialogue.cleanup();
+            }
+            
             const dialogue = new Challenge1Dialogue(desktop);
             window.currentDialogue = dialogue;
             dialogue.start();
@@ -86,6 +106,11 @@ export class Level1MisinformationMazeDialogue extends BaseDialogue {
 
     static async startChallenge2Dialogue(desktop) {
         if (Challenge2Dialogue.shouldAutoStart()) {
+            // Ensure no other dialogue is active
+            if (window.currentDialogue) {
+                window.currentDialogue.cleanup();
+            }
+            
             const dialogue = new Challenge2Dialogue(desktop);
             window.currentDialogue = dialogue;
             dialogue.start();
@@ -94,6 +119,11 @@ export class Level1MisinformationMazeDialogue extends BaseDialogue {
 
     static async startChallenge3Dialogue(desktop) {
         if (Challenge3Dialogue.shouldAutoStart()) {
+            // Ensure no other dialogue is active
+            if (window.currentDialogue) {
+                window.currentDialogue.cleanup();
+            }
+            
             const dialogue = new Challenge3Dialogue(desktop);
             window.currentDialogue = dialogue;
             dialogue.start();
@@ -102,6 +132,12 @@ export class Level1MisinformationMazeDialogue extends BaseDialogue {
 
     static async startChallenge4Dialogue(desktop) {
         if (Challenge4Dialogue.shouldAutoStart()) {
+            // Ensure no other dialogue is active
+            if (window.currentDialogue) {
+                console.log('Cleaning up existing dialogue before starting Challenge 4...');
+                window.currentDialogue.cleanup();
+            }
+            
             const dialogue = new Challenge4Dialogue(desktop);
             window.currentDialogue = dialogue;
             dialogue.start();
@@ -110,6 +146,11 @@ export class Level1MisinformationMazeDialogue extends BaseDialogue {
 
     static async startLevelCompletionDialogue(desktop) {
         if (LevelCompletionDialogue.shouldAutoStart()) {
+            // Ensure no other dialogue is active
+            if (window.currentDialogue) {
+                window.currentDialogue.cleanup();
+            }
+            
             const dialogue = new LevelCompletionDialogue(desktop);
             window.currentDialogue = dialogue;
             dialogue.start();

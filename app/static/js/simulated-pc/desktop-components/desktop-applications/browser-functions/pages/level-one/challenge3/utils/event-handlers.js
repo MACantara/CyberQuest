@@ -136,16 +136,32 @@ export class EventHandlers {
         `;
         document.body.appendChild(modal);
 
-        // Store reference for cleanup
+        // Store reference for cleanup and prevent multiple triggers
+        if (window.challenge3EventHandlers) {
+            // Clear any existing timeout to prevent duplicate triggers
+            if (window.challenge3EventHandlers.autoTriggerTimeout) {
+                clearTimeout(window.challenge3EventHandlers.autoTriggerTimeout);
+            }
+        }
         window.challenge3EventHandlers = this;
-
-        // Auto-trigger challenge 4 navigation after a delay if user doesn't click
-        setTimeout(() => {
-            this.navigateToChallenge4();
-        }, 8000);
+        this.dialogueTriggered = false; // Flag to prevent multiple triggers
     }
 
     navigateToChallenge4() {
+        // Prevent multiple triggers
+        if (this.dialogueTriggered) {
+            console.log('Challenge 4 dialogue already triggered, skipping...');
+            return;
+        }
+        
+        this.dialogueTriggered = true;
+        
+        // Clear any existing timeout
+        if (this.autoTriggerTimeout) {
+            clearTimeout(this.autoTriggerTimeout);
+            this.autoTriggerTimeout = null;
+        }
+
         // First navigate to challenge 4 page
         if (window.desktop?.windowManager) {
             try {
@@ -161,18 +177,33 @@ export class EventHandlers {
                 }
             } catch (error) {
                 console.error('Failed to navigate to challenge 4:', error);
+                this.dialogueTriggered = false; // Reset flag on error
             }
         }
     }
 
     triggerChallenge4Dialogue() {
+        // Double-check to prevent multiple triggers
+        if (this.dialogueTriggered !== true) {
+            console.log('Challenge 4 dialogue trigger prevented - not properly flagged');
+            return;
+        }
+
         import('../../../../../../../dialogues/levels/level1-misinformation-maze.js').then(module => {
             const Level1Dialogue = module.Level1MisinformationMazeDialogue;
             if (Level1Dialogue.startChallenge4Dialogue && window.desktop) {
+                // Ensure only one dialogue is active at a time
+                if (window.currentDialogue) {
+                    console.log('Another dialogue is active, cleaning up...');
+                    window.currentDialogue.cleanup();
+                    window.currentDialogue = null;
+                }
+                
                 Level1Dialogue.startChallenge4Dialogue(window.desktop);
             }
         }).catch(error => {
             console.error('Failed to load challenge 4 dialogue:', error);
+            this.dialogueTriggered = false; // Reset flag on error
         });
     }
 }

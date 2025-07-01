@@ -16,10 +16,19 @@ export class BaseDialogue {
     start() {
         if (this.isActive) return;
         
+        // Prevent multiple dialogues from being active at once
+        if (window.currentDialogue && window.currentDialogue !== this) {
+            console.log('Another dialogue is active, cleaning up...');
+            window.currentDialogue.cleanup();
+        }
+        
         this.isActive = true;
         this.currentMessageIndex = 0;
         this.createDialogueOverlay();
         this.showMessage();
+        
+        // Set as current dialogue
+        window.currentDialogue = this;
     }
     
     createDialogueOverlay() {
@@ -146,6 +155,11 @@ export class BaseDialogue {
         this.overlay = null;
         this.dialogueContainer = null;
         this.isActive = false;
+        
+        // Clear current dialogue reference if it's this instance
+        if (window.currentDialogue === this) {
+            window.currentDialogue = null;
+        }
     }
 
     // Methods to be overridden by child classes
