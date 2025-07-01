@@ -1,6 +1,6 @@
-import { BaseEmail } from '../base-email.js';
+import { BaseEmail } from './base-email.js';
 
-class LegitimateEmailClass extends BaseEmail {
+class CyberquestWelcomeEmailClass extends BaseEmail {
     constructor() {
         super({
             id: 'cyberquest-welcome',
@@ -65,4 +65,4 @@ class LegitimateEmailClass extends BaseEmail {
 }
 
 // Export as email object for compatibility
-export const LegitimateEmail = new LegitimateEmailClass().toEmailObject();
+export const CyberquestWelcomeEmail = new CyberquestWelcomeEmailClass().toEmailObject();
