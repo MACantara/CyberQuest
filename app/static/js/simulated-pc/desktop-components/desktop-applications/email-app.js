@@ -1,6 +1,6 @@
 import { WindowBase } from '../window-base.js';
 import { EmailState } from './email-functions/email-state.js';
-import { LEGITIMATE_EMAILS, SUSPICIOUS_EMAILS } from './email-functions/emails/email-registry.js';
+import { ALL_EMAILS } from './email-functions/emails/email-registry.js';
 import { NavigationUtil } from '../shared-utils/navigation-util.js';
 
 export class EmailApp extends WindowBase {
@@ -16,10 +16,10 @@ export class EmailApp extends WindowBase {
     createContent() {
         const currentFolder = this.state.getCurrentFolder();
         const selectedEmailId = this.state.getSelectedEmailId();
-        // Use centralized registry for inbox emails
+        // Use unified email collection for inbox
         let emails = [];
         if (currentFolder === 'inbox') {
-            emails = [...LEGITIMATE_EMAILS, ...SUSPICIOUS_EMAILS];
+            emails = [...ALL_EMAILS];
         }
         // Sort emails by recency (most recent first)
         emails.sort((a, b) => {
@@ -44,7 +44,7 @@ export class EmailApp extends WindowBase {
                     <div class="email-folder px-3 py-2 rounded text-sm font-medium mb-1 cursor-pointer transition-colors duration-200
                         ${currentFolder === 'inbox' ? 'bg-green-400 text-black' : 'text-gray-300 hover:bg-gray-600'}"
                         data-folder="inbox">
-                        Inbox (${LEGITIMATE_EMAILS.length + SUSPICIOUS_EMAILS.length})
+                        Inbox (${ALL_EMAILS.length})
                     </div>
                 </div>
                 <div class="flex-1 flex flex-col">
@@ -134,8 +134,7 @@ export class EmailApp extends WindowBase {
                 this.readEmails.add(emailId);
                 
                 // Find the email and emit event for network monitoring
-                const allEmails = [...LEGITIMATE_EMAILS, ...SUSPICIOUS_EMAILS];
-                const email = allEmails.find(e => e.id === emailId);
+                const email = ALL_EMAILS.find(e => e.id === emailId);
                 if (email) {
                     document.dispatchEvent(new CustomEvent('email-opened', {
                         detail: { 
