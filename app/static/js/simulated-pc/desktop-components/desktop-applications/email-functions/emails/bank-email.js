@@ -1,4 +1,4 @@
-import { BaseEmail } from '../base-email.js';
+import { BaseEmail } from './base-email.js';
 
 class BankEmailClass extends BaseEmail {
     constructor() {
