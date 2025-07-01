@@ -110,10 +110,17 @@ export class EventHandlers {
             return;
         }
 
+        // Mark challenge 4 as completed
+        localStorage.setItem('cyberquest_challenge4_completed', 'true');
+
         // Generate feedback based on responses
         const feedback = AssessmentForm.generateFeedback(formData);
 
-        // Show results modal
+        // Show results modal with completion trigger
+        this.showCompletionModal(feedback);
+    }
+
+    showCompletionModal(feedback) {
         const modal = document.createElement('div');
         modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50';
         modal.innerHTML = `
@@ -149,14 +156,31 @@ export class EventHandlers {
                     </div>
                     
                     <div class="mt-6 flex space-x-3 justify-center">
-                        <button onclick="this.closest('.fixed').remove()" 
-                                class="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 transition-colors">
-                            Close Assessment
+                        <button onclick="this.closest('.fixed').remove(); window.challengeEventHandlers?.triggerLevelCompletion?.()" 
+                                class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition-colors">
+                            Complete Level 1
                         </button>
                     </div>
                 </div>
             </div>
         `;
         document.body.appendChild(modal);
+
+        // Store reference for cleanup
+        window.challengeEventHandlers = this;
+
+        // Auto-trigger level completion after a delay if user doesn't click
+        setTimeout(() => {
+            this.triggerLevelCompletion();
+        }, 10000);
+    }
+
+    triggerLevelCompletion() {
+        import('../../../../../../../dialogues/levels/level1-misinformation-maze.js').then(module => {
+            const Level1Dialogue = module.Level1MisinformationMazeDialogue;
+            if (Level1Dialogue.startLevelCompletionDialogue && window.desktop) {
+                Level1Dialogue.startLevelCompletionDialogue(window.desktop);
+            }
+        });
     }
 }
