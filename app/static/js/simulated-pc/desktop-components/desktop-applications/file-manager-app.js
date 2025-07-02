@@ -33,7 +33,7 @@ export class FileManagerApp extends WindowBase {
                             <i class="bi bi-folder text-4xl text-blue-400 mb-2 max-h-12 flex items-center justify-center"></i>
                             <span class="text-xs text-white text-center break-words leading-tight">Downloads</span>
                         </div>
-                        <div class="flex flex-col items-center p-3 rounded hover:bg-gray-700 cursor-pointer transition-colors duration-200 border border-red-500 bg-red-900 bg-opacity-20 max-w-24" id="suspicious-file">
+                        <div class="flex flex-col items-center p-3 rounded hover:bg-gray-700 cursor-pointer transition-colors duration-200 border border-red-500 bg-red-900/20 max-w-24" id="suspicious-file">
                             <i class="bi bi-file-text text-4xl text-red-400 mb-2 animate-pulse max-h-12 flex items-center justify-center"></i>
                             <span class="text-xs text-red-400 text-center break-words leading-tight">suspicious_file.txt</span>
                         </div>
@@ -128,7 +128,7 @@ export class FileManagerApp extends WindowBase {
     }
 
     createFileItemHTML(item) {
-        const suspiciousClass = item.suspicious ? 'border border-red-500 bg-red-900 bg-opacity-20' : '';
+        const suspiciousClass = item.suspicious ? 'border border-red-500 bg-red-900/20' : '';
         const animationClass = item.suspicious ? 'animate-pulse' : '';
         
         // Generate unique ID based on item name for tutorial targeting
@@ -175,11 +175,11 @@ export class FileManagerApp extends WindowBase {
         // Remove previous selection
         const selected = this.windowElement?.querySelector('.bg-blue-600');
         if (selected) {
-            selected.classList.remove('bg-blue-600', 'bg-opacity-50');
+            selected.classList.remove('bg-blue-600/50');
         }
         
         // Select new item
-        item.classList.add('bg-blue-600', 'bg-opacity-50');
+        item.classList.add('bg-blue-600/50');
     }
 
     openDirectory(dirName) {

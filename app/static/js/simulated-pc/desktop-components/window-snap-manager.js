@@ -30,7 +30,7 @@ export class WindowSnapManager {
 
     createSnapIndicator() {
         this.snapIndicator = document.createElement('div');
-        this.snapIndicator.className = 'snap-indicator fixed pointer-events-none z-40 border-2 border-blue-400 bg-blue-400 bg-opacity-20 opacity-0 transition-opacity duration-200';
+        this.snapIndicator.className = 'snap-indicator fixed pointer-events-none z-40 border-2 border-blue-400 bg-blue-400/20 opacity-0 transition-opacity duration-200';
         this.snapIndicator.style.display = 'none';
         document.body.appendChild(this.snapIndicator);
     }

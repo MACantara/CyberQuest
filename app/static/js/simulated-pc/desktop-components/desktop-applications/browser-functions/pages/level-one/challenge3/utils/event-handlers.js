@@ -92,7 +92,7 @@ export class EventHandlers {
 
     showCompletionModal(feedback) {
         const modal = document.createElement('div');
-        modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50';
+        modal.className = 'fixed inset-0 bg-black/75 flex items-center justify-center z-50';
         modal.innerHTML = `
             <div class="bg-white rounded-lg p-6 max-w-2xl mx-4 max-h-[80vh] overflow-y-auto">
                 <div class="text-center mb-4">
