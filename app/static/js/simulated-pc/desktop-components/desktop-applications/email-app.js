@@ -19,35 +19,41 @@ export class EmailApp extends WindowBase {
     createContent() {
         const currentFolder = this.state.getCurrentFolder();
         const selectedEmailId = this.state.getSelectedEmailId();
-        // Use unified email collection for inbox
-        let emails = [];
-        if (currentFolder === 'inbox') {
-            emails = [...ALL_EMAILS];
-        }
+        
+        // Get all emails and filter by folder
+        const allEmails = [...ALL_EMAILS];
+        const emails = this.state.getEmailsForFolder(allEmails, currentFolder);
+        
         // Sort emails by recency (most recent first)
         emails.sort((a, b) => {
-            // Helper to convert time string to a comparable value
             const parseTime = (email) => {
                 const t = email.time.toLowerCase();
-                if (t.includes('min')) return 0 + parseInt(t) * 60; // minutes ago
-                if (t.includes('hour')) return 1000 + parseInt(t) * 3600; // hours ago
+                if (t.includes('min')) return 0 + parseInt(t) * 60;
+                if (t.includes('hour')) return 1000 + parseInt(t) * 3600;
                 if (t.includes('yesterday')) return 2000;
                 if (t.includes('last week')) return 3000;
-                if (t.includes('day')) return 1500 + parseInt(t) * 86400; // days ago
-                return 9999; // fallback for unknown/older
+                if (t.includes('day')) return 1500 + parseInt(t) * 86400;
+                return 9999;
             };
             return parseTime(a) - parseTime(b);
         });
-        const selectedEmail = selectedEmailId ? emails.find(e => e.id === selectedEmailId) : null;
+        
+        const selectedEmail = selectedEmailId ? allEmails.find(e => e.id === selectedEmailId) : null;
+        const inboxCount = this.state.getEmailsForFolder(allEmails, 'inbox').length;
+        const spamCount = this.state.getEmailsForFolder(allEmails, 'spam').length;
 
-        // Only show Inbox as folder
         return `
             <div class="h-full flex">
                 <div class="w-48 bg-gray-700 border-r border-gray-600 p-3 flex flex-col">
                     <div class="email-folder px-3 py-2 rounded text-sm font-medium mb-1 cursor-pointer transition-colors duration-200
                         ${currentFolder === 'inbox' ? 'bg-green-400 text-black' : 'text-gray-300 hover:bg-gray-600'}"
                         data-folder="inbox">
-                        Inbox (${ALL_EMAILS.length})
+                        📧 Inbox (${inboxCount})
+                    </div>
+                    <div class="email-folder px-3 py-2 rounded text-sm font-medium mb-1 cursor-pointer transition-colors duration-200
+                        ${currentFolder === 'spam' ? 'bg-red-400 text-black' : 'text-gray-300 hover:bg-gray-600'}"
+                        data-folder="spam">
+                        🗑️ Spam (${spamCount})
                     </div>
                 </div>
                 <div class="flex-1 flex flex-col">
@@ -141,29 +147,46 @@ export class EmailApp extends WindowBase {
     }
 
     createActionButtons(emailId, currentStatus) {
-        if (currentStatus === 'phishing') {
-            return `
-                <button class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-500 transition-colors text-xs cursor-pointer" 
-                        id="mark-legitimate-btn" data-email-id="${emailId}">
-                    <i class="bi bi-shield-check mr-1"></i>Mark Legitimate
-                </button>`;
-        } else if (currentStatus === 'legitimate') {
-            return `
-                <button class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition-colors text-xs cursor-pointer" 
-                        id="report-phishing-btn" data-email-id="${emailId}">
-                    <i class="bi bi-shield-exclamation mr-1"></i>Report Phishing
+        const currentFolder = this.state.getCurrentFolder();
+        const isInSpam = this.state.isInSpam(emailId);
+        
+        let buttons = '';
+        
+        if (currentFolder === 'spam') {
+            // In spam folder, show move to inbox button
+            buttons += `
+                <button class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-500 transition-colors text-xs cursor-pointer" 
+                        id="move-to-inbox-btn" data-email-id="${emailId}">
+                    <i class="bi bi-inbox mr-1"></i>Move to Inbox
                 </button>`;
         } else {
-            return `
-                <button class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition-colors text-xs cursor-pointer" 
-                        id="report-phishing-btn" data-email-id="${emailId}">
-                    <i class="bi bi-shield-exclamation mr-1"></i>Report Phishing
-                </button>
-                <button class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-500 transition-colors text-xs cursor-pointer" 
-                        id="mark-legitimate-btn" data-email-id="${emailId}">
-                    <i class="bi bi-shield-check mr-1"></i>Mark Legitimate
-                </button>`;
+            // In inbox, show spam/legitimate buttons based on current status
+            if (currentStatus === 'phishing') {
+                buttons += `
+                    <button class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-500 transition-colors text-xs cursor-pointer" 
+                            id="mark-legitimate-btn" data-email-id="${emailId}">
+                        <i class="bi bi-shield-check mr-1"></i>Mark Legitimate
+                    </button>`;
+            } else if (currentStatus === 'legitimate') {
+                buttons += `
+                    <button class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition-colors text-xs cursor-pointer" 
+                            id="report-phishing-btn" data-email-id="${emailId}">
+                        <i class="bi bi-shield-exclamation mr-1"></i>Report Phishing
+                    </button>`;
+            } else {
+                buttons += `
+                    <button class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition-colors text-xs cursor-pointer" 
+                            id="report-phishing-btn" data-email-id="${emailId}">
+                        <i class="bi bi-shield-exclamation mr-1"></i>Report Phishing
+                    </button>
+                    <button class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-500 transition-colors text-xs cursor-pointer" 
+                            id="mark-legitimate-btn" data-email-id="${emailId}">
+                        <i class="bi bi-shield-check mr-1"></i>Mark Legitimate
+                    </button>`;
+            }
         }
+        
+        return buttons;
     }
 
     createPhishingWarning() {
@@ -229,7 +252,7 @@ export class EmailApp extends WindowBase {
         const windowElement = this.windowElement;
         if (!windowElement) return;
 
-        // Folder switching (only inbox)
+        // Folder switching
         windowElement.querySelectorAll('.email-folder').forEach(folderEl => {
             folderEl.addEventListener('click', () => {
                 const folderId = folderEl.getAttribute('data-folder');
@@ -289,6 +312,15 @@ export class EmailApp extends WindowBase {
             });
         }
 
+        // Move to inbox button
+        const moveToInboxBtn = windowElement.querySelector('#move-to-inbox-btn');
+        if (moveToInboxBtn) {
+            moveToInboxBtn.addEventListener('click', () => {
+                const emailId = moveToInboxBtn.getAttribute('data-email-id');
+                this.moveEmailToInbox(emailId);
+            });
+        }
+
         // Use shared navigation utility for email link handling
         NavigationUtil.bindEmailLinkHandlers(windowElement);
     }
@@ -335,7 +367,7 @@ export class EmailApp extends WindowBase {
             detail: { emailId, timestamp: new Date().toISOString() }
         }));
         
-        this.showActionFeedback('Phishing email reported successfully!', 'success');
+        this.showActionFeedback('Email reported as phishing and moved to spam!', 'success');
         this.updateContent();
     }
 
@@ -351,6 +383,21 @@ export class EmailApp extends WindowBase {
         }));
         
         this.showActionFeedback('Email marked as legitimate!', 'success');
+        this.updateContent();
+    }
+
+    moveEmailToInbox(emailId) {
+        const email = ALL_EMAILS.find(e => e.id === emailId);
+        if (!email) return;
+
+        this.state.moveToInbox(emailId);
+        
+        // Emit event for network monitoring
+        document.dispatchEvent(new CustomEvent('email-moved-to-inbox', {
+            detail: { emailId, timestamp: new Date().toISOString() }
+        }));
+        
+        this.showActionFeedback('Email moved back to inbox!', 'success');
         this.updateContent();
     }
 
