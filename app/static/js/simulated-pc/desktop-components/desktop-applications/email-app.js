@@ -11,6 +11,9 @@ export class EmailApp extends WindowBase {
         });
         this.state = new EmailState();
         this.readEmails = new Set(); // Track read email IDs
+        
+        // Load saved email state
+        this.state.loadFromLocalStorage();
     }
 
     createContent() {
@@ -60,13 +63,34 @@ export class EmailApp extends WindowBase {
 
     createEmailListItem(email) {
         const isRead = this.readEmails.has(email.id);
-        // Unread: bold subject, blue dot; Read: normal subject, gray dot
+        const emailStatus = this.state.getEmailStatus(email.id);
+        
+        // Status indicator colors and icons
+        let statusIndicator = '';
+        let statusClass = 'bg-gray-400';
+        
+        switch(emailStatus) {
+            case 'phishing':
+                statusIndicator = '<i class="bi bi-shield-exclamation text-red-500 text-xs ml-1" title="Reported as Phishing"></i>';
+                statusClass = 'bg-red-500';
+                break;
+            case 'legitimate':
+                statusIndicator = '<i class="bi bi-shield-check text-green-500 text-xs ml-1" title="Marked as Legitimate"></i>';
+                statusClass = 'bg-green-500';
+                break;
+            default:
+                statusClass = isRead ? 'bg-gray-400' : 'bg-blue-500';
+        }
+
         return `
             <div class="email-item p-3 border-b border-gray-600 cursor-pointer hover:bg-gray-700 transition-colors duration-200 flex items-center"
                  data-email-id="${email.id}">
-                <span class="inline-block w-2 h-2 rounded-full mr-3 ${isRead ? 'bg-gray-400' : 'bg-blue-500'}"></span>
+                <span class="inline-block w-2 h-2 rounded-full mr-3 ${statusClass}"></span>
                 <div class="flex-1">
-                    <div class="font-medium text-white text-sm">${email.sender}</div>
+                    <div class="font-medium text-white text-sm flex items-center">
+                        ${email.sender}
+                        ${statusIndicator}
+                    </div>
                     <div class="text-sm mb-1 ${isRead ? 'text-gray-300 font-normal' : 'text-white font-bold'}">${email.subject}</div>
                     <div class="text-gray-400 text-xs">${email.time}</div>
                 </div>
@@ -77,28 +101,117 @@ export class EmailApp extends WindowBase {
     createEmailDetail(email, folderId) {
         // Mark as read when viewing detail
         this.readEmails.add(email.id);
+        const emailStatus = this.state.getEmailStatus(email.id);
+        
+        // Status badge
+        let statusBadge = '';
+        switch(emailStatus) {
+            case 'phishing':
+                statusBadge = '<span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded flex items-center"><i class="bi bi-shield-exclamation mr-1"></i>Reported as Phishing</span>';
+                break;
+            case 'legitimate':
+                statusBadge = '<span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded flex items-center"><i class="bi bi-shield-check mr-1"></i>Marked as Legitimate</span>';
+                break;
+        }
+
         return `
             <div class="p-6">
                 <div class="mb-4 flex items-center justify-between">
-                    <div>
+                    <div class="flex-1">
                         <div class="font-medium text-lg text-white">${email.subject}</div>
                         <div class="text-gray-400 text-sm">${email.sender}</div>
                         <div class="text-gray-500 text-xs mb-2">${email.time}</div>
+                        ${statusBadge ? `<div class="mt-2">${statusBadge}</div>` : ''}
                     </div>
-                    <div class="flex space-x-2">
-                        <button class="px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs cursor-pointer" id="back-btn">Back</button>
+                    <div class="flex flex-col space-y-2 ml-4">
+                        <button class="px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs cursor-pointer" id="back-btn">
+                            <i class="bi bi-arrow-left mr-1"></i>Back
+                        </button>
+                        ${this.createActionButtons(email.id, emailStatus)}
                     </div>
                 </div>
                 <div class="bg-gray-800 border border-gray-700 rounded p-4 text-white text-sm">
                     ${email.body}
                 </div>
+                
+                ${emailStatus === 'phishing' ? this.createPhishingWarning() : ''}
+                ${emailStatus === 'legitimate' ? this.createLegitimateConfirmation() : ''}
             </div>
         `;
     }
 
+    createActionButtons(emailId, currentStatus) {
+        if (currentStatus === 'phishing') {
+            return `
+                <button class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-500 transition-colors text-xs cursor-pointer" 
+                        id="mark-legitimate-btn" data-email-id="${emailId}">
+                    <i class="bi bi-shield-check mr-1"></i>Mark Legitimate
+                </button>`;
+        } else if (currentStatus === 'legitimate') {
+            return `
+                <button class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition-colors text-xs cursor-pointer" 
+                        id="report-phishing-btn" data-email-id="${emailId}">
+                    <i class="bi bi-shield-exclamation mr-1"></i>Report Phishing
+                </button>`;
+        } else {
+            return `
+                <button class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition-colors text-xs cursor-pointer" 
+                        id="report-phishing-btn" data-email-id="${emailId}">
+                    <i class="bi bi-shield-exclamation mr-1"></i>Report Phishing
+                </button>
+                <button class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-500 transition-colors text-xs cursor-pointer" 
+                        id="mark-legitimate-btn" data-email-id="${emailId}">
+                    <i class="bi bi-shield-check mr-1"></i>Mark Legitimate
+                </button>`;
+        }
+    }
+
+    createPhishingWarning() {
+        return `
+            <div class="mt-4 bg-red-900 border border-red-700 rounded p-4">
+                <div class="flex items-center mb-2">
+                    <i class="bi bi-exclamation-triangle text-red-400 mr-2"></i>
+                    <h4 class="text-red-400 font-semibold">Phishing Email Reported</h4>
+                </div>
+                <p class="text-red-300 text-sm">
+                    This email has been reported as a phishing attempt. It has been flagged for review and will be blocked from future delivery.
+                </p>
+                <div class="mt-2 text-red-400 text-xs">
+                    <strong>Safety Tips:</strong> Never click links or download attachments from suspicious emails. 
+                    Always verify sender identity before sharing personal information.
+                </div>
+            </div>`;
+    }
+
+    createLegitimateConfirmation() {
+        return `
+            <div class="mt-4 bg-green-900 border border-green-700 rounded p-4">
+                <div class="flex items-center mb-2">
+                    <i class="bi bi-shield-check text-green-400 mr-2"></i>
+                    <h4 class="text-green-400 font-semibold">Legitimate Email Verified</h4>
+                </div>
+                <p class="text-green-300 text-sm">
+                    This email has been marked as legitimate and trusted. The sender is verified and the content is safe.
+                </p>
+            </div>`;
+    }
+
     initialize() {
         super.initialize();
+        
+        // Store global reference for modal callbacks
+        window.emailAppInstance = this;
+        
         this.bindEvents();
+    }
+
+    cleanup() {
+        // Clean up global reference
+        if (window.emailAppInstance === this) {
+            window.emailAppInstance = null;
+        }
+        
+        super.cleanup();
     }
 
     updateContent() {
@@ -149,7 +262,7 @@ export class EmailApp extends WindowBase {
             });
         });
 
-        // Email detail actions
+        // Back button
         const backBtn = windowElement.querySelector('#back-btn');
         if (backBtn) {
             backBtn.addEventListener('click', () => {
@@ -158,7 +271,107 @@ export class EmailApp extends WindowBase {
             });
         }
 
+        // Report phishing button
+        const reportPhishingBtn = windowElement.querySelector('#report-phishing-btn');
+        if (reportPhishingBtn) {
+            reportPhishingBtn.addEventListener('click', () => {
+                const emailId = reportPhishingBtn.getAttribute('data-email-id');
+                this.reportPhishingEmail(emailId);
+            });
+        }
+
+        // Mark legitimate button
+        const markLegitimateBtn = windowElement.querySelector('#mark-legitimate-btn');
+        if (markLegitimateBtn) {
+            markLegitimateBtn.addEventListener('click', () => {
+                const emailId = markLegitimateBtn.getAttribute('data-email-id');
+                this.markEmailAsLegitimate(emailId);
+            });
+        }
+
         // Use shared navigation utility for email link handling
         NavigationUtil.bindEmailLinkHandlers(windowElement);
+    }
+
+    reportPhishingEmail(emailId) {
+        const email = ALL_EMAILS.find(e => e.id === emailId);
+        if (!email) return;
+
+        // Show confirmation modal
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-black/75 flex items-center justify-center z-50';
+        modal.innerHTML = `
+            <div class="bg-white rounded-lg p-6 max-w-md mx-4">
+                <div class="text-center">
+                    <i class="bi bi-shield-exclamation text-4xl text-red-500 mb-4"></i>
+                    <h2 class="text-xl font-bold text-gray-900 mb-4">Report Phishing Email</h2>
+                    <p class="text-gray-700 mb-4">
+                        Are you sure you want to report this email from <strong>${email.sender}</strong> as phishing?
+                    </p>
+                    <p class="text-sm text-gray-600 mb-6">
+                        This will flag the email as dangerous and help protect other users.
+                    </p>
+                    <div class="flex space-x-3 justify-center">
+                        <button onclick="this.closest('.fixed').remove()" 
+                                class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition-colors">
+                            Cancel
+                        </button>
+                        <button onclick="window.emailAppInstance?.confirmPhishingReport('${emailId}'); this.closest('.fixed').remove()" 
+                                class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors">
+                            Report Phishing
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+
+    confirmPhishingReport(emailId) {
+        this.state.reportAsPhishing(emailId);
+        
+        // Emit event for network monitoring
+        document.dispatchEvent(new CustomEvent('email-reported-phishing', {
+            detail: { emailId, timestamp: new Date().toISOString() }
+        }));
+        
+        this.showActionFeedback('Phishing email reported successfully!', 'success');
+        this.updateContent();
+    }
+
+    markEmailAsLegitimate(emailId) {
+        const email = ALL_EMAILS.find(e => e.id === emailId);
+        if (!email) return;
+
+        this.state.markAsLegitimate(emailId);
+        
+        // Emit event for network monitoring
+        document.dispatchEvent(new CustomEvent('email-marked-legitimate', {
+            detail: { emailId, timestamp: new Date().toISOString() }
+        }));
+        
+        this.showActionFeedback('Email marked as legitimate!', 'success');
+        this.updateContent();
+    }
+
+    showActionFeedback(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 ${
+            type === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
+        }`;
+        toast.innerHTML = `
+            <div class="flex items-center">
+                <i class="bi bi-${type === 'success' ? 'check-circle' : 'exclamation-circle'} mr-2"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        // Auto-remove after 3 seconds
+        setTimeout(() => {
+            toast.classList.add('opacity-0', 'transform', 'translate-x-full');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
     }
 }
