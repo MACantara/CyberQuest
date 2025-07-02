@@ -7,6 +7,7 @@
 // TODO: Sort the emails from most recent to oldest
 // TODO: Move the phishing email report at the top from the bottom
 // TODO: Store in local storage if the email has been opened or not
+// TODO: Utilize date and time stamps for emails instead of just "2 days ago" or "3 hours ago"
 
 import { WindowBase } from '../window-base.js';
 import { EmailState } from './email-functions/email-state.js';
