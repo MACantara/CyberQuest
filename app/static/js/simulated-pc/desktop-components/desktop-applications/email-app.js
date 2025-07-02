@@ -1,3 +1,13 @@
+// TODO: Add dialogue after finishing all emails
+// TODO: Create the necessary websites for each emails
+// TODO: Remove the training alerts of each emails
+// TODO: Redirect to the email inbox after reporting an email as phishing
+// TODO: Put the toast message for phishing report or marking as legitimate within the email client
+// TODO: Design the emails uniquely to realistic simulate emails and not use a uniform design
+// TODO: Sort the emails from most recent to oldest
+// TODO: Move the phishing email report at the top from the bottom
+// TODO: Store in local storage if the email has been opened or not
+
 import { WindowBase } from '../window-base.js';
 import { EmailState } from './email-functions/email-state.js';
 import { ALL_EMAILS } from './email-functions/emails/email-registry.js';
