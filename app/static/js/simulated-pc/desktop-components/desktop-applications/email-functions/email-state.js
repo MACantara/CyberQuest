@@ -1,10 +1,10 @@
+import { EmailSecurityManager } from './email-security-manager.js';
+
 export class EmailState {
     constructor() {
         this.currentFolder = 'inbox';
         this.selectedEmailId = null;
-        this.reportedPhishing = new Set(); // Track reported phishing emails
-        this.markedLegitimate = new Set(); // Track emails marked as legitimate
-        this.spamEmails = new Set(); // Track emails moved to spam
+        this.securityManager = new EmailSecurityManager();
     }
 
     setFolder(folderId) {
@@ -24,97 +24,55 @@ export class EmailState {
         return this.selectedEmailId;
     }
 
-    // Phishing reporting methods
+    // Delegate security operations to EmailSecurityManager
     reportAsPhishing(emailId) {
-        this.reportedPhishing.add(emailId);
-        this.spamEmails.add(emailId); // Move to spam when reported as phishing
-        // Remove from legitimate if previously marked
-        this.markedLegitimate.delete(emailId);
-        this.saveToLocalStorage();
+        return this.securityManager.reportAsPhishing(emailId);
     }
 
     markAsLegitimate(emailId) {
-        this.markedLegitimate.add(emailId);
-        this.spamEmails.delete(emailId); // Remove from spam if marked as legitimate
-        // Remove from phishing reports if previously reported
-        this.reportedPhishing.delete(emailId);
-        this.saveToLocalStorage();
+        return this.securityManager.markAsLegitimate(emailId);
     }
 
-    // Spam folder management
     moveToSpam(emailId) {
-        this.spamEmails.add(emailId);
-        this.saveToLocalStorage();
+        return this.securityManager.moveToSpam(emailId);
     }
 
     moveToInbox(emailId) {
-        this.spamEmails.delete(emailId);
-        this.reportedPhishing.delete(emailId); // Also remove phishing report
-        this.saveToLocalStorage();
+        return this.securityManager.moveToInbox(emailId);
     }
 
     isInSpam(emailId) {
-        return this.spamEmails.has(emailId);
-    }
-
-    // Folder filtering
-    getEmailsForFolder(allEmails, folderId) {
-        switch (folderId) {
-            case 'inbox':
-                return allEmails.filter(email => !this.isInSpam(email.id));
-            case 'spam':
-                return allEmails.filter(email => this.isInSpam(email.id));
-            default:
-                return allEmails;
-        }
+        return this.securityManager.isInSpam(emailId);
     }
 
     isReportedAsPhishing(emailId) {
-        return this.reportedPhishing.has(emailId);
+        return this.securityManager.isReportedAsPhishing(emailId);
     }
 
     isMarkedAsLegitimate(emailId) {
-        return this.markedLegitimate.has(emailId);
+        return this.securityManager.isMarkedAsLegitimate(emailId);
     }
 
     getEmailStatus(emailId) {
-        if (this.isReportedAsPhishing(emailId)) return 'phishing';
-        if (this.isMarkedAsLegitimate(emailId)) return 'legitimate';
-        return 'unverified';
+        return this.securityManager.getEmailStatus(emailId);
     }
 
-    // Persistence methods
-    saveToLocalStorage() {
-        localStorage.setItem('cyberquest_email_phishing_reports', JSON.stringify([...this.reportedPhishing]));
-        localStorage.setItem('cyberquest_email_legitimate_marks', JSON.stringify([...this.markedLegitimate]));
-        localStorage.setItem('cyberquest_email_spam', JSON.stringify([...this.spamEmails]));
+    getEmailsForFolder(allEmails, folderId) {
+        return this.securityManager.getEmailsForFolder(allEmails, folderId);
     }
 
+    // Persistence methods - delegate to security manager
     loadFromLocalStorage() {
-        const phishingReports = localStorage.getItem('cyberquest_email_phishing_reports');
-        const legitimateMarks = localStorage.getItem('cyberquest_email_legitimate_marks');
-        const spamEmails = localStorage.getItem('cyberquest_email_spam');
-        
-        if (phishingReports) {
-            this.reportedPhishing = new Set(JSON.parse(phishingReports));
-        }
-        if (legitimateMarks) {
-            this.markedLegitimate = new Set(JSON.parse(legitimateMarks));
-        }
-        if (spamEmails) {
-            this.spamEmails = new Set(JSON.parse(spamEmails));
-        }
+        this.securityManager.loadFromLocalStorage();
     }
 
     // Statistics methods
     getEmailStats() {
-        return {
-            totalReported: this.reportedPhishing.size,
-            totalLegitimate: this.markedLegitimate.size,
-            totalSpam: this.spamEmails.size,
-            reportedEmails: [...this.reportedPhishing],
-            legitimateEmails: [...this.markedLegitimate],
-            spamEmails: [...this.spamEmails]
-        };
+        return this.securityManager.getSecurityStats();
+    }
+
+    // Access to security manager for advanced operations
+    getSecurityManager() {
+        return this.securityManager;
     }
 }

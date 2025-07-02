@@ -69,24 +69,7 @@ export class EmailApp extends WindowBase {
 
     createEmailListItem(email) {
         const isRead = this.readEmails.has(email.id);
-        const emailStatus = this.state.getEmailStatus(email.id);
-        
-        // Status indicator colors and icons
-        let statusIndicator = '';
-        let statusClass = 'bg-gray-400';
-        
-        switch(emailStatus) {
-            case 'phishing':
-                statusIndicator = '<i class="bi bi-shield-exclamation text-red-500 text-xs ml-1" title="Reported as Phishing"></i>';
-                statusClass = 'bg-red-500';
-                break;
-            case 'legitimate':
-                statusIndicator = '<i class="bi bi-shield-check text-green-500 text-xs ml-1" title="Marked as Legitimate"></i>';
-                statusClass = 'bg-green-500';
-                break;
-            default:
-                statusClass = isRead ? 'bg-gray-400' : 'bg-blue-500';
-        }
+        const { statusIndicator, statusClass } = this.state.securityManager.createStatusIndicator(email.id, isRead);
 
         return `
             <div class="email-item p-3 border-b border-gray-600 cursor-pointer hover:bg-gray-700 transition-colors duration-200 flex items-center"
@@ -107,18 +90,8 @@ export class EmailApp extends WindowBase {
     createEmailDetail(email, folderId) {
         // Mark as read when viewing detail
         this.readEmails.add(email.id);
+        const statusBadge = this.state.securityManager.createStatusBadge(email.id);
         const emailStatus = this.state.getEmailStatus(email.id);
-        
-        // Status badge
-        let statusBadge = '';
-        switch(emailStatus) {
-            case 'phishing':
-                statusBadge = '<span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded flex items-center"><i class="bi bi-shield-exclamation mr-1"></i>Reported as Phishing</span>';
-                break;
-            case 'legitimate':
-                statusBadge = '<span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded flex items-center"><i class="bi bi-shield-check mr-1"></i>Marked as Legitimate</span>';
-                break;
-        }
 
         return `
             <div class="p-6">
@@ -133,90 +106,17 @@ export class EmailApp extends WindowBase {
                         <button class="px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs cursor-pointer" id="back-btn">
                             <i class="bi bi-arrow-left mr-1"></i>Back
                         </button>
-                        ${this.createActionButtons(email.id, emailStatus)}
+                        ${this.state.securityManager.createActionButtons(email.id, this.state.getCurrentFolder())}
                     </div>
                 </div>
                 <div class="bg-gray-800 border border-gray-700 rounded p-4 text-white text-sm">
                     ${email.body}
                 </div>
                 
-                ${emailStatus === 'phishing' ? this.createPhishingWarning() : ''}
-                ${emailStatus === 'legitimate' ? this.createLegitimateConfirmation() : ''}
+                ${emailStatus === 'phishing' ? this.state.securityManager.createPhishingWarning() : ''}
+                ${emailStatus === 'legitimate' ? this.state.securityManager.createLegitimateConfirmation() : ''}
             </div>
         `;
-    }
-
-    createActionButtons(emailId, currentStatus) {
-        const currentFolder = this.state.getCurrentFolder();
-        const isInSpam = this.state.isInSpam(emailId);
-        
-        let buttons = '';
-        
-        if (currentFolder === 'spam') {
-            // In spam folder, show move to inbox button
-            buttons += `
-                <button class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-500 transition-colors text-xs cursor-pointer" 
-                        id="move-to-inbox-btn" data-email-id="${emailId}">
-                    <i class="bi bi-inbox mr-1"></i>Move to Inbox
-                </button>`;
-        } else {
-            // In inbox, show spam/legitimate buttons based on current status
-            if (currentStatus === 'phishing') {
-                buttons += `
-                    <button class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-500 transition-colors text-xs cursor-pointer" 
-                            id="mark-legitimate-btn" data-email-id="${emailId}">
-                        <i class="bi bi-shield-check mr-1"></i>Mark Legitimate
-                    </button>`;
-            } else if (currentStatus === 'legitimate') {
-                buttons += `
-                    <button class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition-colors text-xs cursor-pointer" 
-                            id="report-phishing-btn" data-email-id="${emailId}">
-                        <i class="bi bi-shield-exclamation mr-1"></i>Report Phishing
-                    </button>`;
-            } else {
-                buttons += `
-                    <button class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition-colors text-xs cursor-pointer" 
-                            id="report-phishing-btn" data-email-id="${emailId}">
-                        <i class="bi bi-shield-exclamation mr-1"></i>Report Phishing
-                    </button>
-                    <button class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-500 transition-colors text-xs cursor-pointer" 
-                            id="mark-legitimate-btn" data-email-id="${emailId}">
-                        <i class="bi bi-shield-check mr-1"></i>Mark Legitimate
-                    </button>`;
-            }
-        }
-        
-        return buttons;
-    }
-
-    createPhishingWarning() {
-        return `
-            <div class="mt-4 bg-red-900 border border-red-700 rounded p-4">
-                <div class="flex items-center mb-2">
-                    <i class="bi bi-exclamation-triangle text-red-400 mr-2"></i>
-                    <h4 class="text-red-400 font-semibold">Phishing Email Reported</h4>
-                </div>
-                <p class="text-red-300 text-sm">
-                    This email has been reported as a phishing attempt. It has been flagged for review and will be blocked from future delivery.
-                </p>
-                <div class="mt-2 text-red-400 text-xs">
-                    <strong>Safety Tips:</strong> Never click links or download attachments from suspicious emails. 
-                    Always verify sender identity before sharing personal information.
-                </div>
-            </div>`;
-    }
-
-    createLegitimateConfirmation() {
-        return `
-            <div class="mt-4 bg-green-900 border border-green-700 rounded p-4">
-                <div class="flex items-center mb-2">
-                    <i class="bi bi-shield-check text-green-400 mr-2"></i>
-                    <h4 class="text-green-400 font-semibold">Legitimate Email Verified</h4>
-                </div>
-                <p class="text-green-300 text-sm">
-                    This email has been marked as legitimate and trusted. The sender is verified and the content is safe.
-                </p>
-            </div>`;
     }
 
     initialize() {
