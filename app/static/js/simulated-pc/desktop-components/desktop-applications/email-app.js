@@ -105,20 +105,22 @@ export class EmailApp extends WindowBase {
 
         return `
             <div class="p-6">
-                <div class="mb-4 flex items-center justify-between">
-                    <div class="flex-1">
-                        <div class="font-medium text-lg text-white">${email.subject}</div>
-                        <div class="text-gray-400 text-sm">${email.sender}</div>
-                        <div class="text-gray-500 text-xs mb-2">${email.time}</div>
-                        ${statusBadge ? `<div class="mt-2">${statusBadge}</div>` : ''}
-                    </div>
-                    <div class="flex flex-col space-y-2 ml-4">
-                        <button class="px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs cursor-pointer" id="back-btn">
-                            <i class="bi bi-arrow-left mr-1"></i>Back
-                        </button>
-                        ${this.state.securityManager.createActionButtons(email.id, this.state.getCurrentFolder())}
-                    </div>
+                <!-- Action buttons at the top -->
+                <div class="mb-4 flex items-center space-x-2">
+                    <button class="px-3 py-1 bg-gray-600 text-white rounded hover:bg-gray-500 transition-colors text-xs cursor-pointer" id="back-btn">
+                        <i class="bi bi-arrow-left mr-1"></i>Back
+                    </button>
+                    ${this.state.securityManager.createActionButtons(email.id, this.state.getCurrentFolder())}
                 </div>
+                
+                <!-- Email information -->
+                <div class="mb-4">
+                    <div class="font-medium text-lg text-white">${email.subject}</div>
+                    <div class="text-gray-400 text-sm">${email.sender}</div>
+                    <div class="text-gray-500 text-xs mb-2">${email.time}</div>
+                    ${statusBadge ? `<div class="mt-2">${statusBadge}</div>` : ''}
+                </div>
+                
                 <div class="bg-gray-800 border border-gray-700 rounded p-4 text-white text-sm">
                     ${email.body}
                 </div>
