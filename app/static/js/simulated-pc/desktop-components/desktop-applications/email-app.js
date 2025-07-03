@@ -204,7 +204,7 @@ export class EmailApp extends WindowBase {
                     ${statusBadge ? `<div class="mt-2">${statusBadge}</div>` : ''}
                 </div>
                 
-                <div class="bg-gray-800 border border-gray-700 rounded p-4 text-white text-sm">
+                <div class="bg-gray-800 border border-gray-700 rounded text-white text-sm">
                     ${email.body}
                 </div>
             </div>
