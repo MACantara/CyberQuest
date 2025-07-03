@@ -119,10 +119,12 @@ class FakePaypalEmailClass extends BaseEmail {
                 <div style="background: #f7f7f7; padding: 20px 30px; border-top: 1px solid #e5e5e5;">
                     <div style="text-align: center; margin-bottom: 15px;">
                         <!-- PayPal Logo -->
-                        <img src="/static/images/level-two/paypal.svg" 
-                             alt="PayPal Logo" 
-                             style="height: 24px; width: auto; margin-bottom: 10px;"
-                             border="0">
+                        <div style="display: flex; justify-content: center; margin-bottom: 10px;">
+                            <img src="/static/images/level-two/paypal.svg" 
+                                 alt="PayPal Logo" 
+                                 style="height: 24px; width: auto;"
+                                 border="0">
+                        </div>
                     </div>
                     
                     <div style="color: #666; font-size: 12px; line-height: 1.4; text-align: center;">
