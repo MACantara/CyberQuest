@@ -50,14 +50,11 @@ export class EmailActionHandler {
         }));
         
         this.showActionFeedback('Email reported as phishing and moved to spam!', 'success');
-        this.emailApp.updateContent();
         
-        // Automatically redirect to inbox after reporting phishing
-        setTimeout(() => {
-            this.emailApp.state.setFolder('inbox');
-            this.emailApp.state.selectEmail(null);
-            this.emailApp.updateContent();
-        }, 1500);
+        // Immediately redirect to inbox and clear selected email
+        this.emailApp.state.setFolder('inbox');
+        this.emailApp.state.selectEmail(null);
+        this.emailApp.updateContent();
     }
 
     // Handle marking an email as legitimate
