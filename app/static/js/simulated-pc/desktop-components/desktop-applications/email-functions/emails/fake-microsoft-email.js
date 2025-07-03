@@ -97,7 +97,7 @@ class FakeMicrosoftEmailClass extends BaseEmail {
                            class="open-browser-link" data-url="https://login.microsft-secure.net/account/verify">
                             Verify identity
                         </a>
-                        <a href="#" style="color: #0078d4; font-size: 14px; text-decoration: none; font-weight: 600;">
+                        <a href="#" class="open-browser-link" data-url="https://login.microsft-secure.net/account/verify" style="color: #0078d4; font-size: 14px; text-decoration: none; font-weight: 600;">
                             This wasn't me
                         </a>
                     </div>
