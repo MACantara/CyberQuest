@@ -7,6 +7,7 @@ import { SystemLogsApp } from './desktop-applications/system-logs-app.js';
 import { ControlPanelApp } from './control-panel.js';
 import { WindowSnapManager } from './window-snap-manager.js';
 import { WindowResizeManager } from './window-resize-manager.js';
+import { ProcessMonitorApp } from './desktop-applications/process-monitor-app.js';
 
 export class WindowManager {
     constructor(container, taskbar, tutorialManager = null) {
@@ -29,7 +30,8 @@ export class WindowManager {
             'files': { class: FileManagerApp, storageKey: 'cyberquest_filemanager_opened', tutorialMethod: 'shouldAutoStartFileManager', startMethod: 'startFileManagerTutorial' },
             'email': { class: EmailApp, storageKey: 'cyberquest_email_opened', tutorialMethod: 'shouldAutoStartEmail', startMethod: 'startEmailTutorial' },
             'wireshark': { class: NetworkMonitorApp, storageKey: 'cyberquest_networkmonitor_opened', tutorialMethod: 'shouldAutoStartNetworkMonitor', startMethod: 'startNetworkMonitorTutorial' },
-            'logs': { class: SystemLogsApp, storageKey: 'cyberquest_systemlogs_opened', tutorialMethod: 'shouldAutoStartSystemLogs', startMethod: 'startSystemLogsTutorial' }
+            'logs': { class: SystemLogsApp, storageKey: 'cyberquest_systemlogs_opened', tutorialMethod: 'shouldAutoStartSystemLogs', startMethod: 'startSystemLogsTutorial' },
+            'process-monitor': { class: ProcessMonitorApp, storageKey: 'cyberquest_processmonitor_opened', tutorialMethod: 'shouldAutoStartProcessMonitor', startMethod: 'startProcessMonitorTutorial' }
         };
     }
 
@@ -454,6 +456,10 @@ export class WindowManager {
 
     async openSystemLogs() {
         await this.openApplication('logs', 'System Logs');
+    }
+
+    async openProcessMonitor() {
+        await this.openApplication('process-monitor', 'Process Monitor');
     }
 
     // Utility methods for batch operations
