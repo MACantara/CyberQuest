@@ -50,6 +50,53 @@ export class EmailSecurityManager {
         }));
     }
 
+    // Email action methods - refactored from email-app.js
+    confirmPhishingReport(emailId, emailApp) {
+        this.reportAsPhishing(emailId);
+        
+        // Emit event for network monitoring
+        document.dispatchEvent(new CustomEvent('email-reported-phishing', {
+            detail: { emailId, timestamp: new Date().toISOString() }
+        }));
+        
+        if (emailApp && emailApp.actionHandler) {
+            emailApp.actionHandler.showActionFeedback('Email reported as phishing and moved to spam!', 'success');
+            
+            // Redirect to inbox and clear selected email
+            emailApp.state.setFolder('inbox');
+            emailApp.state.selectEmail(null);
+            emailApp.updateContent();
+        }
+    }
+
+    markEmailAsLegitimate(emailId, emailApp) {
+        this.markAsLegitimate(emailId);
+        
+        // Emit event for network monitoring
+        document.dispatchEvent(new CustomEvent('email-marked-legitimate', {
+            detail: { emailId, timestamp: new Date().toISOString() }
+        }));
+        
+        if (emailApp && emailApp.actionHandler) {
+            emailApp.actionHandler.showActionFeedback('Email marked as legitimate!', 'success');
+            emailApp.updateContent();
+        }
+    }
+
+    moveEmailToInbox(emailId, emailApp) {
+        this.moveToInbox(emailId);
+        
+        // Emit event for network monitoring
+        document.dispatchEvent(new CustomEvent('email-moved-to-inbox', {
+            detail: { emailId, timestamp: new Date().toISOString() }
+        }));
+        
+        if (emailApp && emailApp.actionHandler) {
+            emailApp.actionHandler.showActionFeedback('Email moved back to inbox!', 'success');
+            emailApp.updateContent();
+        }
+    }
+
     // Status checking methods
     isReportedAsPhishing(emailId) {
         return this.reportedPhishing.has(emailId);

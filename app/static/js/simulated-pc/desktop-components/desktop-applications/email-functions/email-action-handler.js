@@ -42,51 +42,20 @@ export class EmailActionHandler {
 
     // Confirm phishing report and execute the action
     confirmPhishingReport(emailId) {
-        this.emailApp.state.reportAsPhishing(emailId);
-        
-        // Emit event for network monitoring
-        document.dispatchEvent(new CustomEvent('email-reported-phishing', {
-            detail: { emailId, timestamp: new Date().toISOString() }
-        }));
-        
-        this.showActionFeedback('Email reported as phishing and moved to spam!', 'success');
-        
-        // Immediately redirect to inbox and clear selected email
-        this.emailApp.state.setFolder('inbox');
-        this.emailApp.state.selectEmail(null);
-        this.emailApp.updateContent();
+        // Use security manager to handle the action
+        this.emailApp.state.securityManager.confirmPhishingReport(emailId, this.emailApp);
     }
 
     // Handle marking an email as legitimate
     markEmailAsLegitimate(emailId) {
-        const email = ALL_EMAILS.find(e => e.id === emailId);
-        if (!email) return;
-
-        this.emailApp.state.markAsLegitimate(emailId);
-        
-        // Emit event for network monitoring
-        document.dispatchEvent(new CustomEvent('email-marked-legitimate', {
-            detail: { emailId, timestamp: new Date().toISOString() }
-        }));
-        
-        this.showActionFeedback('Email marked as legitimate!', 'success');
-        this.emailApp.updateContent();
+        // Use security manager to handle the action
+        this.emailApp.state.securityManager.markEmailAsLegitimate(emailId, this.emailApp);
     }
 
     // Handle moving an email from spam back to inbox
     moveEmailToInbox(emailId) {
-        const email = ALL_EMAILS.find(e => e.id === emailId);
-        if (!email) return;
-
-        this.emailApp.state.moveToInbox(emailId);
-        
-        // Emit event for network monitoring
-        document.dispatchEvent(new CustomEvent('email-moved-to-inbox', {
-            detail: { emailId, timestamp: new Date().toISOString() }
-        }));
-        
-        this.showActionFeedback('Email moved back to inbox!', 'success');
-        this.emailApp.updateContent();
+        // Use security manager to handle the action
+        this.emailApp.state.securityManager.moveEmailToInbox(emailId, this.emailApp);
     }
 
     // Show toast notification for user feedback within the email client
