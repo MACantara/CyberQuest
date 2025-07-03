@@ -1,9 +1,8 @@
-// TODO: Add dialogue after finishing all emails
-
 import { WindowBase } from '../window-base.js';
 import { EmailState } from './email-functions/email-state.js';
 import { EmailActionHandler } from './email-functions/email-action-handler.js';
 import { EmailReadTracker } from './email-functions/email-read-tracker.js';
+import { EmailCompletionTracker } from './email-functions/email-completion-tracker.js';
 import { ALL_EMAILS } from './email-functions/emails/email-registry.js';
 import { NavigationUtil } from '../shared-utils/navigation-util.js';
 
@@ -16,6 +15,7 @@ export class EmailApp extends WindowBase {
         this.state = new EmailState();
         this.readTracker = new EmailReadTracker();
         this.actionHandler = new EmailActionHandler(this);
+        this.completionTracker = new EmailCompletionTracker(this);
         
         // Load saved email state
         this.state.loadFromLocalStorage();
@@ -233,6 +233,9 @@ export class EmailApp extends WindowBase {
         // Initialize action handler
         this.actionHandler.initialize();
         
+        // Initialize completion tracker
+        this.completionTracker.initialize();
+        
         // Clean up old read status for emails that no longer exist
         const currentEmailIds = ALL_EMAILS.map(email => email.id);
         this.readTracker.cleanupOldReadStatus(currentEmailIds);
@@ -241,6 +244,9 @@ export class EmailApp extends WindowBase {
     }
 
     cleanup() {
+        // Clean up completion tracker
+        this.completionTracker.cleanup();
+        
         // Clean up action handler
         this.actionHandler.cleanup();
         
@@ -317,15 +323,17 @@ export class EmailApp extends WindowBase {
         NavigationUtil.bindEmailLinkHandlers(windowElement);
     }
 
-    // Get email reading statistics for progress tracking
+    // Get comprehensive email statistics including completion status
     getEmailStats() {
         const allEmails = [...ALL_EMAILS];
         const readingStats = this.readTracker.getReadingStats(allEmails);
         const securityStats = this.state.securityManager.getSecurityStats();
+        const completionStats = this.completionTracker.getCompletionStats();
         
         return {
             ...readingStats,
             ...securityStats,
+            ...completionStats,
             lastUpdate: this.readTracker.getLastUpdateTimestamp()
         };
     }
