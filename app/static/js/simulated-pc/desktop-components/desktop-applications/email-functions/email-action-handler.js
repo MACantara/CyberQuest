@@ -34,11 +34,11 @@ export class EmailActionHandler {
                     </p>
                     <div class="flex space-x-3 justify-center">
                         <button onclick="this.closest('.email-modal').remove()" 
-                                class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition-colors">
+                                class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition-colors cursor-pointer">
                             Cancel
                         </button>
                         <button onclick="window.emailActionHandler?.confirmPhishingReport('${emailId}'); this.closest('.email-modal').remove()" 
-                                class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors">
+                                class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors cursor-pointer">
                             Report Phishing
                         </button>
                     </div>
@@ -204,7 +204,7 @@ export class EmailActionHandler {
                         </p>
                     </div>
                     <button onclick="this.closest('.email-modal').remove()" 
-                            class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition-colors">
+                            class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition-colors cursor-pointer">
                         Continue Training
                     </button>
                 </div>
@@ -241,7 +241,7 @@ export class EmailActionHandler {
                         </p>
                     </div>
                     <button onclick="this.closest('.fixed').remove()" 
-                            class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition-colors">
+                            class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition-colors cursor-pointer">
                         Continue Training
                     </button>
                 </div>
