@@ -16,11 +16,13 @@ class FakePaypalEmailClass extends BaseEmail {
         return `
             <div style="font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0 auto; background: #ffffff;">
                 <!-- PayPal Header -->
-                <div style="background: #003087; padding: 20px 30px;">
+                <div style="padding: 20px 30px;">
                     <div style="display: flex; align-items: center;">
-                        <div style="color: white; font-size: 28px; font-weight: bold; letter-spacing: -1px;">
-                            <span style="color: #0070ba;">Pay</span><span style="color: #ffffff;">Pal</span>
-                        </div>
+                        <!-- PayPal Logo -->
+                        <img src="/static/images/level-two/paypal.svg" 
+                             alt="PayPal Logo" 
+                             style="height: 32px; width: auto; margin-right: 15px;"
+                             border="0">
                     </div>
                 </div>
                 
@@ -116,9 +118,11 @@ class FakePaypalEmailClass extends BaseEmail {
                 <!-- Footer -->
                 <div style="background: #f7f7f7; padding: 20px 30px; border-top: 1px solid #e5e5e5;">
                     <div style="text-align: center; margin-bottom: 15px;">
-                        <div style="color: #0070ba; font-size: 20px; font-weight: bold; margin-bottom: 10px;">
-                            <span style="color: #0070ba;">Pay</span><span style="color: #003087;">Pal</span>
-                        </div>
+                        <!-- PayPal Logo -->
+                        <img src="/static/images/level-two/paypal.svg" 
+                             alt="PayPal Logo" 
+                             style="height: 24px; width: auto; margin-bottom: 10px;"
+                             border="0">
                     </div>
                     
                     <div style="color: #666; font-size: 12px; line-height: 1.4; text-align: center;">

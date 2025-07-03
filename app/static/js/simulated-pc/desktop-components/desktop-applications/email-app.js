@@ -1,5 +1,6 @@
 // TODO: Add dialogue after finishing all emails
 // TODO: Create the necessary websites for each emails
+// TODO: Update PayPal logo for the fake paypal phishing email
 
 import { WindowBase } from '../window-base.js';
 import { EmailState } from './email-functions/email-state.js';
