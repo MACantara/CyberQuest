@@ -8,6 +8,7 @@
 
 import { WindowBase } from '../window-base.js';
 import { EmailState } from './email-functions/email-state.js';
+import { EmailActionHandler } from './email-functions/email-action-handler.js';
 import { ALL_EMAILS } from './email-functions/emails/email-registry.js';
 import { NavigationUtil } from '../shared-utils/navigation-util.js';
 
@@ -19,6 +20,7 @@ export class EmailApp extends WindowBase {
         });
         this.state = new EmailState();
         this.readEmails = new Set(); // Track read email IDs
+        this.actionHandler = new EmailActionHandler(this);
         
         // Load saved email state
         this.state.loadFromLocalStorage();
@@ -231,17 +233,15 @@ export class EmailApp extends WindowBase {
     initialize() {
         super.initialize();
         
-        // Store global reference for modal callbacks
-        window.emailAppInstance = this;
+        // Initialize action handler
+        this.actionHandler.initialize();
         
         this.bindEvents();
     }
 
     cleanup() {
-        // Clean up global reference
-        if (window.emailAppInstance === this) {
-            window.emailAppInstance = null;
-        }
+        // Clean up action handler
+        this.actionHandler.cleanup();
         
         super.cleanup();
     }
@@ -265,8 +265,7 @@ export class EmailApp extends WindowBase {
         windowElement.querySelectorAll('.email-folder').forEach(folderEl => {
             folderEl.addEventListener('click', () => {
                 const folderId = folderEl.getAttribute('data-folder');
-                this.state.setFolder(folderId);
-                this.updateContent();
+                this.actionHandler.handleFolderSwitch(folderId);
             });
         });
 
@@ -274,23 +273,7 @@ export class EmailApp extends WindowBase {
         windowElement.querySelectorAll('.email-item').forEach(emailEl => {
             emailEl.addEventListener('click', () => {
                 const emailId = emailEl.getAttribute('data-email-id');
-                this.state.selectEmail(emailId);
-                // Mark as read
-                this.readEmails.add(emailId);
-                
-                // Find the email and emit event for network monitoring
-                const email = ALL_EMAILS.find(e => e.id === emailId);
-                if (email) {
-                    document.dispatchEvent(new CustomEvent('email-opened', {
-                        detail: { 
-                            sender: email.sender, 
-                            subject: email.subject,
-                            suspicious: email.suspicious 
-                        }
-                    }));
-                }
-                
-                this.updateContent();
+                this.actionHandler.handleEmailOpen(emailId);
             });
         });
 
@@ -298,8 +281,7 @@ export class EmailApp extends WindowBase {
         const backBtn = windowElement.querySelector('#back-btn');
         if (backBtn) {
             backBtn.addEventListener('click', () => {
-                this.state.selectEmail(null);
-                this.updateContent();
+                this.actionHandler.handleBackNavigation();
             });
         }
 
@@ -308,7 +290,7 @@ export class EmailApp extends WindowBase {
         if (reportPhishingBtn) {
             reportPhishingBtn.addEventListener('click', () => {
                 const emailId = reportPhishingBtn.getAttribute('data-email-id');
-                this.reportPhishingEmail(emailId);
+                this.actionHandler.reportPhishingEmail(emailId);
             });
         }
 
@@ -317,7 +299,7 @@ export class EmailApp extends WindowBase {
         if (markLegitimateBtn) {
             markLegitimateBtn.addEventListener('click', () => {
                 const emailId = markLegitimateBtn.getAttribute('data-email-id');
-                this.markEmailAsLegitimate(emailId);
+                this.actionHandler.markEmailAsLegitimate(emailId);
             });
         }
 
@@ -326,7 +308,7 @@ export class EmailApp extends WindowBase {
         if (moveToInboxBtn) {
             moveToInboxBtn.addEventListener('click', () => {
                 const emailId = moveToInboxBtn.getAttribute('data-email-id');
-                this.moveEmailToInbox(emailId);
+                this.actionHandler.moveEmailToInbox(emailId);
             });
         }
 
@@ -334,100 +316,4 @@ export class EmailApp extends WindowBase {
         NavigationUtil.bindEmailLinkHandlers(windowElement);
     }
 
-    reportPhishingEmail(emailId) {
-        const email = ALL_EMAILS.find(e => e.id === emailId);
-        if (!email) return;
-
-        // Show confirmation modal
-        const modal = document.createElement('div');
-        modal.className = 'fixed inset-0 bg-black/75 flex items-center justify-center z-50';
-        modal.innerHTML = `
-            <div class="bg-white rounded-lg p-6 max-w-md mx-4">
-                <div class="text-center">
-                    <i class="bi bi-shield-exclamation text-4xl text-red-500 mb-4"></i>
-                    <h2 class="text-xl font-bold text-gray-900 mb-4">Report Phishing Email</h2>
-                    <p class="text-gray-700 mb-4">
-                        Are you sure you want to report this email from <strong>${email.sender}</strong> as phishing?
-                    </p>
-                    <p class="text-sm text-gray-600 mb-6">
-                        This will flag the email as dangerous and help protect other users.
-                    </p>
-                    <div class="flex space-x-3 justify-center">
-                        <button onclick="this.closest('.fixed').remove()" 
-                                class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition-colors">
-                            Cancel
-                        </button>
-                        <button onclick="window.emailAppInstance?.confirmPhishingReport('${emailId}'); this.closest('.fixed').remove()" 
-                                class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors">
-                            Report Phishing
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(modal);
-    }
-
-    confirmPhishingReport(emailId) {
-        this.state.reportAsPhishing(emailId);
-        
-        // Emit event for network monitoring
-        document.dispatchEvent(new CustomEvent('email-reported-phishing', {
-            detail: { emailId, timestamp: new Date().toISOString() }
-        }));
-        
-        this.showActionFeedback('Email reported as phishing and moved to spam!', 'success');
-        this.updateContent();
-    }
-
-    markEmailAsLegitimate(emailId) {
-        const email = ALL_EMAILS.find(e => e.id === emailId);
-        if (!email) return;
-
-        this.state.markAsLegitimate(emailId);
-        
-        // Emit event for network monitoring
-        document.dispatchEvent(new CustomEvent('email-marked-legitimate', {
-            detail: { emailId, timestamp: new Date().toISOString() }
-        }));
-        
-        this.showActionFeedback('Email marked as legitimate!', 'success');
-        this.updateContent();
-    }
-
-    moveEmailToInbox(emailId) {
-        const email = ALL_EMAILS.find(e => e.id === emailId);
-        if (!email) return;
-
-        this.state.moveToInbox(emailId);
-        
-        // Emit event for network monitoring
-        document.dispatchEvent(new CustomEvent('email-moved-to-inbox', {
-            detail: { emailId, timestamp: new Date().toISOString() }
-        }));
-        
-        this.showActionFeedback('Email moved back to inbox!', 'success');
-        this.updateContent();
-    }
-
-    showActionFeedback(message, type) {
-        const toast = document.createElement('div');
-        toast.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 ${
-            type === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
-        }`;
-        toast.innerHTML = `
-            <div class="flex items-center">
-                <i class="bi bi-${type === 'success' ? 'check-circle' : 'exclamation-circle'} mr-2"></i>
-                <span>${message}</span>
-            </div>
-        `;
-        
-        document.body.appendChild(toast);
-        
-        // Auto-remove after 3 seconds
-        setTimeout(() => {
-            toast.classList.add('opacity-0', 'transform', 'translate-x-full');
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
-    }
 }
