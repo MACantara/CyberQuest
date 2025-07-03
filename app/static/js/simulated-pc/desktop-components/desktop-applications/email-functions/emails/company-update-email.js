@@ -6,7 +6,7 @@ class CompanyUpdateEmailClass extends BaseEmail {
             id: 'company-update-001',
             sender: 'noreply@cyberquest.com',
             subject: 'Weekly Security Update - Important System Maintenance',
-            time: '2 hours ago',
+            timestamp: BaseEmail.createTimestamp(2, 30), // 2 hours 30 minutes ago
             suspicious: false,
             priority: 'normal'
         });

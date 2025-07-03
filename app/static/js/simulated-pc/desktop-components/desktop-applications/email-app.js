@@ -6,7 +6,6 @@
 // TODO: Sort the emails from most recent to oldest
 // TODO: Move the phishing email report at the top from the bottom
 // TODO: Store in local storage if the email has been opened or not
-// TODO: Utilize date and time stamps for emails instead of just "2 days ago" or "3 hours ago"
 
 import { WindowBase } from '../window-base.js';
 import { EmailState } from './email-functions/email-state.js';
@@ -34,18 +33,11 @@ export class EmailApp extends WindowBase {
         const allEmails = [...ALL_EMAILS];
         const emails = this.state.getEmailsForFolder(allEmails, currentFolder);
         
-        // Sort emails by recency (most recent first)
+        // Sort emails by timestamp (most recent first)
         emails.sort((a, b) => {
-            const parseTime = (email) => {
-                const t = email.time.toLowerCase();
-                if (t.includes('min')) return 0 + parseInt(t) * 60;
-                if (t.includes('hour')) return 1000 + parseInt(t) * 3600;
-                if (t.includes('yesterday')) return 2000;
-                if (t.includes('last week')) return 3000;
-                if (t.includes('day')) return 1500 + parseInt(t) * 86400;
-                return 9999;
-            };
-            return parseTime(a) - parseTime(b);
+            const timestampA = a.timestamp ? new Date(a.timestamp).getTime() : this.parseTimeForSorting(a.time);
+            const timestampB = b.timestamp ? new Date(b.timestamp).getTime() : this.parseTimeForSorting(b.time);
+            return timestampB - timestampA; // Descending order (newest first)
         });
         
         const selectedEmail = selectedEmailId ? allEmails.find(e => e.id === selectedEmailId) : null;
@@ -77,6 +69,31 @@ export class EmailApp extends WindowBase {
         `;
     }
 
+    // Parse time strings for sorting when timestamp is not available
+    parseTimeForSorting(timeString) {
+        const now = Date.now();
+        const lowerTime = timeString.toLowerCase();
+        
+        if (lowerTime.includes('min ago')) {
+            const minutes = parseInt(lowerTime) || 0;
+            return now - (minutes * 60 * 1000);
+        } else if (lowerTime.includes('hour ago') || lowerTime.includes('hours ago')) {
+            const hours = parseInt(lowerTime) || 0;
+            return now - (hours * 60 * 60 * 1000);
+        } else if (lowerTime.includes('yesterday')) {
+            return now - (24 * 60 * 60 * 1000);
+        } else if (lowerTime.includes('day ago') || lowerTime.includes('days ago')) {
+            const days = parseInt(lowerTime) || 0;
+            return now - (days * 24 * 60 * 60 * 1000);
+        } else if (lowerTime.includes('last week')) {
+            return now - (7 * 24 * 60 * 60 * 1000);
+        } else {
+            // Try to parse as date
+            const parsed = new Date(timeString);
+            return isNaN(parsed.getTime()) ? now : parsed.getTime();
+        }
+    }
+
     createEmailListItem(email) {
         const isRead = this.readEmails.has(email.id);
         const { statusIndicator, statusClass } = this.state.securityManager.createStatusIndicator(email.id, isRead);
@@ -103,6 +120,9 @@ export class EmailApp extends WindowBase {
         const statusBadge = this.state.securityManager.createStatusBadge(email.id);
         const emailStatus = this.state.getEmailStatus(email.id);
 
+        // Use full date time if available, otherwise format the time
+        const displayTime = email.fullDateTime || this.formatDetailTime(email);
+
         return `
             <div class="p-6">
                 <!-- Action buttons at the top -->
@@ -117,7 +137,9 @@ export class EmailApp extends WindowBase {
                 <div class="mb-4">
                     <div class="font-medium text-lg text-white">${email.subject}</div>
                     <div class="text-gray-400 text-sm">${email.sender}</div>
-                    <div class="text-gray-500 text-xs mb-2">${email.time}</div>
+                    <div class="text-gray-500 text-xs mb-2" title="Full timestamp: ${displayTime}">
+                        <i class="bi bi-clock mr-1"></i>${displayTime}
+                    </div>
                     ${statusBadge ? `<div class="mt-2">${statusBadge}</div>` : ''}
                 </div>
                 
@@ -129,6 +151,24 @@ export class EmailApp extends WindowBase {
                 ${emailStatus === 'legitimate' ? this.state.securityManager.createLegitimateConfirmation() : ''}
             </div>
         `;
+    }
+
+    // Format time for detail view when fullDateTime is not available
+    formatDetailTime(email) {
+        if (email.timestamp) {
+            const date = new Date(email.timestamp);
+            return date.toLocaleDateString('en-US', { 
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long', 
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true,
+                timeZoneName: 'short'
+            });
+        }
+        return email.time;
     }
 
     initialize() {

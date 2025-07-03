@@ -6,7 +6,7 @@ class NewsletterSubscriptionClass extends BaseEmail {
             id: 'newsletter-001',
             sender: 'newsletter@cybersecuritydaily.com',
             subject: 'Your Weekly Cybersecurity Brief - November 2024',
-            time: 'yesterday',
+            timestamp: BaseEmail.createSpecificTimestamp(2024, 11, 17, 9, 0), // Yesterday 9 AM
             suspicious: false,
             priority: 'normal'
         });

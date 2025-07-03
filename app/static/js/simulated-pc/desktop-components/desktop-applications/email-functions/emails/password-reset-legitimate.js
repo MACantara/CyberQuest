@@ -6,7 +6,7 @@ class PasswordResetLegitimateClass extends BaseEmail {
             id: 'password-reset-001',
             sender: 'noreply@cyberquest.com',
             subject: 'Password Reset Request for Your CyberQuest Account',
-            time: '5 min ago',
+            timestamp: BaseEmail.createTimestamp(0, 5), // 5 minutes ago
             suspicious: false,
             priority: 'normal'
         });
@@ -34,7 +34,7 @@ class PasswordResetLegitimateClass extends BaseEmail {
                     <div class="text-green-700 text-sm space-y-1">
                         <div class="flex justify-between">
                             <span>Time:</span>
-                            <span>November 18, 2024 3:15 PM EST</span>
+                            <span>${new Date().toLocaleString()}</span>
                         </div>
                         <div class="flex justify-between">
                             <span>IP Address:</span>

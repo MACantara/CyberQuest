@@ -6,7 +6,7 @@ class SophisticatedSpearPhishClass extends BaseEmail {
             id: 'spear-phish-001',
             sender: 'michael.chen@techcorp-industries.com',
             subject: 'Re: Q4 Budget Approval - Urgent Signature Required',
-            time: '1 hour ago',
+            timestamp: BaseEmail.createTimestamp(1, 0), // 1 hour ago
             suspicious: true,
             priority: 'high'
         });

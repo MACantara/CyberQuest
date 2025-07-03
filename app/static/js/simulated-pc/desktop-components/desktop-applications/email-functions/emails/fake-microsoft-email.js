@@ -6,7 +6,7 @@ class FakeMicrosoftEmailClass extends BaseEmail {
             id: 'microsoft-phish-001',
             sender: 'account-security@microsoft.com',
             subject: 'Microsoft Account: Sign-in from new device requires verification',
-            time: '15 min ago',
+            timestamp: BaseEmail.createTimestamp(0, 15), // 15 minutes ago
             suspicious: true,
             priority: 'normal'
         });

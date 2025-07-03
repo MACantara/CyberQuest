@@ -4,7 +4,8 @@ export class BaseEmail {
         this.folder = config.folder || 'inbox';
         this.sender = config.sender;
         this.subject = config.subject;
-        this.time = config.time;
+        // Convert relative time to actual timestamp
+        this.timestamp = config.timestamp || this.parseRelativeTime(config.time);
         this.suspicious = config.suspicious || false;
         this.priority = config.priority || 'normal'; // low, normal, high
         this.attachments = config.attachments || [];
@@ -18,6 +19,111 @@ export class BaseEmail {
     // Get the email body (calls createBody internally)
     get body() {
         return this.createBody();
+    }
+
+    // Get formatted time for display
+    get time() {
+        return this.formatTimestamp(this.timestamp);
+    }
+
+    // Get full date and time for detailed view
+    get fullDateTime() {
+        return this.formatFullDateTime(this.timestamp);
+    }
+
+    // Parse relative time strings into actual timestamps
+    parseRelativeTime(timeString) {
+        const now = new Date();
+        const lowerTime = timeString.toLowerCase();
+        
+        if (lowerTime.includes('min ago')) {
+            const minutes = parseInt(lowerTime);
+            return new Date(now.getTime() - (minutes * 60 * 1000));
+        } else if (lowerTime.includes('hour ago') || lowerTime.includes('hours ago')) {
+            const hours = parseInt(lowerTime);
+            return new Date(now.getTime() - (hours * 60 * 60 * 1000));
+        } else if (lowerTime.includes('yesterday')) {
+            const yesterday = new Date(now);
+            yesterday.setDate(now.getDate() - 1);
+            yesterday.setHours(14, 30, 0, 0); // Set to 2:30 PM
+            return yesterday;
+        } else if (lowerTime.includes('day ago') || lowerTime.includes('days ago')) {
+            const days = parseInt(lowerTime);
+            const daysAgo = new Date(now);
+            daysAgo.setDate(now.getDate() - days);
+            daysAgo.setHours(10, 15, 0, 0); // Set to 10:15 AM
+            return daysAgo;
+        } else if (lowerTime.includes('last week')) {
+            const lastWeek = new Date(now);
+            lastWeek.setDate(now.getDate() - 7);
+            lastWeek.setHours(16, 45, 0, 0); // Set to 4:45 PM
+            return lastWeek;
+        } else {
+            // If it's already a proper date string, parse it
+            const parsed = new Date(timeString);
+            return isNaN(parsed.getTime()) ? now : parsed;
+        }
+    }
+
+    // Format timestamp for email list display
+    formatTimestamp(timestamp) {
+        const now = new Date();
+        const date = new Date(timestamp);
+        const diffInHours = (now - date) / (1000 * 60 * 60);
+        
+        // If today, show time
+        if (diffInHours < 24 && date.toDateString() === now.toDateString()) {
+            return date.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true 
+            });
+        }
+        
+        // If yesterday
+        const yesterday = new Date(now);
+        yesterday.setDate(now.getDate() - 1);
+        if (date.toDateString() === yesterday.toDateString()) {
+            return `Yesterday ${date.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true 
+            })}`;
+        }
+        
+        // If this year, show month/day and time
+        if (date.getFullYear() === now.getFullYear()) {
+            return date.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric' 
+            }) + ', ' + date.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true 
+            });
+        }
+        
+        // If older, show full date
+        return date.toLocaleDateString('en-US', { 
+            year: 'numeric',
+            month: 'short', 
+            day: 'numeric' 
+        });
+    }
+
+    // Format full date and time for email detail view
+    formatFullDateTime(timestamp) {
+        const date = new Date(timestamp);
+        return date.toLocaleDateString('en-US', { 
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long', 
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true,
+            timeZoneName: 'short'
+        });
     }
 
     // Helper method to extract domain from sender
@@ -37,19 +143,15 @@ export class BaseEmail {
         return domain.includes('cyberquest.com') ? 'mail.cyberquest.com' : domain;
     }
 
-    // Helper method to format time consistently
-    static formatTime(date) {
+    // Static method to create timestamps
+    static createTimestamp(hoursAgo = 0, minutesAgo = 0) {
         const now = new Date();
-        const diff = now - date;
-        const minutes = Math.floor(diff / (1000 * 60));
-        const hours = Math.floor(diff / (1000 * 60 * 60));
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        return new Date(now.getTime() - (hoursAgo * 60 * 60 * 1000) - (minutesAgo * 60 * 1000));
+    }
 
-        if (minutes < 60) return `${minutes} min ago`;
-        if (hours < 24) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
-        if (days === 1) return 'yesterday';
-        if (days < 7) return `${days} days ago`;
-        return 'last week';
+    // Static method to create timestamp for specific date
+    static createSpecificTimestamp(year, month, day, hour = 12, minute = 0) {
+        return new Date(year, month - 1, day, hour, minute, 0, 0);
     }
 
     // Create styled container for email content
@@ -82,6 +184,8 @@ export class BaseEmail {
             sender: this.sender,
             subject: this.subject,
             time: this.time,
+            fullDateTime: this.fullDateTime,
+            timestamp: this.timestamp,
             body: this.body,
             suspicious: this.suspicious,
             priority: this.priority,

@@ -7,7 +7,7 @@ class BankEmailClass extends BaseEmail {
             folder: 'inbox',
             sender: 'account-security@verifysystem-alerts.net',
             subject: 'URGENT: Account Verification Required',
-            time: '3 hours ago',
+            timestamp: BaseEmail.createTimestamp(1, 30), // 1 hour 30 minutes ago
             suspicious: true,
             priority: 'high'
         });

@@ -7,7 +7,7 @@ class CyberquestWelcomeEmailClass extends BaseEmail {
             folder: 'inbox',
             sender: 'welcome@cyberquest.com',
             subject: 'Welcome to CyberQuest Training',
-            time: '1 day ago',
+            timestamp: BaseEmail.createTimestamp(3, 15), // 3 hours 15 minutes ago
             suspicious: false,
             priority: 'normal'
         });

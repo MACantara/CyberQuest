@@ -6,7 +6,7 @@ class FakePaypalEmailClass extends BaseEmail {
             id: 'paypal-phish-001',
             sender: 'service@paypal-security.com',
             subject: 'Urgent: Your PayPal Account Has Been Limited',
-            time: '45 min ago',
+            timestamp: BaseEmail.createTimestamp(0, 45), // 45 minutes ago
             suspicious: true,
             priority: 'high'
         });
