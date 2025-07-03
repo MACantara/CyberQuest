@@ -2,7 +2,7 @@
 // TODO: Create the necessary websites for each emails
 // TODO: Put the toast message for phishing report or marking as legitimate within the email client
 // TODO: Design the emails uniquely to realistic simulate emails and not use a uniform design
-// TODO: Move the phishing email report at the top from the bottom
+// TODO: Move the phishing email report or Legitimate Email Verified at the top from the bottom
 // TODO: Store in local storage if the email has been opened or not
 
 import { WindowBase } from '../window-base.js';
