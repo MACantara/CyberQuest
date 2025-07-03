@@ -309,6 +309,35 @@ export class ProcessMonitorApp extends WindowBase {
         super.initialize();
         this.bindEvents();
         this.startRealTimeUpdates();
+        
+        // Mark app as opened for tutorial system
+        localStorage.setItem('cyberquest_process_monitor_opened', 'true');
+        
+        // Trigger tutorial if not completed
+        setTimeout(() => {
+            this.checkAndStartTutorial();
+        }, 1000);
+    }
+
+    checkAndStartTutorial() {
+        const tutorialCompleted = localStorage.getItem('cyberquest_processmonitor_tutorial_completed');
+        
+        if (!tutorialCompleted && window.desktop && window.desktop.tutorial) {
+            // Try to start the tutorial
+            if (window.desktop.tutorial.startProcessMonitorTutorial) {
+                window.desktop.tutorial.startProcessMonitorTutorial();
+            } else {
+                // Fallback: import and start tutorial directly
+                import('../../tutorials/process-monitor-tutorial.js').then(module => {
+                    const ProcessMonitorTutorial = module.ProcessMonitorTutorial;
+                    if (ProcessMonitorTutorial.startTutorial) {
+                        ProcessMonitorTutorial.startTutorial(window.desktop);
+                    }
+                }).catch(error => {
+                    console.error('Failed to load Process Monitor tutorial:', error);
+                });
+            }
+        }
     }
 
     bindEvents() {

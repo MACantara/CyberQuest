@@ -146,13 +146,23 @@ export class ProcessMonitorTutorial extends BaseTutorial {
     static shouldAutoStart() {
         const tutorialCompleted = localStorage.getItem('cyberquest_processmonitor_tutorial_completed');
         const processMonitorOpened = localStorage.getItem('cyberquest_process_monitor_opened');
+        
+        // Debug logging
+        console.log('ProcessMonitor Tutorial - shouldAutoStart check:', {
+            tutorialCompleted,
+            processMonitorOpened,
+            shouldStart: processMonitorOpened && !tutorialCompleted
+        });
+        
         return processMonitorOpened && !tutorialCompleted;
     }
 
     static startTutorial(desktop) {
+        console.log('Starting Process Monitor tutorial...');
         const tutorial = new ProcessMonitorTutorial(desktop);
         window.processMonitorTutorial = tutorial;
         tutorial.start();
+        return tutorial;
     }
 
     static restart() {
