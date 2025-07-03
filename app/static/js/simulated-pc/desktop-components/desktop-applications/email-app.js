@@ -1,6 +1,5 @@
 // TODO: Add dialogue after finishing all emails
 // TODO: Create the necessary websites for each emails
-// TODO: Put the toast message for phishing report or marking as legitimate within the email client
 // TODO: Put the email client modals within the email client window
 // TODO: Design the emails uniquely to realistic simulate emails and not use a uniform design
 
@@ -348,6 +347,49 @@ export class EmailApp extends WindowBase {
         this.updateContent();
     }
 
+    confirmPhishingReport(emailId) {
+        this.state.reportAsPhishing(emailId);
+        
+        // Emit event for network monitoring
+        document.dispatchEvent(new CustomEvent('email-reported-phishing', {
+            detail: { emailId, timestamp: new Date().toISOString() }
+        }));
+        
+        this.actionHandler.showActionFeedback('Email reported as phishing and moved to spam!', 'success');
+        this.updateContent();
+    }
+
+    markEmailAsLegitimate(emailId) {
+        const email = ALL_EMAILS.find(e => e.id === emailId);
+        if (!email) return;
+
+        this.state.markAsLegitimate(emailId);
+        
+        // Emit event for network monitoring
+        document.dispatchEvent(new CustomEvent('email-marked-legitimate', {
+            detail: { emailId, timestamp: new Date().toISOString() }
+        }));
+        
+        this.actionHandler.showActionFeedback('Email marked as legitimate!', 'success');
+        this.updateContent();
+    }
+
+    moveEmailToInbox(emailId) {
+        const email = ALL_EMAILS.find(e => e.id === emailId);
+        if (!email) return;
+
+        this.state.moveToInbox(emailId);
+        
+        // Emit event for network monitoring
+        document.dispatchEvent(new CustomEvent('email-moved-to-inbox', {
+            detail: { emailId, timestamp: new Date().toISOString() }
+        }));
+        
+        this.actionHandler.showActionFeedback('Email moved back to inbox!', 'success');
+        this.updateContent();
+    }
+
+    // Remove the old showActionFeedback method since it's now handled by actionHandler
 }
 
 // For backward compatibility, also expose readEmails as a getter

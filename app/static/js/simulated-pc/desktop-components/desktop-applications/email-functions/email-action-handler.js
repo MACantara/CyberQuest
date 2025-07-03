@@ -89,14 +89,18 @@ export class EmailActionHandler {
         this.emailApp.updateContent();
     }
 
-    // Show toast notification for user feedback
+    // Show toast notification for user feedback within the email client
     showActionFeedback(message, type) {
-        // Remove any existing toasts first
-        const existingToasts = document.querySelectorAll('.email-action-toast');
+        // Get the email app window element
+        const emailWindow = this.emailApp.windowElement;
+        if (!emailWindow) return;
+
+        // Remove any existing email toasts first
+        const existingToasts = emailWindow.querySelectorAll('.email-action-toast');
         existingToasts.forEach(toast => toast.remove());
 
         const toast = document.createElement('div');
-        toast.className = `email-action-toast fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 ${
+        toast.className = `email-action-toast absolute top-16 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 ${
             type === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
         }`;
         toast.innerHTML = `
@@ -106,12 +110,17 @@ export class EmailActionHandler {
             </div>
         `;
         
-        document.body.appendChild(toast);
+        // Position relative to email window, not body
+        emailWindow.appendChild(toast);
         
         // Auto-remove after 3 seconds
         setTimeout(() => {
             toast.classList.add('opacity-0', 'transform', 'translate-x-full');
-            setTimeout(() => toast.remove(), 300);
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.remove();
+                }
+            }, 300);
         }, 3000);
     }
 
@@ -268,8 +277,10 @@ export class EmailActionHandler {
             window.emailActionHandler = null;
         }
         
-        // Remove any remaining toasts
-        const toasts = document.querySelectorAll('.email-action-toast');
-        toasts.forEach(toast => toast.remove());
+        // Remove any remaining toasts from the email window
+        if (this.emailApp.windowElement) {
+            const toasts = this.emailApp.windowElement.querySelectorAll('.email-action-toast');
+            toasts.forEach(toast => toast.remove());
+        }
     }
 }
