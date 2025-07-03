@@ -3,11 +3,11 @@
 // TODO: Put the toast message for phishing report or marking as legitimate within the email client
 // TODO: Design the emails uniquely to realistic simulate emails and not use a uniform design
 // TODO: Move the phishing email report or Legitimate Email Verified at the top from the bottom
-// TODO: Store in local storage if the email has been opened or not
 
 import { WindowBase } from '../window-base.js';
 import { EmailState } from './email-functions/email-state.js';
 import { EmailActionHandler } from './email-functions/email-action-handler.js';
+import { EmailReadTracker } from './email-functions/email-read-tracker.js';
 import { ALL_EMAILS } from './email-functions/emails/email-registry.js';
 import { NavigationUtil } from '../shared-utils/navigation-util.js';
 
@@ -18,7 +18,7 @@ export class EmailApp extends WindowBase {
             height: '70%'
         });
         this.state = new EmailState();
-        this.readEmails = new Set(); // Track read email IDs
+        this.readTracker = new EmailReadTracker();
         this.actionHandler = new EmailActionHandler(this);
         
         // Load saved email state
@@ -95,7 +95,7 @@ export class EmailApp extends WindowBase {
     }
 
     createEmailListItem(email) {
-        const isRead = this.readEmails.has(email.id);
+        const isRead = this.readTracker.isRead(email.id);
         const { statusIndicator, statusClass } = this.state.securityManager.createStatusIndicator(email.id, isRead);
 
         // Get both date and time display
@@ -174,7 +174,8 @@ export class EmailApp extends WindowBase {
 
     createEmailDetail(email, folderId) {
         // Mark as read when viewing detail
-        this.readEmails.add(email.id);
+        this.readTracker.markAsRead(email.id);
+        
         const statusBadge = this.state.securityManager.createStatusBadge(email.id);
         const emailStatus = this.state.getEmailStatus(email.id);
 
@@ -234,6 +235,10 @@ export class EmailApp extends WindowBase {
         
         // Initialize action handler
         this.actionHandler.initialize();
+        
+        // Clean up old read status for emails that no longer exist
+        const currentEmailIds = ALL_EMAILS.map(email => email.id);
+        this.readTracker.cleanupOldReadStatus(currentEmailIds);
         
         this.bindEvents();
     }
@@ -315,4 +320,42 @@ export class EmailApp extends WindowBase {
         NavigationUtil.bindEmailLinkHandlers(windowElement);
     }
 
+    // Get email reading statistics for progress tracking
+    getEmailStats() {
+        const allEmails = [...ALL_EMAILS];
+        const readingStats = this.readTracker.getReadingStats(allEmails);
+        const securityStats = this.state.securityManager.getSecurityStats();
+        
+        return {
+            ...readingStats,
+            ...securityStats,
+            lastUpdate: this.readTracker.getLastUpdateTimestamp()
+        };
+    }
+
+    // Utility method to mark all emails as read
+    markAllEmailsAsRead() {
+        const allEmails = [...ALL_EMAILS];
+        this.readTracker.markAllAsRead(allEmails);
+        this.updateContent();
+    }
+
+    // Utility method to mark all emails as unread
+    markAllEmailsAsUnread() {
+        const allEmails = [...ALL_EMAILS];
+        this.readTracker.markAllAsUnread(allEmails);
+        this.updateContent();
+    }
+
 }
+
+// For backward compatibility, also expose readEmails as a getter
+Object.defineProperty(EmailApp.prototype, 'readEmails', {
+    get: function() {
+        return {
+            has: (emailId) => this.readTracker.isRead(emailId),
+            add: (emailId) => this.readTracker.markAsRead(emailId),
+            size: this.readTracker.getReadCount()
+        };
+    }
+});

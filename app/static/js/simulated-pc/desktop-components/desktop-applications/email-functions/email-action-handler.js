@@ -118,15 +118,9 @@ export class EmailActionHandler {
     // Handle email opening actions
     handleEmailOpen(emailId) {
         this.emailApp.state.selectEmail(emailId);
-        // Mark as read
-        this.emailApp.readEmails.add(emailId);
         
-        // Store read status in localStorage
-        const readEmails = JSON.parse(localStorage.getItem('cyberquest_read_emails') || '[]');
-        if (!readEmails.includes(emailId)) {
-            readEmails.push(emailId);
-            localStorage.setItem('cyberquest_read_emails', JSON.stringify(readEmails));
-        }
+        // Mark as read using the read tracker
+        this.emailApp.readTracker.markAsRead(emailId);
         
         // Find the email and emit event for network monitoring
         const email = ALL_EMAILS.find(e => e.id === emailId);
@@ -157,16 +151,14 @@ export class EmailActionHandler {
 
     // Load read email status from localStorage
     loadReadEmailStatus() {
-        const readEmails = JSON.parse(localStorage.getItem('cyberquest_read_emails') || '[]');
-        readEmails.forEach(emailId => {
-            this.emailApp.readEmails.add(emailId);
-        });
+        // This is now handled by EmailReadTracker automatically
+        return true;
     }
 
     // Save read email status to localStorage
     saveReadEmailStatus() {
-        const readEmailsArray = Array.from(this.emailApp.readEmails);
-        localStorage.setItem('cyberquest_read_emails', JSON.stringify(readEmailsArray));
+        // This is now handled by EmailReadTracker automatically
+        return true;
     }
 
     // Check if all emails have been processed (opened and categorized)
@@ -227,18 +219,15 @@ export class EmailActionHandler {
     // Get email statistics for progress tracking
     getEmailStatistics() {
         const allEmailIds = ALL_EMAILS.map(email => email.id);
-        const readEmails = Array.from(this.emailApp.readEmails);
-        const phishingReports = Array.from(this.emailApp.state.securityManager.reportedPhishing);
-        const legitimateMarks = Array.from(this.emailApp.state.securityManager.markedLegitimate);
+        const readingStats = this.emailApp.readTracker.getReadingStats(ALL_EMAILS);
+        const securityStats = this.emailApp.state.securityManager.getSecurityStats();
         
         return {
-            total: allEmailIds.length,
-            read: readEmails.length,
-            categorized: phishingReports.length + legitimateMarks.length,
-            phishingDetected: phishingReports.length,
-            legitimateConfirmed: legitimateMarks.length,
-            readPercentage: Math.round((readEmails.length / allEmailIds.length) * 100),
-            categorizedPercentage: Math.round(((phishingReports.length + legitimateMarks.length) / allEmailIds.length) * 100)
+            ...readingStats,
+            categorized: securityStats.totalReported + securityStats.totalLegitimate,
+            phishingDetected: securityStats.totalReported,
+            legitimateConfirmed: securityStats.totalLegitimate,
+            categorizedPercentage: Math.round(((securityStats.totalReported + securityStats.totalLegitimate) / allEmailIds.length) * 100)
         };
     }
 
