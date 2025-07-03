@@ -1,6 +1,7 @@
 // TODO: Add dialogue after finishing all emails
 // TODO: Create the necessary websites for each emails
 // TODO: Design the emails uniquely to realistic simulate emails and not use a uniform design
+// TODO: Add cursor-pointer tailwind css class to all buttons in the email client
 
 import { WindowBase } from '../window-base.js';
 import { EmailState } from './email-functions/email-state.js';
