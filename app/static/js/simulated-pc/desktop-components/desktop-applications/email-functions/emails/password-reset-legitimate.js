@@ -37,10 +37,11 @@ class PasswordResetLegitimateClass extends BaseEmail {
                         Someone requested a password reset for your CyberQuest account. If this was you, click the button below to set a new password:
                     </p>
                     
-                    <!-- Reset Button -->
-                    <div style="text-align: center; margin: 35px 0;">
-                        <a href="#" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 16px 32px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; display: inline-block; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4); transition: all 0.3s ease;">
-                            Reset My Password
+                    <div style="text-align: center; margin: 30px 0;">
+                        <a href="#" class="open-browser-link" 
+                           data-url="https://app.cyberquest.com/auth/reset-password?token=abc123def456ghi789jkl012mno345pqr678stu901vwx234yz"
+                           style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">
+                            Reset Your Password
                         </a>
                     </div>
                     
