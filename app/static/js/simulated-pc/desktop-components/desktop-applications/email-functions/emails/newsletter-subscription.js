@@ -4,89 +4,154 @@ class NewsletterSubscriptionClass extends BaseEmail {
     constructor() {
         super({
             id: 'newsletter-001',
-            sender: 'newsletter@cybersecuritydaily.com',
-            subject: 'Your Weekly Cybersecurity Brief - November 2024',
-            timestamp: BaseEmail.createSpecificTimestamp(2024, 11, 17, 9, 0), // Yesterday 9 AM
+            sender: 'newsletter@techinsights.com',
+            subject: 'Welcome to TechInsights Weekly - Your Cybersecurity Newsletter',
+            timestamp: BaseEmail.createTimestamp(4, 0), // 4 hours ago
             suspicious: false,
             priority: 'normal'
         });
     }
 
     createBody() {
-        const headerInfo = {
-            icon: 'newspaper',
-            bgColor: 'bg-indigo-500',
-            title: 'Cybersecurity Daily',
-            titleColor: 'text-indigo-800',
-            subtitle: 'Weekly Security Brief',
-            subtitleColor: 'text-indigo-600'
-        };
-
-        const content = `
-            <div class="bg-white border border-indigo-200 rounded-lg p-4">
-                <div class="text-center mb-4">
-                    <h2 class="text-xl font-bold text-indigo-800">Cybersecurity Weekly</h2>
-                    <p class="text-sm text-gray-600">November 18, 2024 | Issue #47</p>
+        return `
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
+                <!-- Header -->
+                <div style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); padding: 20px 30px; text-align: center;">
+                    <div style="color: white; font-size: 28px; font-weight: bold; margin-bottom: 5px;">TechInsights</div>
+                    <div style="color: #bfdbfe; font-size: 14px; font-weight: 500; letter-spacing: 2px;">WEEKLY CYBERSECURITY DIGEST</div>
                 </div>
                 
-                <p class="text-gray-800 text-sm mb-3">Hello Security Professional,</p>
-                <p class="text-gray-800 text-sm mb-4">
-                    Here's your weekly roundup of the most important cybersecurity news and insights.
-                </p>
-                
-                <div class="space-y-4 mb-4">
-                    <div class="border-l-4 border-indigo-500 pl-3">
-                        <h4 class="font-semibold text-indigo-800 text-sm">🔒 This Week's Top Story</h4>
-                        <p class="text-gray-700 text-sm">New ransomware variant targets healthcare systems with improved encryption methods</p>
+                <!-- Welcome Section -->
+                <div style="padding: 30px;">
+                    <h1 style="color: #1f2937; margin: 0 0 20px 0; font-size: 24px; font-weight: 600;">Welcome to TechInsights Weekly!</h1>
+                    
+                    <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+                        Thank you for subscribing to our cybersecurity newsletter. You'll receive weekly updates on the latest threats, security best practices, and industry insights.
+                    </p>
+                    
+                    <!-- Subscription Details -->
+                    <div style="background: #f0f9ff; border-left: 4px solid #3b82f6; padding: 20px; margin: 25px 0; border-radius: 0 8px 8px 0;">
+                        <h3 style="color: #1e40af; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">
+                            📬 Your Subscription Details
+                        </h3>
+                        <div style="color: #1e40af; font-size: 14px; line-height: 1.5;">
+                            <div style="margin-bottom: 5px;"><strong>Newsletter:</strong> TechInsights Weekly</div>
+                            <div style="margin-bottom: 5px;"><strong>Frequency:</strong> Every Tuesday at 8:00 AM</div>
+                            <div style="margin-bottom: 5px;"><strong>Content:</strong> Cybersecurity trends, threat analysis, and educational content</div>
+                            <div><strong>Subscription Date:</strong> November 18, 2024</div>
+                        </div>
                     </div>
                     
-                    <div class="border-l-4 border-green-500 pl-3">
-                        <h4 class="font-semibold text-green-800 text-sm">✅ Security Tip</h4>
-                        <p class="text-gray-700 text-sm">Enable MFA on all critical accounts - it stops 99.9% of automated attacks</p>
+                    <!-- What to Expect -->
+                    <h2 style="color: #1f2937; font-size: 20px; font-weight: 600; margin: 30px 0 15px 0;">What You'll Receive</h2>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 25px;">
+                        <div style="display: flex; align-items: flex-start; padding: 15px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+                            <div style="background: #10b981; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; flex-shrink: 0; font-size: 14px;">🛡️</div>
+                            <div>
+                                <h4 style="color: #1f2937; margin: 0 0 5px 0; font-size: 14px; font-weight: 600;">Threat Intelligence</h4>
+                                <p style="color: #6b7280; margin: 0; font-size: 13px; line-height: 1.4;">Latest cybersecurity threats and how to protect against them</p>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; align-items: flex-start; padding: 15px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+                            <div style="background: #3b82f6; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; flex-shrink: 0; font-size: 14px;">📚</div>
+                            <div>
+                                <h4 style="color: #1f2937; margin: 0 0 5px 0; font-size: 14px; font-weight: 600;">Educational Content</h4>
+                                <p style="color: #6b7280; margin: 0; font-size: 13px; line-height: 1.4;">Best practices, tutorials, and security awareness training</p>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; align-items: flex-start; padding: 15px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+                            <div style="background: #f59e0b; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; flex-shrink: 0; font-size: 14px;">📊</div>
+                            <div>
+                                <h4 style="color: #1f2937; margin: 0 0 5px 0; font-size: 14px; font-weight: 600;">Industry Insights</h4>
+                                <p style="color: #6b7280; margin: 0; font-size: 13px; line-height: 1.4;">Market trends, research findings, and expert analysis</p>
+                            </div>
+                        </div>
                     </div>
                     
-                    <div class="border-l-4 border-orange-500 pl-3">
-                        <h4 class="font-semibold text-orange-800 text-sm">⚠️ Vulnerability Alert</h4>
-                        <p class="text-gray-700 text-sm">Critical OpenSSL update available - patch immediately (CVE-2024-5678)</p>
+                    <!-- Featured Article Preview -->
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin: 25px 0;">
+                        <h3 style="color: #1e40af; font-size: 16px; font-weight: 600; margin: 0 0 15px 0;">
+                            📖 Featured in This Week's Issue
+                        </h3>
+                        <div style="background: white; border-radius: 6px; padding: 15px; border-left: 4px solid #3b82f6;">
+                            <h4 style="color: #1f2937; margin: 0 0 8px 0; font-size: 15px; font-weight: 600;">"The Rise of AI-Powered Phishing Attacks"</h4>
+                            <p style="color: #6b7280; margin: 0 0 10px 0; font-size: 13px; line-height: 1.5;">
+                                Learn how artificial intelligence is being weaponized by cybercriminals to create more convincing phishing emails and how organizations can defend against these sophisticated attacks.
+                            </p>
+                            <div style="color: #3b82f6; font-size: 12px;">
+                                <strong>Reading time:</strong> 5 minutes | <strong>Author:</strong> Dr. Sarah Chen, Cybersecurity Researcher
+                            </div>
+                        </div>
                     </div>
+                    
+                    <!-- Social Links -->
+                    <div style="text-align: center; margin: 30px 0;">
+                        <h3 style="color: #1f2937; font-size: 16px; font-weight: 600; margin-bottom: 15px;">Follow Us for Daily Updates</h3>
+                        <div style="display: flex; justify-content: center; gap: 15px;">
+                            <a href="#" style="background: #1da1f2; color: white; width: 40px; height: 40px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; font-size: 16px;">T</a>
+                            <a href="#" style="background: #0077b5; color: white; width: 40px; height: 40px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; font-size: 16px;">in</a>
+                            <a href="#" style="background: #333; color: white; width: 40px; height: 40px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; font-size: 16px;">G</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Preferences -->
+                    <div style="background: #f3f4f6; border-radius: 8px; padding: 20px; margin: 25px 0;">
+                        <h3 style="color: #374151; font-size: 16px; font-weight: 600; margin: 0 0 15px 0;">Customize Your Experience</h3>
+                        <div style="color: #6b7280; font-size: 14px; line-height: 1.5;">
+                            <p style="margin: 0 0 10px 0;">You can customize your newsletter preferences at any time:</p>
+                            <div style="margin-left: 15px;">
+                                <div style="margin-bottom: 5px;">• Choose content categories that interest you</div>
+                                <div style="margin-bottom: 5px;">• Set your preferred delivery time</div>
+                                <div style="margin-bottom: 5px;">• Adjust frequency (weekly, bi-weekly, monthly)</div>
+                            </div>
+                        </div>
+                        <div style="text-align: center; margin-top: 15px;">
+                            <a href="#" style="background: #3b82f6; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: 600; display: inline-block;">
+                                Manage Preferences
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin-top: 25px;">
+                        We're committed to providing you with valuable, actionable cybersecurity insights. 
+                        If you have any questions or suggestions, please don't hesitate to reach out.
+                    </p>
+                    
+                    <p style="color: #4b5563; font-size: 16px; margin-top: 20px;">
+                        Stay secure,<br>
+                        <strong>The TechInsights Team</strong>
+                    </p>
                 </div>
                 
-                <div class="bg-gray-50 p-3 rounded mb-4">
-                    <h4 class="font-semibold text-gray-800 text-sm mb-2">📚 Featured Resources:</h4>
-                    <ul class="text-gray-700 text-sm space-y-1">
-                        <li>• <a href="#" class="text-indigo-600 hover:underline">NIST Cybersecurity Framework 2.0 - What's New</a></li>
-                        <li>• <a href="#" class="text-indigo-600 hover:underline">Zero Trust Architecture Implementation Guide</a></li>
-                        <li>• <a href="#" class="text-indigo-600 hover:underline">Incident Response Playbook Template</a></li>
-                    </ul>
-                </div>
-                
-                <p class="text-gray-800 text-sm mb-3">
-                    Thank you for reading! Forward this newsletter to colleagues who might find it valuable.
-                </p>
-                
-                <p class="text-gray-800 text-sm">
-                    Best regards,<br>
-                    <span class="font-bold">The Cybersecurity Daily Team</span><br>
-                    <span class="text-xs text-gray-600">newsletter@cybersecuritydaily.com</span>
-                </p>
-                
-                <div class="mt-4 pt-3 border-t border-gray-200 text-center">
-                    <p class="text-xs text-gray-500 mb-2">
-                        You're receiving this because you subscribed to our weekly newsletter.
-                    </p>
-                    <p class="text-xs text-gray-500">
-                        <a href="#" class="text-indigo-600 hover:underline">Update preferences</a> | 
-                        <a href="#" class="text-indigo-600 hover:underline">Unsubscribe</a>
-                    </p>
+                <!-- Footer -->
+                <div style="background: #f9fafb; padding: 25px 30px; border-top: 1px solid #e5e7eb; text-align: center;">
+                    <div style="margin-bottom: 15px;">
+                        <div style="color: #3b82f6; font-size: 20px; font-weight: bold;">TechInsights</div>
+                        <div style="color: #6b7280; font-size: 12px; margin-top: 5px;">Professional Cybersecurity Intelligence</div>
+                    </div>
+                    
+                    <div style="color: #6b7280; font-size: 12px; line-height: 1.4;">
+                        <p style="margin: 0 0 10px 0;">
+                            <strong>TechInsights Research Lab</strong><br>
+                            1500 Security Boulevard, Cyber City, CC 90210
+                        </p>
+                        <p style="margin: 0 0 15px 0;">
+                            You're receiving this because you subscribed to TechInsights Weekly. 
+                            We respect your privacy and will never share your information.
+                        </p>
+                        <div style="border-top: 1px solid #e5e7eb; padding-top: 15px;">
+                            <a href="#" style="color: #3b82f6; font-size: 12px; text-decoration: none; margin: 0 8px;">Privacy Policy</a>
+                            <a href="#" style="color: #3b82f6; font-size: 12px; text-decoration: none; margin: 0 8px;">Terms of Service</a>
+                            <a href="#" style="color: #3b82f6; font-size: 12px; text-decoration: none; margin: 0 8px;">Update Preferences</a>
+                            <a href="#" style="color: #6b7280; font-size: 12px; text-decoration: none; margin: 0 8px;">Unsubscribe</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         `;
-
-        return this.createStyledContainer(
-            content,
-            'bg-indigo-50 border-indigo-200',
-            headerInfo
-        );
     }
 }
 

@@ -3,10 +3,9 @@ import { BaseEmail } from './base-email.js';
 class BankEmailClass extends BaseEmail {
     constructor() {
         super({
-            id: 'bank-email',
-            folder: 'inbox',
-            sender: 'account-security@verifysystem-alerts.net',
-            subject: 'URGENT: Account Verification Required',
+            id: 'bank-phish-001',
+            sender: 'security@securebank-alerts.com',
+            subject: 'URGENT: Account Security Alert - Immediate Action Required',
             timestamp: BaseEmail.createTimestamp(1, 30), // 1 hour 30 minutes ago
             suspicious: true,
             priority: 'high'
@@ -14,65 +13,83 @@ class BankEmailClass extends BaseEmail {
     }
 
     createBody() {
-        const headerInfo = {
-            bgColor: 'bg-blue-600',
-            icon: 'bank',
-            titleColor: 'text-blue-900',
-            subtitleColor: 'text-blue-700',
-            title: 'SecureBank Online',
-            subtitle: 'Your Trusted Banking Partner'
-        };
-
-        const urgentAlert = `
-            <div class="bg-red-100 border border-red-300 rounded p-3 mb-4 flex items-center">
-                <i class="bi bi-exclamation-triangle text-red-600 mr-2"></i>
-                <div>
-                    <span class="font-semibold text-red-800">URGENT SECURITY ALERT!</span>
-                    <p class="text-red-700 text-xs mt-1">Your account will be suspended in 24 hours due to suspicious activity. Please verify your credentials immediately!</p>
+        return `
+            <div style="font-family: Arial, sans-serif; background-color: #f8f9fa; margin: 0; padding: 20px;">
+                <!-- Bank Header -->
+                <div style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); padding: 20px; border-radius: 8px 8px 0 0;">
+                    <div style="color: white; font-size: 24px; font-weight: bold; display: flex; align-items: center;">
+                        <div style="width: 40px; height: 40px; background: white; border-radius: 50%; margin-right: 15px; display: flex; align-items: center; justify-content: center;">
+                            <span style="color: #1e3a8a; font-weight: bold; font-size: 20px;">$</span>
+                        </div>
+                        Secure Bank
+                    </div>
+                    <div style="color: #bfdbfe; font-size: 14px; margin-top: 5px;">Account Security Department</div>
+                </div>
+                
+                <!-- Alert Banner -->
+                <div style="background: #dc2626; color: white; padding: 15px; text-align: center; font-weight: bold; font-size: 16px;">
+                    🚨 URGENT SECURITY ALERT 🚨
+                </div>
+                
+                <!-- Main Content -->
+                <div style="background: white; padding: 30px; border-radius: 0 0 8px 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <div style="margin-bottom: 25px;">
+                        <h2 style="color: #dc2626; margin: 0 0 15px 0; font-size: 20px;">Account Security Alert</h2>
+                        <p style="color: #374151; line-height: 1.6; margin-bottom: 20px;">
+                            Dear Valued Customer,
+                        </p>
+                        <p style="color: #374151; line-height: 1.6; margin-bottom: 20px;">
+                            We have detected <strong style="color: #dc2626;">suspicious activity</strong> on your account ending in ****4729. 
+                            For your protection, we have temporarily restricted access to your online banking services.
+                        </p>
+                    </div>
+                    
+                    <!-- Threat Details Box -->
+                    <div style="background: #fef2f2; border-left: 4px solid #dc2626; padding: 20px; margin: 25px 0; border-radius: 0 8px 8px 0;">
+                        <h3 style="color: #dc2626; margin: 0 0 15px 0; font-size: 16px; font-weight: bold;">SUSPICIOUS ACTIVITY DETECTED</h3>
+                        <div style="color: #7f1d1d; font-size: 14px; line-height: 1.5;">
+                            <div style="margin-bottom: 8px;">• <strong>Unauthorized login attempt</strong> from IP: 203.0.113.45 (Nigeria)</div>
+                            <div style="margin-bottom: 8px;">• <strong>Failed transaction</strong> of $2,847.99</div>
+                            <div style="margin-bottom: 8px;">• <strong>Password change request</strong> from unknown device</div>
+                            <div style="color: #dc2626; font-weight: bold; margin-top: 15px;">⏰ Account will be permanently closed in 24 hours if not verified</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Button -->
+                    <div style="text-align: center; margin: 30px 0;">
+                        <a href="#" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white; padding: 15px 40px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px; display: inline-block; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3); text-transform: uppercase;" 
+                           class="open-browser-link" data-url="https://secure-verify-bank.net/account/verification">
+                            🔒 VERIFY ACCOUNT IMMEDIATELY
+                        </a>
+                    </div>
+                    
+                    <!-- Required Information -->
+                    <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 25px 0;">
+                        <h3 style="color: #374151; margin: 0 0 15px 0; font-size: 16px;">To restore full access, please provide:</h3>
+                        <div style="color: #6b7280; font-size: 14px; line-height: 1.6;">
+                            ✓ Full Social Security Number<br>
+                            ✓ Account PIN and Password<br>
+                            ✓ Mother's maiden name<br>
+                            ✓ Credit card number and CVV
+                        </div>
+                    </div>
+                    
+                    <!-- Footer -->
+                    <div style="border-top: 1px solid #e5e7eb; padding-top: 20px; margin-top: 30px;">
+                        <p style="color: #374151; font-size: 14px; line-height: 1.6; margin-bottom: 15px;">
+                            Sincerely,<br>
+                            <strong>Secure Bank Security Team</strong>
+                        </p>
+                        <div style="color: #9ca3af; font-size: 12px; line-height: 1.4;">
+                            This is an automated security message. Please do not reply to this email.<br>
+                            Secure Bank | 123 Financial District, Banking City, BC 12345<br>
+                            © 2024 Secure Bank. All rights reserved.
+                        </div>
+                    </div>
                 </div>
             </div>
         `;
-
-        const content = `
-            ${urgentAlert}
-            <div class="bg-white border border-red-200 rounded-lg p-4 mb-4">
-                <h2 class="text-base font-semibold text-red-900 mb-2">Emergency Account Verification Required</h2>
-                <p class="text-gray-800 text-sm mb-3">
-                    Dear Customer,
-                </p>
-                <p class="text-gray-800 text-sm mb-3">
-                    We have detected suspicious activity on your bank account. For your protection, your online access has been <strong>immediately suspended</strong>.
-                </p>
-                <p class="text-gray-800 text-sm mb-3">
-                    To restore access and avoid permanent account closure, please 
-                    <a href="#" 
-                       class="text-blue-600 underline open-browser-link font-semibold" 
-                       data-url="https://secure-verify-support.com">
-                       verify your account now
-                    </a> 
-                    by confirming your personal and banking information.
-                </p>
-                <p class="text-gray-800 text-sm mb-3">
-                    Failure to act within 24 hours will result in your account being permanently locked.
-                </p>
-                <p class="text-gray-800 text-sm mt-4">
-                    Thank you for your prompt attention.<br>
-                    <span class="font-bold text-blue-900">SecureBank Security Team</span>
-                </p>
-            </div>
-            <div class="text-center mt-4">
-                <span class="text-red-600 font-bold text-xs">Act fast! Your account security depends on immediate verification!</span>
-                <p class="text-xs text-gray-600 mt-1">This is the ONLY way to prevent account closure.</p>
-            </div>
-        `;
-
-        return this.createStyledContainer(
-            content,
-            'bg-blue-50 border-blue-200',
-            headerInfo
-        );
     }
 }
 
-// Export as email object for compatibility
 export const BankEmail = new BankEmailClass().toEmailObject();
