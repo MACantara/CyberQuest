@@ -108,7 +108,7 @@ export class BrowserTutorial extends BaseTutorial {
     }
 
     getFinalButtonText() {
-        return 'Finish Browser Security Training';
+        return 'Finish Tutorial';
     }
 
     // Enhanced completion with browser-specific actions

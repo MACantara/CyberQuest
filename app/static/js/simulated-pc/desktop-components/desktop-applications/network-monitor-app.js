@@ -142,10 +142,10 @@ export class NetworkMonitorApp extends WindowBase {
         let baseClass = 'grid grid-cols-5 gap-2 p-2 border-b border-gray-700 hover:bg-gray-800 transition-colors duration-200';
         if (packet.isAlert) {
             baseClass += packet.suspicious ? 
-                ' bg-red-900 bg-opacity-30 border-l-4 border-red-400' : 
-                ' bg-blue-900 bg-opacity-30 border-l-4 border-blue-400';
+                ' bg-red-900/30 border-l-4 border-red-400' : 
+                ' bg-blue-900/30 border-l-4 border-blue-400';
         } else if (packet.suspicious) {
-            baseClass += ' bg-red-900 bg-opacity-20 border-l-4 border-red-500';
+            baseClass += ' bg-red-900/20 border-l-4 border-red-500';
         }
         
         packetElement.className = baseClass;

@@ -18,6 +18,13 @@ import { MetadataAnalyzerPage } from './level-one/metadata-analyzer.js';
 import { WeatherVerifyPage } from './level-one/weather-verify.js';
 import { LocationVerifyPage } from './level-one/location-verify.js';
 
+// Import Level 2 Pages
+import { CyberQuestPasswordResetPage } from './level-two/cyberquest-password-reset.js';
+import { TechCorpDocumentPortalPage } from './level-two/techcorp-document-portal.js';
+import { SecureBankVerificationPage } from './level-two/secure-bank-verification.js';
+import { MicrosoftAccountVerifyPage } from './level-two/microsoft-account-verify.js';
+import { PayPalAccountConfirmPage } from './level-two/paypal-account-confirm.js';
+
 export class PageRegistry {
     constructor() {
         this.pages = new Map();
@@ -38,13 +45,20 @@ export class PageRegistry {
         this.registerPage(Challenge2Page);
         this.registerPage(Challenge3Page);
         this.registerPage(Challenge4Page);
-
+        
         // Register Level 1 Tool Pages
         this.registerPage(CrossReferenceToolPage);
         this.registerPage(ReverseImageSearchPage);
         this.registerPage(MetadataAnalyzerPage);
         this.registerPage(WeatherVerifyPage);
         this.registerPage(LocationVerifyPage);
+        
+        // Register Level 2 Pages
+        this.registerPage(CyberQuestPasswordResetPage);
+        this.registerPage(TechCorpDocumentPortalPage);
+        this.registerPage(SecureBankVerificationPage);
+        this.registerPage(MicrosoftAccountVerifyPage);
+        this.registerPage(PayPalAccountConfirmPage);
     }
 
     registerPage(pageConfig) {

@@ -12,7 +12,7 @@ export class LogFilter {
 
     showAdvancedFilter() {
         const overlay = document.createElement('div');
-        overlay.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+        overlay.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50';
         overlay.innerHTML = `
             <div class="bg-gray-800 rounded-lg p-6 max-w-md mx-4">
                 <h3 class="text-white text-lg font-semibold mb-4">Advanced Log Filter</h3>

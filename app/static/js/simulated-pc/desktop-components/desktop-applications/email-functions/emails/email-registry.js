@@ -1,21 +1,33 @@
-// Centralized registry for all legitimate and suspicious emails
+// Centralized registry for all emails
 
-import { LegitimateEmail } from './legitimate-emails/cyberquest-welcome-email.js';
-import { BankEmail } from './suspicious-emails/bank-email.js';
-import { SuspiciousEmail } from './suspicious-emails/nigerian-prince-email.js';
+import { CyberquestWelcomeEmail } from './cyberquest-welcome-email.js';
+import { BankEmail } from './bank-email.js';
+import { NigerianPrinceEmail } from './nigerian-prince-email.js';
+import { CompanyUpdateEmail } from './company-update-email.js';
+import { FakePaypalEmail } from './fake-paypal-email.js';
+import { SophisticatedSpearPhish } from './sophisticated-spear-phish.js';
+import { NewsletterSubscription } from './newsletter-subscription.js';
+import { FakeMicrosoftEmail } from './fake-microsoft-email.js';
+import { PasswordResetLegitimate } from './password-reset-legitimate.js';
 
-// Add new emails here as needed
-export const LEGITIMATE_EMAILS = [
-    LegitimateEmail
-];
-
-export const SUSPICIOUS_EMAILS = [
-    BankEmail,
-    SuspiciousEmail
-];
-
-// Optionally, for all emails in one array:
+// All emails in progressive difficulty order
 export const ALL_EMAILS = [
-    ...LEGITIMATE_EMAILS,
-    ...SUSPICIOUS_EMAILS
+    // Easy - Clearly legitimate
+    CyberquestWelcomeEmail,
+    CompanyUpdateEmail,
+    PasswordResetLegitimate,
+    NewsletterSubscription,
+    
+    // Easy-Medium - Obviously suspicious
+    NigerianPrinceEmail,
+
+    // Medium - More convincing phishing
+    FakePaypalEmail,
+    BankEmail,
+    
+    // Medium-Hard - Sophisticated attempts
+    FakeMicrosoftEmail,
+    
+    // Hard - Very sophisticated spear phishing
+    SophisticatedSpearPhish
 ];

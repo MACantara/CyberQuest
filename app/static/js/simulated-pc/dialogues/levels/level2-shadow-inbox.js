@@ -24,12 +24,17 @@ export class Level2ShadowInboxDialogue extends BaseDialogue {
 
     onComplete() {
         // Store completion in localStorage
-        localStorage.setItem('cyberquest_level_2_completed', 'true');
+        localStorage.setItem('cyberquest_level_2_started', 'true');
         
-        // Start the level simulation
-        if (this.desktop?.levelManager) {
+        // Open the email application
+        if (this.desktop?.windowManager) {
             setTimeout(async () => {
-                await this.desktop.levelManager.startLevel(2);
+                try {
+                    await this.desktop.windowManager.openEmailClient();
+                    console.log('Email client opened for Level 2: Shadow in the Inbox');
+                } catch (error) {
+                    console.error('Failed to open email client:', error);
+                }
             }, 500);
         }
     }

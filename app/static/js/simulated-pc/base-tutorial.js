@@ -14,7 +14,7 @@ export class BaseTutorial {
     createOverlay() {
         // Create tutorial overlay
         this.overlay = document.createElement('div');
-        this.overlay.className = 'fixed inset-0 bg-black bg-opacity-50 z-50 tutorial-overlay';
+        this.overlay.className = 'fixed inset-0 bg-black/50 z-50 tutorial-overlay';
         this.overlay.style.pointerEvents = 'none';
         
         // Create tooltip container

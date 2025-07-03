@@ -74,7 +74,7 @@ export class FileOpener {
     
     static showErrorDialog(fileName, errorMessage) {
         const overlay = document.createElement('div');
-        overlay.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+        overlay.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50';
         overlay.innerHTML = `
             <div class="bg-red-800 rounded-lg p-6 max-w-md mx-4 border border-red-600">
                 <div class="text-center">
@@ -94,7 +94,7 @@ export class FileOpener {
     
     static showInfoDialog(title, message) {
         const overlay = document.createElement('div');
-        overlay.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+        overlay.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50';
         overlay.innerHTML = `
             <div class="bg-gray-800 rounded-lg p-6 max-w-md mx-4">
                 <div class="text-center">
@@ -113,7 +113,7 @@ export class FileOpener {
     
     static showTextDialog(fileName, content) {
         const overlay = document.createElement('div');
-        overlay.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+        overlay.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50';
         overlay.innerHTML = `
             <div class="bg-gray-800 rounded-lg p-6 max-w-2xl max-h-96 mx-4">
                 <div class="flex items-center justify-between mb-4">
@@ -139,7 +139,7 @@ export class FileOpener {
     
     static showSecurityWarning(fileName) {
         const overlay = document.createElement('div');
-        overlay.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+        overlay.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50';
         overlay.innerHTML = `
             <div class="bg-red-900 rounded-lg p-6 max-w-md mx-4 border border-red-600">
                 <div class="text-center">

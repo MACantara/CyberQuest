@@ -123,7 +123,7 @@ export class LogUI {
         const details = entry.children[5].textContent;
         
         const overlay = document.createElement('div');
-        overlay.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+        overlay.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50';
         overlay.innerHTML = `
             <div class="bg-gray-800 rounded-lg p-6 max-w-2xl mx-4">
                 <div class="text-center">
