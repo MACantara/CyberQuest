@@ -74,32 +74,6 @@ export class BaseEmail {
         `;
     }
 
-    // Create training alert for educational purposes
-    createTrainingAlert(message, type = 'info') {
-        const alertStyles = {
-            info: 'bg-blue-100 border-blue-300 text-blue-800',
-            warning: 'bg-yellow-100 border-yellow-300 text-yellow-800',
-            danger: 'bg-red-100 border-red-300 text-red-800',
-            success: 'bg-green-100 border-green-300 text-green-800'
-        };
-
-        const icons = {
-            info: 'info-circle',
-            warning: 'exclamation-triangle',
-            danger: 'x-circle',
-            success: 'check-circle'
-        };
-
-        return `
-            <div class="${alertStyles[type]} border rounded p-3 mt-4">
-                <p class="text-xs">
-                    <i class="bi bi-${icons[type]} mr-1"></i>
-                    <strong>Training Alert:</strong> ${message}
-                </p>
-            </div>
-        `;
-    }
-
     // Create email object compatible with existing system
     toEmailObject() {
         return {

@@ -51,13 +51,8 @@ class CompanyUpdateEmailClass extends BaseEmail {
             </div>
         `;
 
-        const trainingAlert = this.createTrainingAlert(
-            'This is a legitimate company email with clear sender information, specific details, and proper contact information.',
-            'success'
-        );
-
         return this.createStyledContainer(
-            content + trainingAlert,
+            content,
             'bg-blue-50 border-blue-200',
             headerInfo
         );

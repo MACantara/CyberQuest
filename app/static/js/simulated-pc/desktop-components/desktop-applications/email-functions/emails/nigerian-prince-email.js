@@ -46,13 +46,8 @@ class NigerianPrinceEmailClass extends BaseEmail {
             </div>
         `;
 
-        const trainingAlert = this.createTrainingAlert(
-            'Classic "Nigerian Prince" scam! Red flags: too-good-to-be-true offer, urgent timeline, requests for personal information, and promises of easy money.',
-            'danger'
-        );
-
         return this.createStyledContainer(
-            content + trainingAlert,
+            content,
             'bg-yellow-50 border-yellow-200',
             headerInfo
         );

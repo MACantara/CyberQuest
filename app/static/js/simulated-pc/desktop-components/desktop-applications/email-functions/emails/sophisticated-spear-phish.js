@@ -83,13 +83,8 @@ class SophisticatedSpearPhishClass extends BaseEmail {
             </div>
         `;
 
-        const trainingAlert = this.createTrainingAlert(
-            'Sophisticated spear-phishing! Appears legitimate with: realistic context, professional formatting, and believable scenario. Red flags: domain mismatch (techcorp-industries.com vs expected), urgency pressure, credential requests, and suspicious external portal.',
-            'danger'
-        );
-
         return this.createStyledContainer(
-            content + trainingAlert,
+            content,
             'bg-orange-50 border-orange-200',
             headerInfo
         );

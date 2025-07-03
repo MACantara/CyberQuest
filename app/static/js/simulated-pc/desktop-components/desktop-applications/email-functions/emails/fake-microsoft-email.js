@@ -91,13 +91,8 @@ class FakeMicrosoftEmailClass extends BaseEmail {
             </div>
         `;
 
-        const trainingAlert = this.createTrainingAlert(
-            'Sophisticated phishing! Looks very official but notice the typo in the URL: "microsft-secure.net" instead of "microsoft.com". Also uses fear tactics about account compromise.',
-            'danger'
-        );
-
         return this.createStyledContainer(
-            content + trainingAlert,
+            content,
             'bg-orange-50 border-orange-200',
             headerInfo
         );

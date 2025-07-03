@@ -82,13 +82,8 @@ class NewsletterSubscriptionClass extends BaseEmail {
             </div>
         `;
 
-        const trainingAlert = this.createTrainingAlert(
-            'Legitimate newsletter with professional formatting, clear unsubscribe options, relevant content, and proper sender information.',
-            'success'
-        );
-
         return this.createStyledContainer(
-            content + trainingAlert,
+            content,
             'bg-indigo-50 border-indigo-200',
             headerInfo
         );

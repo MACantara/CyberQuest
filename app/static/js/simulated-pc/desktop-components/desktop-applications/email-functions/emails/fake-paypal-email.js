@@ -76,13 +76,8 @@ class FakePaypalEmailClass extends BaseEmail {
             </div>
         `;
 
-        const trainingAlert = this.createTrainingAlert(
-            'Classic phishing attempt! Red flags: urgent language, suspicious domain (paypal-security.com instead of paypal.com), requests for sensitive information, and threatening consequences.',
-            'danger'
-        );
-
         return this.createStyledContainer(
-            content + trainingAlert,
+            content,
             'bg-red-50 border-red-200',
             headerInfo
         );

@@ -66,13 +66,8 @@ class BankEmailClass extends BaseEmail {
             </div>
         `;
 
-        const trainingAlert = this.createTrainingAlert(
-            'This is a phishing email! Red flags: urgent language, suspicious sender domain, requests for sensitive information, and threatening consequences.',
-            'danger'
-        );
-
         return this.createStyledContainer(
-            content + trainingAlert,
+            content,
             'bg-blue-50 border-blue-200',
             headerInfo
         );

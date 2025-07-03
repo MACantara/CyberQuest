@@ -84,13 +84,8 @@ class PasswordResetLegitimateClass extends BaseEmail {
             </div>
         `;
 
-        const trainingAlert = this.createTrainingAlert(
-            'Legitimate password reset email with proper domain (cyberquest.com), clear security notices, limited-time link, and no requests for sensitive information.',
-            'success'
-        );
-
         return this.createStyledContainer(
-            content + trainingAlert,
+            content,
             'bg-green-50 border-green-200',
             headerInfo
         );

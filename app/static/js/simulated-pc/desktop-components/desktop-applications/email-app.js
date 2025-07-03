@@ -1,6 +1,5 @@
 // TODO: Add dialogue after finishing all emails
 // TODO: Create the necessary websites for each emails
-// TODO: Remove the training alerts of each emails
 // TODO: Redirect to the email inbox after reporting an email as phishing
 // TODO: Put the toast message for phishing report or marking as legitimate within the email client
 // TODO: Design the emails uniquely to realistic simulate emails and not use a uniform design

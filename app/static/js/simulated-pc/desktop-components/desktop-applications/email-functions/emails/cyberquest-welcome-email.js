@@ -51,13 +51,8 @@ class CyberquestWelcomeEmailClass extends BaseEmail {
             </div>
         `;
 
-        const trainingAlert = this.createTrainingAlert(
-            'This is a legitimate training email from CyberQuest. Notice the professional formatting, clear sender, and educational content.',
-            'success'
-        );
-
         return this.createStyledContainer(
-            content + trainingAlert,
+            content,
             'bg-green-50 border-green-200',
             headerInfo
         );
