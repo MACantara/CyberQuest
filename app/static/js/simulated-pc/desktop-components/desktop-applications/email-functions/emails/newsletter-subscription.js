@@ -14,7 +14,7 @@ class NewsletterSubscriptionClass extends BaseEmail {
 
     createBody() {
         return `
-            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; margin: 0 auto; background: #ffffff;">
                 <!-- Header -->
                 <div style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); padding: 20px 30px; text-align: center;">
                     <div style="color: white; font-size: 28px; font-weight: bold; margin-bottom: 5px;">TechInsights</div>

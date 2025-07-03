@@ -14,7 +14,7 @@ class NigerianPrinceEmailClass extends BaseEmail {
 
     createBody() {
         return `
-            <div style="font-family: Times New Roman, serif; max-width: 650px; margin: 0 auto; background: #ffffff; color: #000000; line-height: 1.4;">
+            <div style="font-family: Times New Roman, serif; margin: 0 auto; background: #ffffff; color: #000000; line-height: 1.4;">
                 <!-- Crude Header -->
                 <div style="background: #ffd700; padding: 15px; text-align: center; border: 3px solid #ff4500;">
                     <div style="color: #8b0000; font-size: 22px; font-weight: bold; text-transform: uppercase;">

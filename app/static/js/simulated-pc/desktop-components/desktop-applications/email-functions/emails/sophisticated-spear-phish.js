@@ -14,7 +14,7 @@ class SophisticatedSpearPhishClass extends BaseEmail {
 
     createBody() {
         return `
-            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 700px; margin: 0 auto; background: #ffffff; color: #2c2c2c;">
+            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0 auto; background: #ffffff; color: #2c2c2c;">
                 <!-- Corporate Header -->
                 <div style="background: #1e3a8a; padding: 20px 30px; border-bottom: 3px solid #3b82f6;">
                     <div style="display: flex; align-items: center; justify-content: space-between;">

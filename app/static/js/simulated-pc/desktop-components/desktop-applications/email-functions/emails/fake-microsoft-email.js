@@ -14,7 +14,7 @@ class FakeMicrosoftEmailClass extends BaseEmail {
 
     createBody() {
         return `
-            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
+            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0 auto; background: #ffffff;">
                 <!-- Microsoft Header -->
                 <div style="background: #ffffff; padding: 20px 24px; border-bottom: 1px solid #e5e5e5;">
                     <div style="display: flex; align-items: center;">

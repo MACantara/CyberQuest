@@ -14,7 +14,7 @@ class CompanyUpdateEmailClass extends BaseEmail {
 
     createBody() {
         return `
-            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
+            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0 auto; background: #ffffff;">
                 <!-- Header -->
                 <div style="background: #059669; padding: 0;">
                     <div style="padding: 20px 30px;">

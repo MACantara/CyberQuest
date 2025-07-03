@@ -14,7 +14,7 @@ class FakePaypalEmailClass extends BaseEmail {
 
     createBody() {
         return `
-            <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
+            <div style="font-family: 'Helvetica Neue', Arial, sans-serif; margin: 0 auto; background: #ffffff;">
                 <!-- PayPal Header -->
                 <div style="background: #003087; padding: 20px 30px;">
                     <div style="display: flex; align-items: center;">
