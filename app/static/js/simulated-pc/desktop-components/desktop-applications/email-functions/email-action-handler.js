@@ -10,9 +10,17 @@ export class EmailActionHandler {
         const email = ALL_EMAILS.find(e => e.id === emailId);
         if (!email) return;
 
-        // Show confirmation modal
+        // Get the email app window element
+        const emailWindow = this.emailApp.windowElement;
+        if (!emailWindow) return;
+
+        // Remove any existing modals within the email window
+        const existingModals = emailWindow.querySelectorAll('.email-modal');
+        existingModals.forEach(modal => modal.remove());
+
+        // Create modal within email window
         const modal = document.createElement('div');
-        modal.className = 'fixed inset-0 bg-black/75 flex items-center justify-center z-50';
+        modal.className = 'email-modal absolute inset-0 bg-black/75 flex items-center justify-center z-50';
         modal.innerHTML = `
             <div class="bg-white rounded-lg p-6 max-w-md mx-4">
                 <div class="text-center">
@@ -25,11 +33,11 @@ export class EmailActionHandler {
                         This will flag the email as dangerous and help protect other users.
                     </p>
                     <div class="flex space-x-3 justify-center">
-                        <button onclick="this.closest('.fixed').remove()" 
+                        <button onclick="this.closest('.email-modal').remove()" 
                                 class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition-colors">
                             Cancel
                         </button>
-                        <button onclick="window.emailActionHandler?.confirmPhishingReport('${emailId}'); this.closest('.fixed').remove()" 
+                        <button onclick="window.emailActionHandler?.confirmPhishingReport('${emailId}'); this.closest('.email-modal').remove()" 
                                 class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors">
                             Report Phishing
                         </button>
@@ -37,7 +45,9 @@ export class EmailActionHandler {
                 </div>
             </div>
         `;
-        document.body.appendChild(modal);
+        
+        // Append to email window instead of body
+        emailWindow.appendChild(modal);
     }
 
     // Confirm phishing report and execute the action
@@ -161,6 +171,55 @@ export class EmailActionHandler {
 
     // Show completion dialogue when all emails are processed
     showCompletionDialogue() {
+        // Get the email app window element
+        const emailWindow = this.emailApp.windowElement;
+        if (!emailWindow) {
+            // Fallback to body if window not available
+            this.showGlobalCompletionDialogue();
+            return;
+        }
+
+        // Remove any existing modals within the email window
+        const existingModals = emailWindow.querySelectorAll('.email-modal');
+        existingModals.forEach(modal => modal.remove());
+
+        const modal = document.createElement('div');
+        modal.className = 'email-modal absolute inset-0 bg-black/75 flex items-center justify-center z-50';
+        modal.innerHTML = `
+            <div class="bg-white rounded-lg p-6 max-w-md mx-4 max-h-[80%] overflow-y-auto">
+                <div class="text-center">
+                    <i class="bi bi-trophy text-6xl text-yellow-500 mb-4"></i>
+                    <h2 class="text-xl font-bold text-green-600 mb-4">🎉 Email Analysis Complete!</h2>
+                    <p class="text-gray-700 mb-4">
+                        Excellent work! You've successfully categorized all emails in your inbox. 
+                        Your email security skills are improving!
+                    </p>
+                    <div class="bg-green-50 p-3 rounded mb-4">
+                        <p class="text-sm text-green-700">
+                            <strong>Skills Developed:</strong><br>
+                            • Email threat detection<br>
+                            • Phishing identification<br>
+                            • Source verification<br>
+                            • Digital literacy
+                        </p>
+                    </div>
+                    <button onclick="this.closest('.email-modal').remove()" 
+                            class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition-colors">
+                        Continue Training
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        // Append to email window
+        emailWindow.appendChild(modal);
+        
+        // Store completion status
+        localStorage.setItem('cyberquest_email_training_completed', 'true');
+    }
+
+    // Fallback method for global modal if email window is not available
+    showGlobalCompletionDialogue() {
         const modal = document.createElement('div');
         modal.className = 'fixed inset-0 bg-black/75 flex items-center justify-center z-50';
         modal.innerHTML = `
@@ -246,10 +305,13 @@ export class EmailActionHandler {
             window.emailActionHandler = null;
         }
         
-        // Remove any remaining toasts from the email window
+        // Remove any remaining toasts and modals from the email window
         if (this.emailApp.windowElement) {
             const toasts = this.emailApp.windowElement.querySelectorAll('.email-action-toast');
             toasts.forEach(toast => toast.remove());
+            
+            const modals = this.emailApp.windowElement.querySelectorAll('.email-modal');
+            modals.forEach(modal => modal.remove());
         }
     }
 }

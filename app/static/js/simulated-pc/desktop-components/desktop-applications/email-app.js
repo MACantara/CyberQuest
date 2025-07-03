@@ -1,6 +1,5 @@
 // TODO: Add dialogue after finishing all emails
 // TODO: Create the necessary websites for each emails
-// TODO: Put the email client modals within the email client window
 // TODO: Design the emails uniquely to realistic simulate emails and not use a uniform design
 
 import { WindowBase } from '../window-base.js';
