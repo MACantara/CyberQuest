@@ -3,7 +3,6 @@
 // TODO: Redirect to the email inbox after reporting an email as phishing
 // TODO: Put the toast message for phishing report or marking as legitimate within the email client
 // TODO: Design the emails uniquely to realistic simulate emails and not use a uniform design
-// TODO: Sort the emails from most recent to oldest
 // TODO: Move the phishing email report at the top from the bottom
 // TODO: Store in local storage if the email has been opened or not
 
@@ -98,6 +97,9 @@ export class EmailApp extends WindowBase {
         const isRead = this.readEmails.has(email.id);
         const { statusIndicator, statusClass } = this.state.securityManager.createStatusIndicator(email.id, isRead);
 
+        // Get both date and time display
+        const displayDateTime = this.getDateTimeDisplay(email);
+
         return `
             <div class="email-item p-3 border-b border-gray-600 cursor-pointer hover:bg-gray-700 transition-colors duration-200 flex items-center"
                  data-email-id="${email.id}">
@@ -108,10 +110,65 @@ export class EmailApp extends WindowBase {
                         ${statusIndicator}
                     </div>
                     <div class="text-sm mb-1 ${isRead ? 'text-gray-300 font-normal' : 'text-white font-bold'}">${email.subject}</div>
-                    <div class="text-gray-400 text-xs">${email.time}</div>
+                    <div class="text-gray-400 text-xs">${displayDateTime}</div>
                 </div>
             </div>
         `;
+    }
+
+    // Get formatted date and time for email list display
+    getDateTimeDisplay(email) {
+        if (email.timestamp) {
+            const date = new Date(email.timestamp);
+            const now = new Date();
+            const diffInHours = (now - date) / (1000 * 60 * 60);
+            
+            // If today, show time only
+            if (diffInHours < 24 && date.toDateString() === now.toDateString()) {
+                return date.toLocaleTimeString('en-US', { 
+                    hour: 'numeric', 
+                    minute: '2-digit',
+                    hour12: true 
+                });
+            }
+            
+            // If yesterday, show "Yesterday" + time
+            const yesterday = new Date(now);
+            yesterday.setDate(now.getDate() - 1);
+            if (date.toDateString() === yesterday.toDateString()) {
+                return `Yesterday ${date.toLocaleTimeString('en-US', { 
+                    hour: 'numeric', 
+                    minute: '2-digit',
+                    hour12: true 
+                })}`;
+            }
+            
+            // If this year, show month/day + time
+            if (date.getFullYear() === now.getFullYear()) {
+                return `${date.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric' 
+                })} ${date.toLocaleTimeString('en-US', { 
+                    hour: 'numeric', 
+                    minute: '2-digit',
+                    hour12: true 
+                })}`;
+            }
+            
+            // If older, show full date + time
+            return `${date.toLocaleDateString('en-US', { 
+                year: 'numeric',
+                month: 'short', 
+                day: 'numeric' 
+            })} ${date.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true 
+            })}`;
+        }
+        
+        // Fallback to original time string if no timestamp
+        return email.time;
     }
 
     createEmailDetail(email, folderId) {
