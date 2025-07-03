@@ -241,7 +241,7 @@ export class EmailSecurityManager {
 
     createPhishingWarning() {
         return `
-            <div class="mt-4 bg-red-900 border border-red-700 rounded p-4">
+            <div class="mt-4 mb-4 bg-red-900 border border-red-700 rounded p-4">
                 <div class="flex items-center mb-2">
                     <i class="bi bi-exclamation-triangle text-red-400 mr-2"></i>
                     <h4 class="text-red-400 font-semibold">Phishing Email Reported</h4>
@@ -258,7 +258,7 @@ export class EmailSecurityManager {
 
     createLegitimateConfirmation() {
         return `
-            <div class="mt-4 bg-green-900 border border-green-700 rounded p-4">
+            <div class="mt-4 mb-4 bg-green-900 border border-green-700 rounded p-4">
                 <div class="flex items-center mb-2">
                     <i class="bi bi-shield-check text-green-400 mr-2"></i>
                     <h4 class="text-green-400 font-semibold">Legitimate Email Verified</h4>
