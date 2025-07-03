@@ -1,8 +1,8 @@
 // TODO: Add dialogue after finishing all emails
 // TODO: Create the necessary websites for each emails
 // TODO: Put the toast message for phishing report or marking as legitimate within the email client
+// TODO: Put the email client modals within the email client window
 // TODO: Design the emails uniquely to realistic simulate emails and not use a uniform design
-// TODO: Move the phishing email report or Legitimate Email Verified at the top from the bottom
 
 import { WindowBase } from '../window-base.js';
 import { EmailState } from './email-functions/email-state.js';
@@ -192,6 +192,10 @@ export class EmailApp extends WindowBase {
                     ${this.state.securityManager.createActionButtons(email.id, this.state.getCurrentFolder())}
                 </div>
                 
+                <!-- Security alerts -->
+                ${emailStatus === 'phishing' ? this.state.securityManager.createPhishingWarning() : ''}
+                ${emailStatus === 'legitimate' ? this.state.securityManager.createLegitimateConfirmation() : ''}
+                
                 <!-- Email information -->
                 <div class="mb-4">
                     <div class="font-medium text-lg text-white">${email.subject}</div>
@@ -205,9 +209,6 @@ export class EmailApp extends WindowBase {
                 <div class="bg-gray-800 border border-gray-700 rounded p-4 text-white text-sm">
                     ${email.body}
                 </div>
-                
-                ${emailStatus === 'phishing' ? this.state.securityManager.createPhishingWarning() : ''}
-                ${emailStatus === 'legitimate' ? this.state.securityManager.createLegitimateConfirmation() : ''}
             </div>
         `;
     }
