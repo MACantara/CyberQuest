@@ -1,4 +1,3 @@
-
 import { WindowBase } from '../window-base.js';
 import { ProcessDataManager } from './process-monitor-functions/process-data-manager.js';
 import { ProcessSorter } from './process-monitor-functions/process-sorter.js';

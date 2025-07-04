@@ -5,8 +5,8 @@ export class SystemProcess extends BaseProcess {
         super({
             name: 'System',
             executable: 'System',
-            cpu: 0.1,
-            memory: 128,
+            cpu: 0.2,
+            memory: 135,
             priority: 'System',
             category: 'system',
             description: 'Core Windows system process'
@@ -27,8 +27,8 @@ export class ExplorerProcess extends BaseProcess {
         super({
             name: 'explorer.exe',
             executable: 'explorer.exe',
-            cpu: 2.3,
-            memory: 45.2,
+            cpu: 3.3,
+            memory: 52.2,
             priority: 'Normal',
             category: 'system',
             description: 'Windows Explorer shell process'
@@ -49,8 +49,8 @@ export class WinLogonProcess extends BaseProcess {
         super({
             name: 'winlogon.exe',
             executable: 'winlogon.exe',
-            cpu: 0.2,
-            memory: 18.9,
+            cpu: 0.3,
+            memory: 21.9,
             priority: 'System',
             category: 'system',
             description: 'Windows logon process'
@@ -71,8 +71,8 @@ export class CsrssProcess extends BaseProcess {
         super({
             name: 'csrss.exe',
             executable: 'csrss.exe',
-            cpu: 0.5,
-            memory: 45.1,
+            cpu: 0.7,
+            memory: 48.1,
             priority: 'System',
             category: 'system',
             description: 'Client/Server Runtime Subsystem'
@@ -93,8 +93,8 @@ export class LsassProcess extends BaseProcess {
         super({
             name: 'lsass.exe',
             executable: 'lsass.exe',
-            cpu: 0.3,
-            memory: 34.7,
+            cpu: 0.4,
+            memory: 38.7,
             priority: 'System',
             category: 'system',
             description: 'Local Security Authority Subsystem'
@@ -115,8 +115,8 @@ export class SvchostProcess extends BaseProcess {
         super({
             name: 'svchost.exe',
             executable: 'svchost.exe',
-            cpu: 1.1,
-            memory: 32.6,
+            cpu: 1.4,
+            memory: 39.6,
             priority: 'Normal',
             category: 'system',
             description: 'Service Host Process'

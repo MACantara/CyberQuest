@@ -5,8 +5,8 @@ export class ChromeProcess extends BaseProcess {
         super({
             name: 'chrome.exe',
             executable: 'program files\\google\\chrome\\application\\chrome.exe',
-            cpu: 15.7,
-            memory: 234.8,
+            cpu: 12.7,
+            memory: 198.8,
             priority: 'Normal',
             category: 'application',
             description: 'Google Chrome web browser'
@@ -27,8 +27,8 @@ export class AntivirusProcess extends BaseProcess {
         super({
             name: 'antivirus.exe',
             executable: 'program files\\windows defender\\antivirus.exe',
-            cpu: 1.8,
-            memory: 43.4,
+            cpu: 2.8,
+            memory: 58.4,
             priority: 'Normal',
             category: 'security',
             description: 'Windows Defender antivirus'
