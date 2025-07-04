@@ -1,4 +1,4 @@
-import { BaseDialogue } from '../../../base-dialogue.js';
+import { BaseDialogue } from '../../base-dialogue.js';
 
 export class Challenge4Dialogue extends BaseDialogue {
     constructor(desktop, character = 'instructor') {

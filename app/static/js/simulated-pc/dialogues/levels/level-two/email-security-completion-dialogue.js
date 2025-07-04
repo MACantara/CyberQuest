@@ -1,4 +1,4 @@
-import { BaseDialogue } from '../../../base-dialogue.js';
+import { BaseDialogue } from '../../base-dialogue.js';
 
 export class EmailSecurityCompletionDialogue extends BaseDialogue {
     constructor(desktop, character = 'security-analyst') {

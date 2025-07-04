@@ -1,4 +1,4 @@
-import { BaseDialogue } from '../../base-dialogue.js';
+import { BaseDialogue } from '../base-dialogue.js';
 
 export class Level8OperationBlackoutDialogue extends BaseDialogue {
     constructor(desktop, character = 'instructor') {

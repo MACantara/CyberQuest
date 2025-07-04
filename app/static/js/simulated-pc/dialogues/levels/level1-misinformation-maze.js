@@ -1,4 +1,4 @@
-import { BaseDialogue } from '../../base-dialogue.js';
+import { BaseDialogue } from '../base-dialogue.js';
 import { 
     Challenge1Dialogue, 
     Challenge2Dialogue, 
