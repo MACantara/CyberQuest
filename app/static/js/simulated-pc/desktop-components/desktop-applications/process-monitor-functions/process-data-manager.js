@@ -1,3 +1,5 @@
+import { ProcessFactory } from './processes/process-factory.js';
+
 export class ProcessDataManager {
     constructor(activityEmitter = null) {
         this.processes = [];
@@ -6,61 +8,11 @@ export class ProcessDataManager {
     }
 
     generateProcessData() {
-        // Generate realistic process data for Level 3: Malware Mayhem gaming tournament scenario
-        const systemProcesses = [
-            // Legitimate system processes
-            { name: 'System', executable: 'System', cpu: 0.1, memory: 128, priority: 'System', status: 'Running' },
-            { name: 'explorer.exe', executable: 'explorer.exe', cpu: 2.3, memory: 45.2, priority: 'Normal', status: 'Running' },
-            { name: 'winlogon.exe', executable: 'winlogon.exe', cpu: 0.2, memory: 18.9, priority: 'System', status: 'Running' },
-            { name: 'csrss.exe', executable: 'csrss.exe', cpu: 0.5, memory: 45.1, priority: 'System', status: 'Running' },
-            { name: 'lsass.exe', executable: 'lsass.exe', cpu: 0.3, memory: 34.7, priority: 'System', status: 'Running' },
-            { name: 'svchost.exe', executable: 'svchost.exe', cpu: 1.1, memory: 32.6, priority: 'Normal', status: 'Running' },
-            
-            // Gaming-related legitimate processes
-            { name: 'steam.exe', executable: 'program files (x86)\\steam\\steam.exe', cpu: 3.4, memory: 89.2, priority: 'Normal', status: 'Running' },
-            { name: 'discord.exe', executable: 'users\\appdata\\local\\discord\\discord.exe', cpu: 2.1, memory: 67.3, priority: 'Normal', status: 'Running' },
-            { name: 'obs64.exe', executable: 'program files\\obs studio\\bin\\64bit\\obs64.exe', cpu: 8.7, memory: 156.4, priority: 'High', status: 'Running' },
-            { name: 'chrome.exe', executable: 'program files\\google\\chrome\\application\\chrome.exe', cpu: 15.7, memory: 234.8, priority: 'Normal', status: 'Running' },
-            
-            // Legitimate gaming tournament software
-            { name: 'tournament_client.exe', executable: 'program files\\cyberquest\\tournament_client.exe', cpu: 4.2, memory: 78.9, priority: 'High', status: 'Running' },
-            { name: 'antivirus.exe', executable: 'program files\\windows defender\\antivirus.exe', cpu: 1.8, memory: 43.4, priority: 'Normal', status: 'Running' },
-            
-            // Malware disguised as gaming performance boosters - RANSOMWARE
-            { name: 'gaming_optimizer_pro.exe', executable: 'temp\\downloads\\gaming_optimizer_pro.exe', cpu: 18.5, memory: 189.7, priority: 'High', status: 'Running' },
-            { name: 'fps_booster_ultimate.exe', executable: 'users\\public\\documents\\fps_booster_ultimate.exe', cpu: 14.2, memory: 167.3, priority: 'High', status: 'Running' },
-            
-            // TROJANS - masquerading as legitimate gaming tools
-            { name: 'steam_helper.exe', executable: 'temp\\steam_helper.exe', cpu: 8.8, memory: 94.1, priority: 'Normal', status: 'Running' },
-            { name: 'discord_overlay.exe', executable: 'appdata\\roaming\\discord_overlay.exe', cpu: 6.9, memory: 67.8, priority: 'Normal', status: 'Running' },
-            { name: 'nvidia_gamestream.exe', executable: 'users\\downloads\\nvidia_gamestream.exe', cpu: 7.4, memory: 85.6, priority: 'Normal', status: 'Running' },
-            
-            // SPYWARE - monitoring gaming activities and stealing credentials
-            { name: 'performance_monitor.exe', executable: 'program files\\common files\\performance_monitor.exe', cpu: 3.3, memory: 54.2, priority: 'Low', status: 'Running' },
-            { name: 'game_stats_tracker.exe', executable: 'appdata\\local\\temp\\game_stats_tracker.exe', cpu: 2.7, memory: 41.5, priority: 'Low', status: 'Running' },
-            { name: 'tournament_recorder.exe', executable: 'users\\public\\tournament_recorder.exe', cpu: 4.1, memory: 62.8, priority: 'Normal', status: 'Running' },
-            
-            // ROOTKITS - hiding deep in system processes
-            { name: 'system_optimizer.exe', executable: 'windows\\system32\\system_optimizer.exe', cpu: 11.4, memory: 128.9, priority: 'System', status: 'Running' },
-            { name: 'driver_updater.exe', executable: 'windows\\system32\\drivers\\driver_updater.exe', cpu: 8.6, memory: 96.4, priority: 'High', status: 'Running' },
-            
-            // Additional malware variants
-            { name: 'latency_reducer.exe', executable: 'temp\\gaming_tools\\latency_reducer.exe', cpu: 9.2, memory: 112.7, priority: 'High', status: 'Running' },
-            { name: 'cpu_overclocker.exe', executable: 'users\\downloads\\utilities\\cpu_overclocker.exe', cpu: 12.8, memory: 145.3, priority: 'High', status: 'Running' },
-            { name: 'memory_cleaner_pro.exe', executable: 'program files (x86)\\utilities\\memory_cleaner_pro.exe', cpu: 5.7, memory: 73.9, priority: 'Normal', status: 'Running' }
-        ];
-
+        // Use the process factory to create default processes
+        this.processes = ProcessFactory.createDefaultProcesses();
+        
         // Normalize CPU usage to ensure total doesn't exceed 100%
-        this.normalizeCpuUsage(systemProcesses);
-
-        this.processes = systemProcesses.map((proc, index) => ({
-            ...proc,
-            pid: 1000 + index * 100 + Math.floor(Math.random() * 99),
-            threads: Math.floor(Math.random() * 20) + 1,
-            startTime: new Date(Date.now() - Math.random() * 86400000).toLocaleString(),
-            // Don't automatically flag as suspicious - let players determine this
-            suspicious: false
-        }));
+        this.normalizeCpuUsage(this.processes);
     }
 
     normalizeCpuUsage(processes) {
@@ -129,49 +81,8 @@ export class ProcessDataManager {
     }
 
     addRandomProcess() {
-        // Generate potentially malicious gaming-related process names
-        const suspiciousProcessNames = [
-            `game_booster_${Math.floor(Math.random() * 1000)}.exe`,
-            `fps_enhancer_${Math.floor(Math.random() * 100)}.exe`,
-            `tournament_optimizer.exe`,
-            `steam_achievement_unlocker.exe`,
-            `discord_nitro_generator.exe`,
-            `gaming_vpn_free.exe`,
-            `cheat_engine_pro.exe`,
-            `rank_booster_tool.exe`,
-            `skin_unlocker.exe`,
-            `lag_eliminator.exe`
-        ];
-        
-        const suspiciousExecutables = [
-            `temp\\downloads\\${suspiciousProcessNames[0]}`,
-            `users\\public\\documents\\${suspiciousProcessNames[1]}`,
-            `appdata\\roaming\\gaming\\${suspiciousProcessNames[2]}`,
-            `temp\\steam_unofficial\\${suspiciousProcessNames[3]}`,
-            `users\\downloads\\discord_tools\\${suspiciousProcessNames[4]}`,
-            `program files (x86)\\gaming_utilities\\${suspiciousProcessNames[5]}`,
-            `temp\\cheats\\${suspiciousProcessNames[6]}`,
-            `appdata\\local\\temp\\${suspiciousProcessNames[7]}`,
-            `users\\public\\gaming_mods\\${suspiciousProcessNames[8]}`,
-            `downloads\\network_tools\\${suspiciousProcessNames[9]}`
-        ];
-        
-        const randomIndex = Math.floor(Math.random() * suspiciousProcessNames.length);
-        
-        const newProcess = {
-            name: suspiciousProcessNames[randomIndex],
-            executable: suspiciousExecutables[randomIndex],
-            pid: Math.floor(Math.random() * 9000) + 1000,
-            cpu: Math.random() * 8 + 2, // Lower CPU usage for new processes (2-10%)
-            memory: Math.random() * 150 + 30, // Higher memory usage
-            threads: Math.floor(Math.random() * 15) + 3, // More threads for malicious activity
-            priority: Math.random() > 0.5 ? 'High' : 'Normal',
-            status: 'Running',
-            startTime: new Date().toLocaleString(),
-            // Don't automatically flag as suspicious - let players analyze
-            suspicious: false
-        };
-        
+        // Use the process factory to create random suspicious processes
+        const newProcess = ProcessFactory.createRandomSuspiciousProcess();
         this.processes.push(newProcess);
         
         // Re-normalize CPU usage after adding new process
@@ -264,20 +175,11 @@ export class ProcessDataManager {
     }
 
     isKnownSystemProcess(processName) {
-        const knownProcesses = [
-            'system', 'explorer.exe', 'chrome.exe', 'cyberquest.exe', 
-            'svchost.exe', 'winlogon.exe', 'csrss.exe', 'lsass.exe'
-        ];
-        return knownProcesses.some(known => 
-            processName.toLowerCase().includes(known.toLowerCase())
-        );
+        return ProcessFactory.isKnownSystemProcess(processName);
     }
 
     isLegitimateGamingProcess(processName) {
-        const legitimateGamingProcesses = [
-            'steam.exe', 'discord.exe', 'obs64.exe', 'tournament_client.exe',
-            'nvidia_gamestream.exe', 'amd_gaming.exe', 'origin.exe', 'epic_games.exe'
-        ];
+        const legitimateGamingProcesses = ProcessFactory.getLegitimateGamingProcesses();
         return legitimateGamingProcesses.some(legit => 
             processName.toLowerCase().includes(legit.toLowerCase())
         );

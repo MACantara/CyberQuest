@@ -1,5 +1,3 @@
-// TODO: Refactor the processes into individual js files by extending base-process.js under
-// new folder called processes within process-monitor-functions folder
 
 import { WindowBase } from '../window-base.js';
 import { ProcessDataManager } from './process-monitor-functions/process-data-manager.js';
