@@ -61,6 +61,11 @@ export class ProcessEventHandler {
     handleRefresh() {
         this.dataManager.refreshProcessData();
         this.app.updateContent();
+        
+        // Emit refresh activity
+        if (this.app.activityEmitter) {
+            this.app.activityEmitter.emitProcessRefresh(this.dataManager.getProcessCount());
+        }
     }
 
     handleToggleRealTime() {
@@ -72,17 +77,37 @@ export class ProcessEventHandler {
             this.stopRealTimeUpdates();
         }
         
+        // Emit real-time toggle activity
+        if (this.app.activityEmitter) {
+            this.app.activityEmitter.emitRealTimeToggle(this.app.isRealTime);
+        }
+        
         this.app.updateContent();
     }
 
     handleSort(column) {
         this.sorter.setSortColumn(column);
         this.sorter.sortProcesses(this.dataManager.getProcesses());
+        
+        // Emit sort activity
+        if (this.app.activityEmitter) {
+            this.app.activityEmitter.emitProcessSorted(
+                this.sorter.getSortColumn(), 
+                this.sorter.getSortDirection()
+            );
+        }
+        
         this.app.updateContent();
     }
 
     handleSelectProcess(pid) {
         this.app.selectedProcess = this.dataManager.getProcessByPid(pid);
+        
+        // Emit process selection activity
+        if (this.app.activityEmitter && this.app.selectedProcess) {
+            this.app.activityEmitter.emitProcessSelected(this.app.selectedProcess);
+        }
+        
         this.app.updateContent();
         
         const detailsPanel = this.app.windowElement?.querySelector('#process-details');
@@ -105,6 +130,11 @@ export class ProcessEventHandler {
         // Show confirmation
         const confirmed = confirm(`Are you sure you want to end process "${this.app.selectedProcess.name}" (PID: ${this.app.selectedProcess.pid})?`);
         if (!confirmed) return;
+
+        // Emit termination activity before removing
+        if (this.app.activityEmitter) {
+            this.app.activityEmitter.emitProcessTerminated(this.app.selectedProcess, 'user');
+        }
 
         // Remove process from data manager
         this.dataManager.removeProcess(this.app.selectedProcess.pid);

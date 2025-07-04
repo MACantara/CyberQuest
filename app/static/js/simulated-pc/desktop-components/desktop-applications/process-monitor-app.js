@@ -4,6 +4,7 @@ import { ProcessSorter } from './process-monitor-functions/process-sorter.js';
 import { ProcessRenderer } from './process-monitor-functions/process-renderer.js';
 import { ProcessEventHandler } from './process-monitor-functions/process-event-handler.js';
 import { NotificationManager } from './process-monitor-functions/notification-manager.js';
+import { ActivityEmitter } from './process-monitor-functions/activity-emitter.js';
 
 export class ProcessMonitorApp extends WindowBase {
     constructor() {
@@ -15,8 +16,11 @@ export class ProcessMonitorApp extends WindowBase {
         this.selectedProcess = null;
         this.isRealTime = true;
         
-        // Initialize modular components
-        this.dataManager = new ProcessDataManager();
+        // Initialize activity emitter first
+        this.activityEmitter = new ActivityEmitter();
+        
+        // Initialize modular components with activity emitter
+        this.dataManager = new ProcessDataManager(this.activityEmitter);
         this.sorter = new ProcessSorter();
         this.renderer = new ProcessRenderer(this.dataManager, this.sorter);
         this.eventHandler = new ProcessEventHandler(this, this.dataManager, this.sorter, this.renderer);
@@ -167,6 +171,12 @@ export class ProcessMonitorApp extends WindowBase {
         this.eventHandler.bindEvents(this.windowElement);
         this.eventHandler.startRealTimeUpdates();
         
+        // Emit application start activity
+        this.activityEmitter.emitProcessMonitorStart();
+        
+        // Check for suspicious processes on startup
+        this.checkForSuspiciousProcesses();
+        
         // Mark app as opened for tutorial system
         localStorage.setItem('cyberquest_process_monitor_opened', 'true');
         
@@ -174,6 +184,15 @@ export class ProcessMonitorApp extends WindowBase {
         setTimeout(() => {
             this.checkAndStartTutorial();
         }, 1000);
+    }
+
+    checkForSuspiciousProcesses() {
+        // Check for existing suspicious processes and emit alerts
+        this.dataManager.getProcesses().forEach(process => {
+            if (process.suspicious) {
+                this.activityEmitter.emitSuspiciousProcess(process);
+            }
+        });
     }
 
     checkAndStartTutorial() {
@@ -198,6 +217,11 @@ export class ProcessMonitorApp extends WindowBase {
     }
 
     cleanup() {
+        // Emit application stop activity
+        if (this.activityEmitter) {
+            this.activityEmitter.emitProcessMonitorStop();
+        }
+        
         this.eventHandler.cleanup();
         super.cleanup();
     }

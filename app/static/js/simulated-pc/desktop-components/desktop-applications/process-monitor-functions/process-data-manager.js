@@ -1,6 +1,7 @@
 export class ProcessDataManager {
-    constructor() {
+    constructor(activityEmitter = null) {
         this.processes = [];
+        this.activityEmitter = activityEmitter;
         this.generateProcessData();
     }
 
@@ -36,9 +37,23 @@ export class ProcessDataManager {
     refreshProcessData() {
         // Simulate process changes
         this.processes.forEach(process => {
+            // Track high resource usage before updating
+            const oldCpu = process.cpu;
+            const oldMemory = process.memory;
+            
             // Slightly randomize CPU and memory usage
             process.cpu = Math.max(0, process.cpu + (Math.random() - 0.5) * 5);
             process.memory = Math.max(1, process.memory + (Math.random() - 0.5) * 10);
+            
+            // Check for high resource usage
+            if (this.activityEmitter) {
+                if (process.cpu > 50 && oldCpu <= 50) {
+                    this.activityEmitter.emitHighResourceUsage(process, 'cpu', process.cpu.toFixed(1));
+                }
+                if (process.memory > 200 && oldMemory <= 200) {
+                    this.activityEmitter.emitHighResourceUsage(process, 'memory', process.memory.toFixed(1));
+                }
+            }
         });
 
         // Occasionally add/remove processes
@@ -49,13 +64,20 @@ export class ProcessDataManager {
             } else if (this.processes.length > 10) {
                 // Remove random process
                 const randomIndex = Math.floor(Math.random() * this.processes.length);
+                const processToRemove = this.processes[randomIndex];
+                
+                // Emit termination before removal
+                if (this.activityEmitter) {
+                    this.activityEmitter.emitProcessTerminated(processToRemove, 'system');
+                }
+                
                 this.processes.splice(randomIndex, 1);
             }
         }
     }
 
     addRandomProcess() {
-        this.processes.push({
+        const newProcess = {
             name: `temp_process_${Math.floor(Math.random() * 1000)}.exe`,
             executable: `temp\\temp_process_${Math.floor(Math.random() * 1000)}.exe`,
             pid: Math.floor(Math.random() * 9000) + 1000,
@@ -66,7 +88,19 @@ export class ProcessDataManager {
             status: 'Running',
             startTime: new Date().toLocaleString(),
             suspicious: Math.random() < 0.3
-        });
+        };
+        
+        this.processes.push(newProcess);
+        
+        // Emit process start activity
+        if (this.activityEmitter) {
+            this.activityEmitter.emitProcessStart(newProcess);
+            
+            // If suspicious, emit security alert
+            if (newProcess.suspicious) {
+                this.activityEmitter.emitSuspiciousProcess(newProcess);
+            }
+        }
     }
 
     removeProcess(pid) {
@@ -97,5 +131,9 @@ export class ProcessDataManager {
 
     getProcessCount() {
         return this.processes.length;
+    }
+
+    setActivityEmitter(emitter) {
+        this.activityEmitter = emitter;
     }
 }
