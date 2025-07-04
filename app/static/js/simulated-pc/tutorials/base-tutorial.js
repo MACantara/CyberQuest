@@ -51,6 +51,12 @@ export class BaseTutorial {
     }    
     
     highlightElement(element, action = 'highlight') {
+        // Ensure overlay exists before trying to use it
+        if (!this.overlay) {
+            console.warn('Overlay not created yet, cannot highlight element');
+            return;
+        }
+
         // Create highlight effect
         const rect = element.getBoundingClientRect();
         
@@ -68,7 +74,7 @@ export class BaseTutorial {
         element.classList.add('tutorial-highlight');
         
         // Add interactive highlighting for interactive steps
-        const currentStep = this.steps[this.currentStep];
+        const currentStep = this.steps[this.stepManager.getCurrentStepIndex()];
         if (currentStep?.interactive) {
             element.classList.add('tutorial-interactive');
         } else {
@@ -225,6 +231,20 @@ export class BaseTutorial {
         this.clearHighlights();
     }
 
+    clearHighlights() {
+        // Remove all tutorial highlights including interactive ones
+        document.querySelectorAll('.tutorial-highlight, .tutorial-pulse, .tutorial-interactive, .tutorial-success').forEach(el => {
+            el.classList.remove('tutorial-highlight', 'tutorial-pulse', 'tutorial-interactive', 'tutorial-success');
+            // Only reset position if we changed it (not if it was originally absolute)
+            if (el.style.position === 'relative') {
+                el.style.position = '';
+            }
+            el.style.zIndex = '';
+            el.style.pointerEvents = '';
+            el.style.cursor = '';
+        });
+    }
+
     // Enhanced CSS for interactive steps
     initializeCSS() {
         if (document.getElementById('tutorial-interaction-styles')) return;
@@ -270,6 +290,43 @@ export class BaseTutorial {
             }
         `;
         document.head.appendChild(tutorialStyles);
+    }
+
+    // Override these methods in child classes
+    getSkipTutorialHandler() {
+        return 'window.currentTutorial.showSkipModal()';
+    }
+
+    getPreviousStepHandler() {
+        return 'window.currentTutorial.previousStep()';
+    }
+
+    getNextStepHandler() {
+        return 'window.currentTutorial.nextStep()';
+    }
+
+    getFinalStepHandler() {
+        return 'window.currentTutorial.complete()';
+    }
+
+    getFinalButtonText() {
+        return 'Complete';
+    }
+
+    async showSkipModal() {
+        if (!this.skipTutorialModal) {
+            this.skipTutorialModal = new SkipTutorialModal(document.body);
+        }
+        
+        const shouldSkip = await this.skipTutorialModal.show();
+        if (shouldSkip) {
+            this.complete();
+        }
+    }
+
+    complete() {
+        this.clearHighlights();
+        this.cleanup();
     }
 
     // Initialize CSS when tutorial starts

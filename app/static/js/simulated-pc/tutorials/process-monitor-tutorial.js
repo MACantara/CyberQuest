@@ -109,12 +109,20 @@ export class ProcessMonitorTutorial extends BaseTutorial {
             }
         }
 
-        // Initialize CSS and start the tutorial
+        // Initialize CSS first
         this.initializeCSS();
+        
+        // Set tutorial state
         this.isActive = true;
-        this.currentStep = 0;
+        this.stepManager.reset();
+        
+        // Create overlay before showing any steps
         this.createOverlay();
+        
+        // Set global reference
         window.currentTutorial = this;
+        
+        // Start showing steps
         this.showStep();
     }
 
