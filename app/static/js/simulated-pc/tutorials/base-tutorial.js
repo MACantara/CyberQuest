@@ -1,4 +1,4 @@
-import { SkipTutorialModal } from './desktop-components/skip-tutorial-modal.js';
+import { SkipTutorialModal } from '../desktop-components/skip-tutorial-modal.js';
 
 export class BaseTutorial {
     constructor(desktop) {

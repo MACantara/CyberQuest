@@ -201,7 +201,7 @@ export class TutorialManager {
         this.enableTutorialMode();
         
         // Dynamic import to avoid circular dependency
-        const module = await import(`./tutorials/${tutorialName}-tutorial.js`);
+        const module = await import(`./${tutorialName}-tutorial.js`);
         const TutorialClass = module[tutorialClass];
         
         this.currentTutorial = new TutorialClass(this.desktop);
@@ -227,14 +227,14 @@ export class TutorialManager {
 
     // Generic auto-start checker
     async shouldAutoStart(tutorialName, tutorialClass) {
-        const module = await import(`./tutorials/${tutorialName}-tutorial.js`);
+        const module = await import(`./${tutorialName}-tutorial.js`);
         const TutorialClass = module[tutorialClass];
         return TutorialClass.shouldAutoStart();
     }
 
     // Generic tutorial restarter
     async restartTutorial(tutorialName, tutorialClass, startMethodName) {
-        const module = await import(`./tutorials/${tutorialName}-tutorial.js`);
+        const module = await import(`./${tutorialName}-tutorial.js`);
         const TutorialClass = module[tutorialClass];
         TutorialClass.restart();
         await this[startMethodName]();

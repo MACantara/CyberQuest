@@ -1,4 +1,4 @@
-import { BaseTutorial } from '../base-tutorial.js';
+import { BaseTutorial } from './base-tutorial.js';
 
 export class SystemLogsTutorial extends BaseTutorial {
     constructor(desktop) {
