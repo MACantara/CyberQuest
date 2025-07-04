@@ -86,6 +86,11 @@ export class TutorialManager {
         return await this.startTutorialByName(tutorialName);
     }
 
+    // Initialize dynamic methods
+    initialize() {
+        this.generateTutorialMethods();
+    }
+
     // Dynamic method generation for all registered tutorials
     generateTutorialMethods() {
         this.registry.getAllTutorialNames().forEach(tutorialName => {
@@ -116,11 +121,6 @@ export class TutorialManager {
                 };
             }
         });
-    }
-
-    // Initialize dynamic methods
-    initialize() {
-        this.generateTutorialMethods();
     }
 
     // Utility methods using registry
@@ -182,10 +182,12 @@ export class TutorialManager {
 }
 
 // Initialize tutorial manager and generate methods
-const originalConstructor = TutorialManager.prototype.constructor;
 TutorialManager.prototype.constructor = function(desktop) {
-    originalConstructor.call(this, desktop);
-    this.initialize();
+    this.desktop = desktop;
+    this.currentTutorial = null;
+    this.interactionManager = tutorialInteractionManager;
+    this.registry = tutorialRegistry;
+    this.initialize(); // Generate methods after setting up properties
 };
 
 // Maintain Tutorial as an alias for backwards compatibility
