@@ -66,10 +66,15 @@ export class ProcessRenderer {
                     </div>
                 </div>
                 <div>
-                    <h4 class="font-semibold text-yellow-400 mb-2">Risk Analysis</h4>
+                    <h4 class="font-semibold text-yellow-400 mb-2">
+                        Risk Analysis
+                        ${riskFactors.length > 0 ? 
+                            `<span class="text-yellow-300 text-xs font-normal ml-2">${riskFactors.length} indicator${riskFactors.length > 1 ? 's' : ''} detected</span>` 
+                            : ''
+                        }
+                    </h4>
                     ${riskFactors.length > 0 ? `
                         <div class="space-y-1">
-                            <div class="text-yellow-300 text-xs mb-2">${riskFactors.length} indicator${riskFactors.length > 1 ? 's' : ''} detected</div>
                             <div class="space-y-1">
                                 ${riskFactors.map(factor => `
                                     <div class="bg-yellow-800/20 text-yellow-200 text-xs px-2 py-1 rounded border border-yellow-600/30">
