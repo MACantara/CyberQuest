@@ -46,7 +46,7 @@ export class DialogueManager {
         }
         
         // Dynamic import to avoid circular dependency
-        const module = await import(`./dialogues/${dialogueName}-dialogue.js`);
+        const module = await import(`./${dialogueName}-dialogue.js`);
         const DialogueClass = module[dialogueClass];
         
         this.currentDialogue = new DialogueClass(this.desktop, character);
@@ -56,14 +56,14 @@ export class DialogueManager {
 
     // Generic auto-start checker
     async shouldAutoStart(dialogueName, dialogueClass) {
-        const module = await import(`./dialogues/${dialogueName}-dialogue.js`);
+        const module = await import(`./${dialogueName}-dialogue.js`);
         const DialogueClass = module[dialogueClass];
         return DialogueClass.shouldAutoStart();
     }
 
     // Generic dialogue restarter
     async restartDialogue(dialogueName, dialogueClass, character, startMethodName) {
-        const module = await import(`./dialogues/${dialogueName}-dialogue.js`);
+        const module = await import(`./${dialogueName}-dialogue.js`);
         const DialogueClass = module[dialogueClass];
         DialogueClass.restart();
         await this[startMethodName](character);
