@@ -3,7 +3,7 @@ import { DesktopIcons } from './desktop-components/desktop-icons.js';
 import { ControlPanel } from './desktop-components/control-panel.js';
 import { WindowManager } from './desktop-components/window-manager.js';
 import { TutorialManager } from './tutorials/tutorial-manager.js';
-import DialogueManager from './dialogue-manager.js';
+import DialogueManager from './dialogues/dialogue-manager.js';
 import { DialogueIntegration } from './dialogues/dialogue-integration.js';
 
 export class Desktop {
