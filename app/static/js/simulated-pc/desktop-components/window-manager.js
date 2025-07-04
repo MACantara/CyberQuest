@@ -1,13 +1,6 @@
-import { BrowserApp } from './desktop-applications/browser-app.js';
-import { TerminalApp } from './desktop-applications/terminal-app.js';
-import { FileManagerApp } from './desktop-applications/file-manager-app.js';
-import { EmailApp } from './desktop-applications/email-app.js';
-import { NetworkMonitorApp } from './desktop-applications/network-monitor-app.js';
-import { SystemLogsApp } from './desktop-applications/system-logs-app.js';
-import { ControlPanelApp } from './control-panel.js';
 import { WindowSnapManager } from './window-snap-manager.js';
 import { WindowResizeManager } from './window-resize-manager.js';
-import { ProcessMonitorApp } from './desktop-applications/process-monitor-app.js';
+import { appRegistry } from './application-registry.js';
 
 export class WindowManager {
     constructor(container, taskbar, tutorialManager = null) {
@@ -23,16 +16,8 @@ export class WindowManager {
         this.snapManager = new WindowSnapManager(container);
         this.resizeManager = new WindowResizeManager(this);
         
-        // Application registry for easier management
-        this.appRegistry = {
-            'browser': { class: BrowserApp, storageKey: 'cyberquest_browser_opened', tutorialMethod: 'shouldAutoStartBrowser', startMethod: 'startBrowserTutorial' },
-            'terminal': { class: TerminalApp, storageKey: 'cyberquest_terminal_opened', tutorialMethod: 'shouldAutoStartTerminal', startMethod: 'startTerminalTutorial' },
-            'files': { class: FileManagerApp, storageKey: 'cyberquest_filemanager_opened', tutorialMethod: 'shouldAutoStartFileManager', startMethod: 'startFileManagerTutorial' },
-            'email': { class: EmailApp, storageKey: 'cyberquest_email_opened', tutorialMethod: 'shouldAutoStartEmail', startMethod: 'startEmailTutorial' },
-            'wireshark': { class: NetworkMonitorApp, storageKey: 'cyberquest_networkmonitor_opened', tutorialMethod: 'shouldAutoStartNetworkMonitor', startMethod: 'startNetworkMonitorTutorial' },
-            'logs': { class: SystemLogsApp, storageKey: 'cyberquest_systemlogs_opened', tutorialMethod: 'shouldAutoStartSystemLogs', startMethod: 'startSystemLogsTutorial' },
-            'process-monitor': { class: ProcessMonitorApp, storageKey: 'cyberquest_processmonitor_opened', tutorialMethod: 'shouldAutoStartProcessMonitor', startMethod: 'startProcessMonitorTutorial' }
-        };
+        // Use application registry
+        this.appRegistry = appRegistry;
     }
 
     // Ensure window styles are loaded
@@ -48,16 +33,16 @@ export class WindowManager {
 
     // Generic application opener that handles tutorial logic
     async openApplication(appId, windowTitle) {
-        const appConfig = this.appRegistry[appId];
+        const appConfig = this.appRegistry.getApp(appId);
         if (!appConfig) {
             throw new Error(`Application '${appId}' not found in registry`);
         }
 
         const isFirstTime = !localStorage.getItem(appConfig.storageKey);
-        const app = new appConfig.class();
+        const app = this.appRegistry.createAppInstance(appId);
         
-        this.createWindow(appId, windowTitle, app);
-        localStorage.setItem(appConfig.storageKey, 'true');
+        this.createWindow(appId, windowTitle || appConfig.title, app);
+        this.appRegistry.markAsOpened(appId);
 
         // Handle tutorial auto-start if it's the first time and tutorial manager is available
         if (isFirstTime && this.tutorialManager && appConfig.tutorialMethod && appConfig.startMethod) {
@@ -198,7 +183,7 @@ export class WindowManager {
     }
 
     getIconClassForWindow(id) {
-        return `bi-${this.getIconForWindow(id)}`;
+        return this.appRegistry.getIconClass(id);
     }
 
     bindWindowEvents(window, id) {
@@ -505,18 +490,23 @@ export class WindowManager {
 
     // Application registry helpers
     isApplicationRegistered(appId) {
-        return this.appRegistry.hasOwnProperty(appId);
+        return this.appRegistry.hasApp(appId);
     }
 
     getRegisteredApplications() {
-        return Object.keys(this.appRegistry);
+        return this.appRegistry.getAllAppIds();
     }
 
     addApplicationToRegistry(appId, config) {
-        this.appRegistry[appId] = config;
+        this.appRegistry.registerApp(appId, config);
     }
 
     removeApplicationFromRegistry(appId) {
-        delete this.appRegistry[appId];
+        return this.appRegistry.unregisterApp(appId);
+    }
+
+    // Get application registry instance (for advanced usage)
+    getApplicationRegistry() {
+        return this.appRegistry;
     }
 }
