@@ -200,17 +200,6 @@ export class ProcessMonitorApp extends WindowBase {
         }, 1000);
     }
 
-    // Remove or comment out automatic suspicious process checking
-    // checkForSuspiciousProcesses() {
-    //     // Check for existing suspicious processes and emit alerts with safety check
-    //     this.dataManager.getProcesses().forEach(process => {
-    //         if (process.suspicious && this.activityEmitter && typeof this.activityEmitter.emitSuspiciousProcess === 'function') {
-    //             console.log('[ProcessMonitorApp] Emitting suspicious process alert for:', process.name);
-    //             this.activityEmitter.emitSuspiciousProcess(process);
-    //         }
-    //     });
-    // }
-
     // Add method for players to manually flag processes
     flagProcessAsSuspicious(pid) {
         this.dataManager.flagProcessAsSuspicious(pid, true);
