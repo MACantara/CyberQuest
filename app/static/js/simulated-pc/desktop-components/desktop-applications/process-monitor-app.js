@@ -22,7 +22,7 @@ export class ProcessMonitorApp extends WindowBase {
         return `
             <div class="h-full flex flex-col bg-gray-900 text-white">
                 <!-- Header Controls -->
-                <div class="bg-gray-800 p-3 border-b border-gray-700 flex items-center justify-between">
+                <div id="process-monitor-header" class="bg-gray-800 p-3 border-b border-gray-700 flex items-center justify-between">
                     <div class="flex items-center space-x-4">
                         <h2 class="text-lg font-semibold text-green-400">Process Monitor</h2>
                         <div class="flex items-center space-x-2">
@@ -31,7 +31,7 @@ export class ProcessMonitorApp extends WindowBase {
                         </div>
                     </div>
                     
-                    <div class="flex items-center space-x-2">
+                    <div id="process-monitor-controls" class="flex items-center space-x-2">
                         <button id="refresh-btn" class="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded text-sm transition-colors cursor-pointer">
                             <i class="bi bi-arrow-clockwise mr-1"></i>Refresh
                         </button>
@@ -45,7 +45,7 @@ export class ProcessMonitorApp extends WindowBase {
                 </div>
 
                 <!-- System Stats -->
-                <div class="bg-gray-800 p-3 border-b border-gray-700 grid grid-cols-4 gap-4 text-sm">
+                <div id="system-stats-panel" class="bg-gray-800 p-3 border-b border-gray-700 grid grid-cols-4 gap-4 text-sm">
                     <div class="text-center">
                         <div class="text-blue-400 font-semibold">CPU Usage</div>
                         <div class="text-xl font-bold" id="cpu-usage">23%</div>
@@ -67,30 +67,30 @@ export class ProcessMonitorApp extends WindowBase {
                 <!-- Process List -->
                 <div class="flex-1 overflow-hidden">
                     <div class="h-full overflow-y-auto">
-                        <table class="w-full text-sm">
-                            <thead class="bg-gray-700 sticky top-0">
+                        <table id="process-table" class="w-full text-sm">
+                            <thead id="process-table-header" class="bg-gray-700 sticky top-0">
                                 <tr>
-                                    <th class="px-3 py-2 text-left cursor-pointer hover:bg-gray-600 transition-colors sortable" data-column="name">
+                                    <th id="sort-name" class="px-3 py-2 text-left cursor-pointer hover:bg-gray-600 transition-colors sortable" data-column="name">
                                         Process Name
                                         <i class="bi bi-chevron-${this.sortColumn === 'name' ? (this.sortDirection === 'asc' ? 'up' : 'down') : 'expand'} ml-1 text-xs"></i>
                                     </th>
-                                    <th class="px-3 py-2 text-left cursor-pointer hover:bg-gray-600 transition-colors sortable" data-column="pid">
+                                    <th id="sort-pid" class="px-3 py-2 text-left cursor-pointer hover:bg-gray-600 transition-colors sortable" data-column="pid">
                                         PID
                                         <i class="bi bi-chevron-${this.sortColumn === 'pid' ? (this.sortDirection === 'asc' ? 'up' : 'down') : 'expand'} ml-1 text-xs"></i>
                                     </th>
-                                    <th class="px-3 py-2 text-left cursor-pointer hover:bg-gray-600 transition-colors sortable" data-column="status">
+                                    <th id="sort-status" class="px-3 py-2 text-left cursor-pointer hover:bg-gray-600 transition-colors sortable" data-column="status">
                                         Status
                                         <i class="bi bi-chevron-${this.sortColumn === 'status' ? (this.sortDirection === 'asc' ? 'up' : 'down') : 'expand'} ml-1 text-xs"></i>
                                     </th>
-                                    <th class="px-3 py-2 text-right cursor-pointer hover:bg-gray-600 transition-colors sortable" data-column="cpu">
+                                    <th id="sort-cpu" class="px-3 py-2 text-right cursor-pointer hover:bg-gray-600 transition-colors sortable" data-column="cpu">
                                         CPU %
                                         <i class="bi bi-chevron-${this.sortColumn === 'cpu' ? (this.sortDirection === 'asc' ? 'up' : 'down') : 'expand'} ml-1 text-xs"></i>
                                     </th>
-                                    <th class="px-3 py-2 text-right cursor-pointer hover:bg-gray-600 transition-colors sortable" data-column="memory">
+                                    <th id="sort-memory" class="px-3 py-2 text-right cursor-pointer hover:bg-gray-600 transition-colors sortable" data-column="memory">
                                         Memory
                                         <i class="bi bi-chevron-${this.sortColumn === 'memory' ? (this.sortDirection === 'asc' ? 'up' : 'down') : 'expand'} ml-1 text-xs"></i>
                                     </th>
-                                    <th class="px-3 py-2 text-center cursor-pointer hover:bg-gray-600 transition-colors sortable" data-column="threads">
+                                    <th id="sort-threads" class="px-3 py-2 text-center cursor-pointer hover:bg-gray-600 transition-colors sortable" data-column="threads">
                                         Threads
                                         <i class="bi bi-chevron-${this.sortColumn === 'threads' ? (this.sortDirection === 'asc' ? 'up' : 'down') : 'expand'} ml-1 text-xs"></i>
                                     </th>
@@ -165,12 +165,12 @@ export class ProcessMonitorApp extends WindowBase {
     }
 
     renderProcessRows() {
-        return this.processes.map(process => {
+        return this.processes.map((process, index) => {
             const isSelected = this.selectedProcess && this.selectedProcess.pid === process.pid;
-            const rowClass = `process-row cursor-pointer hover:bg-gray-700 transition-colors ${isSelected ? 'bg-blue-800' : ''} ${process.suspicious ? 'border-l-4 border-red-500' : ''}`;
+            const rowClass = `process-row cursor-pointer hover:bg-gray-700 transition-colors ${isSelected ? 'bg-blue-800' : ''} ${process.suspicious ? 'border-l-4 border-red-500 suspicious-process' : ''}`;
             
             return `
-                <tr class="${rowClass}" data-pid="${process.pid}">
+                <tr id="process-row-${process.pid}" class="${rowClass}" data-pid="${process.pid}">
                     <td class="px-3 py-2">
                         <div class="flex items-center">
                             ${process.suspicious ? '<i class="bi bi-exclamation-triangle text-red-500 mr-2" title="Suspicious Process"></i>' : ''}

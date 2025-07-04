@@ -5,39 +5,39 @@ export class ProcessMonitorTutorial extends BaseTutorial {
         super(desktop);
         this.steps = [
             {
-                target: '[data-app="process-monitor"]',
-                title: 'Process Monitor',
-                content: 'This is the Process Monitor application. It shows all running processes on the system and helps you identify potential security threats.',
-                position: 'right',
+                target: '#process-monitor-header',
+                title: 'Process Monitor Header',
+                content: 'This is the Process Monitor application header. It shows the application name and real-time status indicator.',
+                position: 'bottom',
                 action: 'highlight'
             },
             {
-                target: '.process-monitor .bg-gray-800:first-child',
+                target: '#process-monitor-controls',
                 title: 'Control Panel',
                 content: 'The control panel lets you refresh process data, pause real-time updates, and end suspicious processes.',
                 position: 'bottom',
                 action: 'highlight'
             },
             {
-                target: '#cpu-usage',
+                target: '#system-stats-panel',
                 title: 'System Statistics',
-                content: 'Monitor system resource usage including CPU, memory, active processes, and total threads.',
+                content: 'Monitor system resource usage including CPU, memory, active processes, and total threads. Watch for unusual spikes that might indicate malware.',
                 position: 'bottom',
                 action: 'pulse'
             },
             {
-                target: '.process-row:first-child',
+                target: '#process-table-header',
+                title: 'Process Table Headers',
+                content: 'Click column headers to sort processes by name, CPU usage, memory consumption, or other attributes. This helps identify resource-heavy or suspicious processes.',
+                position: 'bottom',
+                action: 'highlight'
+            },
+            {
+                target: '#process-table-body .process-row:first-child',
                 title: 'Process List',
                 content: 'Click on any process to view detailed information. Look for suspicious processes marked with warning icons.',
                 position: 'right',
                 action: 'pulse'
-            },
-            {
-                target: '.sortable:first-child',
-                title: 'Sorting',
-                content: 'Click column headers to sort processes by name, CPU usage, memory consumption, or other attributes.',
-                position: 'bottom',
-                action: 'highlight'
             },
             {
                 target: '#kill-process-btn',
@@ -47,9 +47,9 @@ export class ProcessMonitorTutorial extends BaseTutorial {
                 action: 'pulse'
             },
             {
-                target: '.border-red-500',
+                target: '.suspicious-process',
                 title: 'Security Alerts',
-                content: 'Processes with red borders are flagged as potentially suspicious. These should be investigated carefully.',
+                content: 'Processes with red borders are flagged as potentially suspicious. These should be investigated carefully as they may be malware.',
                 position: 'right',
                 action: 'pulse',
                 final: true
@@ -168,5 +168,50 @@ export class ProcessMonitorTutorial extends BaseTutorial {
     static restart() {
         localStorage.removeItem('cyberquest_processmonitor_tutorial_completed');
         localStorage.removeItem('cyberquest_process_monitor_opened');
+    }
+
+    showStep() {
+        if (this.currentStep >= this.steps.length) {
+            this.complete();
+            return;
+        }
+
+        const step = this.steps[this.currentStep];
+        let target = document.querySelector(step.target);
+        
+        // Special handling for suspicious process - find first suspicious process if it exists
+        if (step.target === '.suspicious-process') {
+            target = document.querySelector('.suspicious-process');
+            if (!target) {
+                // If no suspicious process is visible, target the first process row instead
+                target = document.querySelector('#process-table-body .process-row:first-child');
+                step.content = 'Process rows show system information. Suspicious processes (when present) are highlighted with red borders and warning icons.';
+            }
+        }
+        
+        // Special handling for first process row - ensure it exists
+        if (step.target === '#process-table-body .process-row:first-child') {
+            target = document.querySelector('#process-table-body .process-row');
+            if (!target) {
+                // If no processes are visible, skip this step
+                this.nextStep();
+                return;
+            }
+        }
+        
+        if (!target) {
+            console.warn(`Tutorial target not found: ${step.target}`);
+            this.nextStep();
+            return;
+        }
+
+        // Clear previous highlights
+        this.clearHighlights();
+        
+        // Highlight target element
+        this.highlightElement(target, step.action);
+        
+        // Position and show tooltip
+        this.showTooltip(target, step);
     }
 }
