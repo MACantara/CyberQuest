@@ -96,8 +96,8 @@ export class WindowManager {
             windowElement = app.createWindow();
             this.applications.set(id, app);
         } else {
-            // Legacy string content support
-            windowElement = this.createLegacyWindow(id, title, contentOrApp, options);
+            // For non-app content, throw error since legacy support is removed
+            throw new Error(`Legacy window creation is no longer supported. Use application registry instead.`);
         }
 
         windowElement.style.zIndex = ++this.zIndex;
@@ -105,7 +105,7 @@ export class WindowManager {
         this.windows.set(id, windowElement);
 
         // Add to taskbar
-        const iconClass = app ? app.getIconClass() : this.getIconClassForWindow(id);
+        const iconClass = app.getIconClass();
         this.taskbar.addWindow(id, title, iconClass);
 
         // Bind window events
@@ -121,69 +121,6 @@ export class WindowManager {
         }
 
         return windowElement;
-    }
-
-    // Legacy window creation for backwards compatibility
-    createLegacyWindow(id, title, content, options) {
-        const window = document.createElement('div');
-        window.className = 'absolute bg-gray-800 border border-gray-600 rounded shadow-2xl overflow-hidden min-w-72 min-h-48 backdrop-blur-lg';
-        window.style.width = options.width || '60%';
-        window.style.height = options.height || '50%';
-        window.style.left = `${Math.random() * 20 + 10}%`;
-        window.style.top = `${Math.random() * 20 + 10}%`;
-
-        window.innerHTML = `
-            <div class="window-header bg-gradient-to-r from-gray-700 to-gray-600 px-3 py-2 flex justify-between items-center border-b border-gray-600 cursor-grab select-none">
-                <div class="window-title text-white text-sm font-semibold flex items-center space-x-2">
-                    <i class="bi bi-${this.getIconForWindow(id)}"></i>
-                    <span>${title}</span>
-                </div>
-                <div class="window-controls flex space-x-1">
-                    <button class="window-btn minimize w-6 h-6 rounded bg-yellow-500 hover:bg-yellow-400 flex items-center justify-center text-black text-xs transition-all duration-200 hover:shadow-md cursor-pointer" title="Minimize">
-                        <i class="bi bi-dash"></i>
-                    </button>
-                    <button class="window-btn maximize w-6 h-6 rounded bg-green-500 hover:bg-green-400 flex items-center justify-center text-black text-xs transition-all duration-200 hover:shadow-md cursor-pointer" title="Maximize">
-                        <i class="bi bi-square"></i>
-                    </button>
-                    <button class="window-btn close w-6 h-6 rounded bg-red-500 hover:bg-red-400 flex items-center justify-center text-white text-xs transition-all duration-200 hover:shadow-md cursor-pointer" title="Close">
-                        <i class="bi bi-x"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="window-content h-full overflow-auto bg-black text-white" style="height: calc(100% - 40px);">
-                ${content}
-            </div>
-            <!-- Resize handles -->
-            <div class="resize-handle resize-n absolute top-0 left-0 right-0 h-1 cursor-n-resize"></div>
-            <div class="resize-handle resize-s absolute bottom-0 left-0 right-0 h-1 cursor-s-resize"></div>
-            <div class="resize-handle resize-w absolute top-0 bottom-0 left-0 w-1 cursor-w-resize"></div>
-            <div class="resize-handle resize-e absolute top-0 bottom-0 right-0 w-1 cursor-e-resize"></div>
-            <div class="resize-handle resize-nw absolute top-0 left-0 w-3 h-3 cursor-nw-resize"></div>
-            <div class="resize-handle resize-ne absolute top-0 right-0 w-3 h-3 cursor-ne-resize"></div>
-            <div class="resize-handle resize-sw absolute bottom-0 left-0 w-3 h-3 cursor-sw-resize"></div>
-            <div class="resize-handle resize-se absolute bottom-0 right-0 w-3 h-3 cursor-se-resize"></div>
-        `;
-
-        return window;
-    }
-
-    getIconForWindow(id) {
-        const icons = {
-            'browser': 'globe',
-            'terminal': 'terminal',
-            'files': 'folder',
-            'email': 'envelope',
-            'wireshark': 'router',
-            'logs': 'journal-text',
-            'help': 'question-circle',
-            'hint': 'lightbulb',
-            'progress': 'clipboard-data'
-        };
-        return icons[id] || 'window';
-    }
-
-    getIconClassForWindow(id) {
-        return this.appRegistry.getIconClass(id);
     }
 
     bindWindowEvents(window, id) {
