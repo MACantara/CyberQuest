@@ -151,11 +151,18 @@ export class ProcessMonitorApp extends WindowBase {
             let aVal = a[this.sortColumn];
             let bVal = b[this.sortColumn];
 
-            if (typeof aVal === 'string') {
+            // Handle different data types appropriately
+            if (this.sortColumn === 'cpu' || this.sortColumn === 'memory' || this.sortColumn === 'threads' || this.sortColumn === 'pid') {
+                // Numeric columns - convert to numbers for proper sorting
+                aVal = parseFloat(aVal) || 0;
+                bVal = parseFloat(bVal) || 0;
+            } else if (typeof aVal === 'string') {
+                // String columns - convert to lowercase for case-insensitive sorting
                 aVal = aVal.toLowerCase();
                 bVal = bVal.toLowerCase();
             }
 
+            // Sort direction logic
             if (this.sortDirection === 'asc') {
                 return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
             } else {
@@ -301,8 +308,27 @@ export class ProcessMonitorApp extends WindowBase {
             memoryUsage.textContent = `${(totalMemory / 1024).toFixed(1)}/8.0 GB`;
         }
 
+        // Update sort indicators in headers
+        this.updateSortIndicators();
+
         // Re-bind events for new rows
         this.bindProcessRowEvents();
+    }
+
+    updateSortIndicators() {
+        if (!this.windowElement) return;
+
+        // Reset all sort indicators
+        const headers = this.windowElement.querySelectorAll('.sortable i');
+        headers.forEach(icon => {
+            icon.className = 'bi bi-chevron-expand ml-1 text-xs';
+        });
+
+        // Set active sort indicator
+        const activeHeader = this.windowElement.querySelector(`[data-column="${this.sortColumn}"] i`);
+        if (activeHeader) {
+            activeHeader.className = `bi bi-chevron-${this.sortDirection === 'asc' ? 'up' : 'down'} ml-1 text-xs`;
+        }
     }
 
     initialize() {
@@ -395,10 +421,19 @@ export class ProcessMonitorApp extends WindowBase {
 
     sortBy(column) {
         if (this.sortColumn === column) {
+            // Toggle direction if same column
             this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
         } else {
+            // Set new column and default direction based on column type
             this.sortColumn = column;
-            this.sortDirection = 'asc';
+            
+            // For numeric columns (CPU, Memory, PID, Threads), default to descending (highest first)
+            if (column === 'cpu' || column === 'memory' || column === 'threads' || column === 'pid') {
+                this.sortDirection = 'desc';
+            } else {
+                // For text columns (Name, Status), default to ascending (alphabetical)
+                this.sortDirection = 'asc';
+            }
         }
         
         this.sortProcesses();
