@@ -23,11 +23,12 @@ export class Level4PasswordHeistDialogue extends BaseDialogue {
     }
 
     onComplete() {
-        localStorage.setItem('cyberquest_level_4_completed', 'true');
+        localStorage.setItem('cyberquest_level_4_started', 'true');
         
-        if (this.desktop?.levelManager) {
+        // Open the Terminal application for password security testing
+        if (window.applicationLauncher) {
             setTimeout(async () => {
-                await this.desktop.levelManager.startLevel(4);
+                await window.applicationLauncher.launchForLevel(4, 'terminal', 'Terminal');
             }, 500);
         }
     }

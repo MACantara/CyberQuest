@@ -23,11 +23,12 @@ export class Level5SocialWebDialogue extends BaseDialogue {
     }
 
     onComplete() {
-        localStorage.setItem('cyberquest_level_5_completed', 'true');
+        localStorage.setItem('cyberquest_level_5_started', 'true');
         
-        if (this.desktop?.levelManager) {
+        // Open the Browser application for social media security
+        if (window.applicationLauncher) {
             setTimeout(async () => {
-                await this.desktop.levelManager.startLevel(5);
+                await window.applicationLauncher.launchForLevel(5, 'browser', 'Web Browser');
             }, 500);
         }
     }

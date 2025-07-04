@@ -23,11 +23,15 @@ export class Level9HuntForTheNullDialogue extends BaseDialogue {
     }
 
     onComplete() {
-        localStorage.setItem('cyberquest_level_9_completed', 'true');
+        localStorage.setItem('cyberquest_level_9_started', 'true');
         
-        if (this.desktop?.levelManager) {
+        // Open multiple applications for digital forensics
+        if (window.applicationLauncher) {
             setTimeout(async () => {
-                await this.desktop.levelManager.startLevel(9);
+                // Launch multiple apps for comprehensive forensics analysis
+                const apps = ['files', 'logs', 'terminal'];
+                await window.applicationLauncher.launchMultiple(apps);
+                console.log('Digital forensics tools opened for Level 9: Hunt for The Null');
             }, 500);
         }
     }

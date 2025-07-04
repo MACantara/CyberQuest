@@ -1,6 +1,7 @@
 import { WindowSnapManager } from './window-snap-manager.js';
 import { WindowResizeManager } from './window-resize-manager.js';
 import { appRegistry } from './application-registry.js';
+import { initializeApplicationLauncher } from './application-launcher.js';
 
 export class WindowManager {
     constructor(container, taskbar, tutorialManager = null) {
@@ -18,6 +19,12 @@ export class WindowManager {
         
         // Use application registry
         this.appRegistry = appRegistry;
+        
+        // Initialize application launcher
+        this.applicationLauncher = initializeApplicationLauncher(this);
+        
+        // Make launcher globally accessible
+        window.applicationLauncher = this.applicationLauncher;
     }
 
     // Ensure window styles are loaded
@@ -29,53 +36,6 @@ export class WindowManager {
         link.rel = 'stylesheet';
         link.href = '/static/css/simulated-pc/windows.css';
         document.head.appendChild(link);
-    }
-
-    // Generic application opener that handles tutorial logic
-    async openApplication(appId, windowTitle) {
-        const appConfig = this.appRegistry.getApp(appId);
-        if (!appConfig) {
-            throw new Error(`Application '${appId}' not found in registry`);
-        }
-
-        const isFirstTime = !localStorage.getItem(appConfig.storageKey);
-        const app = this.appRegistry.createAppInstance(appId);
-        
-        this.createWindow(appId, windowTitle || appConfig.title, app);
-        this.appRegistry.markAsOpened(appId);
-
-        // Handle tutorial auto-start if it's the first time and tutorial manager is available
-        if (isFirstTime && this.tutorialManager && appConfig.tutorialMethod && appConfig.startMethod) {
-            await this.handleTutorialAutoStart(appConfig.tutorialMethod, appConfig.startMethod);
-        }
-    }
-
-    // Shared tutorial auto-start logic
-    async handleTutorialAutoStart(tutorialCheckMethod, tutorialStartMethod) {
-        try {
-            const shouldStart = await this.tutorialManager[tutorialCheckMethod]();
-            if (shouldStart) {
-                setTimeout(async () => {
-                    await this.tutorialManager[tutorialStartMethod]();
-                }, 1500);
-            }
-        } catch (error) {
-            console.warn(`Tutorial auto-start failed: ${error.message}`);
-        }
-    }
-
-    // Special case for email which needs async handling
-    async handleEmailTutorialAutoStart() {
-        try {
-            const shouldStart = await this.tutorialManager.shouldAutoStartEmail();
-            if (shouldStart) {
-                setTimeout(async () => {
-                    await this.tutorialManager.startEmailTutorial();
-                }, 1500);
-            }
-        } catch (error) {
-            console.warn(`Email tutorial auto-start failed: ${error.message}`);
-        }
     }
 
     createWindow(id, title, contentOrApp, options = {}) {
@@ -355,33 +315,33 @@ export class WindowManager {
         }
     }
 
-    // Simplified application launchers using the generic opener
+    // Simplified application launchers that delegate to application launcher
     async openBrowser() {
-        await this.openApplication('browser', 'Web Browser');
+        return await this.applicationLauncher.openApplication('browser', 'Web Browser');
     }
 
     async openTerminal() {
-        await this.openApplication('terminal', 'Terminal');
+        return await this.applicationLauncher.openApplication('terminal', 'Terminal');
     }
 
     async openFileManager() {
-        await this.openApplication('files', 'File Manager');
+        return await this.applicationLauncher.openApplication('files', 'File Manager');
     }
 
     async openEmailClient() {
-        await this.openApplication('email', 'Email Client');
+        return await this.applicationLauncher.openApplication('email', 'Email Client');
     }
 
     async openNetworkMonitor() {
-        await this.openApplication('wireshark', 'Network Monitor');
+        return await this.applicationLauncher.openApplication('wireshark', 'Network Monitor');
     }
 
     async openSystemLogs() {
-        await this.openApplication('logs', 'System Logs');
+        return await this.applicationLauncher.openApplication('logs', 'System Logs');
     }
 
     async openProcessMonitor() {
-        await this.openApplication('process-monitor', 'Process Monitor');
+        return await this.applicationLauncher.openApplication('process-monitor', 'Process Monitor');
     }
 
     // Utility methods for batch operations

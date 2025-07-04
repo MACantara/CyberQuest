@@ -23,11 +23,12 @@ export class Level7WhiteHatTestDialogue extends BaseDialogue {
     }
 
     onComplete() {
-        localStorage.setItem('cyberquest_level_7_completed', 'true');
+        localStorage.setItem('cyberquest_level_7_started', 'true');
         
-        if (this.desktop?.levelManager) {
+        // Open the Terminal application for ethical hacking tools
+        if (window.applicationLauncher) {
             setTimeout(async () => {
-                await this.desktop.levelManager.startLevel(7);
+                await window.applicationLauncher.launchForLevel(7, 'terminal', 'Terminal');
             }, 500);
         }
     }

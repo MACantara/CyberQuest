@@ -33,11 +33,10 @@ export class Level1MisinformationMazeDialogue extends BaseDialogue {
         // Store completion in localStorage
         localStorage.setItem('cyberquest_level_1_started', 'true');
         
-        // Start the level simulation by opening the browser to the tutorial
-        if (this.desktop?.windowManager) {
+        // Start the level simulation by opening the browser using application launcher
+        if (window.applicationLauncher) {
             try {
-                // Open the browser application
-                await this.desktop.windowManager.openApplication('browser', 'Web Browser');
+                await window.applicationLauncher.launchForLevel(1, 'browser', 'Web Browser');
                 
                 // Get the browser instance from the applications map
                 const browserApp = this.desktop.windowManager.applications.get('browser');

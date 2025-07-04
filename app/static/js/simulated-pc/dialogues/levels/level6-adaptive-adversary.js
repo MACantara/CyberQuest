@@ -23,11 +23,12 @@ export class Level6AdaptiveAdversaryDialogue extends BaseDialogue {
     }
 
     onComplete() {
-        localStorage.setItem('cyberquest_level_6_completed', 'true');
+        localStorage.setItem('cyberquest_level_6_started', 'true');
         
-        if (this.desktop?.levelManager) {
+        // Open the Network Monitor application for AI threat detection
+        if (window.applicationLauncher) {
             setTimeout(async () => {
-                await this.desktop.levelManager.startLevel(6);
+                await window.applicationLauncher.launchForLevel(6, 'wireshark', 'Network Monitor');
             }, 500);
         }
     }
