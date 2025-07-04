@@ -19,11 +19,41 @@ export class ProcessMonitorTutorial extends BaseTutorial {
                 action: 'highlight'
             },
             {
+                target: '#refresh-btn',
+                title: 'Interactive: Refresh Process Data',
+                content: 'Click the Refresh button to update the process list and see current system activity.',
+                position: 'bottom',
+                action: 'pulse',
+                interactive: true,
+                interaction: {
+                    type: 'click',
+                    instructions: 'Click the Refresh button',
+                    successMessage: 'Great! You refreshed the process data.',
+                    autoAdvance: true,
+                    advanceDelay: 1000
+                }
+            },
+            {
                 target: '#system-stats-panel',
                 title: 'System Statistics',
                 content: 'Monitor system resource usage including CPU, memory, active processes, and total threads. Watch for unusual spikes that might indicate malware.',
                 position: 'bottom',
                 action: 'pulse'
+            },
+            {
+                target: '#sort-cpu',
+                title: 'Interactive: Sort by CPU Usage',
+                content: 'Click the CPU % column header to sort processes by CPU usage. This helps identify resource-heavy processes.',
+                position: 'bottom',
+                action: 'pulse',
+                interactive: true,
+                interaction: {
+                    type: 'click',
+                    instructions: 'Click the CPU % header to sort',
+                    successMessage: 'Excellent! Processes are now sorted by CPU usage.',
+                    autoAdvance: true,
+                    advanceDelay: 1500
+                }
             },
             {
                 target: '#process-table-header',
@@ -34,10 +64,18 @@ export class ProcessMonitorTutorial extends BaseTutorial {
             },
             {
                 target: '#process-table-body .process-row:first-child',
-                title: 'Process List',
-                content: 'Click on any process to view detailed information. Look for suspicious processes marked with warning icons.',
+                title: 'Interactive: Select a Process',
+                content: 'Click on any process row to view detailed information. Try selecting the first process in the list.',
                 position: 'right',
-                action: 'pulse'
+                action: 'pulse',
+                interactive: true,
+                interaction: {
+                    type: 'click',
+                    instructions: 'Click on any process row',
+                    successMessage: 'Perfect! You selected a process and can now see its details.',
+                    autoAdvance: true,
+                    advanceDelay: 2000
+                }
             },
             {
                 target: '#kill-process-btn',
@@ -61,21 +99,21 @@ export class ProcessMonitorTutorial extends BaseTutorial {
         // Ensure process monitor is open
         if (!this.desktop.windowManager.windows.has('process-monitor')) {
             // Open process monitor first
-            const processMonitorApp = this.desktop.windowManager.applications.get('process-monitor');
-            if (processMonitorApp) {
-                await this.desktop.windowManager.openWindow('process-monitor', 'Process Monitor');
-                
+            try {
+                await this.desktop.windowManager.openProcessMonitor();
                 // Wait a bit for the window to fully render
                 await new Promise(resolve => setTimeout(resolve, 1000));
-            } else {
-                console.error('Process Monitor application not found');
+            } catch (error) {
+                console.error('Process Monitor application not found:', error);
                 return;
             }
         }
 
-        // Start the tutorial
-        this.createOverlay();
+        // Initialize CSS and start the tutorial
+        this.initializeCSS();
         this.isActive = true;
+        this.currentStep = 0;
+        this.createOverlay();
         window.currentTutorial = this;
         this.showStep();
     }

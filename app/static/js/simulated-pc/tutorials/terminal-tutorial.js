@@ -27,10 +27,54 @@ export class TerminalTutorial extends BaseTutorial {
             },
             {
                 target: '#command-input',
-                title: 'Command Input Field',
-                content: 'Type commands here to interact with the system. Try typing "help" to see available commands, or "ls" to list files and directories.',
+                title: 'Interactive: Type a Command',
+                content: 'Type "help" in the command input field to see available commands. This will show you what security tools are available.',
                 action: 'pulse',
-                position: 'top'
+                position: 'top',
+                interactive: true,
+                interaction: {
+                    type: 'input',
+                    expectedValue: 'help',
+                    triggerOnEnter: true,
+                    instructions: 'Type "help" and press Enter',
+                    successMessage: 'Great! You executed the help command.',
+                    autoAdvance: true,
+                    advanceDelay: 2000
+                }
+            },
+            {
+                target: '#command-input',
+                title: 'Interactive: List Files',
+                content: 'Now try typing "ls" to list files and directories in the current location. This is essential for file system navigation.',
+                action: 'pulse',
+                position: 'top',
+                interactive: true,
+                interaction: {
+                    type: 'input',
+                    expectedValue: 'ls',
+                    triggerOnEnter: true,
+                    instructions: 'Type "ls" and press Enter',
+                    successMessage: 'Excellent! You listed the directory contents.',
+                    autoAdvance: true,
+                    advanceDelay: 2000
+                }
+            },
+            {
+                target: '#command-input',
+                title: 'Interactive: Check User Identity',
+                content: 'Type "whoami" to check your current user identity. This is important for understanding your privileges and access level.',
+                action: 'pulse',
+                position: 'top',
+                interactive: true,
+                interaction: {
+                    type: 'input',
+                    expectedValue: 'whoami',
+                    triggerOnEnter: true,
+                    instructions: 'Type "whoami" and press Enter',
+                    successMessage: 'Perfect! You checked your user identity.',
+                    autoAdvance: true,
+                    advanceDelay: 2000
+                }
             },
             {
                 target: '#terminal-input-area',
@@ -42,14 +86,14 @@ export class TerminalTutorial extends BaseTutorial {
             {
                 target: '#terminal-output',
                 title: 'Security Command Practice',
-                content: 'Try security-related commands like "whoami" to check your identity, "ls -la" to see file permissions, or "ps" to view running processes.',
+                content: 'Try security-related commands like "ps" to view running processes, or explore files with "cat filename" to read file contents.',
                 action: 'highlight',
                 position: 'left'
             },
             {
                 target: '#terminal-container',
                 title: 'Terminal Security Training Complete!',
-                content: 'Excellent! You\'ve learned terminal basics. Use commands like ls, cat, grep, ps, and whoami to investigate security incidents and monitor system activity. The terminal is essential for cybersecurity work.',
+                content: 'Excellent! You\'ve learned terminal basics and executed security commands. Use commands like ls, cat, grep, ps, and whoami to investigate security incidents and monitor system activity.',
                 action: 'highlight',
                 position: 'left',
                 final: true
