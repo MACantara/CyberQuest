@@ -35,7 +35,7 @@ export class ApplicationLauncher {
                 return;
             }
 
-            if (typeof this.tutorialManager[startMethod] !== 'function') {
+            if (typeof this.tutorialManager[tutorialStartMethod] !== 'function') {
                 console.warn(`Tutorial method ${tutorialStartMethod} not found on tutorial manager`);
                 return;
             }
