@@ -9,8 +9,6 @@
 // TODO: Update the system logs app to utilize the centralized activity emitter
 // TODO: Update the terminal app to utilize the centralized activity emitter
 // TODO: Log all application launches and interactions to the system logs even when the system logs app is not open
-// TODO: Remove the refresh button and auto-refresh functionality from the system logs app
-// TODO: Update the system logs app tutorial to remove steps for auto-refresh and refresh buttons
 
 import { WindowBase } from '../window-base.js';
 import { LogManager } from './system-logs-functions/log-manager.js';
