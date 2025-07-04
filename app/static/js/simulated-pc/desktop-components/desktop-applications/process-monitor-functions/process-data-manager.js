@@ -27,28 +27,31 @@ export class ProcessDataManager {
             { name: 'antivirus.exe', executable: 'program files\\windows defender\\antivirus.exe', cpu: 1.8, memory: 43.4, priority: 'Normal', status: 'Running' },
             
             // Malware disguised as gaming performance boosters - RANSOMWARE
-            { name: 'gaming_optimizer_pro.exe', executable: 'temp\\downloads\\gaming_optimizer_pro.exe', cpu: 45.6, memory: 189.7, priority: 'High', status: 'Running' },
-            { name: 'fps_booster_ultimate.exe', executable: 'users\\public\\documents\\fps_booster_ultimate.exe', cpu: 38.2, memory: 167.3, priority: 'High', status: 'Running' },
+            { name: 'gaming_optimizer_pro.exe', executable: 'temp\\downloads\\gaming_optimizer_pro.exe', cpu: 18.5, memory: 189.7, priority: 'High', status: 'Running' },
+            { name: 'fps_booster_ultimate.exe', executable: 'users\\public\\documents\\fps_booster_ultimate.exe', cpu: 14.2, memory: 167.3, priority: 'High', status: 'Running' },
             
             // TROJANS - masquerading as legitimate gaming tools
-            { name: 'steam_helper.exe', executable: 'temp\\steam_helper.exe', cpu: 25.8, memory: 94.1, priority: 'Normal', status: 'Running' },
-            { name: 'discord_overlay.exe', executable: 'appdata\\roaming\\discord_overlay.exe', cpu: 18.9, memory: 67.8, priority: 'Normal', status: 'Running' },
-            { name: 'nvidia_gamestream.exe', executable: 'users\\downloads\\nvidia_gamestream.exe', cpu: 22.4, memory: 85.6, priority: 'Normal', status: 'Running' },
+            { name: 'steam_helper.exe', executable: 'temp\\steam_helper.exe', cpu: 8.8, memory: 94.1, priority: 'Normal', status: 'Running' },
+            { name: 'discord_overlay.exe', executable: 'appdata\\roaming\\discord_overlay.exe', cpu: 6.9, memory: 67.8, priority: 'Normal', status: 'Running' },
+            { name: 'nvidia_gamestream.exe', executable: 'users\\downloads\\nvidia_gamestream.exe', cpu: 7.4, memory: 85.6, priority: 'Normal', status: 'Running' },
             
             // SPYWARE - monitoring gaming activities and stealing credentials
-            { name: 'performance_monitor.exe', executable: 'program files\\common files\\performance_monitor.exe', cpu: 12.3, memory: 54.2, priority: 'Low', status: 'Running' },
-            { name: 'game_stats_tracker.exe', executable: 'appdata\\local\\temp\\game_stats_tracker.exe', cpu: 8.7, memory: 41.5, priority: 'Low', status: 'Running' },
-            { name: 'tournament_recorder.exe', executable: 'users\\public\\tournament_recorder.exe', cpu: 15.1, memory: 62.8, priority: 'Normal', status: 'Running' },
+            { name: 'performance_monitor.exe', executable: 'program files\\common files\\performance_monitor.exe', cpu: 3.3, memory: 54.2, priority: 'Low', status: 'Running' },
+            { name: 'game_stats_tracker.exe', executable: 'appdata\\local\\temp\\game_stats_tracker.exe', cpu: 2.7, memory: 41.5, priority: 'Low', status: 'Running' },
+            { name: 'tournament_recorder.exe', executable: 'users\\public\\tournament_recorder.exe', cpu: 4.1, memory: 62.8, priority: 'Normal', status: 'Running' },
             
             // ROOTKITS - hiding deep in system processes
-            { name: 'system_optimizer.exe', executable: 'windows\\system32\\system_optimizer.exe', cpu: 35.4, memory: 128.9, priority: 'System', status: 'Running' },
-            { name: 'driver_updater.exe', executable: 'windows\\system32\\drivers\\driver_updater.exe', cpu: 28.6, memory: 96.4, priority: 'High', status: 'Running' },
+            { name: 'system_optimizer.exe', executable: 'windows\\system32\\system_optimizer.exe', cpu: 11.4, memory: 128.9, priority: 'System', status: 'Running' },
+            { name: 'driver_updater.exe', executable: 'windows\\system32\\drivers\\driver_updater.exe', cpu: 8.6, memory: 96.4, priority: 'High', status: 'Running' },
             
             // Additional malware variants
-            { name: 'latency_reducer.exe', executable: 'temp\\gaming_tools\\latency_reducer.exe', cpu: 31.2, memory: 112.7, priority: 'High', status: 'Running' },
-            { name: 'cpu_overclocker.exe', executable: 'users\\downloads\\utilities\\cpu_overclocker.exe', cpu: 42.8, memory: 145.3, priority: 'High', status: 'Running' },
-            { name: 'memory_cleaner_pro.exe', executable: 'program files (x86)\\utilities\\memory_cleaner_pro.exe', cpu: 19.7, memory: 73.9, priority: 'Normal', status: 'Running' }
+            { name: 'latency_reducer.exe', executable: 'temp\\gaming_tools\\latency_reducer.exe', cpu: 9.2, memory: 112.7, priority: 'High', status: 'Running' },
+            { name: 'cpu_overclocker.exe', executable: 'users\\downloads\\utilities\\cpu_overclocker.exe', cpu: 12.8, memory: 145.3, priority: 'High', status: 'Running' },
+            { name: 'memory_cleaner_pro.exe', executable: 'program files (x86)\\utilities\\memory_cleaner_pro.exe', cpu: 5.7, memory: 73.9, priority: 'Normal', status: 'Running' }
         ];
+
+        // Normalize CPU usage to ensure total doesn't exceed 100%
+        this.normalizeCpuUsage(systemProcesses);
 
         this.processes = systemProcesses.map((proc, index) => ({
             ...proc,
@@ -60,6 +63,19 @@ export class ProcessDataManager {
         }));
     }
 
+    normalizeCpuUsage(processes) {
+        // Calculate total CPU usage
+        const totalCpu = processes.reduce((sum, proc) => sum + proc.cpu, 0);
+        
+        // If total exceeds 100%, normalize all values proportionally
+        if (totalCpu > 100) {
+            const scaleFactor = 95 / totalCpu; // Scale to 95% to leave some headroom
+            processes.forEach(proc => {
+                proc.cpu = proc.cpu * scaleFactor;
+            });
+        }
+    }
+
     refreshProcessData() {
         // Simulate process changes
         this.processes.forEach(process => {
@@ -67,16 +83,26 @@ export class ProcessDataManager {
             const oldCpu = process.cpu;
             const oldMemory = process.memory;
             
-            // Slightly randomize CPU and memory usage
-            process.cpu = Math.max(0, process.cpu + (Math.random() - 0.5) * 5);
-            process.memory = Math.max(1, process.memory + (Math.random() - 0.5) * 10);
+            // Slightly randomize CPU and memory usage with smaller variations
+            const cpuVariation = (Math.random() - 0.5) * 2; // ±1% variation
+            const memoryVariation = (Math.random() - 0.5) * 5; // ±2.5MB variation
             
-            // Check for high resource usage
+            process.cpu = Math.max(0.1, process.cpu + cpuVariation);
+            process.memory = Math.max(1, process.memory + memoryVariation);
+        });
+
+        // Normalize CPU usage after changes to ensure total stays under 100%
+        const processArray = this.processes.map(p => ({ cpu: p.cpu }));
+        this.normalizeCpuUsage(processArray);
+        this.processes.forEach((process, index) => {
+            process.cpu = processArray[index].cpu;
+            
+            // Check for high resource usage after normalization
             if (this.activityEmitter && typeof this.activityEmitter.emitHighResourceUsage === 'function') {
-                if (process.cpu > 50 && oldCpu <= 50) {
+                if (process.cpu > 15 && this.processes[index].cpu <= 15) { // Lowered threshold due to normalization
                     this.activityEmitter.emitHighResourceUsage(process, 'cpu', process.cpu.toFixed(1));
                 }
-                if (process.memory > 200 && oldMemory <= 200) {
+                if (process.memory > 200 && this.processes[index].memory <= 200) {
                     this.activityEmitter.emitHighResourceUsage(process, 'memory', process.memory.toFixed(1));
                 }
             }
@@ -136,7 +162,7 @@ export class ProcessDataManager {
             name: suspiciousProcessNames[randomIndex],
             executable: suspiciousExecutables[randomIndex],
             pid: Math.floor(Math.random() * 9000) + 1000,
-            cpu: Math.random() * 40 + 10, // Higher CPU usage for malware
+            cpu: Math.random() * 8 + 2, // Lower CPU usage for new processes (2-10%)
             memory: Math.random() * 150 + 30, // Higher memory usage
             threads: Math.floor(Math.random() * 15) + 3, // More threads for malicious activity
             priority: Math.random() > 0.5 ? 'High' : 'Normal',
@@ -147,6 +173,13 @@ export class ProcessDataManager {
         };
         
         this.processes.push(newProcess);
+        
+        // Re-normalize CPU usage after adding new process
+        const processArray = this.processes.map(p => ({ cpu: p.cpu }));
+        this.normalizeCpuUsage(processArray);
+        this.processes.forEach((process, index) => {
+            process.cpu = processArray[index].cpu;
+        });
         
         // Emit process start activity with safety checks
         if (this.activityEmitter && typeof this.activityEmitter.emitProcessStart === 'function') {
@@ -171,9 +204,9 @@ export class ProcessDataManager {
     getProcessRiskFactors(process) {
         const riskFactors = [];
         
-        // High CPU usage (especially for "optimizer" tools)
-        if (process.cpu > 30) {
-            riskFactors.push('Unusually high CPU usage for optimization tool');
+        // High CPU usage (adjusted for normalized values)
+        if (process.cpu > 12) { // Lowered threshold due to normalization
+            riskFactors.push('High CPU usage for this type of process');
         }
         
         // High memory usage
@@ -264,7 +297,7 @@ export class ProcessDataManager {
 
     getTotalCpuUsage() {
         const totalCpu = this.processes.reduce((sum, p) => sum + p.cpu, 0);
-        return Math.min(100, totalCpu);
+        return Math.min(100, totalCpu); // Ensure it never exceeds 100%
     }
 
     getTotalMemoryUsage() {
