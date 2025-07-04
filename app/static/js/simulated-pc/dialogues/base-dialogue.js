@@ -1,4 +1,4 @@
-import { SkipDialogueModal } from './desktop-components/skip-dialogue-modal.js';
+import { SkipDialogueModal } from '../desktop-components/skip-dialogue-modal.js';
 
 export class BaseDialogue {
     constructor(desktop, character = 'default') {
