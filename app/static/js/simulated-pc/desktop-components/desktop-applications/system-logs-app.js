@@ -1,3 +1,18 @@
+// TODO: Update the browser app to utilize the centralized activity emitter
+// TODO: Update the email client app to utilize the centralized activity emitter
+// TODO: Update the file manager app to utilize the centralized activity emitter
+// TODO: Update the executable viewer app to utilize the centralized activity emitter
+// TODO: Update the log viewer app to utilize the centralized activity emitter
+// TODO: Update the pdf viewer app to utilize the centralized activity emitter
+// TODO: Update the text viewer app to utilize the centralized activity emitter
+// TODO: Update the network monitor app to utilize the centralized activity emitter
+// TODO: Update the system logs app to utilize the centralized activity emitter
+// TODO: Update the terminal app to utilize the centralized activity emitter
+// TODO: Log all application launches and interactions to the system logs even when the system logs app is not open
+// TODO: Remove the refresh button and auto-refresh functionality from the system logs app
+// TODO: Update the system logs app tutorial to remove steps for auto-refresh and refresh buttons
+// TODO: Remove default log entries from the system logs app initialization
+
 import { WindowBase } from '../window-base.js';
 import { LogManager } from './system-logs-functions/log-manager.js';
 import { LogFilter } from './system-logs-functions/log-filter.js';
