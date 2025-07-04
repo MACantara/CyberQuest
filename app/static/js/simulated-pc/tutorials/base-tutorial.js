@@ -1,16 +1,38 @@
 import { SkipTutorialModal } from '../desktop-components/skip-tutorial-modal.js';
+import { TutorialStepManager } from './tutorial-step-manager.js';
 
 export class BaseTutorial {
     constructor(desktop) {
         this.desktop = desktop;
-        this.currentStep = 0;
         this.isActive = false;
         this.overlay = null;
         this.tooltip = null;
         this.steps = [];
         this.skipTutorialModal = null;
-        this.interactionListeners = new Map(); // Store interaction event listeners
-        this.stepCompleted = false; // Track if current step is completed
+        
+        // Initialize step manager
+        this.stepManager = new TutorialStepManager(this);
+    }
+
+    // Delegate step management to step manager
+    get currentStep() {
+        return this.stepManager.getCurrentStepIndex();
+    }
+
+    set currentStep(value) {
+        this.stepManager.goToStep(value);
+    }
+
+    get stepCompleted() {
+        return this.stepManager.stepCompleted;
+    }
+
+    set stepCompleted(value) {
+        this.stepManager.stepCompleted = value;
+    }
+
+    get interactionListeners() {
+        return this.stepManager.interactionListeners;
     }
 
     createOverlay() {
@@ -123,7 +145,7 @@ export class BaseTutorial {
                 <div class="flex items-start justify-between mb-4">
                     <div>
                         <h3 class="text-lg font-bold text-white mb-2">${step.title}</h3>
-                        <div class="text-xs text-gray-400 mb-2">Step ${this.currentStep + 1} of ${this.steps.length}</div>
+                        <div class="text-xs text-gray-400 mb-2">${this.stepManager.getStepProgressText()}</div>
                     </div>
                     <button class="tutorial-close text-gray-400 hover:text-white transition-colors duration-200 ml-4 text-xs cursor-pointer" onclick="${this.getSkipTutorialHandler()}">
                         Skip tutorial
@@ -134,17 +156,15 @@ export class BaseTutorial {
                 
                 <div class="flex items-center justify-between">
                     <div class="flex space-x-1">
-                        ${this.steps.map((_, index) => `
-                            <div class="w-2 h-2 rounded-full ${index === this.currentStep ? 'bg-green-400' : 'bg-gray-600'}"></div>
-                        `).join('')}
+                        ${this.stepManager.createStepProgress()}
                     </div>
                     
                     <div class="flex space-x-2">
-                        ${this.currentStep > 0 ? `
+                        ${this.stepManager.isFirstStep() ? '' : `
                             <button class="tutorial-btn-secondary px-3 py-1 text-xs border border-gray-500 text-gray-300 rounded hover:bg-gray-700 transition-colors duration-200 cursor-pointer" onclick="${this.getPreviousStepHandler()}">
                                 <i class="bi bi-arrow-left mr-1"></i>Back
                             </button>
-                        ` : ''}
+                        `}
                         
                         ${this.createStepButton(step)}
                     </div>
@@ -154,228 +174,42 @@ export class BaseTutorial {
     }
 
     createStepButton(step) {
-        if (step.final) {
-            return `
-                <button class="tutorial-btn-primary px-4 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 transition-colors duration-200 cursor-pointer" onclick="${this.getFinalStepHandler()}">
-                    ${this.getFinalButtonText()}
-                    <i class="bi bi-play ml-1"></i>
-                </button>
-            `;
-        } else if (step.interactive && !this.stepCompleted) {
-            return `
-                <div class="flex items-center space-x-2">
-                    <div class="text-yellow-400 text-xs">
-                        <i class="bi bi-hand-index mr-1"></i>
-                        ${step.interaction?.instructions || 'Complete the interaction to continue'}
-                    </div>
-                    <button class="tutorial-btn-secondary px-3 py-1 text-xs border border-gray-500 text-gray-300 rounded hover:bg-gray-700 transition-colors duration-200 cursor-pointer" onclick="${this.getNextStepHandler()}">
-                        Skip <i class="bi bi-arrow-right ml-1"></i>
-                    </button>
-                </div>
-            `;
-        } else {
-            return `
-                <button class="tutorial-btn-primary px-4 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 transition-colors duration-200 cursor-pointer" onclick="${this.getNextStepHandler()}">
-                    Next
-                    <i class="bi bi-arrow-right ml-1"></i>
-                </button>
-            `;
-        }
+        return this.stepManager.createStepButton(step);
     }
 
     setupStepInteraction(step, target) {
-        if (!step.interaction) return;
-
-        const interaction = step.interaction;
-        
-        // Make the target element interactive during tutorial mode
-        target.style.pointerEvents = 'auto';
-        target.style.cursor = 'pointer';
-        
-        // Set up different types of interactions
-        switch (interaction.type) {
-            case 'click':
-                this.setupClickInteraction(step, target, interaction);
-                break;
-            case 'input':
-                this.setupInputInteraction(step, target, interaction);
-                break;
-            case 'dblclick':
-                this.setupDoubleClickInteraction(step, target, interaction);
-                break;
-            case 'hover':
-                this.setupHoverInteraction(step, target, interaction);
-                break;
-            case 'scroll':
-                this.setupScrollInteraction(step, target, interaction);
-                break;
-            case 'select':
-                this.setupSelectInteraction(step, target, interaction);
-                break;
-            default:
-                console.warn(`Unknown interaction type: ${interaction.type}`);
-        }
-    }
-
-    setupClickInteraction(step, target, interaction) {
-        const clickHandler = (e) => {
-            if (interaction.preventDefault) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-            
-            this.completeStepInteraction(step, interaction);
-        };
-        
-        target.addEventListener('click', clickHandler);
-        this.interactionListeners.set(target, { event: 'click', handler: clickHandler });
-    }
-
-    setupDoubleClickInteraction(step, target, interaction) {
-        const dblClickHandler = (e) => {
-            if (interaction.preventDefault) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
-            
-            this.completeStepInteraction(step, interaction);
-        };
-        
-        target.addEventListener('dblclick', dblClickHandler);
-        this.interactionListeners.set(target, { event: 'dblclick', handler: dblClickHandler });
-    }
-
-    setupInputInteraction(step, target, interaction) {
-        const inputHandler = (e) => {
-            const value = e.target.value.toLowerCase();
-            const expectedValue = interaction.expectedValue?.toLowerCase();
-            
-            if (expectedValue && value.includes(expectedValue)) {
-                this.completeStepInteraction(step, interaction);
-            } else if (!expectedValue && value.length > 0) {
-                // If no specific value expected, any input completes the step
-                this.completeStepInteraction(step, interaction);
-            }
-        };
-        
-        target.addEventListener('input', inputHandler);
-        target.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && interaction.triggerOnEnter) {
-                inputHandler(e);
-            }
-        });
-        
-        this.interactionListeners.set(target, { event: 'input', handler: inputHandler });
-    }
-
-    setupHoverInteraction(step, target, interaction) {
-        const hoverHandler = () => {
-            setTimeout(() => {
-                this.completeStepInteraction(step, interaction);
-            }, interaction.hoverDuration || 1000);
-        };
-        
-        target.addEventListener('mouseenter', hoverHandler);
-        this.interactionListeners.set(target, { event: 'mouseenter', handler: hoverHandler });
-    }
-
-    setupScrollInteraction(step, target, interaction) {
-        const scrollHandler = () => {
-            const scrollProgress = target.scrollTop / (target.scrollHeight - target.clientHeight);
-            if (scrollProgress >= (interaction.scrollThreshold || 0.5)) {
-                this.completeStepInteraction(step, interaction);
-            }
-        };
-        
-        target.addEventListener('scroll', scrollHandler);
-        this.interactionListeners.set(target, { event: 'scroll', handler: scrollHandler });
-    }
-
-    setupSelectInteraction(step, target, interaction) {
-        const selectHandler = (e) => {
-            const selectedValue = e.target.value;
-            if (interaction.expectedValue && selectedValue === interaction.expectedValue) {
-                this.completeStepInteraction(step, interaction);
-            } else if (!interaction.expectedValue) {
-                this.completeStepInteraction(step, interaction);
-            }
-        };
-        
-        target.addEventListener('change', selectHandler);
-        this.interactionListeners.set(target, { event: 'change', handler: selectHandler });
+        return this.stepManager.setupStepInteraction(step, target);
     }
 
     completeStepInteraction(step, interaction) {
-        if (this.stepCompleted) return; // Prevent multiple completions
-        
-        this.stepCompleted = true;
-        
-        // Show success feedback
-        this.showInteractionSuccess(step, interaction);
-        
-        // Auto-advance to next step if specified
-        if (interaction.autoAdvance !== false) {
-            setTimeout(() => {
-                this.nextStep();
-            }, interaction.advanceDelay || 1500);
-        }
+        return this.stepManager.completeStepInteraction(step, interaction);
     }
 
     showInteractionSuccess(step, interaction) {
-        const target = document.querySelector(step.target);
-        if (!target) return;
-        
-        // Add success visual feedback
-        target.classList.add('tutorial-success');
-        
-        // Update tooltip to show success message
-        if (this.tooltip) {
-            const successMessage = interaction.successMessage || 'Great! Step completed successfully.';
-            const successElement = document.createElement('div');
-            successElement.className = 'tutorial-success-message bg-green-600 text-white p-2 rounded mt-2 text-sm';
-            successElement.innerHTML = `
-                <i class="bi bi-check-circle mr-2"></i>
-                ${successMessage}
-            `;
-            this.tooltip.appendChild(successElement);
-        }
-        
-        // Remove success styling after a delay
-        setTimeout(() => {
-            target.classList.remove('tutorial-success');
-        }, 2000);
+        return this.stepManager.showInteractionSuccess(step, interaction);
     }
 
     clearStepInteractions() {
-        // Remove all interaction event listeners
-        this.interactionListeners.forEach((listener, target) => {
-            target.removeEventListener(listener.event, listener.handler);
-            // Reset interaction styling
-            target.style.pointerEvents = '';
-            target.style.cursor = '';
-        });
-        this.interactionListeners.clear();
+        return this.stepManager.clearStepInteractions();
     }
 
-    clearHighlights() {
-        // Remove all tutorial highlights including interactive ones
-        document.querySelectorAll('.tutorial-highlight, .tutorial-pulse, .tutorial-interactive, .tutorial-success').forEach(el => {
-            el.classList.remove('tutorial-highlight', 'tutorial-pulse', 'tutorial-interactive', 'tutorial-success');
-            // Only reset position if we changed it (not if it was originally absolute)
-            if (el.style.position === 'relative') {
-                el.style.position = '';
-            }
-            el.style.zIndex = '';
-            el.style.pointerEvents = '';
-            el.style.cursor = '';
-        });
+    nextStep() {
+        this.stepManager.nextStep();
+    }
+
+    previousStep() {
+        this.stepManager.previousStep();
+    }
+
+    showStep() {
+        this.stepManager.showStep();
     }
 
     cleanup() {
         this.isActive = false;
         
-        // Clear all interactions
-        this.clearStepInteractions();
+        // Clear step manager
+        this.stepManager.cleanup();
         
         if (this.overlay) {
             this.overlay.remove();
@@ -389,87 +223,6 @@ export class BaseTutorial {
         
         // Clear highlights
         this.clearHighlights();
-    }
-
-    nextStep() {
-        this.currentStep++;
-        this.showStep();
-    }
-
-    previousStep() {
-        if (this.currentStep > 0) {
-            this.currentStep--;
-            this.showStep();
-        }
-    }
-
-    showStep() {
-        if (this.currentStep >= this.steps.length) {
-            this.complete();
-            return;
-        }
-
-        const step = this.steps[this.currentStep];
-        const target = document.querySelector(step.target);
-        
-        if (!target) {
-            console.warn(`Tutorial target not found: ${step.target}`);
-            this.nextStep();
-            return;
-        }
-
-        // Clear previous highlights and interactions
-        this.clearHighlights();
-        this.clearStepInteractions();
-        this.stepCompleted = false;
-        
-        // Highlight target element
-        this.highlightElement(target, step.action);
-        
-        // Set up interaction if this is an interactive step
-        if (step.interactive) {
-            this.setupStepInteraction(step, target);
-        }
-        
-        // Position and show tooltip
-        this.showTooltip(target, step);
-    }
-
-    complete() {
-        this.clearHighlights();
-        this.cleanup();
-    }
-
-    // Override these methods in child classes
-    getSkipTutorialHandler() {
-        return 'window.currentTutorial.showSkipModal()';
-    }
-
-    getPreviousStepHandler() {
-        return 'window.currentTutorial.previousStep()';
-    }
-
-    getNextStepHandler() {
-        return 'window.currentTutorial.nextStep()';
-    }
-
-    getFinalStepHandler() {
-        return 'window.currentTutorial.complete()';
-    }
-
-    getFinalButtonText() {
-        return 'Complete';
-    }
-
-    async showSkipModal() {
-        if (!this.skipTutorialModal) {
-            this.skipTutorialModal = new SkipTutorialModal(document.body);
-        }
-        
-        const shouldSkip = await this.skipTutorialModal.show();
-        if (shouldSkip) {
-            this.complete();
-        }
     }
 
     // Enhanced CSS for interactive steps
@@ -524,7 +277,7 @@ export class BaseTutorial {
         this.initializeCSS();
         // Default implementation - child classes should override
         this.isActive = true;
-        this.currentStep = 0;
+        this.stepManager.reset();
         this.createOverlay();
         this.showStep();
     }
