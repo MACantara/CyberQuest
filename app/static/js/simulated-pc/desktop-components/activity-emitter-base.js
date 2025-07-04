@@ -20,8 +20,10 @@ export class ActivityEmitterBase {
 
         // Dispatch custom event for system logs to capture
         const event = new CustomEvent('applicationActivity', {
-            detail: eventData
+            detail: eventData,
+            bubbles: true
         });
+        
         document.dispatchEvent(event);
 
         console.log(`[${this.appName}] Activity emitted: ${activityType}`, eventData);

@@ -85,14 +85,24 @@ export class LogRenderer {
 
     addLogEntry(logData) {
         const logsContainer = this.app.windowElement?.querySelector('#logs-container');
-        if (!logsContainer) return;
+        if (!logsContainer) {
+            console.warn('[LogRenderer] Logs container not found');
+            return;
+        }
 
+        console.log('[LogRenderer] Adding log entry:', logData);
         const logElement = this.createLogElement(logData);
         // Add new logs at the bottom (most recent)
         logsContainer.insertAdjacentHTML('beforeend', logElement);
         
         // Apply current filters
-        this.app.applyFilters();
+        this.applyFilters();
+        
+        // Update the log counts in the UI
+        if (this.app.logUI) {
+            this.app.logUI.updateLogCounts();
+            this.app.logUI.updateLastUpdate();
+        }
         
         // Auto-scroll to bottom to show newest log
         logsContainer.scrollTop = logsContainer.scrollHeight;

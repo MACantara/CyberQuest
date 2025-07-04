@@ -13,6 +13,7 @@ export class ProcessMonitorActivityEmitter extends ActivityEmitterBase {
 
     // Process-specific activity emission methods
     emitProcessStart(process) {
+        console.log('[ProcessMonitorActivityEmitter] Emitting process start:', process.name);
         this.emitActivity('process_started', {
             name: process.name,
             pid: process.pid,
@@ -26,6 +27,7 @@ export class ProcessMonitorActivityEmitter extends ActivityEmitterBase {
     }
 
     emitProcessTerminated(process, terminatedBy = 'system') {
+        console.log('[ProcessMonitorActivityEmitter] Emitting process terminated:', process.name);
         this.emitActivity('process_terminated', {
             name: process.name,
             pid: process.pid,
@@ -39,6 +41,7 @@ export class ProcessMonitorActivityEmitter extends ActivityEmitterBase {
     }
 
     emitSuspiciousProcess(process) {
+        console.log('[ProcessMonitorActivityEmitter] Emitting suspicious process:', process.name);
         this.emitActivity('suspicious_process_detected', {
             name: process.name,
             pid: process.pid,

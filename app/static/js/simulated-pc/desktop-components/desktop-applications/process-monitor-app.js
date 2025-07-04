@@ -180,6 +180,18 @@ export class ProcessMonitorApp extends WindowBase {
         // Check for suspicious processes on startup
         this.checkForSuspiciousProcesses();
         
+        // Add a test activity emission to verify the system is working
+        if (this.activityEmitter) {
+            console.log('[ProcessMonitorApp] Testing activity emission...');
+            this.activityEmitter.emitActivity('app_initialized', {
+                action: 'application_ready'
+            }, {
+                message: 'Process Monitor application initialized and ready',
+                level: 'info',
+                category: 'system'
+            });
+        }
+        
         // Mark app as opened for tutorial system
         localStorage.setItem('cyberquest_process_monitor_opened', 'true');
         
@@ -193,6 +205,7 @@ export class ProcessMonitorApp extends WindowBase {
         // Check for existing suspicious processes and emit alerts with safety check
         this.dataManager.getProcesses().forEach(process => {
             if (process.suspicious && this.activityEmitter && typeof this.activityEmitter.emitSuspiciousProcess === 'function') {
+                console.log('[ProcessMonitorApp] Emitting suspicious process alert for:', process.name);
                 this.activityEmitter.emitSuspiciousProcess(process);
             }
         });

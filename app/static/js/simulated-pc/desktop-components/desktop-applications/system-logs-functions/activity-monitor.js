@@ -25,10 +25,50 @@ export class ActivityMonitor {
             document.addEventListener(eventType, handler);
         });
 
-        // Listen for process monitor activities
-        document.addEventListener('processActivity', (event) => {
-            this.handleProcessActivity(event.detail);
+        // Listen for centralized application activities
+        document.addEventListener('applicationActivity', (event) => {
+            this.handleApplicationActivity(event.detail);
         });
+
+        console.log('[ActivityMonitor] Activity monitoring setup complete');
+    }
+
+    // New method to handle centralized application activities
+    handleApplicationActivity(activityData) {
+        console.log('[ActivityMonitor] Application activity received:', activityData);
+        
+        // Check if this is from the process monitor app
+        if (activityData.source === 'process-monitor' || activityData.app === 'Process Monitor') {
+            this.handleProcessActivity(activityData);
+            return;
+        }
+
+        // Handle other application activities
+        const logEntry = {
+            timestamp: new Date(activityData.timestamp).toLocaleString(),
+            level: activityData.level || 'info',
+            source: activityData.source || 'application',
+            category: activityData.category || 'system',
+            message: activityData.message || `Application activity: ${activityData.type}`,
+            details: this.formatApplicationActivityDetails(activityData)
+        };
+
+        this.app.addLogEntry(logEntry);
+    }
+
+    formatApplicationActivityDetails(activityData) {
+        const details = [`App: ${activityData.app || activityData.source}`, `Activity: ${activityData.type}`];
+        
+        // Add specific details based on activity data
+        if (activityData.data) {
+            Object.entries(activityData.data).forEach(([key, value]) => {
+                if (value !== undefined && value !== null) {
+                    details.push(`${key}: ${value}`);
+                }
+            });
+        }
+        
+        return details.join(' | ');
     }
 
     handleProcessActivity(activityData) {

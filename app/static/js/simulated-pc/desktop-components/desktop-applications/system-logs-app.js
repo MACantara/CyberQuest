@@ -121,7 +121,7 @@ export class SystemLogsApp extends WindowBase {
         this.logUI.updateLogCounts();
         this.logUI.updateLastUpdate();
         
-        // Set up activity monitoring
+        // Set up activity monitoring AFTER components are initialized
         this.activityMonitor.setupActivityMonitoring();
         
         // Set up page navigation listener
@@ -129,6 +129,19 @@ export class SystemLogsApp extends WindowBase {
         
         // Re-render initial logs now that renderer is available
         this.updateContent();
+
+        // Test activity monitoring setup
+        console.log('[SystemLogsApp] Initialized with activity monitoring');
+        
+        // Add a test log entry to verify the system is working
+        this.addLogEntry({
+            timestamp: new Date().toLocaleString(),
+            level: 'info',
+            source: 'system',
+            category: 'startup',
+            message: 'System Logs application started - monitoring active',
+            details: 'Activity monitoring enabled'
+        });
     }
     
     setupPageNavigationListener() {
@@ -154,7 +167,12 @@ export class SystemLogsApp extends WindowBase {
 
     // Delegate methods to appropriate modules
     addLogEntry(logData) {
-        this.logRenderer.addLogEntry(logData);
+        if (this.logRenderer) {
+            console.log('[SystemLogsApp] Adding log entry:', logData);
+            this.logRenderer.addLogEntry(logData);
+        } else {
+            console.warn('[SystemLogsApp] LogRenderer not initialized, cannot add log entry');
+        }
     }
 
     applyFilters() {
