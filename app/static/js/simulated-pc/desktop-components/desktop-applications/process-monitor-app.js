@@ -1,3 +1,7 @@
+// TODO: Refactor the processes into individual js files by extending base-process.js under
+// new folder called processes within process-monitor-functions folder
+// TODO: Remove suspicious indicators from process data generation
+
 import { WindowBase } from '../window-base.js';
 import { ProcessDataManager } from './process-monitor-functions/process-data-manager.js';
 import { ProcessSorter } from './process-monitor-functions/process-sorter.js';
