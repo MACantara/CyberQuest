@@ -41,6 +41,9 @@ export class ProcessRenderer {
     }
 
     renderProcessDetails(process) {
+        // Get risk factors for player analysis
+        const riskFactors = this.dataManager.getProcessRiskFactors(process);
+        
         return `
             <div class="grid grid-cols-2 gap-6 text-sm">
                 <div>
@@ -63,10 +66,19 @@ export class ProcessRenderer {
                     </div>
                 </div>
             </div>
+            ${riskFactors.length > 0 ? `
+                <div class="mt-4 p-3 bg-yellow-900 border border-yellow-700 rounded">
+                    <h4 class="font-semibold text-yellow-400 mb-2"><i class="bi bi-info-circle mr-2"></i>Risk Analysis</h4>
+                    <ul class="text-yellow-300 text-sm space-y-1">
+                        ${riskFactors.map(factor => `<li>• ${factor}</li>`).join('')}
+                    </ul>
+                    <p class="text-yellow-300 text-xs mt-2">Review these indicators and determine if this process requires further investigation.</p>
+                </div>
+            ` : ''}
             ${process.suspicious ? `
                 <div class="mt-4 p-3 bg-red-900 border border-red-700 rounded">
-                    <h4 class="font-semibold text-red-400 mb-2"><i class="bi bi-exclamation-triangle mr-2"></i>Security Alert</h4>
-                    <p class="text-red-300 text-sm">This process has been flagged as potentially suspicious. Consider investigating further or terminating if unauthorized.</p>
+                    <h4 class="font-semibold text-red-400 mb-2"><i class="bi bi-exclamation-triangle mr-2"></i>Flagged as Suspicious</h4>
+                    <p class="text-red-300 text-sm">This process has been flagged for suspicious activity. Consider terminating if unauthorized.</p>
                 </div>
             ` : ''}
         `;

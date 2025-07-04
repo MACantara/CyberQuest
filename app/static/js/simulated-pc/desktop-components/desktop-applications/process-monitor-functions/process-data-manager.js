@@ -6,7 +6,7 @@ export class ProcessDataManager {
     }
 
     generateProcessData() {
-        // Generate realistic process data
+        // Generate realistic process data without automatic suspicious flagging
         const systemProcesses = [
             { name: 'System', executable: 'System', cpu: 0.1, memory: 128, priority: 'System', status: 'Running' },
             { name: 'explorer.exe', executable: 'explorer.exe', cpu: 2.3, memory: 45.2, priority: 'Normal', status: 'Running' },
@@ -16,13 +16,14 @@ export class ProcessDataManager {
             { name: 'antivirus.exe', executable: 'antivirus.exe', cpu: 3.4, memory: 78.9, priority: 'Normal', status: 'Running' },
             { name: 'malware_scanner.exe', executable: 'malware_scanner.exe', cpu: 0.8, memory: 23.4, priority: 'Low', status: 'Running' },
             { name: 'notepad.exe', executable: 'notepad.exe', cpu: 0.0, memory: 12.3, priority: 'Normal', status: 'Running' },
-            { name: 'suspicious_process.exe', executable: 'temp\\suspicious_process.exe', cpu: 25.6, memory: 89.7, priority: 'High', status: 'Running' },
             { name: 'winlogon.exe', executable: 'winlogon.exe', cpu: 0.2, memory: 18.9, priority: 'System', status: 'Running' },
             { name: 'csrss.exe', executable: 'csrss.exe', cpu: 0.5, memory: 45.1, priority: 'System', status: 'Running' },
             { name: 'lsass.exe', executable: 'lsass.exe', cpu: 0.3, memory: 34.7, priority: 'System', status: 'Running' },
             { name: 'network_monitor.exe', executable: 'network_monitor.exe', cpu: 2.1, memory: 67.3, priority: 'Normal', status: 'Running' },
-            { name: 'keylogger.exe', executable: 'hidden\\keylogger.exe', cpu: 12.4, memory: 45.8, priority: 'Normal', status: 'Running' },
-            { name: 'backup_service.exe', executable: 'backup_service.exe', cpu: 1.8, memory: 56.2, priority: 'Low', status: 'Running' }
+            { name: 'backup_service.exe', executable: 'backup_service.exe', cpu: 1.8, memory: 56.2, priority: 'Low', status: 'Running' },
+            // Include some potentially suspicious processes but don't auto-flag them
+            { name: 'suspicious_process.exe', executable: 'temp\\suspicious_process.exe', cpu: 25.6, memory: 89.7, priority: 'High', status: 'Running' },
+            { name: 'keylogger.exe', executable: 'hidden\\keylogger.exe', cpu: 12.4, memory: 45.8, priority: 'Normal', status: 'Running' }
         ];
 
         this.processes = systemProcesses.map((proc, index) => ({
@@ -30,7 +31,8 @@ export class ProcessDataManager {
             pid: 1000 + index * 100 + Math.floor(Math.random() * 99),
             threads: Math.floor(Math.random() * 20) + 1,
             startTime: new Date(Date.now() - Math.random() * 86400000).toLocaleString(),
-            suspicious: proc.name.includes('suspicious') || proc.name.includes('keylogger') || proc.executable.includes('temp\\') || proc.executable.includes('hidden\\')
+            // Remove automatic suspicious flagging - let players determine this
+            suspicious: false
         }));
     }
 
@@ -77,9 +79,34 @@ export class ProcessDataManager {
     }
 
     addRandomProcess() {
+        // Generate potentially suspicious process names but don't auto-flag them
+        const processNames = [
+            `temp_process_${Math.floor(Math.random() * 1000)}.exe`,
+            `update_manager_${Math.floor(Math.random() * 100)}.exe`,
+            `system_checker.exe`,
+            `windows_defender.exe`,
+            `chrome_helper.exe`,
+            `java_updater.exe`,
+            `flash_player.exe`,
+            `codec_pack.exe`
+        ];
+        
+        const executables = [
+            `temp\\${processNames[0]}`,
+            `downloads\\${processNames[1]}`,
+            `system32\\${processNames[2]}`,
+            `program files\\${processNames[3]}`,
+            `appdata\\${processNames[4]}`,
+            `users\\public\\${processNames[5]}`,
+            `windows\\${processNames[6]}`,
+            `temp\\downloads\\${processNames[7]}`
+        ];
+        
+        const randomIndex = Math.floor(Math.random() * processNames.length);
+        
         const newProcess = {
-            name: `temp_process_${Math.floor(Math.random() * 1000)}.exe`,
-            executable: `temp\\temp_process_${Math.floor(Math.random() * 1000)}.exe`,
+            name: processNames[randomIndex],
+            executable: executables[randomIndex],
             pid: Math.floor(Math.random() * 9000) + 1000,
             cpu: Math.random() * 20,
             memory: Math.random() * 100 + 10,
@@ -87,7 +114,8 @@ export class ProcessDataManager {
             priority: 'Normal',
             status: 'Running',
             startTime: new Date().toLocaleString(),
-            suspicious: Math.random() < 0.3
+            // Don't automatically flag as suspicious - let players analyze
+            suspicious: false
         };
         
         this.processes.push(newProcess);
@@ -95,12 +123,68 @@ export class ProcessDataManager {
         // Emit process start activity with safety checks
         if (this.activityEmitter && typeof this.activityEmitter.emitProcessStart === 'function') {
             this.activityEmitter.emitProcessStart(newProcess);
+        }
+    }
+
+    // Add method to manually flag process as suspicious (for player actions)
+    flagProcessAsSuspicious(pid, suspicious = true) {
+        const process = this.getProcessByPid(pid);
+        if (process) {
+            process.suspicious = suspicious;
             
-            // If suspicious, emit security alert
-            if (newProcess.suspicious && typeof this.activityEmitter.emitSuspiciousProcess === 'function') {
-                this.activityEmitter.emitSuspiciousProcess(newProcess);
+            // Emit suspicious process activity if flagged
+            if (suspicious && this.activityEmitter && typeof this.activityEmitter.emitSuspiciousProcess === 'function') {
+                this.activityEmitter.emitSuspiciousProcess(process);
             }
         }
+    }
+
+    // Add method to get potentially suspicious indicators for player analysis
+    getProcessRiskFactors(process) {
+        const riskFactors = [];
+        
+        // High CPU usage
+        if (process.cpu > 50) {
+            riskFactors.push('High CPU usage');
+        }
+        
+        // High memory usage
+        if (process.memory > 200) {
+            riskFactors.push('High memory usage');
+        }
+        
+        // Unusual executable paths
+        if (process.executable.includes('temp\\') || 
+            process.executable.includes('downloads\\') ||
+            process.executable.includes('appdata\\') ||
+            process.executable.includes('users\\public\\')) {
+            riskFactors.push('Unusual executable location');
+        }
+        
+        // Suspicious process names
+        if (process.name.includes('keylogger') ||
+            process.name.includes('suspicious') ||
+            process.name.includes('crack') ||
+            process.name.includes('hack')) {
+            riskFactors.push('Suspicious process name');
+        }
+        
+        // High priority but unknown process
+        if (process.priority === 'High' && !this.isKnownSystemProcess(process.name)) {
+            riskFactors.push('High priority unknown process');
+        }
+        
+        return riskFactors;
+    }
+
+    isKnownSystemProcess(processName) {
+        const knownProcesses = [
+            'system', 'explorer.exe', 'chrome.exe', 'cyberquest.exe', 
+            'svchost.exe', 'winlogon.exe', 'csrss.exe', 'lsass.exe'
+        ];
+        return knownProcesses.some(known => 
+            processName.toLowerCase().includes(known.toLowerCase())
+        );
     }
 
     removeProcess(pid) {

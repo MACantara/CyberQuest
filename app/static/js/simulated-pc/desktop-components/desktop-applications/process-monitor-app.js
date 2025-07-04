@@ -1,6 +1,5 @@
 // TODO: Refactor the processes into individual js files by extending base-process.js under
 // new folder called processes within process-monitor-functions folder
-// TODO: Remove suspicious indicators from process data generation
 
 import { WindowBase } from '../window-base.js';
 import { ProcessDataManager } from './process-monitor-functions/process-data-manager.js';
@@ -181,8 +180,7 @@ export class ProcessMonitorApp extends WindowBase {
         this.eventHandler.bindEvents(this.windowElement);
         this.eventHandler.startRealTimeUpdates();
         
-        // Check for suspicious processes on startup
-        this.checkForSuspiciousProcesses();
+        // Remove automatic suspicious process checking - let players analyze
         
         // Add a test activity emission to verify the system is working
         if (this.activityEmitter) {
@@ -205,34 +203,29 @@ export class ProcessMonitorApp extends WindowBase {
         }, 1000);
     }
 
-    checkForSuspiciousProcesses() {
-        // Check for existing suspicious processes and emit alerts with safety check
-        this.dataManager.getProcesses().forEach(process => {
-            if (process.suspicious && this.activityEmitter && typeof this.activityEmitter.emitSuspiciousProcess === 'function') {
-                console.log('[ProcessMonitorApp] Emitting suspicious process alert for:', process.name);
-                this.activityEmitter.emitSuspiciousProcess(process);
-            }
-        });
-    }
+    // Remove or comment out automatic suspicious process checking
+    // checkForSuspiciousProcesses() {
+    //     // Check for existing suspicious processes and emit alerts with safety check
+    //     this.dataManager.getProcesses().forEach(process => {
+    //         if (process.suspicious && this.activityEmitter && typeof this.activityEmitter.emitSuspiciousProcess === 'function') {
+    //             console.log('[ProcessMonitorApp] Emitting suspicious process alert for:', process.name);
+    //             this.activityEmitter.emitSuspiciousProcess(process);
+    //         }
+    //     });
+    // }
 
-    checkAndStartTutorial() {
-        const tutorialCompleted = localStorage.getItem('cyberquest_processmonitor_tutorial_completed');
+    // Add method for players to manually flag processes
+    flagProcessAsSuspicious(pid) {
+        this.dataManager.flagProcessAsSuspicious(pid, true);
+        this.updateContent();
         
-        if (!tutorialCompleted && window.desktop && window.desktop.tutorial) {
-            // Try to start the tutorial
-            if (window.desktop.tutorial.startProcessMonitorTutorial) {
-                window.desktop.tutorial.startProcessMonitorTutorial();
-            } else {
-                // Fallback: import and start tutorial directly
-                import('../../tutorials/process-monitor-tutorial.js').then(module => {
-                    const ProcessMonitorTutorial = module.ProcessMonitorTutorial;
-                    if (ProcessMonitorTutorial.startTutorial) {
-                        ProcessMonitorTutorial.startTutorial(window.desktop);
-                    }
-                }).catch(error => {
-                    console.error('Failed to load Process Monitor tutorial:', error);
-                });
-            }
+        // Emit user action for flagging process
+        if (this.activityEmitter) {
+            const process = this.dataManager.getProcessByPid(pid);
+            this.activityEmitter.emitUserAction('process_flagged_suspicious', {
+                processName: process?.name,
+                pid: pid
+            });
         }
     }
 
