@@ -1,14 +1,16 @@
 import { BaseTutorial } from './base-tutorial.js';
 import { tutorialInteractionManager } from './tutorial-interaction-manager.js';
+import { tutorialRegistry } from './tutorial-registry.js';
 
 export class TutorialManager {
     constructor(desktop) {
         this.desktop = desktop;
         this.currentTutorial = null;
         this.interactionManager = tutorialInteractionManager;
+        this.registry = tutorialRegistry;
     }
 
-    // Generic tutorial starter
+    // Generic tutorial starter using registry
     async startTutorial(tutorialName, tutorialClass, globalVarName) {
         if (this.currentTutorial) {
             this.currentTutorial.cleanup();
@@ -42,148 +44,155 @@ export class TutorialManager {
         this.currentTutorial.start();
     }
 
-    // Generic auto-start checker
+    // Generic tutorial starter using registry configuration
+    async startTutorialByName(tutorialName) {
+        const tutorialConfig = this.registry.getTutorial(tutorialName);
+        if (!tutorialConfig) {
+            throw new Error(`Tutorial '${tutorialName}' not found in registry`);
+        }
+
+        return await this.startTutorial(
+            tutorialName,
+            tutorialConfig.className,
+            tutorialConfig.globalVarName
+        );
+    }
+
+    // Generic auto-start checker using registry
     async shouldAutoStart(tutorialName, tutorialClass) {
         const module = await import(`./${tutorialName}-tutorial.js`);
         const TutorialClass = module[tutorialClass];
         return TutorialClass.shouldAutoStart();
     }
 
-    // Generic tutorial restarter
-    async restartTutorial(tutorialName, tutorialClass, startMethodName) {
-        const module = await import(`./${tutorialName}-tutorial.js`);
-        const TutorialClass = module[tutorialClass];
-        TutorialClass.restart();
-        await this[startMethodName]();
-    }
-
-    // Individual tutorial methods using the generic functions
-    async startInitialTutorial() {
-        return this.startTutorial('initial', 'InitialTutorial', 'initialTutorial');
-    }
-
-    async shouldAutoStartInitial() {
-        return this.shouldAutoStart('initial', 'InitialTutorial');
-    }
-
-    async restartInitialTutorial() {
-        return this.restartTutorial('initial', 'InitialTutorial', 'startInitialTutorial');
-    }
-
-    async startEmailTutorial() {
-        return this.startTutorial('email', 'EmailTutorial', 'emailTutorial');
-    }
-
-    async shouldAutoStartEmail() {
-        return this.shouldAutoStart('email', 'EmailTutorial');
-    }
-
-    async restartEmailTutorial() {
-        return this.restartTutorial('email', 'EmailTutorial', 'startEmailTutorial');
-    }
-
-    async startBrowserTutorial() {
-        return this.startTutorial('browser', 'BrowserTutorial', 'browserTutorial');
-    }
-
-    async shouldAutoStartBrowser() {
-        return this.shouldAutoStart('browser', 'BrowserTutorial');
-    }
-
-    async restartBrowserTutorial() {
-        return this.restartTutorial('browser', 'BrowserTutorial', 'startBrowserTutorial');
-    }
-
-    async startFileManagerTutorial() {
-        return this.startTutorial('file-manager', 'FileManagerTutorial', 'fileManagerTutorial');
-    }
-
-    async shouldAutoStartFileManager() {
-        return this.shouldAutoStart('file-manager', 'FileManagerTutorial');
-    }
-
-    async restartFileManagerTutorial() {
-        return this.restartTutorial('file-manager', 'FileManagerTutorial', 'startFileManagerTutorial');
-    }
-
-    async startNetworkMonitorTutorial() {
-        return this.startTutorial('network-monitor', 'NetworkMonitorTutorial', 'networkMonitorTutorial');
-    }
-
-    async shouldAutoStartNetworkMonitor() {
-        return this.shouldAutoStart('network-monitor', 'NetworkMonitorTutorial');
-    }
-
-    async restartNetworkMonitorTutorial() {
-        return this.restartTutorial('network-monitor', 'NetworkMonitorTutorial', 'startNetworkMonitorTutorial');
-    }
-
-    async startProcessMonitorTutorial() {
-        return this.startTutorial('process-monitor', 'ProcessMonitorTutorial', 'processMonitorTutorial');
-    }
-
-    async shouldAutoStartProcessMonitor() {
-        return this.shouldAutoStart('process-monitor', 'ProcessMonitorTutorial');
-    }
-
-    async restartProcessMonitorTutorial() {
-        return this.restartTutorial('process-monitor', 'ProcessMonitorTutorial', 'startProcessMonitorTutorial');
-    }
-
-    async startSystemLogsTutorial() {
-        return this.startTutorial('system-logs', 'SystemLogsTutorial', 'systemLogsTutorial');
-    }
-
-    async shouldAutoStartSystemLogs() {
-        return this.shouldAutoStart('system-logs', 'SystemLogsTutorial');
-    }
-
-    async restartSystemLogsTutorial() {
-        return this.restartTutorial('system-logs', 'SystemLogsTutorial', 'startSystemLogsTutorial');
-    }
-
-    async startTerminalTutorial() {
-        return this.startTutorial('terminal', 'TerminalTutorial', 'terminalTutorial');
-    }
-
-    async shouldAutoStartTerminal() {
-        return this.shouldAutoStart('terminal', 'TerminalTutorial');
-    }
-
-    async restartTerminalTutorial() {
-        return this.restartTutorial('terminal', 'TerminalTutorial', 'startTerminalTutorial');
-    }
-
-    // Utility method to get all available tutorials
-    getTutorialList() {
-        return [
-            { name: 'initial', class: 'InitialTutorial', title: 'Desktop Introduction' },
-            { name: 'email', class: 'EmailTutorial', title: 'Email Security' },
-            { name: 'browser', class: 'BrowserTutorial', title: 'Web Security' },
-            { name: 'file-manager', class: 'FileManagerTutorial', title: 'File Security' },
-            { name: 'process-monitor', class: 'ProcessMonitorTutorial', title: 'Process Management' },
-            { name: 'network-monitor', class: 'NetworkMonitorTutorial', title: 'Network Analysis' },
-            { name: 'system-logs', class: 'SystemLogsTutorial', title: 'Log Analysis' },
-            { name: 'terminal', class: 'TerminalTutorial', title: 'Command Line' }
-        ];
-    }
-
-    // Utility method to start any tutorial by name
-    async startTutorialByName(tutorialName) {
-        const methodName = `start${tutorialName.split('-').map(word => 
-            word.charAt(0).toUpperCase() + word.slice(1)
-        ).join('')}Tutorial`;
-        
-        if (typeof this[methodName] === 'function') {
-            return await this[methodName]();
-        } else {
-            throw new Error(`Tutorial '${tutorialName}' not found`);
+    // Generic tutorial restarter using registry
+    async restartTutorial(tutorialName) {
+        const tutorialConfig = this.registry.getTutorial(tutorialName);
+        if (!tutorialConfig) {
+            throw new Error(`Tutorial '${tutorialName}' not found in registry`);
         }
+
+        // Reset completion status
+        this.registry.resetTutorial(tutorialName);
+        
+        // Import and call static restart method
+        const module = await import(`./${tutorialName}-tutorial.js`);
+        const TutorialClass = module[tutorialConfig.className];
+        if (TutorialClass.restart) {
+            TutorialClass.restart();
+        }
+        
+        // Start the tutorial
+        return await this.startTutorialByName(tutorialName);
+    }
+
+    // Dynamic method generation for all registered tutorials
+    generateTutorialMethods() {
+        this.registry.getAllTutorialNames().forEach(tutorialName => {
+            const config = this.registry.getTutorial(tutorialName);
+            
+            // Generate start method
+            if (config.startMethod) {
+                this[config.startMethod] = async () => {
+                    return await this.startTutorial(
+                        tutorialName,
+                        config.className,
+                        config.globalVarName
+                    );
+                };
+            }
+
+            // Generate should auto-start method
+            if (config.tutorialMethod) {
+                this[config.tutorialMethod] = async () => {
+                    return await this.shouldAutoStart(tutorialName, config.className);
+                };
+            }
+
+            // Generate restart method
+            if (config.restartMethod) {
+                this[config.restartMethod] = async () => {
+                    return await this.restartTutorial(tutorialName);
+                };
+            }
+        });
+    }
+
+    // Initialize dynamic methods
+    initialize() {
+        this.generateTutorialMethods();
+    }
+
+    // Utility methods using registry
+    getTutorialList() {
+        return this.registry.getAllTutorials().map(tutorial => ({
+            name: tutorial.name,
+            class: tutorial.className,
+            title: tutorial.title,
+            description: tutorial.description,
+            category: tutorial.category,
+            estimatedTime: tutorial.estimatedTime,
+            completed: this.registry.isTutorialCompleted(tutorial.name)
+        }));
+    }
+
+    // Get tutorials by category
+    getTutorialsByCategory(category) {
+        return this.registry.getTutorialsByCategory(category);
+    }
+
+    // Get completion statistics
+    getCompletionStats() {
+        return this.registry.getCompletionStats();
+    }
+
+    // Check if specific tutorial is completed
+    isTutorialCompleted(tutorialName) {
+        return this.registry.isTutorialCompleted(tutorialName);
+    }
+
+    // Get next recommended tutorial
+    getNextRecommendedTutorial() {
+        const remaining = this.registry.getRemainingTutorials();
+        if (remaining.length === 0) return null;
+        
+        // Return first tutorial in order, or could implement more sophisticated logic
+        return remaining[0];
+    }
+
+    // Reset all tutorials
+    resetAllTutorials() {
+        this.registry.resetAllTutorials();
+    }
+
+    // Get tutorial by name
+    getTutorial(name) {
+        return this.registry.getTutorial(name);
+    }
+
+    // Registry management methods
+    getRegistry() {
+        return this.registry;
+    }
+
+    // Export tutorial data
+    exportTutorialData() {
+        return this.registry.exportRegistry();
     }
 }
+
+// Initialize tutorial manager and generate methods
+const originalConstructor = TutorialManager.prototype.constructor;
+TutorialManager.prototype.constructor = function(desktop) {
+    originalConstructor.call(this, desktop);
+    this.initialize();
+};
 
 // Maintain Tutorial as an alias for backwards compatibility
 export const Tutorial = TutorialManager;
 
 // Export BaseTutorial for backwards compatibility
 export { BaseTutorial };
+
+// Export tutorial registry for direct access
+export { tutorialRegistry };
