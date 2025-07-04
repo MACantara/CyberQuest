@@ -45,7 +45,7 @@ export class ProcessRenderer {
         const riskFactors = this.dataManager.getProcessRiskFactors(process);
         
         return `
-            <div class="grid grid-cols-2 gap-6 text-sm">
+            <div class="grid grid-cols-3 gap-4 text-sm">
                 <div>
                     <h4 class="font-semibold text-blue-400 mb-2">Basic Information</h4>
                     <div class="space-y-1">
@@ -65,27 +65,32 @@ export class ProcessRenderer {
                         <div><span class="text-gray-400">Executable:</span> <span class="font-mono text-xs">${process.executable}</span></div>
                     </div>
                 </div>
-            </div>
-            ${riskFactors.length > 0 ? `
-                <div class="mt-3 p-2 bg-yellow-900/50 border border-yellow-700/50 rounded">
-                    <div class="flex items-center justify-between mb-2">
-                        <h4 class="font-semibold text-yellow-400 text-sm flex items-center">
-                            <i class="bi bi-info-circle mr-2"></i>Risk Analysis
-                        </h4>
-                        <span class="text-yellow-300 text-xs">${riskFactors.length} indicator${riskFactors.length > 1 ? 's' : ''}</span>
-                    </div>
-                    <div class="flex flex-wrap gap-1">
-                        ${riskFactors.map(factor => `
-                            <span class="inline-block bg-yellow-800/30 text-yellow-200 text-xs px-2 py-1 rounded border border-yellow-600/30">
-                                ${factor}
-                            </span>
-                        `).join('')}
-                    </div>
-                    <p class="text-yellow-300/80 text-xs mt-2 italic">
-                        Investigate these indicators to determine if action is needed.
-                    </p>
+                <div>
+                    <h4 class="font-semibold text-yellow-400 mb-2">Risk Analysis</h4>
+                    ${riskFactors.length > 0 ? `
+                        <div class="space-y-1">
+                            <div class="text-yellow-300 text-xs mb-2">${riskFactors.length} indicator${riskFactors.length > 1 ? 's' : ''} detected</div>
+                            <div class="space-y-1">
+                                ${riskFactors.map(factor => `
+                                    <div class="bg-yellow-800/20 text-yellow-200 text-xs px-2 py-1 rounded border border-yellow-600/30">
+                                        ${factor}
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <p class="text-yellow-300/80 text-xs mt-2 italic">
+                                Investigate these indicators to determine if action is needed.
+                            </p>
+                        </div>
+                    ` : `
+                        <div class="text-gray-400 text-xs">
+                            <div class="bg-green-800/20 text-green-200 px-2 py-1 rounded border border-green-600/30 mb-2">
+                                No risk indicators detected
+                            </div>
+                            <p class="italic">This process appears to be operating normally with no suspicious characteristics.</p>
+                        </div>
+                    `}
                 </div>
-            ` : ''}
+            </div>
             ${process.suspicious ? `
                 <div class="mt-3 p-2 bg-red-900/50 border border-red-700/50 rounded">
                     <h4 class="font-semibold text-red-400 text-sm flex items-center">
