@@ -159,7 +159,7 @@ export class ProcessMonitorTutorial extends BaseTutorial {
     // Static methods for auto-start functionality
     static shouldAutoStart() {
         const tutorialCompleted = localStorage.getItem('cyberquest_processmonitor_tutorial_completed');
-        const processMonitorOpened = localStorage.getItem('cyberquest_process_monitor_opened');
+        const processMonitorOpened = localStorage.getItem('cyberquest_processmonitor_opened');
         
         // Debug logging
         console.log('ProcessMonitor Tutorial - shouldAutoStart check:', {
@@ -181,7 +181,7 @@ export class ProcessMonitorTutorial extends BaseTutorial {
 
     static restart() {
         localStorage.removeItem('cyberquest_processmonitor_tutorial_completed');
-        localStorage.removeItem('cyberquest_process_monitor_opened');
+        localStorage.removeItem('cyberquest_processmonitor_opened');
     }
 
     showStep() {

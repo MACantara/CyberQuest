@@ -192,12 +192,26 @@ export class ProcessMonitorApp extends WindowBase {
         }
         
         // Mark app as opened for tutorial system
-        localStorage.setItem('cyberquest_process_monitor_opened', 'true');
+        localStorage.setItem('cyberquest_processmonitor_opened', 'true');
         
         // Trigger tutorial if not completed
         setTimeout(() => {
             this.checkAndStartTutorial();
         }, 1000);
+    }
+
+    async checkAndStartTutorial() {
+        try {
+            if (window.tutorialManager && window.tutorialManager.shouldAutoStartProcessMonitor) {
+                const shouldStart = await window.tutorialManager.shouldAutoStartProcessMonitor();
+                if (shouldStart) {
+                    console.log('Auto-starting Process Monitor tutorial...');
+                    await window.tutorialManager.startProcessMonitorTutorial();
+                }
+            }
+        } catch (error) {
+            console.error('Failed to check/start Process Monitor tutorial:', error);
+        }
     }
 
     // Add method for players to manually flag processes
