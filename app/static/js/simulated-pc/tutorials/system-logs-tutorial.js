@@ -7,7 +7,7 @@ export class SystemLogsTutorial extends BaseTutorial {
             {
                 target: '.bg-gray-700.p-2.border-b.border-gray-600',
                 title: 'System Logs Toolbar',
-                content: 'This toolbar helps you filter and manage system logs. You can filter by log level, source, category, and enable auto-refresh to monitor real-time events.',
+                content: 'This toolbar helps you filter and manage system logs. You can filter by log level, source, and category to focus on specific types of events.',
                 action: 'highlight',
                 position: 'bottom'
             },
@@ -33,20 +33,6 @@ export class SystemLogsTutorial extends BaseTutorial {
                 position: 'bottom'
             },
             {
-                target: '#refresh-btn',
-                title: 'Manual Refresh',
-                content: 'Click to manually refresh the log entries and see the latest system events. Use this when auto-refresh is disabled.',
-                action: 'highlight',
-                position: 'bottom'
-            },
-            {
-                target: '#auto-refresh',
-                title: 'Auto-Refresh Monitoring',
-                content: 'Enable auto-refresh to continuously monitor new log entries as they appear. Essential for real-time threat detection.',
-                action: 'pulse',
-                position: 'bottom'
-            },
-            {
                 target: '#log-headers',
                 title: 'Log Entry Structure',
                 content: 'Each log entry shows: Timestamp (when it occurred), Level (severity), Source (system component), Category (event type), Message (description), and Details (additional info).',
@@ -56,7 +42,7 @@ export class SystemLogsTutorial extends BaseTutorial {
             {
                 target: '#logs-container',
                 title: 'Log Entries Display',
-                content: 'This area displays all log entries. Look for color-coded severity levels: blue (INFO), yellow (WARNING), red (ERROR), and dark red (CRITICAL).',
+                content: 'This area displays all log entries from system activities. Look for color-coded severity levels: blue (INFO), yellow (WARNING), red (ERROR), and dark red (CRITICAL).',
                 action: 'highlight',
                 position: 'right'
             },
@@ -111,20 +97,12 @@ export class SystemLogsTutorial extends BaseTutorial {
             }
         }
 
-        // Special handling for logs container - ensure some log entries exist
+        // Special handling for logs container - logs are populated by real activity only
         if (step.target === '#logs-container') {
             const logsContainer = document.querySelector('#logs-container');
             if (logsContainer && logsContainer.children.length === 0) {
-                // If no logs are visible, trigger refresh to show some entries
-                const refreshBtn = document.querySelector('#refresh-btn');
-                if (refreshBtn) {
-                    refreshBtn.click();
-                    // Wait a moment for logs to load
-                    setTimeout(() => {
-                        super.showStep();
-                    }, 500);
-                    return;
-                }
+                // No need to trigger refresh since auto-refresh is removed
+                // Logs will appear naturally from system activities
             }
         }
 

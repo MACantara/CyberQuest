@@ -34,22 +34,6 @@ export class LogUI {
             });
         }
 
-        // Refresh button
-        const refreshBtn = windowElement.querySelector('#refresh-btn');
-        if (refreshBtn) {
-            refreshBtn.addEventListener('click', () => {
-                this.refreshLogs();
-            });
-        }
-
-        // Auto-refresh checkbox
-        const autoRefreshCheckbox = windowElement.querySelector('#auto-refresh');
-        if (autoRefreshCheckbox) {
-            autoRefreshCheckbox.addEventListener('change', (e) => {
-                this.toggleAutoRefresh(e.target.checked);
-            });
-        }
-
         // Log entry clicks
         const logsContainer = windowElement.querySelector('#logs-container');
         if (logsContainer) {
@@ -59,41 +43,6 @@ export class LogUI {
                     this.selectLogEntry(logEntry);
                 }
             });
-        }
-    }
-
-    refreshLogs() {
-        const refreshBtn = this.app.windowElement?.querySelector('#refresh-btn');
-        if (refreshBtn) {
-            refreshBtn.innerHTML = '<i class="bi bi-arrow-clockwise animate-spin mr-1"></i>Refreshing...';
-            refreshBtn.disabled = true;
-        }
-
-        // Only generate new logs when explicitly refreshed by user
-        setTimeout(() => {
-            this.app.logManager.generateNewLogs();
-            this.updateLogCounts();
-            this.updateLastUpdate();
-            
-            if (refreshBtn) {
-                refreshBtn.innerHTML = '<i class="bi bi-arrow-clockwise mr-1"></i>Refresh';
-                refreshBtn.disabled = false;
-            }
-        }, 1500);
-    }
-
-    toggleAutoRefresh(enabled) {
-        this.app.autoRefresh = enabled;
-        
-        if (enabled) {
-            this.app.refreshInterval = setInterval(() => {
-                this.refreshLogs();
-            }, 30000); // Refresh every 30 seconds
-        } else {
-            if (this.app.refreshInterval) {
-                clearInterval(this.app.refreshInterval);
-                this.app.refreshInterval = null;
-            }
         }
     }
 

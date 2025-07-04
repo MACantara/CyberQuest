@@ -70,16 +70,9 @@ export class SystemLogsApp extends WindowBase {
                             <option value="disk">Disk</option>
                             <option value="scan">Scan</option>
                         </select>
-                        <button class="px-3 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 transition-colors duration-200 cursor-pointer" id="refresh-btn">
-                            <i class="bi bi-arrow-clockwise mr-1"></i>Refresh
-                        </button>
                     </div>
                     
                     <div class="flex items-center space-x-2">
-                        <label class="flex items-center text-white text-xs">
-                            <input type="checkbox" id="auto-refresh" class="mr-1">
-                            Auto-refresh
-                        </label>
                         <span class="text-gray-400 text-xs" id="log-count">0 entries</span>
                     </div>
                 </div>
@@ -199,12 +192,6 @@ export class SystemLogsApp extends WindowBase {
         // Clean up all modular components
         if (this.activityMonitor) {
             this.activityMonitor.cleanup();
-        }
-        
-        // Stop auto-refresh when window is closed
-        if (this.refreshInterval) {
-            clearInterval(this.refreshInterval);
-            this.refreshInterval = null;
         }
         
         super.cleanup();
