@@ -8,6 +8,7 @@ export class TutorialManager {
         this.currentTutorial = null;
         this.interactionManager = tutorialInteractionManager;
         this.registry = tutorialRegistry;
+        this.initialize(); // Generate methods after setting up properties
     }
 
     // Generic tutorial starter using registry
@@ -180,15 +181,6 @@ export class TutorialManager {
         return this.registry.exportRegistry();
     }
 }
-
-// Initialize tutorial manager and generate methods
-TutorialManager.prototype.constructor = function(desktop) {
-    this.desktop = desktop;
-    this.currentTutorial = null;
-    this.interactionManager = tutorialInteractionManager;
-    this.registry = tutorialRegistry;
-    this.initialize(); // Generate methods after setting up properties
-};
 
 // Maintain Tutorial as an alias for backwards compatibility
 export const Tutorial = TutorialManager;
