@@ -29,6 +29,17 @@ export class ApplicationLauncher {
     // Shared tutorial auto-start logic moved from window manager
     async handleTutorialAutoStart(tutorialCheckMethod, tutorialStartMethod) {
         try {
+            // Check if the tutorial manager has the required methods
+            if (typeof this.tutorialManager[tutorialCheckMethod] !== 'function') {
+                console.warn(`Tutorial method ${tutorialCheckMethod} not found on tutorial manager`);
+                return;
+            }
+
+            if (typeof this.tutorialManager[startMethod] !== 'function') {
+                console.warn(`Tutorial method ${tutorialStartMethod} not found on tutorial manager`);
+                return;
+            }
+
             const shouldStart = await this.tutorialManager[tutorialCheckMethod]();
             if (shouldStart) {
                 setTimeout(async () => {
