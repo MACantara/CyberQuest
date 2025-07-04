@@ -1,32 +1,19 @@
-export class ActivityEmitter {
-    constructor() {
-        this.isEnabled = true;
+import { ActivityEmitterBase } from '../../activity-emitter-base.js';
+
+export class ProcessMonitorActivityEmitter extends ActivityEmitterBase {
+    constructor(appId, appName) {
+        super(appId, appName);
     }
 
-    // Emit process-related activities that system logs can track
-    emitProcessActivity(activityType, processInfo, additionalData = {}) {
-        if (!this.isEnabled) return;
-
-        const activityData = {
-            timestamp: new Date().toISOString(),
-            source: 'process-monitor',
-            type: activityType,
-            process: processInfo,
-            ...additionalData
-        };
-
-        // Dispatch custom event for system logs to capture
-        const event = new CustomEvent('processActivity', {
-            detail: activityData
-        });
-        document.dispatchEvent(event);
-
-        console.log(`[ProcessMonitor] Activity emitted: ${activityType}`, activityData);
+    // Implement required method
+    initializeCustomEvents() {
+        // Process monitor specific initialization
+        console.log(`[${this.appName}] Custom activity events initialized`);
     }
 
-    // Specific activity emission methods
+    // Process-specific activity emission methods
     emitProcessStart(process) {
-        this.emitProcessActivity('process_started', {
+        this.emitActivity('process_started', {
             name: process.name,
             pid: process.pid,
             executable: process.executable,
@@ -39,20 +26,20 @@ export class ActivityEmitter {
     }
 
     emitProcessTerminated(process, terminatedBy = 'system') {
-        this.emitProcessActivity('process_terminated', {
+        this.emitActivity('process_terminated', {
             name: process.name,
             pid: process.pid,
-            executable: process.executable
+            executable: process.executable,
+            terminatedBy
         }, {
             message: `Process ${process.name} (PID: ${process.pid}) terminated by ${terminatedBy}`,
             level: terminatedBy === 'user' ? 'warn' : 'info',
-            category: 'process',
-            terminatedBy
+            category: 'process'
         });
     }
 
     emitSuspiciousProcess(process) {
-        this.emitProcessActivity('suspicious_process_detected', {
+        this.emitActivity('suspicious_process_detected', {
             name: process.name,
             pid: process.pid,
             executable: process.executable,
@@ -67,7 +54,7 @@ export class ActivityEmitter {
     }
 
     emitHighResourceUsage(process, resourceType, value) {
-        this.emitProcessActivity('high_resource_usage', {
+        this.emitActivity('high_resource_usage', {
             name: process.name,
             pid: process.pid,
             resourceType,
@@ -81,30 +68,8 @@ export class ActivityEmitter {
         });
     }
 
-    emitProcessMonitorStart() {
-        this.emitProcessActivity('monitor_started', {
-            name: 'process-monitor',
-            action: 'application_launched'
-        }, {
-            message: 'Process Monitor application started - monitoring system processes',
-            level: 'info',
-            category: 'system'
-        });
-    }
-
-    emitProcessMonitorStop() {
-        this.emitProcessActivity('monitor_stopped', {
-            name: 'process-monitor',
-            action: 'application_closed'
-        }, {
-            message: 'Process Monitor application stopped',
-            level: 'info',
-            category: 'system'
-        });
-    }
-
     emitProcessRefresh(processCount) {
-        this.emitProcessActivity('process_refresh', {
+        this.emitActivity('process_refresh', {
             action: 'data_refresh',
             processCount
         }, {
@@ -115,7 +80,7 @@ export class ActivityEmitter {
     }
 
     emitRealTimeToggle(enabled) {
-        this.emitProcessActivity('realtime_toggle', {
+        this.emitActivity('realtime_toggle', {
             action: 'monitoring_mode_change',
             realTimeEnabled: enabled
         }, {
@@ -126,7 +91,7 @@ export class ActivityEmitter {
     }
 
     emitProcessSorted(column, direction) {
-        this.emitProcessActivity('process_sorted', {
+        this.emitActivity('process_sorted', {
             action: 'data_sorted',
             sortColumn: column,
             sortDirection: direction
@@ -138,7 +103,7 @@ export class ActivityEmitter {
     }
 
     emitProcessSelected(process) {
-        this.emitProcessActivity('process_selected', {
+        this.emitActivity('process_selected', {
             name: process.name,
             pid: process.pid,
             action: 'process_inspected'
@@ -147,18 +112,5 @@ export class ActivityEmitter {
             level: 'debug',
             category: 'system'
         });
-    }
-
-    // Control methods
-    enable() {
-        this.isEnabled = true;
-    }
-
-    disable() {
-        this.isEnabled = false;
-    }
-
-    isActivityEmissionEnabled() {
-        return this.isEnabled;
     }
 }

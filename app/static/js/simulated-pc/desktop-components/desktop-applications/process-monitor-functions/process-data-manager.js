@@ -46,7 +46,7 @@ export class ProcessDataManager {
             process.memory = Math.max(1, process.memory + (Math.random() - 0.5) * 10);
             
             // Check for high resource usage
-            if (this.activityEmitter) {
+            if (this.activityEmitter && typeof this.activityEmitter.emitHighResourceUsage === 'function') {
                 if (process.cpu > 50 && oldCpu <= 50) {
                     this.activityEmitter.emitHighResourceUsage(process, 'cpu', process.cpu.toFixed(1));
                 }
@@ -67,7 +67,7 @@ export class ProcessDataManager {
                 const processToRemove = this.processes[randomIndex];
                 
                 // Emit termination before removal
-                if (this.activityEmitter) {
+                if (this.activityEmitter && typeof this.activityEmitter.emitProcessTerminated === 'function') {
                     this.activityEmitter.emitProcessTerminated(processToRemove, 'system');
                 }
                 
@@ -92,12 +92,12 @@ export class ProcessDataManager {
         
         this.processes.push(newProcess);
         
-        // Emit process start activity
-        if (this.activityEmitter) {
+        // Emit process start activity with safety checks
+        if (this.activityEmitter && typeof this.activityEmitter.emitProcessStart === 'function') {
             this.activityEmitter.emitProcessStart(newProcess);
             
             // If suspicious, emit security alert
-            if (newProcess.suspicious) {
+            if (newProcess.suspicious && typeof this.activityEmitter.emitSuspiciousProcess === 'function') {
                 this.activityEmitter.emitSuspiciousProcess(newProcess);
             }
         }

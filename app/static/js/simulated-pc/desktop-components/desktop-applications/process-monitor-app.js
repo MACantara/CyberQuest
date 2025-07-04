@@ -4,7 +4,7 @@ import { ProcessSorter } from './process-monitor-functions/process-sorter.js';
 import { ProcessRenderer } from './process-monitor-functions/process-renderer.js';
 import { ProcessEventHandler } from './process-monitor-functions/process-event-handler.js';
 import { NotificationManager } from './process-monitor-functions/notification-manager.js';
-import { ActivityEmitter } from './process-monitor-functions/activity-emitter.js';
+import { ProcessMonitorActivityEmitter } from './process-monitor-functions/process-monitor-activity-emitter.js';
 
 export class ProcessMonitorApp extends WindowBase {
     constructor() {
@@ -16,10 +16,16 @@ export class ProcessMonitorApp extends WindowBase {
         this.selectedProcess = null;
         this.isRealTime = true;
         
-        // Initialize activity emitter first
-        this.activityEmitter = new ActivityEmitter();
+        // Set up activity emission system with error handling
+        try {
+            this.setupActivityEmission(ProcessMonitorActivityEmitter);
+        } catch (error) {
+            console.warn('Failed to set up activity emission for process monitor:', error.message);
+            // Continue without activity emission if it fails
+            this.activityEmitter = null;
+        }
         
-        // Initialize modular components with activity emitter
+        // Initialize modular components with activity emitter (may be null)
         this.dataManager = new ProcessDataManager(this.activityEmitter);
         this.sorter = new ProcessSorter();
         this.renderer = new ProcessRenderer(this.dataManager, this.sorter);
@@ -167,12 +173,9 @@ export class ProcessMonitorApp extends WindowBase {
     }
 
     initialize() {
-        super.initialize();
+        super.initialize(); // This will emit app started event
         this.eventHandler.bindEvents(this.windowElement);
         this.eventHandler.startRealTimeUpdates();
-        
-        // Emit application start activity
-        this.activityEmitter.emitProcessMonitorStart();
         
         // Check for suspicious processes on startup
         this.checkForSuspiciousProcesses();
@@ -187,9 +190,9 @@ export class ProcessMonitorApp extends WindowBase {
     }
 
     checkForSuspiciousProcesses() {
-        // Check for existing suspicious processes and emit alerts
+        // Check for existing suspicious processes and emit alerts with safety check
         this.dataManager.getProcesses().forEach(process => {
-            if (process.suspicious) {
+            if (process.suspicious && this.activityEmitter && typeof this.activityEmitter.emitSuspiciousProcess === 'function') {
                 this.activityEmitter.emitSuspiciousProcess(process);
             }
         });
@@ -217,12 +220,7 @@ export class ProcessMonitorApp extends WindowBase {
     }
 
     cleanup() {
-        // Emit application stop activity
-        if (this.activityEmitter) {
-            this.activityEmitter.emitProcessMonitorStop();
-        }
-        
         this.eventHandler.cleanup();
-        super.cleanup();
+        super.cleanup(); // This will emit app stopped event
     }
 }

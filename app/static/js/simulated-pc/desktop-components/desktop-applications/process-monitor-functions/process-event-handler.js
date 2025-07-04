@@ -62,8 +62,8 @@ export class ProcessEventHandler {
         this.dataManager.refreshProcessData();
         this.app.updateContent();
         
-        // Emit refresh activity
-        if (this.app.activityEmitter) {
+        // Emit refresh activity with safety check
+        if (this.app.activityEmitter && typeof this.app.activityEmitter.emitProcessRefresh === 'function') {
             this.app.activityEmitter.emitProcessRefresh(this.dataManager.getProcessCount());
         }
     }
@@ -77,8 +77,8 @@ export class ProcessEventHandler {
             this.stopRealTimeUpdates();
         }
         
-        // Emit real-time toggle activity
-        if (this.app.activityEmitter) {
+        // Emit real-time toggle activity with safety check
+        if (this.app.activityEmitter && typeof this.app.activityEmitter.emitRealTimeToggle === 'function') {
             this.app.activityEmitter.emitRealTimeToggle(this.app.isRealTime);
         }
         
@@ -89,8 +89,8 @@ export class ProcessEventHandler {
         this.sorter.setSortColumn(column);
         this.sorter.sortProcesses(this.dataManager.getProcesses());
         
-        // Emit sort activity
-        if (this.app.activityEmitter) {
+        // Emit sort activity with safety check
+        if (this.app.activityEmitter && typeof this.app.activityEmitter.emitProcessSorted === 'function') {
             this.app.activityEmitter.emitProcessSorted(
                 this.sorter.getSortColumn(), 
                 this.sorter.getSortDirection()
@@ -103,8 +103,8 @@ export class ProcessEventHandler {
     handleSelectProcess(pid) {
         this.app.selectedProcess = this.dataManager.getProcessByPid(pid);
         
-        // Emit process selection activity
-        if (this.app.activityEmitter && this.app.selectedProcess) {
+        // Emit process selection activity with safety check
+        if (this.app.activityEmitter && this.app.selectedProcess && typeof this.app.activityEmitter.emitProcessSelected === 'function') {
             this.app.activityEmitter.emitProcessSelected(this.app.selectedProcess);
         }
         
@@ -131,8 +131,8 @@ export class ProcessEventHandler {
         const confirmed = confirm(`Are you sure you want to end process "${this.app.selectedProcess.name}" (PID: ${this.app.selectedProcess.pid})?`);
         if (!confirmed) return;
 
-        // Emit termination activity before removing
-        if (this.app.activityEmitter) {
+        // Emit termination activity before removing with safety check
+        if (this.app.activityEmitter && typeof this.app.activityEmitter.emitProcessTerminated === 'function') {
             this.app.activityEmitter.emitProcessTerminated(this.app.selectedProcess, 'user');
         }
 
