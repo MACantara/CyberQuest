@@ -67,18 +67,33 @@ export class ProcessRenderer {
                 </div>
             </div>
             ${riskFactors.length > 0 ? `
-                <div class="mt-4 p-3 bg-yellow-900 border border-yellow-700 rounded">
-                    <h4 class="font-semibold text-yellow-400 mb-2"><i class="bi bi-info-circle mr-2"></i>Risk Analysis</h4>
-                    <ul class="text-yellow-300 text-sm space-y-1">
-                        ${riskFactors.map(factor => `<li>• ${factor}</li>`).join('')}
-                    </ul>
-                    <p class="text-yellow-300 text-xs mt-2">Review these indicators and determine if this process requires further investigation.</p>
+                <div class="mt-3 p-2 bg-yellow-900/50 border border-yellow-700/50 rounded">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-semibold text-yellow-400 text-sm flex items-center">
+                            <i class="bi bi-info-circle mr-2"></i>Risk Analysis
+                        </h4>
+                        <span class="text-yellow-300 text-xs">${riskFactors.length} indicator${riskFactors.length > 1 ? 's' : ''}</span>
+                    </div>
+                    <div class="flex flex-wrap gap-1">
+                        ${riskFactors.map(factor => `
+                            <span class="inline-block bg-yellow-800/30 text-yellow-200 text-xs px-2 py-1 rounded border border-yellow-600/30">
+                                ${factor}
+                            </span>
+                        `).join('')}
+                    </div>
+                    <p class="text-yellow-300/80 text-xs mt-2 italic">
+                        Investigate these indicators to determine if action is needed.
+                    </p>
                 </div>
             ` : ''}
             ${process.suspicious ? `
-                <div class="mt-4 p-3 bg-red-900 border border-red-700 rounded">
-                    <h4 class="font-semibold text-red-400 mb-2"><i class="bi bi-exclamation-triangle mr-2"></i>Flagged as Suspicious</h4>
-                    <p class="text-red-300 text-sm">This process has been flagged for suspicious activity. Consider terminating if unauthorized.</p>
+                <div class="mt-3 p-2 bg-red-900/50 border border-red-700/50 rounded">
+                    <h4 class="font-semibold text-red-400 text-sm flex items-center">
+                        <i class="bi bi-exclamation-triangle mr-2"></i>Flagged as Suspicious
+                    </h4>
+                    <p class="text-red-300/80 text-xs mt-1">
+                        This process has been flagged for suspicious activity. Consider terminating if unauthorized.
+                    </p>
                 </div>
             ` : ''}
         `;
