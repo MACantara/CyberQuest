@@ -69,7 +69,7 @@ export class LogUI {
             refreshBtn.disabled = true;
         }
 
-        // Simulate refresh with new log entries
+        // Only generate new logs when explicitly refreshed by user
         setTimeout(() => {
             this.app.logManager.generateNewLogs();
             this.updateLogCounts();

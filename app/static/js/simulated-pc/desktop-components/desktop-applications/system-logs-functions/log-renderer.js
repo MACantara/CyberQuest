@@ -4,17 +4,8 @@ export class LogRenderer {
     }
 
     generateInitialLogs() {
-        // Sort logs from oldest to newest (reverse chronological order)
-        const logs = [
-            { timestamp: '2024-12-20 14:30:15', level: 'INFO', source: 'system', category: 'startup', message: 'System boot completed successfully', details: 'Boot time: 45.2s' },
-            { timestamp: '2024-12-20 14:30:20', level: 'WARN', source: 'security', category: 'authentication', message: 'Multiple failed login attempts detected', details: 'User: admin, IP: 192.168.1.100' },
-            { timestamp: '2024-12-20 14:30:25', level: 'ERROR', source: 'network', category: 'connection', message: 'Connection timeout to external server', details: 'Server: 203.0.113.50:443' },
-            { timestamp: '2024-12-20 14:30:30', level: 'CRITICAL', source: 'security', category: 'malware', message: 'Malware signature detected', details: 'File: suspicious_file.exe, Action: Quarantined' },
-            { timestamp: '2024-12-20 14:30:35', level: 'INFO', source: 'system', category: 'service', message: 'Firewall service started', details: 'PID: 1234' },
-            { timestamp: '2024-12-20 14:30:40', level: 'WARN', source: 'network', category: 'traffic', message: 'Unusual traffic pattern detected', details: 'Source: 10.0.0.15, Protocol: ICMP' }
-        ];
-
-        return logs.map(log => this.createLogElement(log)).join('');
+        // Return empty string - no default logs on initialization
+        return '';
     }
 
     createLogElement(log) {

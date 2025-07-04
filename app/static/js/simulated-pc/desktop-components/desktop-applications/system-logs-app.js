@@ -133,15 +133,6 @@ export class SystemLogsApp extends WindowBase {
         // Test activity monitoring setup
         console.log('[SystemLogsApp] Initialized with activity monitoring');
         
-        // Add a test log entry to verify the system is working
-        this.addLogEntry({
-            timestamp: new Date().toLocaleString(),
-            level: 'info',
-            source: 'system',
-            category: 'startup',
-            message: 'System Logs application started - monitoring active',
-            details: 'Activity monitoring enabled'
-        });
     }
     
     setupPageNavigationListener() {
