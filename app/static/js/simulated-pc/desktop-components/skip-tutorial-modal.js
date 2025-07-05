@@ -1,3 +1,5 @@
+import { tutorialInteractionManager } from '../tutorials/tutorial-interaction-manager.js';
+
 export class SkipTutorialModal {
     constructor(container) {
         this.container = container;
@@ -10,6 +12,7 @@ export class SkipTutorialModal {
             if (this.isVisible) return;
 
             this.createModal();
+            this.registerModalInteractions();
             this.bindEvents(resolve);
             this.animateIn();
             this.isVisible = true;
@@ -67,6 +70,22 @@ export class SkipTutorialModal {
         this.container.appendChild(this.modal);
     }
 
+    registerModalInteractions() {
+        // Allow interactions with the entire modal and its contents
+        if (this.modal) {
+            tutorialInteractionManager.allowInteractionFor(this.modal);
+            
+            // Specifically allow the buttons and modal content
+            const modalContent = this.modal.querySelector('#modal-content');
+            const cancelBtn = this.modal.querySelector('#cancel-skip');
+            const confirmBtn = this.modal.querySelector('#confirm-skip');
+            
+            if (modalContent) tutorialInteractionManager.allowInteractionFor(modalContent);
+            if (cancelBtn) tutorialInteractionManager.allowInteractionFor(cancelBtn);
+            if (confirmBtn) tutorialInteractionManager.allowInteractionFor(confirmBtn);
+        }
+    }
+
     bindEvents(resolve) {
         const cancelBtn = this.modal.querySelector('#cancel-skip');
         const confirmBtn = this.modal.querySelector('#confirm-skip');
@@ -118,6 +137,18 @@ export class SkipTutorialModal {
 
     hide() {
         if (!this.isVisible) return;
+        
+        // Remove interaction allowances before hiding
+        if (this.modal) {
+            tutorialInteractionManager.disallowInteractionFor(this.modal);
+            const modalContent = this.modal.querySelector('#modal-content');
+            const cancelBtn = this.modal.querySelector('#cancel-skip');
+            const confirmBtn = this.modal.querySelector('#confirm-skip');
+            
+            if (modalContent) tutorialInteractionManager.disallowInteractionFor(modalContent);
+            if (cancelBtn) tutorialInteractionManager.disallowInteractionFor(cancelBtn);
+            if (confirmBtn) tutorialInteractionManager.disallowInteractionFor(confirmBtn);
+        }
         
         this.modal.classList.add('opacity-0');
         const content = this.modal.querySelector('#modal-content');
