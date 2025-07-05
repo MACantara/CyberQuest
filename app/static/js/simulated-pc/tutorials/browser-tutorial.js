@@ -1,4 +1,5 @@
 import { BaseTutorial } from './base-tutorial.js';
+import { tutorialInteractionManager } from './tutorial-interaction-manager.js';
 
 export class BrowserTutorial extends BaseTutorial {
     constructor(desktop) {
@@ -57,20 +58,56 @@ export class BrowserTutorial extends BaseTutorial {
         ];
     }
 
-    start() {
-        if (this.isActive) return;
+    async start() {
+        // Ensure browser is open
+        if (!this.desktop.windowManager.windows.has('browser')) {
+            try {
+                await this.desktop.windowManager.openBrowser();
+                // Wait for the window to fully render
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            } catch (error) {
+                console.error('Browser application not found:', error);
+                return;
+            }
+        }
+
+        // Initialize CSS first
+        this.initializeCSS();
         
+        // Enable tutorial mode
+        tutorialInteractionManager.enableTutorialMode();
+        
+        // Set tutorial state
         this.isActive = true;
-        this.currentStep = 0;
+        this.stepManager.reset();
         
-        // Wait for browser app to be fully loaded and page to render
+        // Create overlay before showing any steps
+        this.createOverlay();
+        
+        // Ensure browser window is in front
+        this.ensureBrowserInFront();
+        
+        // Set global reference
+        window.browserTutorial = this;
+        window.currentTutorial = this;
+        
+        // Wait for browser page to be fully loaded and then start showing steps
         setTimeout(() => {
-            this.createOverlay();
             this.showStep();
-        }, 1500); // Increased delay to ensure page is fully rendered
+        }, 1500);
     }
 
-    // Override to add browser-specific tutorial behaviors
+    ensureBrowserInFront() {
+        const browserWindow = document.querySelector('.window[data-window-id="browser"]') || 
+                             document.querySelector('.window .browser') ||
+                             document.querySelector('[id*="browser"]')?.closest('.window');
+        
+        if (browserWindow) {
+            browserWindow.style.zIndex = '51';
+            browserWindow.style.position = 'relative';
+        }
+    }
+
     showStep() {
         if (this.currentStep >= this.steps.length) {
             this.complete();
@@ -78,6 +115,7 @@ export class BrowserTutorial extends BaseTutorial {
         }
 
         const step = this.steps[this.currentStep];
+        let target = document.querySelector(step.target);
         
         // Special handling for URL bar step - ensure URL is set
         if (step.target === '#browser-url-bar') {
@@ -85,9 +123,34 @@ export class BrowserTutorial extends BaseTutorial {
             if (urlBar && !urlBar.value) {
                 urlBar.value = 'https://suspicious-site.com';
             }
+            target = urlBar;
+        }
+        
+        if (!target) {
+            console.warn(`Tutorial target not found: ${step.target}`);
+            this.nextStep();
+            return;
         }
 
-        super.showStep();
+        // Clear previous highlights and interactions
+        this.clearHighlights();
+        this.clearStepInteractions();
+        
+        // Highlight target element
+        this.highlightElement(target, step.action);
+        
+        // Setup interactions for this step
+        this.setupStepInteraction(step, target);
+        
+        // Position and show tooltip
+        this.showTooltip(target, step);
+    }
+
+    complete() {
+        super.complete();
+        
+        // Store completion in localStorage
+        localStorage.setItem('cyberquest_browser_tutorial_completed', 'true');
     }
 
     // Override base class methods for proper tutorial flow
@@ -111,20 +174,24 @@ export class BrowserTutorial extends BaseTutorial {
         return 'Finish Tutorial';
     }
 
-    // Enhanced completion with browser-specific actions
-    complete() {
-        super.complete();
+    // Static methods for auto-start functionality
+    static shouldAutoStart() {
+        const tutorialCompleted = localStorage.getItem('cyberquest_browser_tutorial_completed');
+        const browserOpened = localStorage.getItem('cyberquest_browser_opened');
         
-        // Store completion in localStorage
-        localStorage.setItem('cyberquest_browser_tutorial_completed', 'true');
+        return browserOpened && !tutorialCompleted;
     }
 
-    // Static methods
-    static shouldAutoStart() {
-        return !localStorage.getItem('cyberquest_browser_tutorial_completed');
+    static startTutorial(desktop) {
+        console.log('Starting Browser tutorial...');
+        const tutorial = new BrowserTutorial(desktop);
+        window.browserTutorial = tutorial;
+        tutorial.start();
+        return tutorial;
     }
 
     static restart() {
         localStorage.removeItem('cyberquest_browser_tutorial_completed');
+        localStorage.removeItem('cyberquest_browser_opened');
     }
 }
