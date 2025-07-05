@@ -49,6 +49,7 @@ export class HelpCommand extends BaseCommand {
             '  date         - Show current date and time',
             '  uname [-a]   - Show system information',
             '  nmap [opts]  - Network mapper and security scanner',
+            '  ping [opts]  - Send ICMP packets to test connectivity',
             '  help [cmd]   - Show this help or help for specific command',
             '',
             'Tips:',

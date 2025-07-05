@@ -11,6 +11,7 @@ import { EchoCommand } from './terminal-commands/echo-command.js';
 import { DateCommand } from './terminal-commands/date-command.js';
 import { UnameCommand } from './terminal-commands/uname-command.js';
 import { NmapCommand } from './terminal-commands/nmap-command.js';
+import { PingCommand } from './terminal-commands/ping-command.js';
 
 export class CommandRegistry {
     constructor(processor) {
@@ -31,7 +32,8 @@ export class CommandRegistry {
             'echo': new EchoCommand(this.processor),
             'date': new DateCommand(this.processor),
             'uname': new UnameCommand(this.processor),
-            'nmap': new NmapCommand(this.processor)
+            'nmap': new NmapCommand(this.processor),
+            'ping': new PingCommand(this.processor)
         };
     }
 
