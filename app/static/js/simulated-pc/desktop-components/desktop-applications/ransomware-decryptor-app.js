@@ -5,7 +5,7 @@ export class RansomwareDecryptorApp extends WindowBase {
     constructor() {
         super('ransomware-decryptor', 'Ransomware Decryptor', {
             width: '75%',
-            height: '70%'
+            height: '78%'
         });
         
         this.encryptedFiles = [];
