@@ -50,6 +50,7 @@ export class TutorialInteractionManager {
                 border: 1px solid rgba(16, 185, 129, 0.3);
                 background: rgba(31, 41, 55, 0.95);
                 z-index: 9999 !important;
+                pointer-events: auto !important;
             }
             
             .tutorial-btn-primary:hover {
@@ -76,7 +77,7 @@ export class TutorialInteractionManager {
                 position: relative;
             }
             
-            /* Disable interactions during tutorial */
+            /* Disable most interactions during tutorial but allow essential ones */
             .tutorial-mode-active .window-header {
                 pointer-events: none !important;
                 cursor: default !important;
@@ -106,11 +107,20 @@ export class TutorialInteractionManager {
                 cursor: default !important;
             }
             
-            .tutorial-mode-active .window-content {
+            .tutorial-mode-active .window-content > *:not(.tutorial-highlight):not(.tutorial-interactive):not(.tutorial-interactive-allowed) {
                 pointer-events: none !important;
             }
             
-            /* Allow tutorial elements to be interactive */
+            /* Force allow tutorial elements to be interactive */
+            .tutorial-tooltip,
+            .tutorial-tooltip *,
+            .tutorial-highlight,
+            .tutorial-interactive,
+            .tutorial-interactive-allowed {
+                pointer-events: auto !important;
+            }
+            
+            /* Ensure tutorial tooltips are always on top and interactive */
             .tutorial-mode-active .tutorial-tooltip {
                 pointer-events: auto !important;
                 z-index: 9999 !important;
@@ -121,15 +131,12 @@ export class TutorialInteractionManager {
             }
             
             .tutorial-mode-active .tutorial-overlay {
-                pointer-events: auto !important;
+                pointer-events: none !important;
             }
             
-            /* Allow highlighted elements to be interactive if needed */
-            .tutorial-mode-active .tutorial-highlight {
-                pointer-events: auto !important;
-            }
-            
-            /* Allow interactive tutorial elements */
+            /* Allow highlighted elements to be interactive */
+            .tutorial-mode-active .tutorial-highlight,
+            .tutorial-mode-active .tutorial-interactive,
             .tutorial-mode-active .tutorial-interactive-allowed {
                 pointer-events: auto !important;
             }
@@ -214,6 +221,9 @@ export class TutorialInteractionManager {
     isInteractionAllowed(element) {
         if (!element) return false;
         
+        // Always allow tutorial tooltip interactions (highest priority)
+        if (element.closest('.tutorial-tooltip')) return true;
+        
         // Check if the element itself is allowed
         if (this.allowedElements.has(element)) return true;
         
@@ -224,12 +234,10 @@ export class TutorialInteractionManager {
             currentElement = currentElement.parentElement;
         }
         
-        // Always allow tutorial tooltip interactions
-        if (element.closest('.tutorial-tooltip')) return true;
-        
         // Always allow interactions with highlighted tutorial elements
         if (element.classList.contains('tutorial-interactive') || 
-            element.classList.contains('tutorial-highlight')) return true;
+            element.classList.contains('tutorial-highlight') ||
+            element.classList.contains('tutorial-interactive-allowed')) return true;
         
         return false;
     }

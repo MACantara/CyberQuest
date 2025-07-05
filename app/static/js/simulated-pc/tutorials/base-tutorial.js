@@ -160,6 +160,17 @@ export class BaseTutorial {
 
     showTooltip(target, step) {
         this.tooltip.innerHTML = this.createTooltipContent(step);
+        
+        // Ensure tooltip is always interactive
+        this.tooltip.style.pointerEvents = 'auto';
+        this.tooltip.style.zIndex = '9999';
+        
+        // Allow interactions with all tooltip elements
+        tutorialInteractionManager.allowInteractionFor(this.tooltip);
+        this.tooltip.querySelectorAll('*').forEach(element => {
+            tutorialInteractionManager.allowInteractionFor(element);
+        });
+        
         this.positionTooltip(target, step.position);
         
         // Show tooltip with animation
@@ -173,6 +184,7 @@ export class BaseTutorial {
     }
 
     createTooltipContent(step) {
+        const skipHandler = this.getSkipTutorialHandler().replace('()', '');
         return `
             <div class="tutorial-content">
                 <div class="flex items-start justify-between mb-4">
@@ -180,7 +192,7 @@ export class BaseTutorial {
                         <h3 class="text-lg font-bold text-white mb-2">${step.title}</h3>
                         <div class="text-xs text-gray-400 mb-2">${this.stepManager.getStepProgressText()}</div>
                     </div>
-                    <button class="tutorial-close text-gray-400 hover:text-white transition-colors duration-200 ml-4 text-xs cursor-pointer" onclick="${this.getSkipTutorialHandler()}">
+                    <button class="tutorial-close text-gray-400 hover:text-white transition-colors duration-200 ml-4 text-xs cursor-pointer" onclick="${skipHandler}()">
                         Skip tutorial
                     </button>
                 </div>
