@@ -1,12 +1,10 @@
 import { BaseCommand } from './base-command.js';
 import { targetHostRegistry } from './target-hosts/target-host-registry.js';
-import { pageRegistry } from '../../browser-functions/pages/page-registry.js';
 
 export class PingCommand extends BaseCommand {
     constructor(processor) {
         super(processor);
         this.targetRegistry = targetHostRegistry;
-        this.pageRegistry = pageRegistry;
         this.isRunning = false;
     }
 
@@ -162,59 +160,6 @@ export class PingCommand extends BaseCommand {
         
         if (target) {
             return target;
-        }
-
-        // Try to resolve through page registry for web-based targets
-        const page = this.pageRegistry.getPageByUrl(`https://${targetStr}`) || 
-                    this.pageRegistry.getPageByUrl(`http://${targetStr}`);
-        if (page) {
-            return {
-                hostname: targetStr,
-                ip: page.ipAddress,
-                security: page.security,
-                isWebTarget: true
-            };
-        }
-        
-        // Check if target matches any page hostname patterns
-        const allPages = this.pageRegistry.getPageList();
-        for (const pageConfig of allPages) {
-            try {
-                const url = new URL(pageConfig.url);
-                if (url.hostname === targetStr || url.hostname.includes(targetStr)) {
-                    return {
-                        hostname: targetStr,
-                        ip: pageConfig.ipAddress,
-                        security: pageConfig.security,
-                        isWebTarget: true
-                    };
-                }
-            } catch (urlError) {
-                // Skip invalid URLs
-                continue;
-            }
-        }
-
-        // Check if the target string is an IP address that exists in page registry
-        for (const pageConfig of allPages) {
-            if (pageConfig.ipAddress === targetStr) {
-                try {
-                    const url = new URL(pageConfig.url);
-                    return {
-                        hostname: url.hostname,
-                        ip: targetStr,
-                        security: pageConfig.security,
-                        isWebTarget: true
-                    };
-                } catch (urlError) {
-                    return {
-                        hostname: targetStr,
-                        ip: targetStr,
-                        security: pageConfig.security,
-                        isWebTarget: true
-                    };
-                }
-            }
         }
 
         // Handle common network targets and manually defined hosts
