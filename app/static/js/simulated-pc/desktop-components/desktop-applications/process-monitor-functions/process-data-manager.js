@@ -4,7 +4,17 @@ export class ProcessDataManager {
     constructor(activityEmitter = null) {
         this.processes = [];
         this.activityEmitter = activityEmitter;
+        this.tutorialMode = false; // Add tutorial mode flag
         this.generateProcessData();
+    }
+
+    // Add method to control tutorial mode
+    setTutorialMode(enabled) {
+        this.tutorialMode = enabled;
+    }
+
+    isTutorialMode() {
+        return this.tutorialMode;
     }
 
     generateProcessData() {
@@ -29,6 +39,12 @@ export class ProcessDataManager {
     }
 
     refreshProcessData() {
+        // Skip refresh if in tutorial mode
+        if (this.tutorialMode) {
+            console.log('Process data refresh skipped - tutorial mode active');
+            return;
+        }
+
         // Simulate process changes
         this.processes.forEach(process => {
             // Track high resource usage before updating
@@ -81,6 +97,11 @@ export class ProcessDataManager {
     }
 
     addRandomProcess() {
+        // Skip adding processes if in tutorial mode
+        if (this.tutorialMode) {
+            return;
+        }
+
         // Use the process factory to create random suspicious processes
         const newProcess = ProcessFactory.createRandomSuspiciousProcess();
         this.processes.push(newProcess);

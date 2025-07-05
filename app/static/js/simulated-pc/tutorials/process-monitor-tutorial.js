@@ -112,6 +112,9 @@ export class ProcessMonitorTutorial extends BaseTutorial {
             }
         }
 
+        // Enable tutorial mode to prevent data refreshing
+        this.enableProcessMonitorTutorialMode();
+
         // Initialize CSS first
         this.initializeCSS();
         
@@ -146,7 +149,34 @@ export class ProcessMonitorTutorial extends BaseTutorial {
         }
     }
 
+    enableProcessMonitorTutorialMode() {
+        // Find the process monitor instance and enable tutorial mode
+        const processMonitorWindow = this.desktop.windowManager.windows.get('process-monitor');
+        if (processMonitorWindow && processMonitorWindow.processMonitor) {
+            const processDataManager = processMonitorWindow.processMonitor.processDataManager;
+            if (processDataManager && typeof processDataManager.setTutorialMode === 'function') {
+                processDataManager.setTutorialMode(true);
+                console.log('Process Monitor tutorial mode enabled');
+            }
+        }
+    }
+
+    disableProcessMonitorTutorialMode() {
+        // Find the process monitor instance and disable tutorial mode
+        const processMonitorWindow = this.desktop.windowManager.windows.get('process-monitor');
+        if (processMonitorWindow && processMonitorWindow.processMonitor) {
+            const processDataManager = processMonitorWindow.processMonitor.processDataManager;
+            if (processDataManager && typeof processDataManager.setTutorialMode === 'function') {
+                processDataManager.setTutorialMode(false);
+                console.log('Process Monitor tutorial mode disabled');
+            }
+        }
+    }
+
     complete() {
+        // Disable tutorial mode before completing
+        this.disableProcessMonitorTutorialMode();
+        
         super.complete();
         
         // Mark tutorial as completed
@@ -313,22 +343,31 @@ export class ProcessMonitorTutorial extends BaseTutorial {
         
         const clickHandler = (e) => {
             e.stopPropagation();
+            e.preventDefault(); // Prevent the actual refresh
             
-            // Trigger the actual refresh functionality
-            if (target.onclick) {
-                target.onclick(e);
-            } else {
-                // Fallback: trigger click event
-                target.click();
-            }
+            // Simulate the visual feedback of clicking the button without refreshing data
+            target.classList.add('active');
+            setTimeout(() => {
+                target.classList.remove('active');
+            }, 150);
             
-            this.showInteractionSuccess(step, interaction);
+            // Show a brief "refreshing" indicator without actually refreshing
+            const originalText = target.textContent;
+            target.textContent = 'Refreshing...';
+            target.disabled = true;
             
-            if (interaction.autoAdvance) {
-                setTimeout(() => {
-                    this.nextStep();
-                }, interaction.advanceDelay || 1000);
-            }
+            setTimeout(() => {
+                target.textContent = originalText;
+                target.disabled = false;
+                
+                this.showInteractionSuccess(step, interaction);
+                
+                if (interaction.autoAdvance) {
+                    setTimeout(() => {
+                        this.nextStep();
+                    }, interaction.advanceDelay || 1000);
+                }
+            }, 500);
         };
         
         target.addEventListener('click', clickHandler, { once: true });
