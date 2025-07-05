@@ -1,10 +1,12 @@
 import { BaseCommand } from './base-command.js';
 import { targetHostRegistry } from './target-hosts/target-host-registry.js';
+import { PageRegistry } from '../../browser-functions/pages/page-registry.js';
 
 export class PingCommand extends BaseCommand {
     constructor(processor) {
         super(processor);
         this.targetRegistry = targetHostRegistry;
+        this.pageRegistry = new PageRegistry();
         this.isRunning = false;
     }
 
@@ -154,6 +156,69 @@ export class PingCommand extends BaseCommand {
         await sendPing();
     }
 
+    resolveTarget(targetStr) {
+        // Try to resolve through target registry first
+        let target = this.targetRegistry.resolveTarget(targetStr);
+        
+        if (target) {
+            return target;
+        }
+
+        // Try to resolve through page registry for web-based targets
+        const page = this.pageRegistry.getPage(`https://${targetStr}`) || 
+                    this.pageRegistry.getPage(`http://${targetStr}`);
+        if (page) {
+            return {
+                hostname: targetStr,
+                ip: page.ipAddress || this.generateIpFromHostname(targetStr),
+                security: page.security,
+                isWebTarget: true
+            };
+        }
+        
+        // Check if target matches any page hostname patterns
+        const allPages = this.pageRegistry.getAllPages();
+        for (const pageConfig of allPages) {
+            const url = new URL(pageConfig.url);
+            if (url.hostname === targetStr || url.hostname.includes(targetStr)) {
+                return {
+                    hostname: targetStr,
+                    ip: pageConfig.ipAddress || this.generateIpFromHostname(targetStr),
+                    security: pageConfig.security,
+                    isWebTarget: true
+                };
+            }
+        }
+
+        // Handle common network targets for ethical hacking scenarios
+        const commonTargets = {
+            'localhost': { hostname: 'localhost', ip: '127.0.0.1' },
+            '127.0.0.1': { hostname: 'localhost', ip: '127.0.0.1' },
+            'google.com': { hostname: 'google.com', ip: '8.8.8.8' },
+            '8.8.8.8': { hostname: 'dns.google', ip: '8.8.8.8' },
+            'cloudflare.com': { hostname: 'cloudflare.com', ip: '1.1.1.1' },
+            '1.1.1.1': { hostname: 'one.one.one.one', ip: '1.1.1.1' },
+            'github.com': { hostname: 'github.com', ip: '140.82.114.4' }
+        };
+
+        return commonTargets[targetStr.toLowerCase()] || null;
+    }
+
+    generateIpFromHostname(hostname) {
+        // Generate a consistent IP address based on hostname for simulation
+        let hash = 0;
+        for (let i = 0; i < hostname.length; i++) {
+            const char = hostname.charCodeAt(i);
+            hash = ((hash << 5) - hash) + char;
+            hash = hash & hash; // Convert to 32-bit integer
+        }
+        
+        // Generate IP in 192.168.x.x range for local simulation
+        const octet3 = Math.abs(hash % 256);
+        const octet4 = Math.abs((hash >> 8) % 254) + 1; // Avoid .0 and .255
+        return `192.168.${octet3}.${octet4}`;
+    }
+
     async simulatePing(target, options, sequence) {
         // Simulate network delay
         await new Promise(resolve => setTimeout(resolve, 50 + Math.random() * 100));
@@ -190,6 +255,19 @@ export class PingCommand extends BaseCommand {
             result.warning = 'Host may be associated with malicious activity';
         }
 
+        // Add web-specific security warnings
+        if (target.isWebTarget && target.security) {
+            if (target.security.threats && target.security.threats.length > 0) {
+                result.suspicious = true;
+                result.warning = `Security threats detected: ${target.security.threats.join(', ')}`;
+            } else if (target.security.riskFactors && target.security.riskFactors.length > 0) {
+                result.suspicious = true;
+                result.warning = `Risk factors identified: ${target.security.riskFactors.slice(0, 2).join(', ')}`;
+            } else if (!target.security.isHttps) {
+                result.warning = 'Insecure HTTP connection detected';
+            }
+        }
+
         // Simulate packet loss for unreliable connections
         if (Math.random() < this.getPacketLossRate(target)) {
             return {
@@ -201,34 +279,21 @@ export class PingCommand extends BaseCommand {
         return result;
     }
 
-    resolveTarget(targetStr) {
-        // Try to resolve through target registry first
-        let target = this.targetRegistry.resolveTarget(targetStr);
-        
-        if (target) {
-            return target;
-        }
-
-        // Handle common network targets for ethical hacking scenarios
-        const commonTargets = {
-            'localhost': { hostname: 'localhost', ip: '127.0.0.1' },
-            '127.0.0.1': { hostname: 'localhost', ip: '127.0.0.1' },
-            'google.com': { hostname: 'google.com', ip: '8.8.8.8' },
-            '8.8.8.8': { hostname: 'dns.google', ip: '8.8.8.8' },
-            'cloudflare.com': { hostname: 'cloudflare.com', ip: '1.1.1.1' },
-            '1.1.1.1': { hostname: 'one.one.one.one', ip: '1.1.1.1' },
-            'github.com': { hostname: 'github.com', ip: '140.82.114.4' }
-        };
-
-        return commonTargets[targetStr.toLowerCase()] || null;
-    }
-
     isHostReachable(target) {
         // Localhost is always reachable
         if (target.ip === '127.0.0.1') return true;
         
         // Targets in registry are reachable
         if (this.targetRegistry.hasHost(target.hostname) || this.targetRegistry.hasHost(target.ip)) {
+            return true;
+        }
+
+        // Web targets from page registry are reachable
+        if (target.isWebTarget) {
+            // Simulate some unreachable malicious sites
+            if (target.security && target.security.threats && target.security.threats.includes('malware')) {
+                return Math.random() > 0.3; // 70% chance malicious sites are unreachable
+            }
             return true;
         }
 
@@ -247,6 +312,20 @@ export class PingCommand extends BaseCommand {
         // Local network (192.168.x.x) - low latency
         if (target.ip && target.ip.startsWith('192.168.')) {
             return 1 + Math.random() * 3;
+        }
+
+        // Web targets - variable latency based on security level
+        if (target.isWebTarget && target.security) {
+            let baseLatency = 15; // Default web latency
+            
+            // Suspicious sites might have higher latency (overloaded servers, proxies, etc.)
+            if (target.security.threats && target.security.threats.length > 0) {
+                baseLatency += 20 + Math.random() * 30; // Higher latency for malicious sites
+            } else if (!target.security.isHttps) {
+                baseLatency += 5 + Math.random() * 10; // Slightly higher for HTTP
+            }
+            
+            return baseLatency + Math.random() * 10;
         }
 
         // Internet hosts - higher latency
@@ -290,6 +369,16 @@ export class PingCommand extends BaseCommand {
         
         // Localhost - no packet loss
         if (target.ip === '127.0.0.1') return 0;
+        
+        // Web targets with security issues - higher packet loss
+        if (target.isWebTarget && target.security) {
+            if (target.security.threats && target.security.threats.length > 0) {
+                return 0.05 + Math.random() * 0.10; // 5-15% packet loss for malicious sites
+            } else if (!target.security.isHttps) {
+                return 0.02 + Math.random() * 0.03; // 2-5% packet loss for HTTP sites
+            }
+            return 0.005 + Math.random() * 0.01; // Very low packet loss for secure sites
+        }
         
         // Internet - slight packet loss
         return 0.01 + Math.random() * 0.02; // 1-3% packet loss
@@ -358,11 +447,14 @@ export class PingCommand extends BaseCommand {
         this.addOutput('  ping -i 0.2 192.168.100.10');
         this.addOutput('  ping -t localhost');
         this.addOutput('  ping -v -c 10 8.8.8.8');
+        this.addOutput('  ping suspicious-site.com');
+        this.addOutput('  ping cyberquest.com');
         this.addOutput('');
         this.addOutput('NOTE:', 'text-yellow-400');
         this.addOutput('  Use Ctrl+C to stop continuous pings');
         this.addOutput('  Ping can help identify network connectivity issues');
         this.addOutput('  Unusual response times may indicate network problems');
+        this.addOutput('  Security warnings may appear for suspicious websites');
     }
 
     // Method to stop ping (could be called by Ctrl+C handler)
