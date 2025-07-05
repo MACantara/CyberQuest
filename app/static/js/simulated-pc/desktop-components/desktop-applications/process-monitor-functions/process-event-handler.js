@@ -146,7 +146,7 @@ export class ProcessEventHandler {
         }
     }
 
-    handleKillProcess() {
+    async handleKillProcess() {
         if (!this.app.selectedProcess) return;
 
         // Show confirmation
@@ -170,8 +170,19 @@ export class ProcessEventHandler {
         
         this.app.updateContent();
         
-        // Show success message
+        // Show notification
         this.app.showNotification('Process terminated successfully', 'success');
+
+        // if no malware processes remain, start level-three dialogue
+        const remainingMalware = this.dataManager.getProcesses()
+            .filter(p => p.category === 'malware').length;
+        if (remainingMalware === 0) {
+            import('../../../dialogues/levels/level-three/malware-scanning-intro.js')
+                .then(({ MalwareScanningIntroDialogue }) => {
+                    new MalwareScanningIntroDialogue(this.app.desktop).start();
+                })
+                .catch(err => console.error('Failed to launch scan dialogue:', err));
+        }
     }
 
     startRealTimeUpdates() {
