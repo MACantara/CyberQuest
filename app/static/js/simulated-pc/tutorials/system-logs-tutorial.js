@@ -1,4 +1,5 @@
 import { BaseTutorial } from './base-tutorial.js';
+import { tutorialInteractionManager } from './tutorial-interaction-manager.js';
 
 export class SystemLogsTutorial extends BaseTutorial {
     constructor(desktop) {
@@ -56,7 +57,7 @@ export class SystemLogsTutorial extends BaseTutorial {
             {
                 target: '#logs-container',
                 title: 'System Logs Analysis Complete!',
-                content: 'Excellent! You\'ve learned to analyze system logs effectively. Monitor logs regularly, investigate warnings promptly, and respond immediately to critical errors for robust cybersecurity.',
+                content: 'Excellent! You\'ve learned to analyze system logs effectively: filtering by severity levels, monitoring different sources, analyzing log structures, and tracking system health indicators. Monitor logs regularly and investigate warnings promptly for robust cybersecurity!',
                 action: 'highlight',
                 position: 'left',
                 final: true
@@ -64,20 +65,56 @@ export class SystemLogsTutorial extends BaseTutorial {
         ];
     }
 
-    start() {
-        if (this.isActive) return;
+    async start() {
+        // Ensure system logs is open
+        if (!this.desktop.windowManager.windows.has('system-logs')) {
+            try {
+                await this.desktop.windowManager.openSystemLogs();
+                // Wait for the window to fully render
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            } catch (error) {
+                console.error('System Logs application not found:', error);
+                return;
+            }
+        }
+
+        // Initialize CSS first
+        this.initializeCSS();
         
+        // Enable tutorial mode
+        tutorialInteractionManager.enableTutorialMode();
+        
+        // Set tutorial state
         this.isActive = true;
-        this.currentStep = 0;
+        this.stepManager.reset();
         
-        // Wait for system logs to be fully loaded
+        // Create overlay before showing any steps
+        this.createOverlay();
+        
+        // Ensure system logs window is in front
+        this.ensureSystemLogsInFront();
+        
+        // Set global reference
+        window.systemLogsTutorial = this;
+        window.currentTutorial = this;
+        
+        // Wait for system logs to be fully loaded and then start showing steps
         setTimeout(() => {
-            this.createOverlay();
             this.showStep();
         }, 1000);
     }
 
-    // Override to add system logs specific tutorial behaviors
+    ensureSystemLogsInFront() {
+        const systemLogsWindow = document.querySelector('.window[data-window-id="system-logs"]') || 
+                                document.querySelector('.window .system-logs') ||
+                                document.querySelector('[id*="system-logs"]')?.closest('.window');
+        
+        if (systemLogsWindow) {
+            systemLogsWindow.style.zIndex = '51';
+            systemLogsWindow.style.position = 'relative';
+        }
+    }
+
     showStep() {
         if (this.currentStep >= this.steps.length) {
             this.complete();
@@ -85,6 +122,7 @@ export class SystemLogsTutorial extends BaseTutorial {
         }
 
         const step = this.steps[this.currentStep];
+        let target = document.querySelector(step.target);
         
         // Special handling for filter steps - ensure dropdowns are visible
         if (step.target.includes('filter')) {
@@ -95,6 +133,7 @@ export class SystemLogsTutorial extends BaseTutorial {
                 this.nextStep();
                 return;
             }
+            target = filterElement;
         }
 
         // Special handling for logs container - logs are populated by real activity only
@@ -104,12 +143,37 @@ export class SystemLogsTutorial extends BaseTutorial {
                 // No need to trigger refresh since auto-refresh is removed
                 // Logs will appear naturally from system activities
             }
+            target = logsContainer;
+        }
+        
+        if (!target) {
+            console.warn(`Tutorial target not found: ${step.target}`);
+            this.nextStep();
+            return;
         }
 
-        super.showStep();
+        // Clear previous highlights and interactions
+        this.clearHighlights();
+        this.clearStepInteractions();
+        
+        // Highlight target element
+        this.highlightElement(target, step.action);
+        
+        // Setup interactions for this step
+        this.setupStepInteraction(step, target);
+        
+        // Position and show tooltip
+        this.showTooltip(target, step);
     }
 
-    // Override base class methods
+    complete() {
+        super.complete();
+        
+        // Store completion in localStorage
+        localStorage.setItem('cyberquest_systemlogs_tutorial_completed', 'true');
+    }
+
+    // Override base class methods for proper tutorial flow
     getSkipTutorialHandler() {
         return 'window.systemLogsTutorial.showSkipModal()';
     }
@@ -130,19 +194,24 @@ export class SystemLogsTutorial extends BaseTutorial {
         return 'Finish Tutorial';
     }
 
-    complete() {
-        super.complete();
+    // Static methods for auto-start functionality
+    static shouldAutoStart() {
+        const tutorialCompleted = localStorage.getItem('cyberquest_systemlogs_tutorial_completed');
+        const systemLogsOpened = localStorage.getItem('cyberquest_systemlogs_opened');
         
-        // Store completion in localStorage
-        localStorage.setItem('cyberquest_systemlogs_tutorial_completed', 'true');
+        return systemLogsOpened && !tutorialCompleted;
     }
 
-    // Static methods
-    static shouldAutoStart() {
-        return !localStorage.getItem('cyberquest_systemlogs_tutorial_completed');
+    static startTutorial(desktop) {
+        console.log('Starting System Logs tutorial...');
+        const tutorial = new SystemLogsTutorial(desktop);
+        window.systemLogsTutorial = tutorial;
+        tutorial.start();
+        return tutorial;
     }
 
     static restart() {
         localStorage.removeItem('cyberquest_systemlogs_tutorial_completed');
+        localStorage.removeItem('cyberquest_systemlogs_opened');
     }
 }
