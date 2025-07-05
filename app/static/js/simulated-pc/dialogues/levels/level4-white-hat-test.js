@@ -1,11 +1,11 @@
 import { BaseDialogue } from '../base-dialogue.js';
 
-export class Level7WhiteHatTestDialogue extends BaseDialogue {
+export class Level4WhiteHatTestDialogue extends BaseDialogue {
     constructor(desktop, character = 'instructor') {
         super(desktop, character);
         this.messages = [
             {
-                text: "Welcome to Level 7: The White Hat Test. In this level, you'll practice ethical hacking and responsible vulnerability disclosure."
+                text: "Welcome to Level 4: The White Hat Test. In this level, you'll practice ethical hacking and responsible vulnerability disclosure."
             },
             {
                 text: "As an ethical hacker, you'll need to think like an attacker to find and document security vulnerabilities before they can be exploited maliciously."
@@ -23,12 +23,12 @@ export class Level7WhiteHatTestDialogue extends BaseDialogue {
     }
 
     onComplete() {
-        localStorage.setItem('cyberquest_level_7_started', 'true');
+        localStorage.setItem('cyberquest_level_4_started', 'true');
         
         // Open the Terminal application for ethical hacking tools
         if (window.applicationLauncher) {
             setTimeout(async () => {
-                await window.applicationLauncher.launchForLevel(7, 'terminal', 'Terminal');
+                await window.applicationLauncher.launchForLevel(4, 'terminal', 'Terminal');
             }, 500);
         }
     }
@@ -40,7 +40,7 @@ export class Level7WhiteHatTestDialogue extends BaseDialogue {
     static shouldAutoStart(levelId) {
         const currentLevel = localStorage.getItem('cyberquest_current_level');
         const levelStarted = localStorage.getItem(`cyberquest_level_${levelId}_started`);
-        return currentLevel === '7' && !levelStarted;
+        return currentLevel === '4' && !levelStarted;
     }
 
     static markLevelStarted(levelId) {
@@ -48,6 +48,6 @@ export class Level7WhiteHatTestDialogue extends BaseDialogue {
     }
 
     static isCompleted() {
-        return localStorage.getItem('cyberquest_level_7_completed') === 'true';
+        return localStorage.getItem('cyberquest_level_4_completed') === 'true';
     }
 }
