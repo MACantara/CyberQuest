@@ -44,42 +44,6 @@ CYBERSECURITY_LEVELS = [
     },
     {
         'id': 4,
-        'name': 'The Password Heist',
-        'description': 'Defend against brute-force attacks and implement strong password practices.',
-        'difficulty': 'Intermediate',
-        'xp_reward': 175,
-        'icon': 'bi-key',
-        'category': 'Authentication',
-        'estimated_time': '20 minutes',
-        'skills': ['Password Security', 'MFA Setup', 'Access Control'],
-        'unlocked': True
-    },
-    {
-        'id': 5,
-        'name': 'The Social Web',
-        'description': 'Navigate ethical social media behavior and protect your digital footprint.',
-        'difficulty': 'Intermediate',
-        'xp_reward': 180,
-        'icon': 'bi-people',
-        'category': 'Privacy Protection',
-        'estimated_time': '25 minutes',
-        'skills': ['Privacy Settings', 'Social Engineering Defense', 'Digital Footprint'],
-        'unlocked': True
-    },
-    {
-        'id': 6,
-        'name': 'The Adaptive Adversary',
-        'description': 'Confront AI-powered threats that adapt to your behavior patterns.',
-        'difficulty': 'Advanced',
-        'xp_reward': 300,
-        'icon': 'bi-robot',
-        'category': 'AI Security',
-        'estimated_time': '25 minutes',
-        'skills': ['AI Threat Recognition', 'Advanced Defense', 'Adaptive Security'],
-        'unlocked': True
-    },
-    {
-        'id': 7,
         'name': 'The White Hat Test',
         'description': 'Practice ethical hacking and responsible vulnerability disclosure.',
         'difficulty': 'Expert',
@@ -91,19 +55,7 @@ CYBERSECURITY_LEVELS = [
         'unlocked': True
     },
     {
-        'id': 8,
-        'name': 'Operation Blackout',
-        'description': 'Defend critical infrastructure from a coordinated DDoS attack.',
-        'difficulty': 'Expert',
-        'xp_reward': 400,
-        'icon': 'bi-shield-exclamation',
-        'category': 'Incident Response',
-        'estimated_time': '35 minutes',
-        'skills': ['Incident Response', 'Crisis Management', 'Damage Control'],
-        'unlocked': True
-    },
-    {
-        'id': 9,
+        'id': 5,
         'name': 'The Hunt for The Null',
         'description': 'Final mission: Use advanced digital forensics to expose The Null\'s identity.',
         'difficulty': 'Master',
