@@ -20,13 +20,6 @@ export class BrowserTutorial extends BaseTutorial {
                 position: 'bottom'
             },
             {
-                target: '#suspicious-bookmark',
-                title: 'Suspicious Site Bookmark',
-                content: 'This bookmark is marked with a warning triangle. In real life, avoid clicking on suspicious links or bookmarks that seem too good to be true.',
-                action: 'pulse',
-                position: 'bottom'
-            },
-            {
                 target: '#scam-headline',
                 title: 'Too Good to Be True Headlines',
                 content: 'This headline is a classic scam indicator! No legitimate website gives away millions of dollars. If it sounds too good to be true, it definitely is!',
