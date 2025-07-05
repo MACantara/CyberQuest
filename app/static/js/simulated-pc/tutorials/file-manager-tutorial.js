@@ -1,4 +1,5 @@
 import { BaseTutorial } from './base-tutorial.js';
+import { tutorialInteractionManager } from './tutorial-interaction-manager.js';
 
 export class FileManagerTutorial extends BaseTutorial {
     constructor(desktop) {
@@ -64,20 +65,56 @@ export class FileManagerTutorial extends BaseTutorial {
         ];
     }
 
-    start() {
-        if (this.isActive) return;
+    async start() {
+        // Ensure file manager is open
+        if (!this.desktop.windowManager.windows.has('file-manager')) {
+            try {
+                await this.desktop.windowManager.openFileManager();
+                // Wait for the window to fully render
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            } catch (error) {
+                console.error('File Manager application not found:', error);
+                return;
+            }
+        }
+
+        // Initialize CSS first
+        this.initializeCSS();
         
+        // Enable tutorial mode
+        tutorialInteractionManager.enableTutorialMode();
+        
+        // Set tutorial state
         this.isActive = true;
-        this.currentStep = 0;
+        this.stepManager.reset();
         
-        // Wait for file manager to be fully loaded
+        // Create overlay before showing any steps
+        this.createOverlay();
+        
+        // Ensure file manager window is in front
+        this.ensureFileManagerInFront();
+        
+        // Set global reference
+        window.fileManagerTutorial = this;
+        window.currentTutorial = this;
+        
+        // Wait for file manager to be fully loaded and then start showing steps
         setTimeout(() => {
-            this.createOverlay();
             this.showStep();
         }, 1000);
     }
 
-    // Override to add file manager specific tutorial behaviors
+    ensureFileManagerInFront() {
+        const fileManagerWindow = document.querySelector('.window[data-window-id="file-manager"]') || 
+                                 document.querySelector('.window .file-manager') ||
+                                 document.querySelector('[id*="file-manager"]')?.closest('.window');
+        
+        if (fileManagerWindow) {
+            fileManagerWindow.style.zIndex = '51';
+            fileManagerWindow.style.position = 'relative';
+        }
+    }
+
     showStep() {
         if (this.currentStep >= this.steps.length) {
             this.complete();
@@ -85,6 +122,7 @@ export class FileManagerTutorial extends BaseTutorial {
         }
 
         const step = this.steps[this.currentStep];
+        let target = document.querySelector(step.target);
         
         // Special handling for file grid step - ensure we're in the home directory
         if (step.target === '#file-grid') {
@@ -97,17 +135,42 @@ export class FileManagerTutorial extends BaseTutorial {
                     homeBtn.click();
                     // Wait a moment for the view to update
                     setTimeout(() => {
-                        super.showStep();
+                        this.showStep();
                     }, 300);
                     return;
                 }
             }
+            target = document.querySelector('#file-grid');
+        }
+        
+        if (!target) {
+            console.warn(`Tutorial target not found: ${step.target}`);
+            this.nextStep();
+            return;
         }
 
-        super.showStep();
+        // Clear previous highlights and interactions
+        this.clearHighlights();
+        this.clearStepInteractions();
+        
+        // Highlight target element
+        this.highlightElement(target, step.action);
+        
+        // Setup interactions for this step
+        this.setupStepInteraction(step, target);
+        
+        // Position and show tooltip
+        this.showTooltip(target, step);
     }
 
-    // Override base class methods
+    complete() {
+        super.complete();
+        
+        // Store completion in localStorage
+        localStorage.setItem('cyberquest_filemanager_tutorial_completed', 'true');
+    }
+
+    // Override base class methods for proper tutorial flow
     getSkipTutorialHandler() {
         return 'window.fileManagerTutorial.showSkipModal()';
     }
@@ -128,19 +191,24 @@ export class FileManagerTutorial extends BaseTutorial {
         return 'Finish Tutorial';
     }
 
-    complete() {
-        super.complete();
+    // Static methods for auto-start functionality
+    static shouldAutoStart() {
+        const tutorialCompleted = localStorage.getItem('cyberquest_filemanager_tutorial_completed');
+        const fileManagerOpened = localStorage.getItem('cyberquest_filemanager_opened');
         
-        // Store completion in localStorage
-        localStorage.setItem('cyberquest_filemanager_tutorial_completed', 'true');
+        return fileManagerOpened && !tutorialCompleted;
     }
 
-    // Static methods
-    static shouldAutoStart() {
-        return !localStorage.getItem('cyberquest_filemanager_tutorial_completed');
+    static startTutorial(desktop) {
+        console.log('Starting File Manager tutorial...');
+        const tutorial = new FileManagerTutorial(desktop);
+        window.fileManagerTutorial = tutorial;
+        tutorial.start();
+        return tutorial;
     }
 
     static restart() {
         localStorage.removeItem('cyberquest_filemanager_tutorial_completed');
+        localStorage.removeItem('cyberquest_filemanager_opened');
     }
 }
