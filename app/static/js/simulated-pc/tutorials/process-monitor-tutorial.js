@@ -1,5 +1,3 @@
-// TODO: Fix tutorial flow for the 2nd and 3rd to the last steps when selecting a process and ending it respectively
-
 import { BaseTutorial } from './base-tutorial.js';
 import { tutorialInteractionManager } from './tutorial-interaction-manager.js';
 
