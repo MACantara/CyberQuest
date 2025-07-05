@@ -91,6 +91,10 @@ export class ApplicationLauncher {
         return await this.launchApplication('process-monitor');
     }
 
+    async launchMalwareScanner() {
+        return await this.launchApplication('malware-scanner');
+    }
+
     // Level-specific app launching with logging
     async launchForLevel(levelId, appId, appName = null) {
         const success = await this.launchApplication(appId, appName);

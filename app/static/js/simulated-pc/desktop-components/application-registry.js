@@ -5,6 +5,7 @@ import { EmailApp } from './desktop-applications/email-app.js';
 import { NetworkMonitorApp } from './desktop-applications/network-monitor-app.js';
 import { SystemLogsApp } from './desktop-applications/system-logs-app.js';
 import { ProcessMonitorApp } from './desktop-applications/process-monitor-app.js';
+import { MalwareScannerApp } from './desktop-applications/malware-scanner-app.js';
 
 export class ApplicationRegistry {
     constructor() {
@@ -64,6 +65,14 @@ export class ApplicationRegistry {
                 startMethod: 'startProcessMonitorTutorial',
                 iconClass: 'bi-cpu',
                 title: 'Process Monitor'
+            },
+            'malware-scanner': {
+                class: MalwareScannerApp,
+                storageKey: 'cyberquest_malwarescanner_opened',
+                tutorialMethod: 'shouldAutoStartMalwareScanner',
+                startMethod: 'startMalwareScannerTutorial',
+                iconClass: 'bi-shield-exclamation',
+                title: 'Malware Scanner'
             }
         };
     }

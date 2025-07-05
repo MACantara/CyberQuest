@@ -10,7 +10,8 @@ export class DesktopIcons {
             { id: 'email', name: 'Email Client', icon: 'bi-envelope', action: 'openEmailClient' },
             { id: 'wireshark', name: 'Network Monitor', icon: 'bi-router', action: 'openNetworkMonitor' },
             { id: 'logs', name: 'System Logs', icon: 'bi-journal-text', action: 'openSystemLogs' },
-            { id: 'process-monitor', name: 'Process Monitor', icon: 'bi-cpu', action: 'openProcessMonitor' }
+            { id: 'process-monitor', name: 'Process Monitor', icon: 'bi-cpu', action: 'openProcessMonitor' },
+            { id: 'malware-scanner', name: 'Malware Scanner', icon: 'bi-shield-exclamation', action: 'openMalwareScanner' }
         ];
         this.init();
     }

@@ -344,6 +344,10 @@ export class WindowManager {
         return await this.applicationLauncher.openApplication('process-monitor', 'Process Monitor');
     }
 
+    async openMalwareScanner() {
+        return await this.applicationLauncher.launchMalwareScanner();
+    }
+
     // Utility methods for batch operations
     closeAllWindows() {
         const windowIds = Array.from(this.windows.keys());
