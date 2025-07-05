@@ -211,35 +211,16 @@ export class TerminalApp extends WindowBase {
     }
 
     addOutput(text, className = '') {
-        const output = this.windowElement?.querySelector('#terminal-output');
-        if (!output) return;
+        const outputDiv = this.windowElement.querySelector('#terminal-output');
+        if (!outputDiv) return;
 
         const line = document.createElement('div');
+        line.className = className;
         line.textContent = text;
-        
-        if (className) {
-            switch (className) {
-                case 'error':
-                    line.className = 'text-red-400';
-                    break;
-                case 'command':
-                    line.className = 'text-white';
-                    break;
-                case 'directory':
-                    line.className = 'text-blue-400';
-                    break;
-                case 'suspicious-file':
-                    line.className = 'text-red-400';
-                    break;
-                case 'file':
-                    line.className = 'text-green-400';
-                    break;
-                default:
-                    line.className = className;
-            }
-        }
-        
-        output.appendChild(line);
+        outputDiv.appendChild(line);
+
+        // Auto-scroll to bottom
+        outputDiv.scrollTop = outputDiv.scrollHeight;
     }
 
     addPromptLine() {
