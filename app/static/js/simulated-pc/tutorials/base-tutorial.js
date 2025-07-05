@@ -1,5 +1,6 @@
 import { SkipTutorialModal } from '../desktop-components/skip-tutorial-modal.js';
 import { TutorialStepManager } from './tutorial-step-manager.js';
+import { tutorialInteractionManager } from './tutorial-interaction-manager.js';
 
 export class BaseTutorial {
     constructor(desktop) {
@@ -77,6 +78,8 @@ export class BaseTutorial {
         const currentStep = this.steps[this.stepManager.getCurrentStepIndex()];
         if (currentStep?.interactive) {
             element.classList.add('tutorial-interactive');
+            // Allow interactions on this element
+            tutorialInteractionManager.allowInteractionFor(element);
         } else {
             element.classList.add('tutorial-highlight');
         }
@@ -184,6 +187,31 @@ export class BaseTutorial {
     }
 
     setupStepInteraction(step, target) {
+        if (step.interactive) {
+            // Allow interactions for this specific element and its children
+            tutorialInteractionManager.allowInteractionFor(target);
+            
+            // For process table interactions, also allow interactions on table rows
+            if (step.target.includes('process-table') || step.target.includes('.process-row')) {
+                const processTable = document.querySelector('#process-table-body');
+                if (processTable) {
+                    tutorialInteractionManager.allowInteractionFor(processTable);
+                    // Allow interactions on all process rows
+                    processTable.querySelectorAll('.process-row').forEach(row => {
+                        tutorialInteractionManager.allowInteractionFor(row);
+                    });
+                }
+            }
+            
+            // For column header interactions
+            if (step.target.includes('sort-') || step.target.includes('-header')) {
+                const headers = document.querySelectorAll('#process-table-header th');
+                headers.forEach(header => {
+                    tutorialInteractionManager.allowInteractionFor(header);
+                });
+            }
+        }
+        
         return this.stepManager.setupStepInteraction(step, target);
     }
 
@@ -196,23 +224,57 @@ export class BaseTutorial {
     }
 
     clearStepInteractions() {
+        // Clear allowed interactions
+        tutorialInteractionManager.clearAllowedInteractions();
         return this.stepManager.clearStepInteractions();
     }
 
     nextStep() {
+        // Clear current step interactions before moving to next
+        this.clearStepInteractions();
         this.stepManager.nextStep();
     }
 
     previousStep() {
+        // Clear current step interactions before moving to previous
+        this.clearStepInteractions();
         this.stepManager.previousStep();
     }
 
     showStep() {
-        this.stepManager.showStep();
+        if (this.stepManager.getCurrentStepIndex() >= this.steps.length) {
+            this.complete();
+            return;
+        }
+
+        const step = this.steps[this.stepManager.getCurrentStepIndex()];
+        let target = document.querySelector(step.target);
+        
+        if (!target) {
+            console.warn(`Tutorial target not found: ${step.target}`);
+            this.nextStep();
+            return;
+        }
+
+        // Clear previous highlights and interactions
+        this.clearHighlights();
+        this.clearStepInteractions();
+        
+        // Highlight target element
+        this.highlightElement(target, step.action);
+        
+        // Setup interactions for this step
+        this.setupStepInteraction(step, target);
+        
+        // Position and show tooltip
+        this.showTooltip(target, step);
     }
 
     cleanup() {
         this.isActive = false;
+        
+        // Disable tutorial mode
+        tutorialInteractionManager.disableTutorialMode();
         
         // Clear step manager
         this.stepManager.cleanup();
@@ -227,8 +289,9 @@ export class BaseTutorial {
             this.tooltip = null;
         }
         
-        // Clear highlights
+        // Clear highlights and interactions
         this.clearHighlights();
+        this.clearStepInteractions();
     }
 
     clearHighlights() {
@@ -332,6 +395,10 @@ export class BaseTutorial {
     // Initialize CSS when tutorial starts
     start() {
         this.initializeCSS();
+        
+        // Enable tutorial mode
+        tutorialInteractionManager.enableTutorialMode();
+        
         // Default implementation - child classes should override
         this.isActive = true;
         this.stepManager.reset();

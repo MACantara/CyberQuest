@@ -219,13 +219,156 @@ export class ProcessMonitorTutorial extends BaseTutorial {
             return;
         }
 
-        // Clear previous highlights
+        // Clear previous highlights and interactions
         this.clearHighlights();
+        this.clearStepInteractions();
+        
+        // For interactive steps, set up additional interaction allowances
+        if (step.interactive) {
+            this.setupInteractiveStep(step, target);
+        }
         
         // Highlight target element
         this.highlightElement(target, step.action);
         
+        // Setup interactions for this step
+        this.setupStepInteraction(step, target);
+        
         // Position and show tooltip
         this.showTooltip(target, step);
+    }
+
+    setupInteractiveStep(step, target) {
+        // Special handling for different interactive steps
+        if (step.target === '#refresh-btn') {
+            // Allow interactions with the refresh button and any loading indicators
+            const refreshBtn = document.querySelector('#refresh-btn');
+            if (refreshBtn) {
+                this.desktop.tutorialInteractionManager?.allowInteractionFor(refreshBtn);
+            }
+        }
+        
+        if (step.target === '#sort-cpu') {
+            // Allow interactions with all table headers for sorting
+            const headers = document.querySelectorAll('#process-table-header th');
+            headers.forEach(header => {
+                this.desktop.tutorialInteractionManager?.allowInteractionFor(header);
+            });
+        }
+        
+        if (step.target.includes('.process-row')) {
+            // Allow interactions with all process rows
+            const processTable = document.querySelector('#process-table-body');
+            if (processTable) {
+                this.desktop.tutorialInteractionManager?.allowInteractionFor(processTable);
+                processTable.querySelectorAll('.process-row').forEach(row => {
+                    this.desktop.tutorialInteractionManager?.allowInteractionFor(row);
+                });
+            }
+        }
+    }
+
+    // Override setupStepInteraction to handle process monitor specific interactions
+    setupStepInteraction(step, target) {
+        const result = super.setupStepInteraction(step, target);
+        
+        // Additional setup for process monitor interactive steps
+        if (step.interactive) {
+            switch (step.target) {
+                case '#refresh-btn':
+                    this.setupRefreshInteraction(step, target);
+                    break;
+                case '#sort-cpu':
+                    this.setupSortInteraction(step, target);
+                    break;
+                case '#process-table-body .process-row:first-child':
+                    this.setupProcessRowInteraction(step, target);
+                    break;
+            }
+        }
+        
+        return result;
+    }
+
+    setupRefreshInteraction(step, target) {
+        const interaction = step.interaction;
+        
+        const clickHandler = (e) => {
+            e.stopPropagation();
+            
+            // Trigger the actual refresh functionality
+            if (target.onclick) {
+                target.onclick(e);
+            } else {
+                // Fallback: trigger click event
+                target.click();
+            }
+            
+            this.showInteractionSuccess(step, interaction);
+            
+            if (interaction.autoAdvance) {
+                setTimeout(() => {
+                    this.nextStep();
+                }, interaction.advanceDelay || 1000);
+            }
+        };
+        
+        target.addEventListener('click', clickHandler, { once: true });
+        this.interactionListeners.push({ element: target, event: 'click', handler: clickHandler });
+    }
+
+    setupSortInteraction(step, target) {
+        const interaction = step.interaction;
+        
+        const clickHandler = (e) => {
+            e.stopPropagation();
+            
+            // Trigger the actual sort functionality
+            if (target.onclick) {
+                target.onclick(e);
+            } else {
+                target.click();
+            }
+            
+            this.showInteractionSuccess(step, interaction);
+            
+            if (interaction.autoAdvance) {
+                setTimeout(() => {
+                    this.nextStep();
+                }, interaction.advanceDelay || 1500);
+            }
+        };
+        
+        target.addEventListener('click', clickHandler, { once: true });
+        this.interactionListeners.push({ element: target, event: 'click', handler: clickHandler });
+    }
+
+    setupProcessRowInteraction(step, target) {
+        const interaction = step.interaction;
+        
+        const clickHandler = (e) => {
+            e.stopPropagation();
+            
+            // Add selected class to show the process is selected
+            document.querySelectorAll('.process-row.selected').forEach(row => {
+                row.classList.remove('selected');
+            });
+            target.classList.add('selected');
+            
+            this.showInteractionSuccess(step, interaction);
+            
+            if (interaction.autoAdvance) {
+                setTimeout(() => {
+                    this.nextStep();
+                }, interaction.advanceDelay || 2000);
+            }
+        };
+        
+        // Allow clicking on any process row, not just the first one
+        const processRows = document.querySelectorAll('.process-row');
+        processRows.forEach(row => {
+            row.addEventListener('click', clickHandler, { once: true });
+            this.interactionListeners.push({ element: row, event: 'click', handler: clickHandler });
+        });
     }
 }

@@ -1,9 +1,11 @@
 export class TutorialInteractionManager {
     constructor() {
         this.isActive = false;
+        this.allowedElements = new Set();
         this.preventContextMenu = this.preventContextMenu.bind(this);
         this.preventKeyboardShortcuts = this.preventKeyboardShortcuts.bind(this);
         this.preventDragDrop = this.preventDragDrop.bind(this);
+        this.preventClicks = this.preventClicks.bind(this);
         this.initializeCSS();
     }
 
@@ -133,6 +135,11 @@ export class TutorialInteractionManager {
         // Disable drag and drop during tutorial
         document.addEventListener('dragstart', this.preventDragDrop, true);
         document.addEventListener('drop', this.preventDragDrop, true);
+        
+        // Disable clicks except on allowed elements
+        document.addEventListener('click', this.preventClicks, true);
+        document.addEventListener('mousedown', this.preventClicks, true);
+        document.addEventListener('mouseup', this.preventClicks, true);
     }
 
     // Disable tutorial mode - re-enable all interactions
@@ -141,6 +148,9 @@ export class TutorialInteractionManager {
         
         this.isActive = false;
         document.body.classList.remove('tutorial-mode-active');
+        
+        // Clear allowed elements
+        this.allowedElements.clear();
         
         // Re-enable right-click context menu
         document.removeEventListener('contextmenu', this.preventContextMenu, true);
@@ -151,12 +161,74 @@ export class TutorialInteractionManager {
         // Re-enable drag and drop
         document.removeEventListener('dragstart', this.preventDragDrop, true);
         document.removeEventListener('drop', this.preventDragDrop, true);
+        
+        // Re-enable clicks
+        document.removeEventListener('click', this.preventClicks, true);
+        document.removeEventListener('mousedown', this.preventClicks, true);
+        document.removeEventListener('mouseup', this.preventClicks, true);
+    }
+
+    // Allow interactions for a specific element
+    allowInteractionFor(element) {
+        if (element) {
+            this.allowedElements.add(element);
+            element.classList.add('tutorial-interactive-allowed');
+        }
+    }
+
+    // Remove interaction allowance for a specific element
+    disallowInteractionFor(element) {
+        if (element) {
+            this.allowedElements.delete(element);
+            element.classList.remove('tutorial-interactive-allowed');
+        }
+    }
+
+    // Clear all allowed interactions
+    clearAllowedInteractions() {
+        this.allowedElements.forEach(element => {
+            element.classList.remove('tutorial-interactive-allowed');
+        });
+        this.allowedElements.clear();
+    }
+
+    // Check if an element or its ancestors are allowed to interact
+    isInteractionAllowed(element) {
+        if (!element) return false;
+        
+        // Check if the element itself is allowed
+        if (this.allowedElements.has(element)) return true;
+        
+        // Check if any parent element is allowed
+        let currentElement = element.parentElement;
+        while (currentElement) {
+            if (this.allowedElements.has(currentElement)) return true;
+            currentElement = currentElement.parentElement;
+        }
+        
+        // Always allow tutorial tooltip interactions
+        if (element.closest('.tutorial-tooltip')) return true;
+        
+        // Always allow interactions with highlighted tutorial elements
+        if (element.classList.contains('tutorial-interactive') || 
+            element.classList.contains('tutorial-highlight')) return true;
+        
+        return false;
+    }
+
+    // Prevent clicks except on allowed elements
+    preventClicks(e) {
+        if (!this.isInteractionAllowed(e.target)) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
     }
 
     // Prevent context menu during tutorial
     preventContextMenu(e) {
-        // Allow context menu only on tutorial elements
-        if (!e.target.closest('.tutorial-tooltip') && !e.target.closest('.tutorial-highlight')) {
+        // Allow context menu only on tutorial elements or allowed elements
+        if (!this.isInteractionAllowed(e.target)) {
             e.preventDefault();
             e.stopPropagation();
             return false;
@@ -195,7 +267,7 @@ export class TutorialInteractionManager {
 
     // Prevent drag and drop during tutorial
     preventDragDrop(e) {
-        if (!e.target.closest('.tutorial-tooltip')) {
+        if (!this.isInteractionAllowed(e.target)) {
             e.preventDefault();
             e.stopPropagation();
             return false;
