@@ -1,127 +1,10 @@
 import { BaseCommand } from './base-command.js';
+import { targetHostRegistry } from './target-hosts/target-host-registry.js';
 
 export class NmapCommand extends BaseCommand {
     constructor(processor) {
         super(processor);
-        this.targetHosts = this.initializeTargetHosts();
-        this.vulnerabilityScripts = this.initializeVulnScripts();
-    }
-
-    initializeTargetHosts() {
-        return {
-            'vote.municipality.gov': {
-                ip: '192.168.100.10',
-                hostname: 'vote.municipality.gov',
-                description: 'SecureVote Pro Main Server',
-                ports: {
-                    22: { service: 'ssh', version: 'OpenSSH 8.2', state: 'open', banner: 'SSH-2.0-OpenSSH_8.2' },
-                    80: { service: 'http', version: 'Apache 2.4.41', state: 'open', banner: 'Apache/2.4.41 (Ubuntu)' },
-                    443: { service: 'https', version: 'Apache 2.4.41', state: 'open', banner: 'Apache/2.4.41 (Ubuntu) SSL/TLS' },
-                    3306: { service: 'mysql', version: 'MySQL 8.0.25', state: 'open', banner: 'MySQL 8.0.25-0ubuntu0.20.04.1' },
-                    8080: { service: 'http-alt', version: 'Jetty 9.4.39', state: 'open', banner: 'Jetty(9.4.39.v20210325)' }
-                },
-                os: 'Linux Ubuntu 20.04.3 LTS',
-                uptime: '15 days, 3:42:15'
-            },
-            'vote-db.municipality.gov': {
-                ip: '192.168.100.11',
-                hostname: 'vote-db.municipality.gov',
-                description: 'SecureVote Pro Database Server',
-                ports: {
-                    22: { service: 'ssh', version: 'OpenSSH 8.2', state: 'open', banner: 'SSH-2.0-OpenSSH_8.2' },
-                    3306: { service: 'mysql', version: 'MySQL 8.0.25', state: 'open', banner: 'MySQL 8.0.25-0ubuntu0.20.04.1' },
-                    5432: { service: 'postgresql', version: 'PostgreSQL 13.4', state: 'open', banner: 'PostgreSQL 13.4' }
-                },
-                os: 'Linux Ubuntu 20.04.3 LTS',
-                uptime: '15 days, 3:41:02'
-            },
-            'vote-admin.municipality.gov': {
-                ip: '192.168.100.12',
-                hostname: 'vote-admin.municipality.gov',
-                description: 'SecureVote Pro Admin Panel',
-                ports: {
-                    22: { service: 'ssh', version: 'OpenSSH 8.2', state: 'open', banner: 'SSH-2.0-OpenSSH_8.2' },
-                    80: { service: 'http', version: 'nginx 1.18.0', state: 'open', banner: 'nginx/1.18.0 (Ubuntu)' },
-                    443: { service: 'https', version: 'nginx 1.18.0', state: 'open', banner: 'nginx/1.18.0 (Ubuntu)' },
-                    8080: { service: 'http-alt', version: 'AdminPanel 3.2.1', state: 'open', banner: 'SecureVote Admin v3.2.1' }
-                },
-                os: 'Linux Ubuntu 20.04.3 LTS',
-                uptime: '15 days, 3:40:18'
-            },
-            '192.168.100.0/24': {
-                description: 'Municipality Network Range',
-                hosts: ['192.168.100.10', '192.168.100.11', '192.168.100.12']
-            }
-        };
-    }
-
-    initializeVulnScripts() {
-        return {
-            'http-sql-injection': {
-                'vote.municipality.gov:80': [
-                    'SQL injection vulnerability found in /voter-lookup endpoint',
-                    'Parameter: voter_id appears to be vulnerable to SQL injection',
-                    'Payload: \' OR 1=1-- successfully executed',
-                    'CRITICAL: Database access possible through injection'
-                ],
-                'vote.municipality.gov:443': [
-                    'SQL injection vulnerability found in /voter-lookup endpoint (HTTPS)',
-                    'Same vulnerability present on secure connection'
-                ]
-            },
-            'http-stored-xss': {
-                'vote.municipality.gov:80': [
-                    'Stored XSS vulnerability found in /results-comments endpoint',
-                    'User input not properly sanitized in comment system',
-                    'Payload: <script>alert("XSS")</script> successfully stored',
-                    'HIGH: Potential for session hijacking and admin impersonation'
-                ]
-            },
-            'http-directory-traversal': {
-                'vote.municipality.gov:80': [
-                    'Directory traversal vulnerability found',
-                    'Path: /admin/../../../etc/passwd accessible',
-                    'MEDIUM: Local file inclusion possible'
-                ],
-                'vote-admin.municipality.gov:8080': [
-                    'Directory traversal in admin panel',
-                    'Config files accessible via path traversal',
-                    'Found: /admin/../config/database.conf',
-                    'CRITICAL: Database credentials exposed'
-                ]
-            },
-            'http-default-accounts': {
-                'vote-admin.municipality.gov:8080': [
-                    'Default credentials detected:',
-                    'Username: admin',
-                    'Password: password',
-                    'CRITICAL: Default admin credentials active'
-                ]
-            },
-            'ssl-cert': {
-                'vote.municipality.gov:443': [
-                    'SSL Certificate Information:',
-                    'Subject: CN=vote.municipality.gov',
-                    'Issuer: Self-signed certificate',
-                    'Valid from: 2024-01-01 to 2025-01-01',
-                    'WARNING: Self-signed certificate - potential MITM risk'
-                ]
-            },
-            'mysql-info': {
-                'vote.municipality.gov:3306': [
-                    'MySQL Server Information:',
-                    'Version: 8.0.25-0ubuntu0.20.04.1',
-                    'Authentication: mysql_native_password',
-                    'Databases: information_schema, mysql, performance_schema, voting_system'
-                ],
-                'vote-db.municipality.gov:3306': [
-                    'MySQL Server Information:',
-                    'Version: 8.0.25-0ubuntu0.20.04.1',
-                    'Root access: Possible with weak credentials',
-                    'CRITICAL: Weak MySQL root password detected'
-                ]
-            }
-        };
+        this.targetRegistry = targetHostRegistry;
     }
 
     execute(args) {
@@ -223,7 +106,7 @@ export class NmapCommand extends BaseCommand {
     }
 
     performScan(options) {
-        const target = this.resolveTarget(options.target);
+        const target = this.targetRegistry.resolveTarget(options.target);
         
         if (!target) {
             this.addOutput(`nmap: Failed to resolve "${options.target}"`, 'text-red-400');
@@ -260,34 +143,14 @@ export class NmapCommand extends BaseCommand {
         this.addOutput(`Nmap done: 1 IP address (1 host up) scanned in 2.15 seconds`, 'text-green-400');
     }
 
-    resolveTarget(targetStr) {
-        // Handle network ranges
-        if (targetStr.includes('/')) {
-            return this.targetHosts[targetStr];
-        }
-
-        // Direct hostname lookup
-        if (this.targetHosts[targetStr]) {
-            return this.targetHosts[targetStr];
-        }
-
-        // IP address lookup
-        for (const [hostname, data] of Object.entries(this.targetHosts)) {
-            if (data.ip === targetStr) {
-                return { ...data, hostname };
-            }
-        }
-
-        return null;
-    }
-
     performPortScan(target, options) {
-        if (target.hosts) {
+        if (target.isNetworkRange()) {
             // Network range scan
             this.addOutput('');
             this.addOutput('HOST DISCOVERY:', 'text-blue-400');
-            target.hosts.forEach(ip => {
-                const hostData = this.resolveTarget(ip);
+            const networkSummary = target.getNetworkSummary();
+            networkSummary.activeHosts.forEach(ip => {
+                const hostData = this.targetRegistry.resolveTarget(ip);
                 this.addOutput(`${ip} - ${hostData?.hostname || 'Unknown'} - UP`);
             });
             return;
@@ -310,7 +173,7 @@ export class NmapCommand extends BaseCommand {
     }
 
     performServiceScan(target, options) {
-        if (target.hosts) return;
+        if (target.isNetworkRange()) return;
 
         this.addOutput('');
         this.addOutput('SERVICE DETECTION:', 'text-blue-400');
@@ -327,7 +190,7 @@ export class NmapCommand extends BaseCommand {
     }
 
     performOsScan(target, options) {
-        if (target.hosts) return;
+        if (target.isNetworkRange()) return;
 
         this.addOutput('');
         this.addOutput('OS DETECTION:', 'text-blue-400');
@@ -337,7 +200,7 @@ export class NmapCommand extends BaseCommand {
     }
 
     performScriptScan(target, options) {
-        if (target.hosts) return;
+        if (target.isNetworkRange()) return;
 
         this.addOutput('');
         this.addOutput('SCRIPT SCAN RESULTS:', 'text-blue-400');
@@ -347,7 +210,9 @@ export class NmapCommand extends BaseCommand {
 
         // Run vulnerability scripts if requested
         if (options.vulnScan) {
-            for (const [scriptName, scriptResults] of Object.entries(this.vulnerabilityScripts)) {
+            const vulnerabilityScripts = this.targetRegistry.getVulnerabilityScripts();
+            
+            for (const [scriptName, scriptResults] of Object.entries(vulnerabilityScripts)) {
                 for (const [targetPort, results] of Object.entries(scriptResults)) {
                     if (targetPort.includes(hostname)) {
                         foundVulns = true;
@@ -389,7 +254,7 @@ export class NmapCommand extends BaseCommand {
     }
 
     getPortsToScan(target, options) {
-        if (target.hosts) return [];
+        if (target.isNetworkRange()) return [];
 
         let portsToCheck = Object.entries(target.ports);
         
@@ -402,7 +267,10 @@ export class NmapCommand extends BaseCommand {
     }
 
     getPortCount(target, options) {
-        if (target.hosts) return target.hosts.length;
+        if (target.isNetworkRange()) {
+            const networkSummary = target.getNetworkSummary();
+            return networkSummary.activeHosts.length;
+        }
         
         if (options.ports) {
             return options.ports.split(',').length;
