@@ -57,19 +57,6 @@ export class ProcessFactory {
         RootkitSystemOptimizerProcess
     ];
 
-    static suspiciousProcessClasses = [
-        'gaming_booster',
-        'fps_enhancer',
-        'tournament_optimizer',
-        'steam_achievement_unlocker',
-        'discord_nitro_generator',
-        'gaming_vpn_free',
-        'cheat_engine_pro',
-        'rank_booster_tool',
-        'skin_unlocker',
-        'lag_eliminator'
-    ];
-
     // Create all default processes for the gaming tournament scenario
     static createDefaultProcesses() {
         const processes = [];
@@ -82,56 +69,6 @@ export class ProcessFactory {
         });
 
         return processes;
-    }
-
-    // Create a random suspicious process
-    static createRandomSuspiciousProcess() {
-        const suspiciousNames = [
-            `game_booster_${Math.floor(Math.random() * 1000)}.exe`,
-            `fps_enhancer_${Math.floor(Math.random() * 100)}.exe`,
-            `tournament_optimizer.exe`,
-            `steam_achievement_unlocker.exe`,
-            `discord_nitro_generator.exe`,
-            `gaming_vpn_free.exe`,
-            `cheat_engine_pro.exe`,
-            `rank_booster_tool.exe`,
-            `skin_unlocker.exe`,
-            `lag_eliminator.exe`
-        ];
-        
-        const suspiciousExecutables = [
-            `temp\\downloads\\`,
-            `users\\public\\documents\\`,
-            `appdata\\roaming\\gaming\\`,
-            `temp\\steam_unofficial\\`,
-            `users\\downloads\\discord_tools\\`,
-            `program files (x86)\\gaming_utilities\\`,
-            `temp\\cheats\\`,
-            `appdata\\local\\temp\\`,
-            `users\\public\\gaming_mods\\`,
-            `downloads\\network_tools\\`
-        ];
-        
-        const randomIndex = Math.floor(Math.random() * suspiciousNames.length);
-        const name = suspiciousNames[randomIndex];
-        const executable = suspiciousExecutables[randomIndex] + name;
-        
-        const process = {
-            name: name,
-            executable: executable,
-            pid: Math.floor(Math.random() * 9000) + 1000,
-            cpu: Math.random() * 8 + 2, // 2-10% CPU
-            memory: Math.random() * 150 + 30, // 30-180MB
-            threads: Math.floor(Math.random() * 15) + 3, // 3-18 threads
-            priority: Math.random() > 0.5 ? 'High' : 'Normal',
-            status: 'Running',
-            startTime: new Date().toLocaleString(),
-            suspicious: false,
-            category: 'malware',
-            description: 'Potentially malicious gaming utility'
-        };
-        
-        return process;
     }
 
     // Get process categories
