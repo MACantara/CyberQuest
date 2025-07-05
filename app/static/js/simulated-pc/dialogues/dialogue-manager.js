@@ -229,7 +229,7 @@ export class DialogueManager {
         const avatars = {
             'agent': '/static/images/avatars/agent.png',
             'commander': '/static/images/avatars/commander.png',
-            'instructor': '/static/images/avatars/instructor.png',
+            'instructor': '/static/images/avatars/Cipher_Neutral_Talking.gif',
             'analyst': '/static/images/avatars/analyst.png',
             'hacker': '/static/images/avatars/hacker.png',
             'default': '/static/images/avatars/default.png'
