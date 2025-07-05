@@ -76,49 +76,7 @@ export class ProcessDataManager {
             }
         });
 
-        // Occasionally add/remove processes
-        if (Math.random() < 0.1) {
-            if (this.processes.length < 20 && Math.random() < 0.7) {
-                // Add new process
-                this.addRandomProcess();
-            } else if (this.processes.length > 10) {
-                // Remove random process
-                const randomIndex = Math.floor(Math.random() * this.processes.length);
-                const processToRemove = this.processes[randomIndex];
-                
-                // Emit termination before removal
-                if (this.activityEmitter && typeof this.activityEmitter.emitProcessTerminated === 'function') {
-                    this.activityEmitter.emitProcessTerminated(processToRemove, 'system');
-                }
-                
-                this.processes.splice(randomIndex, 1);
-            }
-        }
-
         return true; // Return true to indicate refresh occurred
-    }
-
-    addRandomProcess() {
-        // Skip adding processes if in tutorial mode
-        if (this.tutorialMode) {
-            return;
-        }
-
-        // Use the process factory to create random suspicious processes
-        const newProcess = ProcessFactory.createRandomSuspiciousProcess();
-        this.processes.push(newProcess);
-        
-        // Re-normalize CPU usage after adding new process
-        const processArray = this.processes.map(p => ({ cpu: p.cpu }));
-        this.normalizeCpuUsage(processArray);
-        this.processes.forEach((process, index) => {
-            process.cpu = processArray[index].cpu;
-        });
-        
-        // Emit process start activity with safety checks
-        if (this.activityEmitter && typeof this.activityEmitter.emitProcessStart === 'function') {
-            this.activityEmitter.emitProcessStart(newProcess);
-        }
     }
 
     // Add method to manually flag process as suspicious (for player actions)
