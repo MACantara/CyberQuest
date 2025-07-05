@@ -82,25 +82,17 @@ export class ProcessMonitorTutorial extends BaseTutorial {
             },
             {
                 target: '#kill-process-btn',
-                title: 'Interactive: Process Control',
-                content: 'Now click the "End Process" button to terminate the selected process. This is how you would stop suspicious or resource-heavy processes.',
+                title: 'Process Control',
+                content: 'Select a process and use this button to terminate it if it appears suspicious or consumes too many resources.',
                 position: 'left',
-                action: 'pulse',
-                interactive: true,
-                interaction: {
-                    type: 'click',
-                    instructions: 'Click the End Process button',
-                    successMessage: 'Great! You learned how to terminate processes.',
-                    autoAdvance: true,
-                    advanceDelay: 1500
-                }
+                action: 'pulse'
             },
             {
-                target: '#process-monitor-header',
-                title: 'Process Monitor Tutorial Complete!',
-                content: 'Excellent work! You\'ve learned to monitor system processes, refresh data, sort by resource usage, select processes, and terminate suspicious ones. Use these skills to identify and stop malware or resource-heavy applications that might harm your system.',
-                position: 'bottom',
-                action: 'highlight',
+                target: '.suspicious-process',
+                title: 'Security Alerts',
+                content: 'Processes with red borders are flagged as potentially suspicious. These should be investigated carefully as they may be malware.',
+                position: 'right',
+                action: 'pulse',
                 final: true
             }
         ];
@@ -248,6 +240,16 @@ export class ProcessMonitorTutorial extends BaseTutorial {
 
         const step = this.steps[this.currentStep];
         let target = document.querySelector(step.target);
+        
+        // Special handling for suspicious process - find first suspicious process if it exists
+        if (step.target === '.suspicious-process') {
+            target = document.querySelector('.suspicious-process');
+            if (!target) {
+                // If no suspicious process is visible, target the first process row instead
+                target = document.querySelector('#process-table-body .process-row:first-child');
+                step.content = 'Process rows show system information. Suspicious processes (when present) are highlighted with red borders and warning icons.';
+            }
+        }
         
         // Special handling for first process row - ensure it exists
         if (step.target === '#process-table-body .process-row:first-child') {
@@ -467,19 +469,6 @@ export class ProcessMonitorTutorial extends BaseTutorial {
                 });
             }
         }
-
-        if (step.target === '#kill-process-btn') {
-            // Allow interactions with the kill process button
-            const killBtn = document.querySelector('#kill-process-btn');
-            if (killBtn) {
-                tutorialInteractionManager.allowInteractionFor(killBtn);
-                // Also allow parent container interactions
-                const parentContainer = killBtn.closest('.process-monitor-controls, #process-monitor-controls');
-                if (parentContainer) {
-                    tutorialInteractionManager.allowInteractionFor(parentContainer);
-                }
-            }
-        }
     }
 
     // Override setupStepInteraction to handle process monitor specific interactions
@@ -497,9 +486,6 @@ export class ProcessMonitorTutorial extends BaseTutorial {
                     break;
                 case '#process-table-body .process-row:first-child':
                     this.setupProcessRowInteraction(step, target);
-                    break;
-                case '#kill-process-btn':
-                    this.setupKillProcessInteraction(step, target);
                     break;
             }
         }
