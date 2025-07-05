@@ -5,19 +5,22 @@ export class Level4WhiteHatTestDialogue extends BaseDialogue {
         super(desktop, character);
         this.messages = [
             {
-                text: "Welcome to Level 4: The White Hat Test. In this level, you'll practice ethical hacking and responsible vulnerability disclosure."
+                text: "Welcome to Level 4: The White Hat Test. In this critical scenario, you'll face real-world ethical challenges that define the boundary between legitimate security research and malicious activities."
             },
             {
-                text: "As an ethical hacker, you'll need to think like an attacker to find and document security vulnerabilities before they can be exploited maliciously."
+                text: "The CyberQuest Academy has been contracted to perform a security audit on SecureVote Pro, an online voting system used by municipalities. Your mission: conduct ethical penetration testing to identify vulnerabilities before they can be exploited."
             },
             {
-                text: "You'll be using penetration testing tools and methodologies to identify weaknesses in systems and applications, then reporting your findings responsibly."
+                text: "During your audit, you'll discover a critical vulnerability that could allow vote manipulation. However, you'll face an unexpected ethical dilemma when an anonymous group contacts you with a cryptocurrency offer to leak the vulnerability instead of reporting it properly."
             },
             {
-                text: "Remember to follow ethical guidelines and only test systems you have explicit permission to assess. Document everything thoroughly."
+                text: "This level tests your commitment to ethical hacking principles: responsible disclosure, professional integrity, and protecting democratic processes. You'll need to document your findings, navigate the pressure to profit from vulnerabilities, and demonstrate proper security researcher conduct."
             },
             {
-                text: "Successfully completing this level will earn you 350 XP in the Ethical Hacking category. Ready to test your skills?"
+                text: "Your decisions will have consequences that extend beyond cybersecurity - they could impact public trust in democratic institutions. Use the Terminal and other security tools to conduct your audit while maintaining the highest ethical standards."
+            },
+            {
+                text: "Successfully completing this level requires both technical expertise and unwavering ethical judgment. You'll earn 350 XP in Ethical Hacking and unlock the 'White Hat Guardian' badge. The integrity of democratic systems depends on security professionals like you!"
             }
         ];
     }
