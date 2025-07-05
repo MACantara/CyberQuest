@@ -531,10 +531,17 @@ export class ProcessMonitorTutorial extends BaseTutorial {
             }
         };
         
-        // Allow all process rows to be clickable during this step
+        // Allow all process rows and their child elements to be clickable during this step
         const processRows = document.querySelectorAll('.process-row');
         processRows.forEach(row => {
             tutorialInteractionManager.allowInteractionFor(row);
+            
+            // Allow all child elements (td cells) within the process row
+            const tableCells = row.querySelectorAll('td');
+            tableCells.forEach(cell => {
+                tutorialInteractionManager.allowInteractionFor(cell);
+            });
+            
             // Add individual click handlers to each row
             row.addEventListener('click', handleProcessRowClick, { once: true });
             this.interactionListeners.push({ element: row, event: 'click', handler: handleProcessRowClick });
@@ -544,6 +551,11 @@ export class ProcessMonitorTutorial extends BaseTutorial {
         const processTableBody = document.querySelector('#process-table-body');
         if (processTableBody) {
             tutorialInteractionManager.allowInteractionFor(processTableBody);
+            // Allow all table cells within the table body
+            const allTableCells = processTableBody.querySelectorAll('td');
+            allTableCells.forEach(cell => {
+                tutorialInteractionManager.allowInteractionFor(cell);
+            });
         }
     }
 
