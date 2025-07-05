@@ -240,6 +240,42 @@ export class ProcessMonitorTutorial extends BaseTutorial {
         localStorage.removeItem('cyberquest_processmonitor_opened');
     }
 
+        setupKillProcessInteraction(step, target) {
+        const interaction = step.interaction;
+        
+        const clickHandler = (e) => {
+            e.stopPropagation();
+            e.preventDefault(); // Prevent actual process termination during tutorial
+            
+            // Simulate the visual feedback of clicking the button
+            target.classList.add('active');
+            setTimeout(() => {
+                target.classList.remove('active');
+            }, 150);
+            
+            // Show a brief confirmation without actually killing process
+            const originalText = target.textContent;
+            target.textContent = 'Process Ended';
+            target.disabled = true;
+            
+            setTimeout(() => {
+                target.textContent = originalText;
+                target.disabled = false;
+                
+                this.showInteractionSuccess(step, interaction);
+                
+                if (interaction.autoAdvance) {
+                    setTimeout(() => {
+                        this.nextStep();
+                    }, interaction.advanceDelay || 1500);
+                }
+            }, 700);
+        };
+        
+        target.addEventListener('click', clickHandler, { once: true });
+        this.interactionListeners.push({ element: target, event: 'click', handler: clickHandler });
+        }
+
     showStep() {
         if (this.currentStep >= this.steps.length) {
             this.complete();
@@ -321,6 +357,19 @@ export class ProcessMonitorTutorial extends BaseTutorial {
                 processTable.querySelectorAll('.process-row, tr').forEach(row => {
                     tutorialInteractionManager.allowInteractionFor(row);
                 });
+            }
+        }
+        
+        if (step.target === '#kill-process-btn') {
+            // Allow interactions with the kill process button
+            const killBtn = document.querySelector('#kill-process-btn');
+            if (killBtn) {
+                tutorialInteractionManager.allowInteractionFor(killBtn);
+                // Also allow parent container interactions
+                const parentContainer = killBtn.closest('.process-monitor-controls, #process-monitor-controls');
+                if (parentContainer) {
+                    tutorialInteractionManager.allowInteractionFor(parentContainer);
+                }
             }
         }
     }

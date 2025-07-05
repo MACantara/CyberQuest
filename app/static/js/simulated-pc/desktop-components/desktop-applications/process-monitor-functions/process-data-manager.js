@@ -207,7 +207,14 @@ export class ProcessDataManager {
     }
 
     removeProcess(pid) {
+        // Skip process removal if in tutorial mode
+        if (this.tutorialMode) {
+            console.log('Process removal skipped - tutorial mode active');
+            return false;
+        }
+        
         this.processes = this.processes.filter(p => p.pid !== pid);
+        return true;
     }
 
     getProcessByPid(pid) {
