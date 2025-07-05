@@ -6,6 +6,7 @@ import { NetworkMonitorApp } from './desktop-applications/network-monitor-app.js
 import { SystemLogsApp } from './desktop-applications/system-logs-app.js';
 import { ProcessMonitorApp } from './desktop-applications/process-monitor-app.js';
 import { MalwareScannerApp } from './desktop-applications/malware-scanner-app.js';
+import { RansomwareDecryptorApp } from './desktop-applications/ransomware-decryptor-app.js';
 
 export class ApplicationRegistry {
     constructor() {
@@ -73,6 +74,14 @@ export class ApplicationRegistry {
                 startMethod: 'startMalwareScannerTutorial',
                 iconClass: 'bi-shield-exclamation',
                 title: 'Malware Scanner'
+            },
+            'ransomware-decryptor': {
+                class: RansomwareDecryptorApp,
+                storageKey: 'cyberquest_ransomwaredecryptor_opened',
+                tutorialMethod: 'shouldAutoStartRansomwareDecryptor',
+                startMethod: 'startRansomwareDecryptorTutorial',
+                iconClass: 'bi-unlock',
+                title: 'Ransomware Decryptor'
             }
         };
     }
