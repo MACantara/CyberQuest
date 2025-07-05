@@ -42,7 +42,7 @@ export class ProcessDataManager {
         // Skip refresh if in tutorial mode
         if (this.tutorialMode) {
             console.log('Process data refresh skipped - tutorial mode active');
-            return;
+            return false; // Return false to indicate no refresh occurred
         }
 
         // Simulate process changes
@@ -94,6 +94,8 @@ export class ProcessDataManager {
                 this.processes.splice(randomIndex, 1);
             }
         }
+
+        return true; // Return true to indicate refresh occurred
     }
 
     addRandomProcess() {

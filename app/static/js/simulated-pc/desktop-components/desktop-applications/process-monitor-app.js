@@ -135,6 +135,27 @@ export class ProcessMonitorApp extends WindowBase {
     updateContent() {
         if (!this.windowElement) return;
 
+        // Check if tutorial is active before updating
+        const isTutorialActive = document.body.classList.contains('tutorial-mode-active');
+        let preserveHighlighting = false;
+        let currentTutorialTarget = null;
+        
+        if (isTutorialActive) {
+            // Save current tutorial highlighting state
+            const highlightedElement = this.windowElement.querySelector('.tutorial-highlight');
+            if (highlightedElement) {
+                preserveHighlighting = true;
+                // Try to identify the target selector
+                if (highlightedElement.id) {
+                    currentTutorialTarget = `#${highlightedElement.id}`;
+                } else if (highlightedElement.className.includes('process-row')) {
+                    currentTutorialTarget = '.process-row';
+                } else {
+                    currentTutorialTarget = highlightedElement.tagName.toLowerCase();
+                }
+            }
+        }
+
         const tableBody = this.windowElement.querySelector('#process-table-body');
         const processCount = this.windowElement.querySelector('#process-count');
         const threadCount = this.windowElement.querySelector('#thread-count');
@@ -166,6 +187,19 @@ export class ProcessMonitorApp extends WindowBase {
 
         // Re-bind events for new rows
         this.eventHandler.bindProcessRowEvents(this.windowElement);
+
+        // Restore tutorial highlighting if it was active
+        if (preserveHighlighting && currentTutorialTarget) {
+            setTimeout(() => {
+                const newTarget = this.windowElement.querySelector(currentTutorialTarget);
+                if (newTarget && window.currentTutorial) {
+                    newTarget.classList.add('tutorial-highlight');
+                    if (window.currentTutorial.steps[window.currentTutorial.currentStep]?.action === 'pulse') {
+                        newTarget.classList.add('tutorial-pulse');
+                    }
+                }
+            }, 10);
+        }
     }
 
     showNotification(message, type = 'info') {

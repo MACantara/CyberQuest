@@ -59,12 +59,18 @@ export class ProcessEventHandler {
     }
 
     handleRefresh() {
-        this.dataManager.refreshProcessData();
-        this.app.updateContent();
+        const refreshOccurred = this.dataManager.refreshProcessData();
         
-        // Emit refresh activity with safety check
-        if (this.app.activityEmitter && typeof this.app.activityEmitter.emitProcessRefresh === 'function') {
-            this.app.activityEmitter.emitProcessRefresh(this.dataManager.getProcessCount());
+        // Only update content if refresh actually occurred (not in tutorial mode)
+        if (refreshOccurred) {
+            this.app.updateContent();
+            
+            // Emit refresh activity with safety check
+            if (this.app.activityEmitter && typeof this.app.activityEmitter.emitProcessRefresh === 'function') {
+                this.app.activityEmitter.emitProcessRefresh(this.dataManager.getProcessCount());
+            }
+        } else {
+            console.log('Refresh skipped due to tutorial mode');
         }
     }
 
@@ -158,10 +164,12 @@ export class ProcessEventHandler {
         }
         
         this.refreshInterval = setInterval(() => {
-            if (this.app.isRealTime) {
-                this.dataManager.refreshProcessData();
-                this.sorter.sortProcesses(this.dataManager.getProcesses());
-                this.app.updateContent();
+            if (this.app.isRealTime && !this.dataManager.isTutorialMode()) {
+                const refreshOccurred = this.dataManager.refreshProcessData();
+                if (refreshOccurred) {
+                    this.sorter.sortProcesses(this.dataManager.getProcesses());
+                    this.app.updateContent();
+                }
             }
         }, 3000); // Update every 3 seconds
     }
