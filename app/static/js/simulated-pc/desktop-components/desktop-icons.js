@@ -26,7 +26,6 @@ export class DesktopIcons {
         this.iconsContainer = document.createElement('div');
         this.iconsContainer.className = 'absolute top-5 left-5 flex flex-wrap flex-col';
         this.iconsContainer.style.height = 'calc(100vh - 100px)'; // Reserve space for taskbar + padding
-        this.iconsContainer.style.width = 'calc(100vw - 40px)'; // Full width minus padding
         this.iconsContainer.innerHTML = this.generateIconsHTML();
         this.container.appendChild(this.iconsContainer);
     }
