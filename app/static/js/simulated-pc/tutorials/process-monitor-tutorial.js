@@ -1,6 +1,7 @@
 // TODO: Fix tutorial flow for the 2nd and 3rd to the last steps when selecting a process and ending it respectively
 
 import { BaseTutorial } from './base-tutorial.js';
+import { tutorialInteractionManager } from './tutorial-interaction-manager.js';
 
 export class ProcessMonitorTutorial extends BaseTutorial {
     constructor(desktop) {
@@ -114,6 +115,9 @@ export class ProcessMonitorTutorial extends BaseTutorial {
         // Initialize CSS first
         this.initializeCSS();
         
+        // Enable tutorial mode
+        tutorialInteractionManager.enableTutorialMode();
+        
         // Set tutorial state
         this.isActive = true;
         this.stepManager.reset();
@@ -121,11 +125,25 @@ export class ProcessMonitorTutorial extends BaseTutorial {
         // Create overlay before showing any steps
         this.createOverlay();
         
+        // Ensure process monitor window is in front
+        this.ensureProcessMonitorInFront();
+        
         // Set global reference
         window.currentTutorial = this;
         
         // Start showing steps
         this.showStep();
+    }
+
+    ensureProcessMonitorInFront() {
+        const processMonitorWindow = document.querySelector('.window[data-window-id="process-monitor"]') || 
+                                   document.querySelector('.window .process-monitor') ||
+                                   document.querySelector('[id*="process-monitor"]')?.closest('.window');
+        
+        if (processMonitorWindow) {
+            processMonitorWindow.style.zIndex = '51';
+            processMonitorWindow.style.position = 'relative';
+        }
     }
 
     complete() {
@@ -244,7 +262,7 @@ export class ProcessMonitorTutorial extends BaseTutorial {
             // Allow interactions with the refresh button and any loading indicators
             const refreshBtn = document.querySelector('#refresh-btn');
             if (refreshBtn) {
-                this.desktop.tutorialInteractionManager?.allowInteractionFor(refreshBtn);
+                tutorialInteractionManager.allowInteractionFor(refreshBtn);
             }
         }
         
@@ -252,7 +270,7 @@ export class ProcessMonitorTutorial extends BaseTutorial {
             // Allow interactions with all table headers for sorting
             const headers = document.querySelectorAll('#process-table-header th');
             headers.forEach(header => {
-                this.desktop.tutorialInteractionManager?.allowInteractionFor(header);
+                tutorialInteractionManager.allowInteractionFor(header);
             });
         }
         
@@ -260,9 +278,9 @@ export class ProcessMonitorTutorial extends BaseTutorial {
             // Allow interactions with all process rows
             const processTable = document.querySelector('#process-table-body');
             if (processTable) {
-                this.desktop.tutorialInteractionManager?.allowInteractionFor(processTable);
+                tutorialInteractionManager.allowInteractionFor(processTable);
                 processTable.querySelectorAll('.process-row').forEach(row => {
-                    this.desktop.tutorialInteractionManager?.allowInteractionFor(row);
+                    tutorialInteractionManager.allowInteractionFor(row);
                 });
             }
         }

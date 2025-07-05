@@ -49,6 +49,7 @@ export class TutorialInteractionManager {
                 backdrop-filter: blur(10px);
                 border: 1px solid rgba(16, 185, 129, 0.3);
                 background: rgba(31, 41, 55, 0.95);
+                z-index: 9999 !important;
             }
             
             .tutorial-btn-primary:hover {
@@ -62,6 +63,17 @@ export class TutorialInteractionManager {
             
             .tutorial-close:hover {
                 text-decoration: underline;
+            }
+            
+            /* Tutorial overlay positioning */
+            .tutorial-overlay {
+                z-index: 50 !important;
+                pointer-events: none !important;
+            }
+            
+            /* Ensure tutorial target windows appear above overlay */
+            .tutorial-mode-active .window {
+                position: relative;
             }
             
             /* Disable interactions during tutorial */
@@ -101,6 +113,7 @@ export class TutorialInteractionManager {
             /* Allow tutorial elements to be interactive */
             .tutorial-mode-active .tutorial-tooltip {
                 pointer-events: auto !important;
+                z-index: 9999 !important;
             }
             
             .tutorial-mode-active .tutorial-tooltip * {
@@ -113,6 +126,11 @@ export class TutorialInteractionManager {
             
             /* Allow highlighted elements to be interactive if needed */
             .tutorial-mode-active .tutorial-highlight {
+                pointer-events: auto !important;
+            }
+            
+            /* Allow interactive tutorial elements */
+            .tutorial-mode-active .tutorial-interactive-allowed {
                 pointer-events: auto !important;
             }
         `;

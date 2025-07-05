@@ -46,11 +46,35 @@ export class BaseTutorial {
         this.tooltip = document.createElement('div');
         this.tooltip.className = 'fixed z-50 tutorial-tooltip bg-gray-800 border border-gray-600 rounded shadow-2xl p-6 max-w-sm transform transition-all duration-300';
         this.tooltip.style.pointerEvents = 'auto';
+        this.tooltip.style.zIndex = '9999'; // Ensure tooltip is always on top
         
         document.body.appendChild(this.overlay);
         document.body.appendChild(this.tooltip);
-    }    
-    
+        
+        // Bring tutorial-relevant windows to front
+        this.bringTargetWindowsToFront();
+    }
+
+    bringTargetWindowsToFront() {
+        // Find windows that are targets of tutorial steps
+        const targetWindows = new Set();
+        
+        this.steps.forEach(step => {
+            const target = document.querySelector(step.target);
+            if (target) {
+                const window = target.closest('.window');
+                if (window) {
+                    targetWindows.add(window);
+                }
+            }
+        });
+        
+        // Set z-index for target windows to appear above overlay but below tooltip
+        targetWindows.forEach(window => {
+            window.style.zIndex = '51';
+        });
+    }
+
     highlightElement(element, action = 'highlight') {
         // Ensure overlay exists before trying to use it
         if (!this.overlay) {
@@ -276,6 +300,9 @@ export class BaseTutorial {
         // Disable tutorial mode
         tutorialInteractionManager.disableTutorialMode();
         
+        // Reset window z-indexes
+        this.resetWindowZIndexes();
+        
         // Clear step manager
         this.stepManager.cleanup();
         
@@ -292,6 +319,15 @@ export class BaseTutorial {
         // Clear highlights and interactions
         this.clearHighlights();
         this.clearStepInteractions();
+    }
+
+    resetWindowZIndexes() {
+        // Reset z-index for all windows that were modified during tutorial
+        document.querySelectorAll('.window').forEach(window => {
+            if (window.style.zIndex === '51') {
+                window.style.zIndex = '';
+            }
+        });
     }
 
     clearHighlights() {
