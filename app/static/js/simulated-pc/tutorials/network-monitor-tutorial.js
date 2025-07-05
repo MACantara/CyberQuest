@@ -1,4 +1,5 @@
 import { BaseTutorial } from './base-tutorial.js';
+import { tutorialInteractionManager } from './tutorial-interaction-manager.js';
 
 export class NetworkMonitorTutorial extends BaseTutorial {
     constructor(desktop) {
@@ -56,7 +57,7 @@ export class NetworkMonitorTutorial extends BaseTutorial {
             {
                 target: '#packet-list',
                 title: 'Network Security Complete!',
-                content: 'Excellent! You\'ve learned to use network monitoring tools. Watch for red-highlighted suspicious traffic, unusual destinations, and unexpected protocols to identify security threats.',
+                content: 'Excellent! You\'ve learned to use network monitoring tools: packet capture controls, filtering options, statistics analysis, and how to identify suspicious network traffic patterns. Watch for red-highlighted suspicious traffic and unusual destinations!',
                 action: 'highlight',
                 position: 'left',
                 final: true
@@ -64,20 +65,56 @@ export class NetworkMonitorTutorial extends BaseTutorial {
         ];
     }
 
-    start() {
-        if (this.isActive) return;
+    async start() {
+        // Ensure network monitor is open
+        if (!this.desktop.windowManager.windows.has('wireshark')) {
+            try {
+                await this.desktop.windowManager.openNetworkMonitor();
+                // Wait for the window to fully render
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            } catch (error) {
+                console.error('Network Monitor application not found:', error);
+                return;
+            }
+        }
+
+        // Initialize CSS first
+        this.initializeCSS();
         
+        // Enable tutorial mode
+        tutorialInteractionManager.enableTutorialMode();
+        
+        // Set tutorial state
         this.isActive = true;
-        this.currentStep = 0;
+        this.stepManager.reset();
         
-        // Wait for network monitor to be fully loaded
+        // Create overlay before showing any steps
+        this.createOverlay();
+        
+        // Ensure network monitor window is in front
+        this.ensureNetworkMonitorInFront();
+        
+        // Set global reference
+        window.networkMonitorTutorial = this;
+        window.currentTutorial = this;
+        
+        // Wait for network monitor to be fully loaded and then start showing steps
         setTimeout(() => {
-            this.createOverlay();
             this.showStep();
         }, 1000);
     }
 
-    // Override to add network monitor specific tutorial behaviors
+    ensureNetworkMonitorInFront() {
+        const networkMonitorWindow = document.querySelector('.window[data-window-id="wireshark"]') || 
+                                    document.querySelector('.window .wireshark') ||
+                                    document.querySelector('[id*="wireshark"]')?.closest('.window');
+        
+        if (networkMonitorWindow) {
+            networkMonitorWindow.style.zIndex = '51';
+            networkMonitorWindow.style.position = 'relative';
+        }
+    }
+
     showStep() {
         if (this.currentStep >= this.steps.length) {
             this.complete();
@@ -85,6 +122,7 @@ export class NetworkMonitorTutorial extends BaseTutorial {
         }
 
         const step = this.steps[this.currentStep];
+        let target = document.querySelector(step.target);
         
         // Special handling for live capture step - ensure capture is ready
         if (step.target === '#live-capture-btn') {
@@ -93,6 +131,7 @@ export class NetworkMonitorTutorial extends BaseTutorial {
             if (captureBtn && captureBtn.textContent.includes('Stop')) {
                 // If already capturing, that's fine - continue with tutorial
             }
+            target = captureBtn;
         }
 
         // Special handling for packet data area - ensure it's visible
@@ -101,12 +140,37 @@ export class NetworkMonitorTutorial extends BaseTutorial {
             if (packetData && packetData.querySelector('.text-center')) {
                 // If showing initial message, that's expected - continue
             }
+            target = packetData;
+        }
+        
+        if (!target) {
+            console.warn(`Tutorial target not found: ${step.target}`);
+            this.nextStep();
+            return;
         }
 
-        super.showStep();
+        // Clear previous highlights and interactions
+        this.clearHighlights();
+        this.clearStepInteractions();
+        
+        // Highlight target element
+        this.highlightElement(target, step.action);
+        
+        // Setup interactions for this step
+        this.setupStepInteraction(step, target);
+        
+        // Position and show tooltip
+        this.showTooltip(target, step);
     }
 
-    // Override base class methods
+    complete() {
+        super.complete();
+        
+        // Store completion in localStorage
+        localStorage.setItem('cyberquest_networkmonitor_tutorial_completed', 'true');
+    }
+
+    // Override base class methods for proper tutorial flow
     getSkipTutorialHandler() {
         return 'window.networkMonitorTutorial.showSkipModal()';
     }
@@ -127,19 +191,24 @@ export class NetworkMonitorTutorial extends BaseTutorial {
         return 'Finish Tutorial';
     }
 
-    complete() {
-        super.complete();
+    // Static methods for auto-start functionality
+    static shouldAutoStart() {
+        const tutorialCompleted = localStorage.getItem('cyberquest_networkmonitor_tutorial_completed');
+        const networkMonitorOpened = localStorage.getItem('cyberquest_networkmonitor_opened');
         
-        // Store completion in localStorage
-        localStorage.setItem('cyberquest_networkmonitor_tutorial_completed', 'true');
+        return networkMonitorOpened && !tutorialCompleted;
     }
 
-    // Static methods
-    static shouldAutoStart() {
-        return !localStorage.getItem('cyberquest_networkmonitor_tutorial_completed');
+    static startTutorial(desktop) {
+        console.log('Starting Network Monitor tutorial...');
+        const tutorial = new NetworkMonitorTutorial(desktop);
+        window.networkMonitorTutorial = tutorial;
+        tutorial.start();
+        return tutorial;
     }
 
     static restart() {
         localStorage.removeItem('cyberquest_networkmonitor_tutorial_completed');
+        localStorage.removeItem('cyberquest_networkmonitor_opened');
     }
 }
