@@ -416,7 +416,7 @@ export class RansomwareDecryptorApp extends WindowBase {
             
             // Trigger level completion after successful decryption
             setTimeout(() => {
-                import('../../../dialogues/levels/level-three/level-three-completion.js')
+                import('../../dialogues/levels/level-three/level-three-completion.js')
                     .then(({ LevelThreeCompletionDialogue }) => {
                         new LevelThreeCompletionDialogue(this.desktop).start();
                     })
