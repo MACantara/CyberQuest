@@ -99,9 +99,7 @@ export class SystemLogsTutorial extends BaseTutorial {
         window.currentTutorial = this;
         
         // Wait for system logs to be fully loaded and then start showing steps
-        setTimeout(() => {
-            this.showStep();
-        }, 1000);
+        this.showStep();
     }
 
     ensureSystemLogsInFront() {

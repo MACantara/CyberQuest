@@ -99,9 +99,7 @@ export class FileManagerTutorial extends BaseTutorial {
         window.currentTutorial = this;
         
         // Wait for file manager to be fully loaded and then start showing steps
-        setTimeout(() => {
-            this.showStep();
-        }, 1000);
+        this.showStep();
     }
 
     ensureFileManagerInFront() {

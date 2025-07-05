@@ -85,9 +85,7 @@ export class BrowserTutorial extends BaseTutorial {
         window.currentTutorial = this;
         
         // Wait for browser page to be fully loaded and then start showing steps
-        setTimeout(() => {
-            this.showStep();
-        }, 1500);
+        this.showStep();
     }
 
     ensureBrowserInFront() {

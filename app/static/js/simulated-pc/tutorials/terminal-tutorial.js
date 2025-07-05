@@ -136,9 +136,7 @@ export class TerminalTutorial extends BaseTutorial {
         window.currentTutorial = this;
         
         // Wait for terminal to be fully loaded and then start showing steps
-        setTimeout(() => {
-            this.showStep();
-        }, 1000);
+        this.showStep();
     }
 
     ensureTerminalInFront() {
