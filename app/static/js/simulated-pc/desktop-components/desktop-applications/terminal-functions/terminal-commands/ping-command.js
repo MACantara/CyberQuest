@@ -1,12 +1,12 @@
 import { BaseCommand } from './base-command.js';
 import { targetHostRegistry } from './target-hosts/target-host-registry.js';
-import { PageRegistry } from '../../browser-functions/pages/page-registry.js';
+import { pageRegistry } from '../../browser-functions/pages/page-registry.js';
 
 export class PingCommand extends BaseCommand {
     constructor(processor) {
         super(processor);
         this.targetRegistry = targetHostRegistry;
-        this.pageRegistry = new PageRegistry();
+        this.pageRegistry = pageRegistry;
         this.isRunning = false;
     }
 
@@ -165,33 +165,97 @@ export class PingCommand extends BaseCommand {
         }
 
         // Try to resolve through page registry for web-based targets
-        const page = this.pageRegistry.getPage(`https://${targetStr}`) || 
-                    this.pageRegistry.getPage(`http://${targetStr}`);
+        const page = this.pageRegistry.getPageByUrl(`https://${targetStr}`) || 
+                    this.pageRegistry.getPageByUrl(`http://${targetStr}`);
         if (page) {
             return {
                 hostname: targetStr,
-                ip: page.ipAddress || this.generateIpFromHostname(targetStr),
+                ip: page.ipAddress,
                 security: page.security,
                 isWebTarget: true
             };
         }
         
         // Check if target matches any page hostname patterns
-        const allPages = this.pageRegistry.getAllPages();
+        const allPages = this.pageRegistry.getPageList();
         for (const pageConfig of allPages) {
-            const url = new URL(pageConfig.url);
-            if (url.hostname === targetStr || url.hostname.includes(targetStr)) {
-                return {
-                    hostname: targetStr,
-                    ip: pageConfig.ipAddress || this.generateIpFromHostname(targetStr),
-                    security: pageConfig.security,
-                    isWebTarget: true
-                };
+            try {
+                const url = new URL(pageConfig.url);
+                if (url.hostname === targetStr || url.hostname.includes(targetStr)) {
+                    return {
+                        hostname: targetStr,
+                        ip: pageConfig.ipAddress,
+                        security: pageConfig.security,
+                        isWebTarget: true
+                    };
+                }
+            } catch (urlError) {
+                // Skip invalid URLs
+                continue;
             }
         }
 
-        // Handle common network targets for ethical hacking scenarios
-        const commonTargets = {
+        // Check if the target string is an IP address that exists in page registry
+        for (const pageConfig of allPages) {
+            if (pageConfig.ipAddress === targetStr) {
+                try {
+                    const url = new URL(pageConfig.url);
+                    return {
+                        hostname: url.hostname,
+                        ip: targetStr,
+                        security: pageConfig.security,
+                        isWebTarget: true
+                    };
+                } catch (urlError) {
+                    return {
+                        hostname: targetStr,
+                        ip: targetStr,
+                        security: pageConfig.security,
+                        isWebTarget: true
+                    };
+                }
+            }
+        }
+
+        // Handle common network targets and manually defined hosts
+        const commonTargets = this.getCommonTargets();
+
+        return commonTargets[targetStr.toLowerCase()] || null;
+    }
+
+    getCommonTargets() {
+        // Get dynamic targets from page registry
+        const pageTargets = {};
+        const allPages = this.pageRegistry.getPageList();
+        
+        allPages.forEach(pageConfig => {
+            try {
+                const url = new URL(pageConfig.url);
+                const hostname = url.hostname;
+                
+                // Add both hostname and IP mappings
+                pageTargets[hostname] = {
+                    hostname: hostname,
+                    ip: pageConfig.ipAddress,
+                    security: pageConfig.security,
+                    isWebTarget: true
+                };
+                
+                if (pageConfig.ipAddress) {
+                    pageTargets[pageConfig.ipAddress] = {
+                        hostname: hostname,
+                        ip: pageConfig.ipAddress,
+                        security: pageConfig.security,
+                        isWebTarget: true
+                    };
+                }
+            } catch (error) {
+                // Skip invalid URLs
+            }
+        });
+        
+        // Merge with static common targets
+        const staticTargets = {
             'localhost': { hostname: 'localhost', ip: '127.0.0.1' },
             '127.0.0.1': { hostname: 'localhost', ip: '127.0.0.1' },
             'google.com': { hostname: 'google.com', ip: '8.8.8.8' },
@@ -200,23 +264,8 @@ export class PingCommand extends BaseCommand {
             '1.1.1.1': { hostname: 'one.one.one.one', ip: '1.1.1.1' },
             'github.com': { hostname: 'github.com', ip: '140.82.114.4' }
         };
-
-        return commonTargets[targetStr.toLowerCase()] || null;
-    }
-
-    generateIpFromHostname(hostname) {
-        // Generate a consistent IP address based on hostname for simulation
-        let hash = 0;
-        for (let i = 0; i < hostname.length; i++) {
-            const char = hostname.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
-            hash = hash & hash; // Convert to 32-bit integer
-        }
         
-        // Generate IP in 192.168.x.x range for local simulation
-        const octet3 = Math.abs(hash % 256);
-        const octet4 = Math.abs((hash >> 8) % 254) + 1; // Avoid .0 and .255
-        return `192.168.${octet3}.${octet4}`;
+        return { ...staticTargets, ...pageTargets };
     }
 
     async simulatePing(target, options, sequence) {
