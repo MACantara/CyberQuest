@@ -27,6 +27,18 @@ export class TutorialInteractionManager {
                 animation: tutorial-pulse 1.5s ease-in-out infinite;
             }
             
+            /* Enhanced process row selection styles for tutorial */
+            .tutorial-mode-active .process-row.selected {
+                background-color: #1e40af !important;
+                border: 2px solid #3b82f6 !important;
+                box-shadow: 0 0 10px rgba(59, 130, 246, 0.5) !important;
+            }
+            
+            .tutorial-mode-active .process-row:hover {
+                background-color: #374151 !important;
+                cursor: pointer !important;
+            }
+            
             @keyframes tutorial-glow {
                 from {
                     box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
@@ -239,15 +251,24 @@ export class TutorialInteractionManager {
             element.classList.contains('tutorial-highlight') ||
             element.classList.contains('tutorial-interactive-allowed')) return true;
         
+        // Special case: allow process row interactions during tutorial
+        if (element.closest('.process-row') && document.body.classList.contains('tutorial-mode-active')) {
+            const processRow = element.closest('.process-row');
+            if (this.allowedElements.has(processRow)) return true;
+        }
+        
         return false;
     }
 
     // Prevent clicks except on allowed elements
     preventClicks(e) {
         if (!this.isInteractionAllowed(e.target)) {
+            console.log('Tutorial: blocking click on', e.target);
             e.preventDefault();
             e.stopPropagation();
             return false;
+        } else {
+            console.log('Tutorial: allowing click on', e.target);
         }
     }
 

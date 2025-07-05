@@ -51,8 +51,13 @@ export class ProcessEventHandler {
 
         const processRows = windowElement.querySelectorAll('.process-row');
         processRows.forEach(row => {
-            row.addEventListener('click', () => {
-                const pid = parseInt(row.getAttribute('data-pid'));
+            // Remove existing listeners to avoid duplicates
+            const newRow = row.cloneNode(true);
+            row.parentNode.replaceChild(newRow, row);
+            
+            newRow.addEventListener('click', (e) => {
+                const pid = parseInt(newRow.getAttribute('data-pid'));
+                console.log('Process row clicked, PID:', pid);
                 this.handleSelectProcess(pid);
             });
         });
@@ -107,11 +112,22 @@ export class ProcessEventHandler {
     }
 
     handleSelectProcess(pid) {
+        console.log('handleSelectProcess called with PID:', pid);
         this.app.selectedProcess = this.dataManager.getProcessByPid(pid);
         
         // Emit process selection activity with safety check
         if (this.app.activityEmitter && this.app.selectedProcess && typeof this.app.activityEmitter.emitProcessSelected === 'function') {
             this.app.activityEmitter.emitProcessSelected(this.app.selectedProcess);
+        }
+        
+        // Update the visual selection
+        document.querySelectorAll('.process-row.selected').forEach(row => {
+            row.classList.remove('selected');
+        });
+        
+        const selectedRow = document.querySelector(`[data-pid="${pid}"]`);
+        if (selectedRow) {
+            selectedRow.classList.add('selected');
         }
         
         this.app.updateContent();

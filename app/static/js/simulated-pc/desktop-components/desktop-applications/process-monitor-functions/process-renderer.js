@@ -8,7 +8,7 @@ export class ProcessRenderer {
         const processes = this.dataManager.getProcesses();
         return processes.map((process, index) => {
             const isSelected = selectedProcess && selectedProcess.pid === process.pid;
-            const rowClass = `process-row cursor-pointer hover:bg-gray-700 transition-colors ${isSelected ? 'bg-blue-800' : ''} ${process.suspicious ? 'border-l-4 border-red-500 suspicious-process' : ''}`;
+            const rowClass = `process-row cursor-pointer hover:bg-gray-700 transition-colors ${isSelected ? 'bg-blue-800 selected' : ''} ${process.suspicious ? 'border-l-4 border-red-500 suspicious-process' : ''}`;
             
             return `
                 <tr id="process-row-${process.pid}" class="${rowClass}" data-pid="${process.pid}">
