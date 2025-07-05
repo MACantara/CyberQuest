@@ -32,7 +32,7 @@ export class DesktopIcons {
 
     generateIconsHTML() {
         return this.icons.map(icon => `
-            <div class="desktop-icon flex flex-col items-center w-20 cursor-pointer p-2.5 rounded hover:bg-white/25 transition-all duration-200 mb-5" data-action="${icon.action}" data-id="${icon.id}">
+            <div class="desktop-icon flex flex-col items-center w-20 cursor-pointer p-2.5 rounded hover:bg-white/25 transition-all duration-200 mb-4" data-action="${icon.action}" data-id="${icon.id}">
                 <div class="w-12 h-12 bg-green-400 border-2 border-gray-600 rounded flex items-center justify-center text-2xl text-black mb-1 shadow-lg">
                     <i class="bi ${icon.icon}"></i>
                 </div>
