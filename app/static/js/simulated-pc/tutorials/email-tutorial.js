@@ -21,29 +21,29 @@ export class EmailTutorial extends BaseTutorial {
             },
             {
                 target: '.email-item:first-child',
-                title: 'Suspicious Email Detection',
-                content: 'This email looks suspicious! Always check the sender address carefully. Emails from unknown or suspicious domains should be treated with caution.',
+                title: 'Sophisticated Phishing Detection',
+                content: 'This Microsoft email looks convincing but has subtle red flags! Notice the urgent security language and request to verify identity. Always verify security emails through official channels, not email links.',
                 action: 'pulse',
                 position: 'right'
             },
             {
                 target: '.email-item:nth-child(2)',
-                title: 'Banking Phishing Attempt',
-                content: 'This email claims to be from a bank about account suspension. This is a common phishing tactic! Always verify bank communications through official channels.',
-                action: 'pulse',
+                title: 'Legitimate Email Recognition',
+                content: 'This CyberQuest password reset email is legitimate. Notice the professional domain, specific token in the URL, and no urgent pressure tactics. Legitimate services provide clear, non-threatening communication.',
+                action: 'highlight',
                 position: 'right'
             },
             {
                 target: '.email-item:nth-child(3)',
-                title: 'Legitimate vs Suspicious',
-                content: 'Compare this email to the previous one. Look at the sender domain and subject line. Legitimate organizations use professional email addresses.',
-                action: 'highlight',
+                title: 'PayPal Phishing Attempt',
+                content: 'Another sophisticated phishing attempt! This fake PayPal email uses official branding and urgent account limitation language. Always log into your actual account separately to verify such claims.',
+                action: 'pulse',
                 position: 'right'
             },
             {
                 target: '#email-list',
                 title: 'Email Security Complete!',
-                content: 'Excellent! You\'ve learned to identify key email security threats: suspicious sender addresses, phishing attempts, urgent language tactics, and how to distinguish legitimate emails from scams. Always verify before clicking links or providing information!',
+                content: 'Excellent! You\'ve learned to identify key email security threats: sophisticated phishing that mimics legitimate services, urgent security language tactics, fake account limitations, and how to distinguish legitimate communications from scams. Always verify through official channels!',
                 action: 'highlight',
                 position: 'right',
                 final: true
