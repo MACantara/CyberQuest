@@ -86,7 +86,7 @@ export class EmailTutorial extends BaseTutorial {
         
         // Wait for email app to be fully loaded and then start showing steps
         setTimeout(() => {
-            this.stepManager.showStep();
+            this.showStep();
         }, 1000);
     }
 

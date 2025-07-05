@@ -86,7 +86,7 @@ export class BrowserTutorial extends BaseTutorial {
         
         // Wait for browser page to be fully loaded and then start showing steps
         setTimeout(() => {
-            this.stepManager.showStep();
+            this.showStep();
         }, 1500);
     }
 
