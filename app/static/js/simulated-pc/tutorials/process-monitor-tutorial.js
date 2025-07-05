@@ -96,11 +96,11 @@ export class ProcessMonitorTutorial extends BaseTutorial {
                 }
             },
             {
-                target: '.suspicious-process',
-                title: 'Security Alerts',
-                content: 'Processes with red borders are flagged as potentially suspicious. These should be investigated carefully as they may be malware.',
-                position: 'right',
-                action: 'pulse',
+                target: '#process-monitor-header',
+                title: 'Process Monitor Tutorial Complete!',
+                content: 'Excellent! You\'ve learned essential process monitoring skills: how to refresh process data, sort by resource usage, identify suspicious processes, select processes for analysis, and terminate potentially harmful processes. These skills are crucial for detecting malware and maintaining system security!',
+                position: 'bottom',
+                action: 'highlight',
                 final: true
             }
         ];
