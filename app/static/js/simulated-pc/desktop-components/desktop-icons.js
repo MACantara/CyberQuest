@@ -11,7 +11,8 @@ export class DesktopIcons {
             { id: 'wireshark', name: 'Network Monitor', icon: 'bi-router', action: 'openNetworkMonitor' },
             { id: 'logs', name: 'System Logs', icon: 'bi-journal-text', action: 'openSystemLogs' },
             { id: 'process-monitor', name: 'Process Monitor', icon: 'bi-cpu', action: 'openProcessMonitor' },
-            { id: 'malware-scanner', name: 'Malware Scanner', icon: 'bi-shield-exclamation', action: 'openMalwareScanner' }
+            { id: 'malware-scanner', name: 'Malware Scanner', icon: 'bi-shield-exclamation', action: 'openMalwareScanner' },
+            { id: 'ransomware-decryptor', name: 'Ransomware Decryptor', icon: 'bi-unlock', action: 'openRansomwareDecryptor' }
         ];
         this.init();
     }
