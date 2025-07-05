@@ -1,4 +1,5 @@
-import { BaseTutorial } from '../base-tutorial.js';
+import { BaseTutorial } from './base-tutorial.js';
+import { tutorialInteractionManager } from './tutorial-interaction-manager.js';
 
 export class EmailTutorial extends BaseTutorial {
     constructor(desktop) {
@@ -20,29 +21,29 @@ export class EmailTutorial extends BaseTutorial {
             },
             {
                 target: '.email-item:first-child',
-                title: 'Suspicious Email Detection',
-                content: 'This email looks suspicious! Always check the sender address carefully. Emails from unknown or suspicious domains should be treated with caution.',
+                title: 'Sophisticated Phishing Detection',
+                content: 'This Microsoft email looks convincing but has subtle red flags! Notice the urgent security language and request to verify identity. Always verify security emails through official channels, not email links.',
                 action: 'pulse',
                 position: 'right'
             },
             {
                 target: '.email-item:nth-child(2)',
-                title: 'Banking Phishing Attempt',
-                content: 'This email claims to be from a bank about account suspension. This is a common phishing tactic! Always verify bank communications through official channels.',
-                action: 'pulse',
-                position: 'right'
-            },
-            {
-                target: '.email-item:nth-child(3)',
-                title: 'Legitimate vs Suspicious',
-                content: 'Compare this email to the previous one. Look at the sender domain and subject line. Legitimate organizations use professional email addresses.',
+                title: 'Legitimate Email Recognition',
+                content: 'This CyberQuest password reset email is legitimate. Notice the professional domain, specific token in the URL, and no urgent pressure tactics. Legitimate services provide clear, non-threatening communication.',
                 action: 'highlight',
                 position: 'right'
             },
             {
+                target: '.email-item:nth-child(3)',
+                title: 'PayPal Phishing Attempt',
+                content: 'Another sophisticated phishing attempt! This fake PayPal email uses official branding and urgent account limitation language. Always log into your actual account separately to verify such claims.',
+                action: 'pulse',
+                position: 'right'
+            },
+            {
                 target: '#email-list',
-                title: 'Email Security Best Practices',
-                content: 'Remember: Never click suspicious links, always verify sender authenticity, be wary of urgent language, and when in doubt, contact the organization directly.',
+                title: 'Email Security Complete!',
+                content: 'Excellent! You\'ve learned to identify key email security threats: sophisticated phishing that mimics legitimate services, urgent security language tactics, fake account limitations, and how to distinguish legitimate communications from scams. Always verify through official channels!',
                 action: 'highlight',
                 position: 'right',
                 final: true
@@ -50,20 +51,54 @@ export class EmailTutorial extends BaseTutorial {
         ];
     }
 
-    start() {
-        if (this.isActive) return;
+    async start() {
+        // Ensure email client is open
+        if (!this.desktop.windowManager.windows.has('email')) {
+            try {
+                await this.desktop.windowManager.openEmailClient();
+                // Wait for the window to fully render
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            } catch (error) {
+                console.error('Email application not found:', error);
+                return;
+            }
+        }
+
+        // Initialize CSS first
+        this.initializeCSS();
         
+        // Enable tutorial mode
+        tutorialInteractionManager.enableTutorialMode();
+        
+        // Set tutorial state
         this.isActive = true;
-        this.currentStep = 0;
+        this.stepManager.reset();
         
-        // Wait for email app to be fully loaded
-        setTimeout(() => {
-            this.createOverlay();
-            this.showStep();
-        }, 1000);
+        // Create overlay before showing any steps
+        this.createOverlay();
+        
+        // Ensure email window is in front
+        this.ensureEmailInFront();
+        
+        // Set global reference
+        window.emailTutorial = this;
+        window.currentTutorial = this;
+        
+        // Wait for email app to be fully loaded and then start showing steps
+        this.showStep();
     }
 
-    // Override to add email-specific tutorial behaviors
+    ensureEmailInFront() {
+        const emailWindow = document.querySelector('.window[data-window-id="email"]') || 
+                           document.querySelector('.window .email') ||
+                           document.querySelector('[id*="email"]')?.closest('.window');
+        
+        if (emailWindow) {
+            emailWindow.style.zIndex = '51';
+            emailWindow.style.position = 'relative';
+        }
+    }
+
     showStep() {
         if (this.currentStep >= this.steps.length) {
             this.complete();
@@ -71,6 +106,7 @@ export class EmailTutorial extends BaseTutorial {
         }
 
         const step = this.steps[this.currentStep];
+        let target = document.querySelector(step.target);
         
         // Special handling for email list step - ensure we're looking at the inbox
         if (step.target === '#email-list') {
@@ -80,16 +116,41 @@ export class EmailTutorial extends BaseTutorial {
                 inboxFolder.click();
                 // Wait a moment for the view to update
                 setTimeout(() => {
-                    super.showStep();
+                    this.showStep();
                 }, 300);
                 return;
             }
+            target = document.querySelector('#email-list');
+        }
+        
+        if (!target) {
+            console.warn(`Tutorial target not found: ${step.target}`);
+            this.nextStep();
+            return;
         }
 
-        super.showStep();
+        // Clear previous highlights and interactions
+        this.clearHighlights();
+        this.clearStepInteractions();
+        
+        // Highlight target element
+        this.highlightElement(target, step.action);
+        
+        // Setup interactions for this step
+        this.setupStepInteraction(step, target);
+        
+        // Position and show tooltip
+        this.showTooltip(target, step);
     }
 
-    // Override base class methods
+    complete() {
+        super.complete();
+        
+        // Store completion in localStorage
+        localStorage.setItem('cyberquest_email_tutorial_completed', 'true');
+    }
+
+    // Override base class methods for proper tutorial flow
     getSkipTutorialHandler() {
         return 'window.emailTutorial.showSkipModal()';
     }
@@ -110,19 +171,24 @@ export class EmailTutorial extends BaseTutorial {
         return 'Finish Tutorial';
     }
 
-    complete() {
-        super.complete();
+    // Static methods for auto-start functionality
+    static shouldAutoStart() {
+        const tutorialCompleted = localStorage.getItem('cyberquest_email_tutorial_completed');
+        const emailOpened = localStorage.getItem('cyberquest_email_opened');
         
-        // Store completion in localStorage
-        localStorage.setItem('cyberquest_email_tutorial_completed', 'true');
+        return emailOpened && !tutorialCompleted;
     }
 
-    // Static methods
-    static shouldAutoStart() {
-        return !localStorage.getItem('cyberquest_email_tutorial_completed');
+    static startTutorial(desktop) {
+        console.log('Starting Email tutorial...');
+        const tutorial = new EmailTutorial(desktop);
+        window.emailTutorial = tutorial;
+        tutorial.start();
+        return tutorial;
     }
 
     static restart() {
         localStorage.removeItem('cyberquest_email_tutorial_completed');
+        localStorage.removeItem('cyberquest_email_opened');
     }
 }

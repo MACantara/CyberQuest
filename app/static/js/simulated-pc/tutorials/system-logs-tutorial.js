@@ -1,4 +1,5 @@
-import { BaseTutorial } from '../base-tutorial.js';
+import { BaseTutorial } from './base-tutorial.js';
+import { tutorialInteractionManager } from './tutorial-interaction-manager.js';
 
 export class SystemLogsTutorial extends BaseTutorial {
     constructor(desktop) {
@@ -7,7 +8,7 @@ export class SystemLogsTutorial extends BaseTutorial {
             {
                 target: '.bg-gray-700.p-2.border-b.border-gray-600',
                 title: 'System Logs Toolbar',
-                content: 'This toolbar helps you filter and manage system logs. You can filter by log level, source, category, and enable auto-refresh to monitor real-time events.',
+                content: 'This toolbar helps you filter and manage system logs. You can filter by log level, source, and category to focus on specific types of events.',
                 action: 'highlight',
                 position: 'bottom'
             },
@@ -33,20 +34,6 @@ export class SystemLogsTutorial extends BaseTutorial {
                 position: 'bottom'
             },
             {
-                target: '#refresh-btn',
-                title: 'Manual Refresh',
-                content: 'Click to manually refresh the log entries and see the latest system events. Use this when auto-refresh is disabled.',
-                action: 'highlight',
-                position: 'bottom'
-            },
-            {
-                target: '#auto-refresh',
-                title: 'Auto-Refresh Monitoring',
-                content: 'Enable auto-refresh to continuously monitor new log entries as they appear. Essential for real-time threat detection.',
-                action: 'pulse',
-                position: 'bottom'
-            },
-            {
                 target: '#log-headers',
                 title: 'Log Entry Structure',
                 content: 'Each log entry shows: Timestamp (when it occurred), Level (severity), Source (system component), Category (event type), Message (description), and Details (additional info).',
@@ -56,7 +43,7 @@ export class SystemLogsTutorial extends BaseTutorial {
             {
                 target: '#logs-container',
                 title: 'Log Entries Display',
-                content: 'This area displays all log entries. Look for color-coded severity levels: blue (INFO), yellow (WARNING), red (ERROR), and dark red (CRITICAL).',
+                content: 'This area displays all log entries from system activities. Look for color-coded severity levels: blue (INFO), yellow (WARNING), red (ERROR), and dark red (CRITICAL).',
                 action: 'highlight',
                 position: 'right'
             },
@@ -70,7 +57,7 @@ export class SystemLogsTutorial extends BaseTutorial {
             {
                 target: '#logs-container',
                 title: 'System Logs Analysis Complete!',
-                content: 'Excellent! You\'ve learned to analyze system logs effectively. Monitor logs regularly, investigate warnings promptly, and respond immediately to critical errors for robust cybersecurity.',
+                content: 'Excellent! You\'ve learned to analyze system logs effectively: filtering by severity levels, monitoring different sources, analyzing log structures, and tracking system health indicators. Monitor logs regularly and investigate warnings promptly for robust cybersecurity!',
                 action: 'highlight',
                 position: 'left',
                 final: true
@@ -78,20 +65,54 @@ export class SystemLogsTutorial extends BaseTutorial {
         ];
     }
 
-    start() {
-        if (this.isActive) return;
+    async start() {
+        // Ensure system logs is open
+        if (!this.desktop.windowManager.windows.has('system-logs')) {
+            try {
+                await this.desktop.windowManager.openSystemLogs();
+                // Wait for the window to fully render
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            } catch (error) {
+                console.error('System Logs application not found:', error);
+                return;
+            }
+        }
+
+        // Initialize CSS first
+        this.initializeCSS();
         
+        // Enable tutorial mode
+        tutorialInteractionManager.enableTutorialMode();
+        
+        // Set tutorial state
         this.isActive = true;
-        this.currentStep = 0;
+        this.stepManager.reset();
         
-        // Wait for system logs to be fully loaded
-        setTimeout(() => {
-            this.createOverlay();
-            this.showStep();
-        }, 1000);
+        // Create overlay before showing any steps
+        this.createOverlay();
+        
+        // Ensure system logs window is in front
+        this.ensureSystemLogsInFront();
+        
+        // Set global reference
+        window.systemLogsTutorial = this;
+        window.currentTutorial = this;
+        
+        // Wait for system logs to be fully loaded and then start showing steps
+        this.showStep();
     }
 
-    // Override to add system logs specific tutorial behaviors
+    ensureSystemLogsInFront() {
+        const systemLogsWindow = document.querySelector('.window[data-window-id="system-logs"]') || 
+                                document.querySelector('.window .system-logs') ||
+                                document.querySelector('[id*="system-logs"]')?.closest('.window');
+        
+        if (systemLogsWindow) {
+            systemLogsWindow.style.zIndex = '51';
+            systemLogsWindow.style.position = 'relative';
+        }
+    }
+
     showStep() {
         if (this.currentStep >= this.steps.length) {
             this.complete();
@@ -99,6 +120,7 @@ export class SystemLogsTutorial extends BaseTutorial {
         }
 
         const step = this.steps[this.currentStep];
+        let target = document.querySelector(step.target);
         
         // Special handling for filter steps - ensure dropdowns are visible
         if (step.target.includes('filter')) {
@@ -109,29 +131,47 @@ export class SystemLogsTutorial extends BaseTutorial {
                 this.nextStep();
                 return;
             }
+            target = filterElement;
         }
 
-        // Special handling for logs container - ensure some log entries exist
+        // Special handling for logs container - logs are populated by real activity only
         if (step.target === '#logs-container') {
             const logsContainer = document.querySelector('#logs-container');
             if (logsContainer && logsContainer.children.length === 0) {
-                // If no logs are visible, trigger refresh to show some entries
-                const refreshBtn = document.querySelector('#refresh-btn');
-                if (refreshBtn) {
-                    refreshBtn.click();
-                    // Wait a moment for logs to load
-                    setTimeout(() => {
-                        super.showStep();
-                    }, 500);
-                    return;
-                }
+                // No need to trigger refresh since auto-refresh is removed
+                // Logs will appear naturally from system activities
             }
+            target = logsContainer;
+        }
+        
+        if (!target) {
+            console.warn(`Tutorial target not found: ${step.target}`);
+            this.nextStep();
+            return;
         }
 
-        super.showStep();
+        // Clear previous highlights and interactions
+        this.clearHighlights();
+        this.clearStepInteractions();
+        
+        // Highlight target element
+        this.highlightElement(target, step.action);
+        
+        // Setup interactions for this step
+        this.setupStepInteraction(step, target);
+        
+        // Position and show tooltip
+        this.showTooltip(target, step);
     }
 
-    // Override base class methods
+    complete() {
+        super.complete();
+        
+        // Store completion in localStorage
+        localStorage.setItem('cyberquest_systemlogs_tutorial_completed', 'true');
+    }
+
+    // Override base class methods for proper tutorial flow
     getSkipTutorialHandler() {
         return 'window.systemLogsTutorial.showSkipModal()';
     }
@@ -152,19 +192,24 @@ export class SystemLogsTutorial extends BaseTutorial {
         return 'Finish Tutorial';
     }
 
-    complete() {
-        super.complete();
+    // Static methods for auto-start functionality
+    static shouldAutoStart() {
+        const tutorialCompleted = localStorage.getItem('cyberquest_systemlogs_tutorial_completed');
+        const systemLogsOpened = localStorage.getItem('cyberquest_systemlogs_opened');
         
-        // Store completion in localStorage
-        localStorage.setItem('cyberquest_systemlogs_tutorial_completed', 'true');
+        return systemLogsOpened && !tutorialCompleted;
     }
 
-    // Static methods
-    static shouldAutoStart() {
-        return !localStorage.getItem('cyberquest_systemlogs_tutorial_completed');
+    static startTutorial(desktop) {
+        console.log('Starting System Logs tutorial...');
+        const tutorial = new SystemLogsTutorial(desktop);
+        window.systemLogsTutorial = tutorial;
+        tutorial.start();
+        return tutorial;
     }
 
     static restart() {
         localStorage.removeItem('cyberquest_systemlogs_tutorial_completed');
+        localStorage.removeItem('cyberquest_systemlogs_opened');
     }
 }

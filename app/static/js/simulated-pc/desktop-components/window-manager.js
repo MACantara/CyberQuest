@@ -1,12 +1,7 @@
-import { BrowserApp } from './desktop-applications/browser-app.js';
-import { TerminalApp } from './desktop-applications/terminal-app.js';
-import { FileManagerApp } from './desktop-applications/file-manager-app.js';
-import { EmailApp } from './desktop-applications/email-app.js';
-import { NetworkMonitorApp } from './desktop-applications/network-monitor-app.js';
-import { SystemLogsApp } from './desktop-applications/system-logs-app.js';
-import { ControlPanelApp } from './control-panel.js';
 import { WindowSnapManager } from './window-snap-manager.js';
 import { WindowResizeManager } from './window-resize-manager.js';
+import { appRegistry } from './application-registry.js';
+import { initializeApplicationLauncher } from './application-launcher.js';
 
 export class WindowManager {
     constructor(container, taskbar, tutorialManager = null) {
@@ -22,15 +17,14 @@ export class WindowManager {
         this.snapManager = new WindowSnapManager(container);
         this.resizeManager = new WindowResizeManager(this);
         
-        // Application registry for easier management
-        this.appRegistry = {
-            'browser': { class: BrowserApp, storageKey: 'cyberquest_browser_opened', tutorialMethod: 'shouldAutoStartBrowser', startMethod: 'startBrowserTutorial' },
-            'terminal': { class: TerminalApp, storageKey: 'cyberquest_terminal_opened', tutorialMethod: 'shouldAutoStartTerminal', startMethod: 'startTerminalTutorial' },
-            'files': { class: FileManagerApp, storageKey: 'cyberquest_filemanager_opened', tutorialMethod: 'shouldAutoStartFileManager', startMethod: 'startFileManagerTutorial' },
-            'email': { class: EmailApp, storageKey: 'cyberquest_email_opened', tutorialMethod: 'shouldAutoStartEmail', startMethod: 'startEmailTutorial' },
-            'wireshark': { class: NetworkMonitorApp, storageKey: 'cyberquest_networkmonitor_opened', tutorialMethod: 'shouldAutoStartNetworkMonitor', startMethod: 'startNetworkMonitorTutorial' },
-            'logs': { class: SystemLogsApp, storageKey: 'cyberquest_systemlogs_opened', tutorialMethod: 'shouldAutoStartSystemLogs', startMethod: 'startSystemLogsTutorial' }
-        };
+        // Use application registry
+        this.appRegistry = appRegistry;
+        
+        // Initialize application launcher
+        this.applicationLauncher = initializeApplicationLauncher(this);
+        
+        // Make launcher globally accessible
+        window.applicationLauncher = this.applicationLauncher;
     }
 
     // Ensure window styles are loaded
@@ -42,53 +36,6 @@ export class WindowManager {
         link.rel = 'stylesheet';
         link.href = '/static/css/simulated-pc/windows.css';
         document.head.appendChild(link);
-    }
-
-    // Generic application opener that handles tutorial logic
-    async openApplication(appId, windowTitle) {
-        const appConfig = this.appRegistry[appId];
-        if (!appConfig) {
-            throw new Error(`Application '${appId}' not found in registry`);
-        }
-
-        const isFirstTime = !localStorage.getItem(appConfig.storageKey);
-        const app = new appConfig.class();
-        
-        this.createWindow(appId, windowTitle, app);
-        localStorage.setItem(appConfig.storageKey, 'true');
-
-        // Handle tutorial auto-start if it's the first time and tutorial manager is available
-        if (isFirstTime && this.tutorialManager && appConfig.tutorialMethod && appConfig.startMethod) {
-            await this.handleTutorialAutoStart(appConfig.tutorialMethod, appConfig.startMethod);
-        }
-    }
-
-    // Shared tutorial auto-start logic
-    async handleTutorialAutoStart(tutorialCheckMethod, tutorialStartMethod) {
-        try {
-            const shouldStart = await this.tutorialManager[tutorialCheckMethod]();
-            if (shouldStart) {
-                setTimeout(async () => {
-                    await this.tutorialManager[tutorialStartMethod]();
-                }, 1500);
-            }
-        } catch (error) {
-            console.warn(`Tutorial auto-start failed: ${error.message}`);
-        }
-    }
-
-    // Special case for email which needs async handling
-    async handleEmailTutorialAutoStart() {
-        try {
-            const shouldStart = await this.tutorialManager.shouldAutoStartEmail();
-            if (shouldStart) {
-                setTimeout(async () => {
-                    await this.tutorialManager.startEmailTutorial();
-                }, 1500);
-            }
-        } catch (error) {
-            console.warn(`Email tutorial auto-start failed: ${error.message}`);
-        }
     }
 
     createWindow(id, title, contentOrApp, options = {}) {
@@ -109,8 +56,8 @@ export class WindowManager {
             windowElement = app.createWindow();
             this.applications.set(id, app);
         } else {
-            // Legacy string content support
-            windowElement = this.createLegacyWindow(id, title, contentOrApp, options);
+            // For non-app content, throw error since legacy support is removed
+            throw new Error(`Legacy window creation is no longer supported. Use application registry instead.`);
         }
 
         windowElement.style.zIndex = ++this.zIndex;
@@ -118,7 +65,7 @@ export class WindowManager {
         this.windows.set(id, windowElement);
 
         // Add to taskbar
-        const iconClass = app ? app.getIconClass() : this.getIconClassForWindow(id);
+        const iconClass = app.getIconClass();
         this.taskbar.addWindow(id, title, iconClass);
 
         // Bind window events
@@ -134,69 +81,6 @@ export class WindowManager {
         }
 
         return windowElement;
-    }
-
-    // Legacy window creation for backwards compatibility
-    createLegacyWindow(id, title, content, options) {
-        const window = document.createElement('div');
-        window.className = 'absolute bg-gray-800 border border-gray-600 rounded shadow-2xl overflow-hidden min-w-72 min-h-48 backdrop-blur-lg';
-        window.style.width = options.width || '60%';
-        window.style.height = options.height || '50%';
-        window.style.left = `${Math.random() * 20 + 10}%`;
-        window.style.top = `${Math.random() * 20 + 10}%`;
-
-        window.innerHTML = `
-            <div class="window-header bg-gradient-to-r from-gray-700 to-gray-600 px-3 py-2 flex justify-between items-center border-b border-gray-600 cursor-grab select-none">
-                <div class="window-title text-white text-sm font-semibold flex items-center space-x-2">
-                    <i class="bi bi-${this.getIconForWindow(id)}"></i>
-                    <span>${title}</span>
-                </div>
-                <div class="window-controls flex space-x-1">
-                    <button class="window-btn minimize w-6 h-6 rounded bg-yellow-500 hover:bg-yellow-400 flex items-center justify-center text-black text-xs transition-all duration-200 hover:shadow-md cursor-pointer" title="Minimize">
-                        <i class="bi bi-dash"></i>
-                    </button>
-                    <button class="window-btn maximize w-6 h-6 rounded bg-green-500 hover:bg-green-400 flex items-center justify-center text-black text-xs transition-all duration-200 hover:shadow-md cursor-pointer" title="Maximize">
-                        <i class="bi bi-square"></i>
-                    </button>
-                    <button class="window-btn close w-6 h-6 rounded bg-red-500 hover:bg-red-400 flex items-center justify-center text-white text-xs transition-all duration-200 hover:shadow-md cursor-pointer" title="Close">
-                        <i class="bi bi-x"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="window-content h-full overflow-auto bg-black text-white" style="height: calc(100% - 40px);">
-                ${content}
-            </div>
-            <!-- Resize handles -->
-            <div class="resize-handle resize-n absolute top-0 left-0 right-0 h-1 cursor-n-resize"></div>
-            <div class="resize-handle resize-s absolute bottom-0 left-0 right-0 h-1 cursor-s-resize"></div>
-            <div class="resize-handle resize-w absolute top-0 bottom-0 left-0 w-1 cursor-w-resize"></div>
-            <div class="resize-handle resize-e absolute top-0 bottom-0 right-0 w-1 cursor-e-resize"></div>
-            <div class="resize-handle resize-nw absolute top-0 left-0 w-3 h-3 cursor-nw-resize"></div>
-            <div class="resize-handle resize-ne absolute top-0 right-0 w-3 h-3 cursor-ne-resize"></div>
-            <div class="resize-handle resize-sw absolute bottom-0 left-0 w-3 h-3 cursor-sw-resize"></div>
-            <div class="resize-handle resize-se absolute bottom-0 right-0 w-3 h-3 cursor-se-resize"></div>
-        `;
-
-        return window;
-    }
-
-    getIconForWindow(id) {
-        const icons = {
-            'browser': 'globe',
-            'terminal': 'terminal',
-            'files': 'folder',
-            'email': 'envelope',
-            'wireshark': 'router',
-            'logs': 'journal-text',
-            'help': 'question-circle',
-            'hint': 'lightbulb',
-            'progress': 'clipboard-data'
-        };
-        return icons[id] || 'window';
-    }
-
-    getIconClassForWindow(id) {
-        return `bi-${this.getIconForWindow(id)}`;
     }
 
     bindWindowEvents(window, id) {
@@ -431,29 +315,41 @@ export class WindowManager {
         }
     }
 
-    // Simplified application launchers using the generic opener
+    // Simplified application launchers that delegate to application launcher
     async openBrowser() {
-        await this.openApplication('browser', 'Web Browser');
+        return await this.applicationLauncher.openApplication('browser', 'Web Browser');
     }
 
     async openTerminal() {
-        await this.openApplication('terminal', 'Terminal');
+        return await this.applicationLauncher.openApplication('terminal', 'Terminal');
     }
 
     async openFileManager() {
-        await this.openApplication('files', 'File Manager');
+        return await this.applicationLauncher.openApplication('files', 'File Manager');
     }
 
     async openEmailClient() {
-        await this.openApplication('email', 'Email Client');
+        return await this.applicationLauncher.openApplication('email', 'Email Client');
     }
 
     async openNetworkMonitor() {
-        await this.openApplication('wireshark', 'Network Monitor');
+        return await this.applicationLauncher.openApplication('wireshark', 'Network Monitor');
     }
 
     async openSystemLogs() {
-        await this.openApplication('logs', 'System Logs');
+        return await this.applicationLauncher.openApplication('logs', 'System Logs');
+    }
+
+    async openProcessMonitor() {
+        return await this.applicationLauncher.openApplication('process-monitor', 'Process Monitor');
+    }
+
+    async openMalwareScanner() {
+        return await this.applicationLauncher.launchMalwareScanner();
+    }
+
+    async openRansomwareDecryptor() {
+        return await this.applicationLauncher.launchRansomwareDecryptor();
     }
 
     // Utility methods for batch operations
@@ -499,18 +395,23 @@ export class WindowManager {
 
     // Application registry helpers
     isApplicationRegistered(appId) {
-        return this.appRegistry.hasOwnProperty(appId);
+        return this.appRegistry.hasApp(appId);
     }
 
     getRegisteredApplications() {
-        return Object.keys(this.appRegistry);
+        return this.appRegistry.getAllAppIds();
     }
 
     addApplicationToRegistry(appId, config) {
-        this.appRegistry[appId] = config;
+        this.appRegistry.registerApp(appId, config);
     }
 
     removeApplicationFromRegistry(appId) {
-        delete this.appRegistry[appId];
+        return this.appRegistry.unregisterApp(appId);
+    }
+
+    // Get application registry instance (for advanced usage)
+    getApplicationRegistry() {
+        return this.appRegistry;
     }
 }

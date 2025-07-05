@@ -24,6 +24,99 @@ export class ActivityMonitor {
         this.boundEventHandlers.forEach((handler, eventType) => {
             document.addEventListener(eventType, handler);
         });
+
+        // Listen for centralized application activities
+        document.addEventListener('applicationActivity', (event) => {
+            this.handleApplicationActivity(event.detail);
+        });
+
+        console.log('[ActivityMonitor] Activity monitoring setup complete');
+    }
+
+    // New method to handle centralized application activities
+    handleApplicationActivity(activityData) {
+        console.log('[ActivityMonitor] Application activity received:', activityData);
+        
+        // Check if this is from the process monitor app
+        if (activityData.source === 'process-monitor' || activityData.app === 'Process Monitor') {
+            this.handleProcessActivity(activityData);
+            return;
+        }
+
+        // Handle other application activities
+        const logEntry = {
+            timestamp: new Date(activityData.timestamp).toLocaleString(),
+            level: activityData.level || 'info',
+            source: activityData.source || 'application',
+            category: activityData.category || 'system',
+            message: activityData.message || `Application activity: ${activityData.type}`,
+            details: this.formatApplicationActivityDetails(activityData)
+        };
+
+        this.app.addLogEntry(logEntry);
+    }
+
+    formatApplicationActivityDetails(activityData) {
+        const details = [`App: ${activityData.app || activityData.source}`, `Activity: ${activityData.type}`];
+        
+        // Add specific details based on activity data
+        if (activityData.data) {
+            Object.entries(activityData.data).forEach(([key, value]) => {
+                if (value !== undefined && value !== null) {
+                    details.push(`${key}: ${value}`);
+                }
+            });
+        }
+        
+        return details.join(' | ');
+    }
+
+    handleProcessActivity(activityData) {
+        const logEntry = {
+            timestamp: new Date(activityData.timestamp).toLocaleString(),
+            level: activityData.level || 'info',
+            source: 'system',
+            category: activityData.category || 'process',
+            message: activityData.message || `Process activity: ${activityData.type}`,
+            details: this.formatProcessActivityDetails(activityData)
+        };
+
+        this.app.addLogEntry(logEntry);
+    }
+
+    formatProcessActivityDetails(activityData) {
+        const details = [`Activity: ${activityData.type}`];
+        
+        if (activityData.process) {
+            if (activityData.process.name) details.push(`Process: ${activityData.process.name}`);
+            if (activityData.process.pid) details.push(`PID: ${activityData.process.pid}`);
+            if (activityData.process.executable) details.push(`Executable: ${activityData.process.executable}`);
+        }
+        
+        // Add specific details based on activity type
+        switch (activityData.type) {
+            case 'high_resource_usage':
+                details.push(`Resource: ${activityData.resource_type}`);
+                details.push(`Usage: ${activityData.usage_value}${activityData.resource_type === 'cpu' ? '%' : 'MB'}`);
+                break;
+            case 'suspicious_process_detected':
+                details.push(`Threat Level: ${activityData.threat_level || 'unknown'}`);
+                if (activityData.process.cpu) details.push(`CPU: ${activityData.process.cpu}%`);
+                if (activityData.process.memory) details.push(`Memory: ${activityData.process.memory}MB`);
+                break;
+            case 'process_terminated':
+                details.push(`Terminated by: ${activityData.terminatedBy || 'system'}`);
+                break;
+            case 'process_sorted':
+                details.push(`Sort column: ${activityData.sortColumn}`);
+                details.push(`Sort direction: ${activityData.sortDirection}`);
+                break;
+            case 'realtime_toggle':
+                details.push(`Real-time enabled: ${activityData.realTimeEnabled}`);
+                break;
+        }
+        
+        return details.join(' | ');
     }
 
     logBrowserActivity(e) {

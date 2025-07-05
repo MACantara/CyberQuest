@@ -1,4 +1,4 @@
-import { BaseDialogue } from '../../base-dialogue.js';
+import { BaseDialogue } from '../base-dialogue.js';
 
 export class Level8OperationBlackoutDialogue extends BaseDialogue {
     constructor(desktop, character = 'instructor') {
@@ -23,11 +23,12 @@ export class Level8OperationBlackoutDialogue extends BaseDialogue {
     }
 
     onComplete() {
-        localStorage.setItem('cyberquest_level_8_completed', 'true');
+        localStorage.setItem('cyberquest_level_8_started', 'true');
         
-        if (this.desktop?.levelManager) {
+        // Open the Network Monitor application for DDoS defense
+        if (window.applicationLauncher) {
             setTimeout(async () => {
-                await this.desktop.levelManager.startLevel(8);
+                await window.applicationLauncher.launchForLevel(8, 'wireshark', 'Network Monitor');
             }, 500);
         }
     }
