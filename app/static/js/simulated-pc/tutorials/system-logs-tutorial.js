@@ -100,7 +100,7 @@ export class SystemLogsTutorial extends BaseTutorial {
         
         // Wait for system logs to be fully loaded and then start showing steps
         setTimeout(() => {
-            this.showStep();
+            this.stepManager.showStep();
         }, 1000);
     }
 

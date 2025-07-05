@@ -100,7 +100,7 @@ export class NetworkMonitorTutorial extends BaseTutorial {
         
         // Wait for network monitor to be fully loaded and then start showing steps
         setTimeout(() => {
-            this.showStep();
+            this.stepManager.showStep();
         }, 1000);
     }
 

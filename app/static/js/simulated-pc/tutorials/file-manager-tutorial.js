@@ -100,7 +100,7 @@ export class FileManagerTutorial extends BaseTutorial {
         
         // Wait for file manager to be fully loaded and then start showing steps
         setTimeout(() => {
-            this.showStep();
+            this.stepManager.showStep();
         }, 1000);
     }
 
