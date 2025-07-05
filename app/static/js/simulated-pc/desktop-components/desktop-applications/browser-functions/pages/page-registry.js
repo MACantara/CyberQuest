@@ -69,6 +69,10 @@ export class PageRegistry {
         return this.pages.get(url);
     }
 
+    getPageByUrl(url) {
+        return this.pages.get(url) || null;
+    }
+
     getPageSecurity(url) {
         const page = this.getPage(url);
         return page ? page.security : null;
@@ -76,6 +80,30 @@ export class PageRegistry {
 
     getAllPages() {
         return Array.from(this.pages.values());
+    }
+
+    getPageList() {
+        return Array.from(this.pages.values());
+    }
+
+    getAllPageUrls() {
+        return Array.from(this.pages.keys());
+    }
+
+    getPagesByHostname(hostname) {
+        const matchingPages = [];
+        for (const [url, page] of this.pages.entries()) {
+            try {
+                const pageUrl = new URL(url);
+                if (pageUrl.hostname === hostname || pageUrl.hostname.includes(hostname)) {
+                    matchingPages.push(page);
+                }
+            } catch (error) {
+                // Skip invalid URLs
+                continue;
+            }
+        }
+        return matchingPages;
     }
 
     createNotFoundPage(url) {
@@ -110,3 +138,9 @@ export class PageRegistry {
         };
     }
 }
+
+// Export singleton instance
+export const pageRegistry = new PageRegistry();
+
+// Export class for custom instances
+export default PageRegistry;
