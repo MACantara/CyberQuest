@@ -47,6 +47,7 @@ export class BaseTutorial {
         this.tooltip.className = 'fixed z-50 tutorial-tooltip bg-gray-800 border border-gray-600 rounded shadow-2xl p-6 max-w-sm transform transition-all duration-300';
         this.tooltip.style.pointerEvents = 'auto';
         this.tooltip.style.zIndex = '9999'; // Ensure tooltip is always on top
+        this.tooltip.style.display = 'none';           // <--- hide initially
         
         document.body.appendChild(this.overlay);
         document.body.appendChild(this.tooltip);
@@ -159,6 +160,8 @@ export class BaseTutorial {
     }
 
     showTooltip(target, step) {
+        // make tooltip visible now that content is ready
+        this.tooltip.style.display = 'block';          // <--- show on demand
         this.tooltip.innerHTML = this.createTooltipContent(step);
         
         // Ensure tooltip is always interactive
