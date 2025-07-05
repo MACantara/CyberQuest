@@ -1,11 +1,11 @@
 import { BaseDialogue } from '../base-dialogue.js';
 
-export class Level9HuntForTheNullDialogue extends BaseDialogue {
+export class Level5HuntForTheNullDialogue extends BaseDialogue {
     constructor(desktop, character = 'instructor') {
         super(desktop, character);
         this.messages = [
             {
-                text: "Welcome to Level 9: The Hunt for The Null. This is your final mission - use advanced digital forensics to expose The Null's identity."
+                text: "Welcome to Level 5: The Hunt for The Null. This is your final mission - use advanced digital forensics to expose The Null's identity."
             },
             {
                 text: "As a master cybersecurity analyst, you'll need to combine all your skills to track down the elusive hacker known only as 'The Null'."
@@ -23,7 +23,7 @@ export class Level9HuntForTheNullDialogue extends BaseDialogue {
     }
 
     onComplete() {
-        localStorage.setItem('cyberquest_level_9_started', 'true');
+        localStorage.setItem('cyberquest_level_5_started', 'true');
         
         // Open multiple applications for digital forensics
         if (window.applicationLauncher) {
@@ -31,7 +31,7 @@ export class Level9HuntForTheNullDialogue extends BaseDialogue {
                 // Launch multiple apps for comprehensive forensics analysis
                 const apps = ['files', 'logs', 'terminal'];
                 await window.applicationLauncher.launchMultiple(apps);
-                console.log('Digital forensics tools opened for Level 9: Hunt for The Null');
+                console.log('Digital forensics tools opened for Level 5: Hunt for The Null');
             }, 500);
         }
     }
@@ -43,7 +43,7 @@ export class Level9HuntForTheNullDialogue extends BaseDialogue {
     static shouldAutoStart(levelId) {
         const currentLevel = localStorage.getItem('cyberquest_current_level');
         const levelStarted = localStorage.getItem(`cyberquest_level_${levelId}_started`);
-        return currentLevel === '9' && !levelStarted;
+        return currentLevel === '5' && !levelStarted;
     }
 
     static markLevelStarted(levelId) {
@@ -51,6 +51,6 @@ export class Level9HuntForTheNullDialogue extends BaseDialogue {
     }
 
     static isCompleted() {
-        return localStorage.getItem('cyberquest_level_9_completed') === 'true';
+        return localStorage.getItem('cyberquest_level_5_completed') === 'true';
     }
 }

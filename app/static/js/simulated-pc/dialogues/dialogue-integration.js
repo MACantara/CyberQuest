@@ -58,42 +58,9 @@ export class DialogueIntegration {
             'Isolate infections and perform digital cleanup during a gaming tournament.'
         );
 
-        // Level 4: The Password Heist
+        // Level 4: The White Hat Test
         this.addLevelDialogue(
             4,
-            'password-heist',
-            'The Password Heist',
-            'Authentication',
-            175,
-            '20 minutes',
-            'Defend against brute-force attacks and implement strong password practices.'
-        );
-
-        // Level 5: The Social Web
-        this.addLevelDialogue(
-            5,
-            'social-web',
-            'The Social Web',
-            'Privacy Protection',
-            180,
-            '25 minutes',
-            'Navigate ethical social media behavior and protect your digital footprint.'
-        );
-
-        // Level 6: The Adaptive Adversary
-        this.addLevelDialogue(
-            6,
-            'adaptive-adversary',
-            'The Adaptive Adversary',
-            'AI Security',
-            300,
-            '25 minutes',
-            'Confront AI-powered threats that adapt to your behavior patterns.'
-        );
-
-        // Level 7: The White Hat Test
-        this.addLevelDialogue(
-            7,
             'white-hat-test',
             'The White Hat Test',
             'Ethical Hacking',
@@ -102,20 +69,9 @@ export class DialogueIntegration {
             'Practice ethical hacking and responsible vulnerability disclosure.'
         );
 
-        // Level 8: Operation Blackout
+        // Level 5: The Hunt for The Null
         this.addLevelDialogue(
-            8,
-            'operation-blackout',
-            'Operation Blackout',
-            'Incident Response',
-            400,
-            '35 minutes',
-            'Defend critical infrastructure from a coordinated DDoS attack.'
-        );
-
-        // Level 9: The Hunt for The Null
-        this.addLevelDialogue(
-            9,
+            5,
             'hunt-for-the-null',
             'The Hunt for The Null',
             'Digital Forensics',

@@ -1,23 +1,23 @@
 import { BaseDialogue } from '../base-dialogue.js';
 
-export class Level4PasswordHeistDialogue extends BaseDialogue {
+export class Level4WhiteHatTestDialogue extends BaseDialogue {
     constructor(desktop, character = 'instructor') {
         super(desktop, character);
         this.messages = [
             {
-                text: "Welcome to Level 4: The Password Heist. In this level, you'll defend against brute-force attacks and implement strong password practices."
+                text: "Welcome to Level 4: The White Hat Test. In this level, you'll practice ethical hacking and responsible vulnerability disclosure."
             },
             {
-                text: "As a security professional, you'll need to understand password security fundamentals and implement multi-factor authentication to protect sensitive accounts."
+                text: "As an ethical hacker, you'll need to think like an attacker to find and document security vulnerabilities before they can be exploited maliciously."
             },
             {
-                text: "You'll be configuring password policies, setting up MFA, and responding to brute-force attack attempts in real-time."
+                text: "You'll be using penetration testing tools and methodologies to identify weaknesses in systems and applications, then reporting your findings responsibly."
             },
             {
-                text: "Pay attention to password complexity requirements, account lockout policies, and monitoring for suspicious login attempts."
+                text: "Remember to follow ethical guidelines and only test systems you have explicit permission to assess. Document everything thoroughly."
             },
             {
-                text: "Successfully completing this level will earn you 175 XP in the Authentication category. Are you ready to start?"
+                text: "Successfully completing this level will earn you 350 XP in the Ethical Hacking category. Ready to test your skills?"
             }
         ];
     }
@@ -25,7 +25,7 @@ export class Level4PasswordHeistDialogue extends BaseDialogue {
     onComplete() {
         localStorage.setItem('cyberquest_level_4_started', 'true');
         
-        // Open the Terminal application for password security testing
+        // Open the Terminal application for ethical hacking tools
         if (window.applicationLauncher) {
             setTimeout(async () => {
                 await window.applicationLauncher.launchForLevel(4, 'terminal', 'Terminal');
