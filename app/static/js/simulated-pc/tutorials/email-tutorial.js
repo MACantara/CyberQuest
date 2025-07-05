@@ -1,4 +1,5 @@
 import { BaseTutorial } from './base-tutorial.js';
+import { tutorialInteractionManager } from './tutorial-interaction-manager.js';
 
 export class EmailTutorial extends BaseTutorial {
     constructor(desktop) {
@@ -41,8 +42,8 @@ export class EmailTutorial extends BaseTutorial {
             },
             {
                 target: '#email-list',
-                title: 'Email Security Best Practices',
-                content: 'Remember: Never click suspicious links, always verify sender authenticity, be wary of urgent language, and when in doubt, contact the organization directly.',
+                title: 'Email Security Complete!',
+                content: 'Excellent! You\'ve learned to identify key email security threats: suspicious sender addresses, phishing attempts, urgent language tactics, and how to distinguish legitimate emails from scams. Always verify before clicking links or providing information!',
                 action: 'highlight',
                 position: 'right',
                 final: true
@@ -50,20 +51,56 @@ export class EmailTutorial extends BaseTutorial {
         ];
     }
 
-    start() {
-        if (this.isActive) return;
+    async start() {
+        // Ensure email client is open
+        if (!this.desktop.windowManager.windows.has('email')) {
+            try {
+                await this.desktop.windowManager.openEmailClient();
+                // Wait for the window to fully render
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            } catch (error) {
+                console.error('Email application not found:', error);
+                return;
+            }
+        }
+
+        // Initialize CSS first
+        this.initializeCSS();
         
+        // Enable tutorial mode
+        tutorialInteractionManager.enableTutorialMode();
+        
+        // Set tutorial state
         this.isActive = true;
-        this.currentStep = 0;
+        this.stepManager.reset();
         
-        // Wait for email app to be fully loaded
+        // Create overlay before showing any steps
+        this.createOverlay();
+        
+        // Ensure email window is in front
+        this.ensureEmailInFront();
+        
+        // Set global reference
+        window.emailTutorial = this;
+        window.currentTutorial = this;
+        
+        // Wait for email app to be fully loaded and then start showing steps
         setTimeout(() => {
-            this.createOverlay();
             this.showStep();
         }, 1000);
     }
 
-    // Override to add email-specific tutorial behaviors
+    ensureEmailInFront() {
+        const emailWindow = document.querySelector('.window[data-window-id="email"]') || 
+                           document.querySelector('.window .email') ||
+                           document.querySelector('[id*="email"]')?.closest('.window');
+        
+        if (emailWindow) {
+            emailWindow.style.zIndex = '51';
+            emailWindow.style.position = 'relative';
+        }
+    }
+
     showStep() {
         if (this.currentStep >= this.steps.length) {
             this.complete();
@@ -71,6 +108,7 @@ export class EmailTutorial extends BaseTutorial {
         }
 
         const step = this.steps[this.currentStep];
+        let target = document.querySelector(step.target);
         
         // Special handling for email list step - ensure we're looking at the inbox
         if (step.target === '#email-list') {
@@ -80,16 +118,41 @@ export class EmailTutorial extends BaseTutorial {
                 inboxFolder.click();
                 // Wait a moment for the view to update
                 setTimeout(() => {
-                    super.showStep();
+                    this.showStep();
                 }, 300);
                 return;
             }
+            target = document.querySelector('#email-list');
+        }
+        
+        if (!target) {
+            console.warn(`Tutorial target not found: ${step.target}`);
+            this.nextStep();
+            return;
         }
 
-        super.showStep();
+        // Clear previous highlights and interactions
+        this.clearHighlights();
+        this.clearStepInteractions();
+        
+        // Highlight target element
+        this.highlightElement(target, step.action);
+        
+        // Setup interactions for this step
+        this.setupStepInteraction(step, target);
+        
+        // Position and show tooltip
+        this.showTooltip(target, step);
     }
 
-    // Override base class methods
+    complete() {
+        super.complete();
+        
+        // Store completion in localStorage
+        localStorage.setItem('cyberquest_email_tutorial_completed', 'true');
+    }
+
+    // Override base class methods for proper tutorial flow
     getSkipTutorialHandler() {
         return 'window.emailTutorial.showSkipModal()';
     }
@@ -110,19 +173,24 @@ export class EmailTutorial extends BaseTutorial {
         return 'Finish Tutorial';
     }
 
-    complete() {
-        super.complete();
+    // Static methods for auto-start functionality
+    static shouldAutoStart() {
+        const tutorialCompleted = localStorage.getItem('cyberquest_email_tutorial_completed');
+        const emailOpened = localStorage.getItem('cyberquest_email_opened');
         
-        // Store completion in localStorage
-        localStorage.setItem('cyberquest_email_tutorial_completed', 'true');
+        return emailOpened && !tutorialCompleted;
     }
 
-    // Static methods
-    static shouldAutoStart() {
-        return !localStorage.getItem('cyberquest_email_tutorial_completed');
+    static startTutorial(desktop) {
+        console.log('Starting Email tutorial...');
+        const tutorial = new EmailTutorial(desktop);
+        window.emailTutorial = tutorial;
+        tutorial.start();
+        return tutorial;
     }
 
     static restart() {
         localStorage.removeItem('cyberquest_email_tutorial_completed');
+        localStorage.removeItem('cyberquest_email_opened');
     }
 }
