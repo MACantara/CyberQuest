@@ -82,10 +82,18 @@ export class ProcessMonitorTutorial extends BaseTutorial {
             },
             {
                 target: '#kill-process-btn',
-                title: 'Process Control',
-                content: 'Select a process and use this button to terminate it if it appears suspicious or consumes too many resources.',
+                title: 'Interactive: End a Process',
+                content: 'After selecting a process, click this button to terminate it. This is useful for stopping suspicious or resource-heavy processes.',
                 position: 'left',
-                action: 'pulse'
+                action: 'pulse',
+                interactive: true,
+                interaction: {
+                    type: 'click',
+                    instructions: 'Click the End Process button',
+                    successMessage: 'Good! You learned how to terminate processes.',
+                    autoAdvance: true,
+                    advanceDelay: 1500
+                }
             },
             {
                 target: '.suspicious-process',
@@ -325,6 +333,14 @@ export class ProcessMonitorTutorial extends BaseTutorial {
                 });
             }
         }
+
+        if (step.target === '#kill-process-btn') {
+            // Allow interactions with the kill process button
+            const killBtn = document.querySelector('#kill-process-btn');
+            if (killBtn) {
+                tutorialInteractionManager.allowInteractionFor(killBtn);
+            }
+        }
     }
 
     // Override base class methods
@@ -469,6 +485,14 @@ export class ProcessMonitorTutorial extends BaseTutorial {
                 });
             }
         }
+
+        if (step.target === '#kill-process-btn') {
+            // Allow interactions with the kill process button
+            const killBtn = document.querySelector('#kill-process-btn');
+            if (killBtn) {
+                tutorialInteractionManager.allowInteractionFor(killBtn);
+            }
+        }
     }
 
     // Override setupStepInteraction to handle process monitor specific interactions
@@ -486,6 +510,9 @@ export class ProcessMonitorTutorial extends BaseTutorial {
                     break;
                 case '#process-table-body .process-row:first-child':
                     this.setupProcessRowInteraction(step, target);
+                    break;
+                case '#kill-process-btn':
+                    this.setupKillProcessInteraction(step, target);
                     break;
             }
         }
@@ -582,5 +609,38 @@ export class ProcessMonitorTutorial extends BaseTutorial {
             row.addEventListener('click', clickHandler, { once: true });
             this.interactionListeners.push({ element: row, event: 'click', handler: clickHandler });
         });
+    }
+
+    setupKillProcessInteraction(step, target) {
+        const interaction = step.interaction;
+        
+        const clickHandler = (e) => {
+            e.stopPropagation();
+            
+            // Check if a process is selected
+            const selectedProcess = document.querySelector('.process-row.selected');
+            if (!selectedProcess) {
+                // Show message to select a process first
+                this.showInteractionMessage('Please select a process first by clicking on any process row.');
+                return;
+            }
+            
+            // Simulate ending the process
+            target.classList.add('active');
+            setTimeout(() => {
+                target.classList.remove('active');
+            }, 150);
+            
+            this.showInteractionSuccess(step, interaction);
+            
+            if (interaction.autoAdvance) {
+                setTimeout(() => {
+                    this.nextStep();
+                }, interaction.advanceDelay || 1500);
+            }
+        };
+        
+        target.addEventListener('click', clickHandler, { once: true });
+        this.interactionListeners.push({ element: target, event: 'click', handler: clickHandler });
     }
 }
