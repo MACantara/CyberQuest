@@ -5,43 +5,37 @@ export class Level4WhiteHatTestDialogue extends BaseDialogue {
         super(desktop, character);
         this.messages = [
             {
-                text: "Welcome to Level 4: The White Hat Test. In this critical scenario, you'll face real-world ethical challenges."
+                text: "Welcome to Level 4: The White Hat Test. This scenario will challenge your understanding of ethical boundaries in cybersecurity research."
             },
             {
-                text: "You'll learn to distinguish between legitimate security research and malicious activities - a crucial skill for any cybersecurity professional."
+                text: "Professional security researchers face complex decisions daily that test their moral compass and professional integrity."
             },
             {
-                text: "The CyberQuest Academy has been contracted to perform a security audit on SecureVote Pro, an online voting system used by municipalities."
+                text: "The CyberQuest Academy has received a contract to assess the security of SecureVote Pro, a digital voting platform used by several municipalities."
             },
             {
-                text: "Your mission: conduct ethical penetration testing to identify vulnerabilities before they can be exploited by malicious actors."
+                text: "Your task is to conduct a thorough security assessment using appropriate penetration testing methodologies and tools."
             },
             {
-                text: "During your audit, you'll discover a critical vulnerability that could allow vote manipulation."
+                text: "As with all security research, you'll need to document your findings and follow proper disclosure protocols."
             },
             {
-                text: "However, you'll face an unexpected ethical dilemma when an anonymous group contacts you with a cryptocurrency offer."
+                text: "However, real-world security work often presents unexpected situations that aren't covered in textbooks or training manuals."
             },
             {
-                text: "They want you to leak the vulnerability instead of reporting it properly through responsible disclosure channels."
+                text: "The choices you make will reflect your commitment to ethical security practices and professional responsibility."
             },
             {
-                text: "This level tests your commitment to ethical hacking principles: responsible disclosure, professional integrity, and protecting democratic processes."
+                text: "Remember: the goal isn't just to find vulnerabilities, but to handle them in a way that protects both the public interest and democratic processes."
             },
             {
-                text: "You'll need to document your findings, navigate the pressure to profit from vulnerabilities, and demonstrate proper security researcher conduct."
+                text: "This assessment will test both your technical skills and your ethical decision-making under pressure."
             },
             {
-                text: "Your decisions will have consequences that extend beyond cybersecurity - they could impact public trust in democratic institutions."
+                text: "Use the Terminal and other security tools to begin your assessment. Stay alert for any developments during your testing."
             },
             {
-                text: "Use the Terminal and other security tools to conduct your audit while maintaining the highest ethical standards."
-            },
-            {
-                text: "Successfully completing this level requires both technical expertise and unwavering ethical judgment."
-            },
-            {
-                text: "You'll earn 350 XP in Ethical Hacking and unlock the 'White Hat Guardian' badge. The integrity of democratic systems depends on security professionals like you!"
+                text: "Successfully completing this evaluation will earn you 350 XP in Ethical Hacking and demonstrate your readiness for advanced security roles."
             }
         ];
     }
@@ -58,20 +52,17 @@ export class Level4WhiteHatTestDialogue extends BaseDialogue {
     }
 
     getFinalButtonText() {
-        return 'Start Simulation';
+        return 'Begin Security Assessment';
     }
 
-    static shouldAutoStart(levelId) {
-        const currentLevel = localStorage.getItem('cyberquest_current_level');
-        const levelStarted = localStorage.getItem(`cyberquest_level_${levelId}_started`);
-        return currentLevel === '4' && !levelStarted;
+    static shouldAutoStart() {
+        const level4Started = localStorage.getItem('cyberquest_level_4_started');
+        const level3Completed = localStorage.getItem('cyberquest_level_3_completed');
+        return level3Completed && !level4Started;
     }
 
-    static markLevelStarted(levelId) {
-        localStorage.setItem(`cyberquest_level_${levelId}_started`, 'true');
-    }
-
-    static isCompleted() {
-        return localStorage.getItem('cyberquest_level_4_completed') === 'true';
+    static startLevel4Dialogue(desktop) {
+        const dialogue = new Level4WhiteHatTestDialogue(desktop);
+        dialogue.start();
     }
 }
