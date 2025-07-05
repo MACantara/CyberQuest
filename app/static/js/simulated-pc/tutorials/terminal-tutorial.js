@@ -1,4 +1,5 @@
 import { BaseTutorial } from './base-tutorial.js';
+import { tutorialInteractionManager } from './tutorial-interaction-manager.js';
 
 export class TerminalTutorial extends BaseTutorial {
     constructor(desktop) {
@@ -93,7 +94,7 @@ export class TerminalTutorial extends BaseTutorial {
             {
                 target: '#terminal-container',
                 title: 'Terminal Security Training Complete!',
-                content: 'Excellent! You\'ve learned terminal basics and executed security commands. Use commands like ls, cat, grep, ps, and whoami to investigate security incidents and monitor system activity.',
+                content: 'Excellent! You\'ve learned terminal basics and executed security commands: help for available tools, ls for file listing, whoami for user identity, and other essential commands. Use these skills to investigate security incidents and monitor system activity!',
                 action: 'highlight',
                 position: 'left',
                 final: true
@@ -101,20 +102,56 @@ export class TerminalTutorial extends BaseTutorial {
         ];
     }
 
-    start() {
-        if (this.isActive) return;
+    async start() {
+        // Ensure terminal is open
+        if (!this.desktop.windowManager.windows.has('terminal')) {
+            try {
+                await this.desktop.windowManager.openTerminal();
+                // Wait for the window to fully render
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            } catch (error) {
+                console.error('Terminal application not found:', error);
+                return;
+            }
+        }
+
+        // Initialize CSS first
+        this.initializeCSS();
         
+        // Enable tutorial mode
+        tutorialInteractionManager.enableTutorialMode();
+        
+        // Set tutorial state
         this.isActive = true;
-        this.currentStep = 0;
+        this.stepManager.reset();
         
-        // Wait for terminal to be fully loaded
+        // Create overlay before showing any steps
+        this.createOverlay();
+        
+        // Ensure terminal window is in front
+        this.ensureTerminalInFront();
+        
+        // Set global reference
+        window.terminalTutorial = this;
+        window.currentTutorial = this;
+        
+        // Wait for terminal to be fully loaded and then start showing steps
         setTimeout(() => {
-            this.createOverlay();
             this.showStep();
         }, 1000);
     }
 
-    // Override to add terminal-specific tutorial behaviors
+    ensureTerminalInFront() {
+        const terminalWindow = document.querySelector('.window[data-window-id="terminal"]') || 
+                              document.querySelector('.window .terminal') ||
+                              document.querySelector('[id*="terminal"]')?.closest('.window');
+        
+        if (terminalWindow) {
+            terminalWindow.style.zIndex = '51';
+            terminalWindow.style.position = 'relative';
+        }
+    }
+
     showStep() {
         if (this.currentStep >= this.steps.length) {
             this.complete();
@@ -122,6 +159,7 @@ export class TerminalTutorial extends BaseTutorial {
         }
 
         const step = this.steps[this.currentStep];
+        let target = document.querySelector(step.target);
         
         // Special handling for command input step - ensure input is focused
         if (step.target === '#command-input') {
@@ -132,6 +170,7 @@ export class TerminalTutorial extends BaseTutorial {
                     input.focus();
                 }, 300);
             }
+            target = input;
         }
 
         // Special handling for terminal output - ensure it has some content
@@ -145,12 +184,37 @@ export class TerminalTutorial extends BaseTutorial {
                     terminalApp.addOutput('Use "ls" to list files, "whoami" to check user identity', 'text-gray-400');
                 }
             }
+            target = output;
+        }
+        
+        if (!target) {
+            console.warn(`Tutorial target not found: ${step.target}`);
+            this.nextStep();
+            return;
         }
 
-        super.showStep();
+        // Clear previous highlights and interactions
+        this.clearHighlights();
+        this.clearStepInteractions();
+        
+        // Highlight target element
+        this.highlightElement(target, step.action);
+        
+        // Setup interactions for this step
+        this.setupStepInteraction(step, target);
+        
+        // Position and show tooltip
+        this.showTooltip(target, step);
     }
 
-    // Override base class methods
+    complete() {
+        super.complete();
+        
+        // Store completion in localStorage
+        localStorage.setItem('cyberquest_terminal_tutorial_completed', 'true');
+    }
+
+    // Override base class methods for proper tutorial flow
     getSkipTutorialHandler() {
         return 'window.terminalTutorial.showSkipModal()';
     }
@@ -171,19 +235,24 @@ export class TerminalTutorial extends BaseTutorial {
         return 'Finish Tutorial';
     }
 
-    complete() {
-        super.complete();
+    // Static methods for auto-start functionality
+    static shouldAutoStart() {
+        const tutorialCompleted = localStorage.getItem('cyberquest_terminal_tutorial_completed');
+        const terminalOpened = localStorage.getItem('cyberquest_terminal_opened');
         
-        // Store completion in localStorage
-        localStorage.setItem('cyberquest_terminal_tutorial_completed', 'true');
+        return terminalOpened && !tutorialCompleted;
     }
 
-    // Static methods
-    static shouldAutoStart() {
-        return !localStorage.getItem('cyberquest_terminal_tutorial_completed');
+    static startTutorial(desktop) {
+        console.log('Starting Terminal tutorial...');
+        const tutorial = new TerminalTutorial(desktop);
+        window.terminalTutorial = tutorial;
+        tutorial.start();
+        return tutorial;
     }
 
     static restart() {
         localStorage.removeItem('cyberquest_terminal_tutorial_completed');
+        localStorage.removeItem('cyberquest_terminal_opened');
     }
 }
