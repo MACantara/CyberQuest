@@ -345,7 +345,7 @@ export class WindowManager {
     }
 
     async openMalwareScanner() {
-        return await this.applicationLauncher.launchMalwareScanner();
+        return await this.applicationLauncher.openApplication('malware-scanner', 'Malware Scanner');
     }
 
     // Utility methods for batch operations
