@@ -24,14 +24,16 @@ export class DesktopIcons {
 
     createIcons() {
         this.iconsContainer = document.createElement('div');
-        this.iconsContainer.className = 'absolute top-5 left-5 flex flex-col space-y-5';
+        this.iconsContainer.className = 'absolute top-5 left-5 flex flex-wrap flex-col';
+        this.iconsContainer.style.height = 'calc(100vh - 100px)'; // Reserve space for taskbar + padding
+        this.iconsContainer.style.width = 'calc(100vw - 40px)'; // Full width minus padding
         this.iconsContainer.innerHTML = this.generateIconsHTML();
         this.container.appendChild(this.iconsContainer);
     }
 
     generateIconsHTML() {
         return this.icons.map(icon => `
-            <div class="desktop-icon flex flex-col items-center w-20 cursor-pointer p-2.5 rounded hover:bg-white/25 transition-all duration-200" data-action="${icon.action}" data-id="${icon.id}">
+            <div class="desktop-icon flex flex-col items-center w-20 cursor-pointer p-2.5 rounded hover:bg-white/25 transition-all duration-200 mb-5" data-action="${icon.action}" data-id="${icon.id}">
                 <div class="w-12 h-12 bg-green-400 border-2 border-gray-600 rounded flex items-center justify-center text-2xl text-black mb-1 shadow-lg">
                     <i class="bi ${icon.icon}"></i>
                 </div>
@@ -41,26 +43,26 @@ export class DesktopIcons {
     }
 
     bindEvents() {
-        // Desktop icon clicks
-        this.iconsContainer.querySelectorAll('.desktop-icon').forEach(icon => {
-            icon.addEventListener('click', (e) => {
-                this.selectIcon(icon);
-            });
-            
-            icon.addEventListener('dblclick', (e) => {
-                const action = icon.dataset.action;
-                if (this.windowManager[action]) {
+        // Handle window resize to reposition icons
+        window.addEventListener('resize', () => {
+            this.repositionIcons();
+        });
+        
+        // Handle icon clicks
+        this.iconsContainer.addEventListener('click', (e) => {
+            const iconElement = e.target.closest('.desktop-icon');
+            if (iconElement) {
+                const action = iconElement.getAttribute('data-action');
+                if (action && this.windowManager && typeof this.windowManager[action] === 'function') {
                     this.windowManager[action]();
                 }
-            });
-        });
-
-        // Clear selection when clicking on empty desktop
-        this.container.addEventListener('click', (e) => {
-            if (e.target === this.container) {
-                this.clearSelection();
             }
         });
+    }
+    
+    repositionIcons() {
+        // Regenerate the layout when window is resized
+        this.iconsContainer.innerHTML = this.generateIconsHTML();
     }
 
     selectIcon(icon) {
