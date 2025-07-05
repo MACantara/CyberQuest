@@ -109,6 +109,19 @@ export class TutorialRegistry {
             startMethod: 'startTerminalTutorial',
             restartMethod: 'restartTerminalTutorial'
         });
+
+        this.registerTutorial('malware-scanner', {
+            className: 'MalwareScannerTutorial',
+            globalVarName: 'malwareScannerTutorial',
+            title: 'Malware Scanning',
+            description: 'Learn to detect, analyze, and remove malware threats from systems',
+            category: 'Security Tools',
+            estimatedTime: '10 minutes',
+            storageKey: 'cyberquest_malwarescanner_tutorial_completed',
+            tutorialMethod: 'shouldAutoStartMalwareScanner',
+            startMethod: 'startMalwareScannerTutorial',
+            restartMethod: 'restartMalwareScannerTutorial'
+        });
     }
 
     // Register a new tutorial
