@@ -54,7 +54,7 @@ export class LoadingScreen {
             <div class="flex flex-col items-center opacity-0 animate-fade-in-up" style="animation-delay: 0.3s;">
                 <!-- Progress Bar -->
                 <div class="w-64 h-3 bg-gray-700 border border-gray-600 rounded overflow-hidden mb-6 shadow-inner">
-                    <div class="h-full bg-green-400 rounded animate-loading-bar shadow-lg" style="animation-duration: 2.8s;"></div>
+                    <div class="h-full bg-green-400 rounded animate-loading-bar shadow-lg" style="animation-duration: 3s;"></div>
                 </div>
                 
                 <!-- Loading Dots -->
