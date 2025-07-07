@@ -1,9 +1,6 @@
 import { BaseDialogue } from '../base-dialogue.js';
 import { 
     Challenge1Dialogue, 
-    Challenge2Dialogue, 
-    Challenge3Dialogue, 
-    Challenge4Dialogue, 
     LevelCompletionDialogue 
 } from './level-one/index.js';
 
@@ -98,46 +95,6 @@ export class Level1MisinformationMazeDialogue extends BaseDialogue {
             }
             
             const dialogue = new Challenge1Dialogue(desktop);
-            window.currentDialogue = dialogue;
-            dialogue.start();
-        }
-    }
-
-    static async startChallenge2Dialogue(desktop) {
-        if (Challenge2Dialogue.shouldAutoStart()) {
-            // Ensure no other dialogue is active
-            if (window.currentDialogue) {
-                window.currentDialogue.cleanup();
-            }
-            
-            const dialogue = new Challenge2Dialogue(desktop);
-            window.currentDialogue = dialogue;
-            dialogue.start();
-        }
-    }
-
-    static async startChallenge3Dialogue(desktop) {
-        if (Challenge3Dialogue.shouldAutoStart()) {
-            // Ensure no other dialogue is active
-            if (window.currentDialogue) {
-                window.currentDialogue.cleanup();
-            }
-            
-            const dialogue = new Challenge3Dialogue(desktop);
-            window.currentDialogue = dialogue;
-            dialogue.start();
-        }
-    }
-
-    static async startChallenge4Dialogue(desktop) {
-        if (Challenge4Dialogue.shouldAutoStart()) {
-            // Ensure no other dialogue is active
-            if (window.currentDialogue) {
-                console.log('Cleaning up existing dialogue before starting Challenge 4...');
-                window.currentDialogue.cleanup();
-            }
-            
-            const dialogue = new Challenge4Dialogue(desktop);
             window.currentDialogue = dialogue;
             dialogue.start();
         }
