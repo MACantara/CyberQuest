@@ -7,9 +7,6 @@ import { NewsSitePage } from './news-site.js';
 // Import Level 1 Challenge Pages
 import { TutorialPage } from './level-one/tutorial.js';
 import { Challenge1Page } from './level-one/challenge1/challenge1-page.js';
-import { Challenge2Page } from './level-one/challenge2/challenge2-page.js';
-import { Challenge3Page } from './level-one/challenge3/challenge3-page.js';
-import { Challenge4Page } from './level-one/challenge4/challenge4-page.js';
 
 // Import Level 1 Tool Pages
 import { CrossReferenceToolPage } from './level-one/cross-reference-tool.js';
@@ -39,9 +36,6 @@ export class PageRegistry {
         // Register Level 1 Challenge Pages
         this.registerPage(TutorialPage);
         this.registerPage(Challenge1Page);
-        this.registerPage(Challenge2Page);
-        this.registerPage(Challenge3Page);
-        this.registerPage(Challenge4Page);
         
         // Register Level 1 Tool Pages
         this.registerPage(CrossReferenceToolPage);
