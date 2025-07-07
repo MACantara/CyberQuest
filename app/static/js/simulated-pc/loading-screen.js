@@ -13,10 +13,10 @@ export class LoadingScreen {
             this.container.innerHTML = '';
             this.createLoadingScreen();
             
-            // Show loading animation for 5 seconds
+            // Show loading animation for 3 seconds
             setTimeout(() => {
                 resolve();
-            }, 5000);
+            }, 3000);
         });
     }
 
@@ -29,21 +29,21 @@ export class LoadingScreen {
         loadingContent.className = 'flex flex-col items-center justify-center z-10 relative';
         loadingContent.innerHTML = `
             <!-- OS Logo -->
-            <div class="mb-8 opacity-0 animate-fade-in-up" style="animation-delay: 0.2s;">
-                <div class="w-32 h-32 bg-gray-700 border-2 border-gray-600 rounded flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform duration-300 relative overflow-hidden">
-                    <div class="absolute inset-0 bg-gray-800 opacity-50 animate-pulse"></div>
+            <div class="mb-8 opacity-0 animate-fade-in-up" style="animation-delay: 0.1s;">
+                <div class="w-32 h-32 bg-gray-700 border-2 border-gray-600 rounded flex items-center justify-center shadow-2xl transform hover:scale-105 transition-transform duration-200 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gray-800 opacity-50 animate-pulse" style="animation-duration: 1s;"></div>
                     <div class="w-20 h-20 bg-gray-800 border border-gray-600 rounded flex items-center justify-center relative z-10">
-                        <i class="bi bi-shield-check text-green-400 text-4xl animate-pulse"></i>
+                        <i class="bi bi-shield-check text-green-400 text-4xl animate-pulse" style="animation-duration: 1s;"></i>
                     </div>
                     <!-- Floating particles around logo -->
-                    <div class="absolute top-2 left-2 w-2 h-2 bg-green-400 rounded-full animate-ping"></div>
-                    <div class="absolute bottom-3 right-3 w-1.5 h-1.5 bg-green-400 rounded-full animate-bounce" style="animation-delay: 0.5s;"></div>
-                    <div class="absolute top-1/2 left-1 w-1 h-1 bg-green-400 rounded-full animate-pulse" style="animation-delay: 1s;"></div>
+                    <div class="absolute top-2 left-2 w-2 h-2 bg-green-400 rounded-full animate-ping" style="animation-duration: 1s;"></div>
+                    <div class="absolute bottom-3 right-3 w-1.5 h-1.5 bg-green-400 rounded-full animate-bounce" style="animation-delay: 0.2s; animation-duration: 0.8s;"></div>
+                    <div class="absolute top-1/2 left-1 w-1 h-1 bg-green-400 rounded-full animate-pulse" style="animation-delay: 0.4s; animation-duration: 0.6s;"></div>
                 </div>
             </div>
 
             <!-- OS Name and Version -->
-            <div class="text-center mb-12 opacity-0 animate-fade-in-up" style="animation-delay: 0.4s;">
+            <div class="text-center mb-12 opacity-0 animate-fade-in-up" style="animation-delay: 0.2s;">
                 <h1 class="text-5xl md:text-6xl font-bold mb-2 text-white font-mono">
                     CyberOS
                 </h1>
@@ -51,17 +51,17 @@ export class LoadingScreen {
             </div>
 
             <!-- Loading Animation -->
-            <div class="flex flex-col items-center opacity-0 animate-fade-in-up" style="animation-delay: 0.6s;">
+            <div class="flex flex-col items-center opacity-0 animate-fade-in-up" style="animation-delay: 0.3s;">
                 <!-- Progress Bar -->
                 <div class="w-64 h-3 bg-gray-700 border border-gray-600 rounded overflow-hidden mb-6 shadow-inner">
-                    <div class="h-full bg-green-400 rounded animate-loading-bar shadow-lg"></div>
+                    <div class="h-full bg-green-400 rounded animate-loading-bar shadow-lg" style="animation-duration: 2.8s;"></div>
                 </div>
                 
                 <!-- Loading Dots -->
                 <div class="flex space-x-3 mb-8">
-                    <div class="w-4 h-4 bg-green-400 rounded-full animate-bounce"></div>
-                    <div class="w-4 h-4 bg-green-400 rounded-full animate-bounce" style="animation-delay: 0.1s;"></div>
-                    <div class="w-4 h-4 bg-green-400 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+                    <div class="w-4 h-4 bg-green-400 rounded-full animate-bounce" style="animation-duration: 0.8s;"></div>
+                    <div class="w-4 h-4 bg-green-400 rounded-full animate-bounce" style="animation-delay: 0.1s; animation-duration: 0.8s;"></div>
+                    <div class="w-4 h-4 bg-green-400 rounded-full animate-bounce" style="animation-delay: 0.2s; animation-duration: 0.8s;"></div>
                 </div>
 
                 <!-- Loading Text -->
@@ -85,8 +85,8 @@ export class LoadingScreen {
             particle.className = 'absolute w-1 h-1 bg-green-400 rounded-full opacity-20';
             particle.style.left = `${Math.random() * 100}%`;
             particle.style.top = `${Math.random() * 100}%`;
-            particle.style.animationDelay = `${Math.random() * 3}s`;
-            particle.style.animationDuration = `${3 + Math.random() * 4}s`;
+            particle.style.animationDelay = `${Math.random() * 2}s`;
+            particle.style.animationDuration = `${2 + Math.random() * 2}s`;
             particle.classList.add('animate-ping');
             particleContainer.appendChild(particle);
         }
@@ -99,7 +99,7 @@ export class LoadingScreen {
             linear-gradient(90deg, rgba(16, 185, 129, 0.3) 1px, transparent 1px)
         `;
         gridPattern.style.backgroundSize = '50px 50px';
-        gridPattern.style.animation = 'grid-move 10s linear infinite';
+        gridPattern.style.animation = 'grid-move 6s linear infinite';
 
         particleContainer.appendChild(gridPattern);
         this.container.appendChild(particleContainer);
@@ -124,16 +124,16 @@ export class LoadingScreen {
                     textElement.textContent = loadingTexts[currentIndex];
                     textElement.style.opacity = '1';
                     currentIndex = (currentIndex + 1) % loadingTexts.length;
-                }, 300);
+                }, 150);
             }
         };
 
-        // Update text every 1000ms
-        const interval = setInterval(updateText, 1000);
+        // Update text every 500ms
+        const interval = setInterval(updateText, 500);
 
-        // Clear interval after 5 seconds
+        // Clear interval after 3 seconds
         setTimeout(() => {
             clearInterval(interval);
-        }, 5000);
+        }, 3000);
     }
 }
