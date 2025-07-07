@@ -2,61 +2,71 @@ export class ShutdownSequence {
     constructor(container) {
         this.container = container;
         this.shutdownLines = [
-            { text: 'Initiating system shutdown...', type: 'info', delay: 200 },
-            { text: 'Saving training progress...', type: 'info', delay: 400 },
-            { text: '[  OK  ] Training data saved successfully', type: 'success', delay: 300 },
-            { text: 'Stopping simulation services...', type: 'info', delay: 350 },
-            { text: '[  OK  ] Stopped Network Monitor', type: 'success', delay: 200 },
-            { text: '[  OK  ] Stopped Security Tools', type: 'success', delay: 150 },
-            { text: '[  OK  ] Stopped Terminal Session', type: 'success', delay: 180 },
-            { text: '[  OK  ] Stopped File Manager', type: 'success', delay: 160 },
-            { text: '[  OK  ] Stopped Email Client', type: 'success', delay: 140 },
-            { text: '[  OK  ] Stopped Web Browser', type: 'success', delay: 170 },
-            { text: 'Closing active connections...', type: 'info', delay: 300 },
-            { text: '[  OK  ] All connections closed', type: 'success', delay: 250 },
-            { text: 'Cleaning up temporary files...', type: 'info', delay: 400 },
-            { text: '[  OK  ] Cleanup completed', type: 'success', delay: 200 },
-            { text: 'Securing training environment...', type: 'info', delay: 350 },
-            { text: '[  OK  ] Environment secured', type: 'success', delay: 300 },
-            { text: '', type: 'info', delay: 200 },
-            { text: 'Thank you for using CyberQuest Training Lab', type: 'success', delay: 400 },
-            { text: 'Your progress has been saved', type: 'info', delay: 250 },
-            { text: 'Redirecting to main portal...', type: 'info', delay: 500 },
-            { text: '', type: 'info', delay: 300 }
+            { text: 'Initiating secure shutdown sequence...', type: 'info', delay: 30 },
+            { text: 'Saving user session data', type: 'info', delay: 40, hasStatus: true, status: '[  OK  ]' },
+            { text: 'Closing active applications', type: 'info', delay: 30, hasStatus: true, status: '[  OK  ]' },
+            { text: '', type: 'info', delay: 10 },
+            { text: 'Securing sensitive training data', type: 'warning', delay: 50, hasStatus: true, status: '[  OK  ]' },
+            { text: 'Clearing temporary security logs', type: 'info', delay: 30, hasStatus: true, status: '[  OK  ]' },
+            { text: 'Encrypting session artifacts', type: 'info', delay: 40, hasStatus: true, status: '[  OK  ]' },
+            { text: '', type: 'info', delay: 10 },
+            { text: 'Stopping security services', type: 'success', delay: 40, hasStatus: true, status: '[  OK  ]' },
+            { text: 'Stopping Network Manager', type: 'success', delay: 20, hasStatus: false },
+            { text: 'Stopping Firewall Protection', type: 'success', delay: 20, hasStatus: false },
+            { text: 'Stopping Intrusion Detection System', type: 'success', delay: 20, hasStatus: false },
+            { text: 'Stopping Security Monitor Service', type: 'success', delay: 20, hasStatus: false },
+            { text: '', type: 'info', delay: 10 },
+            { text: 'Finalizing training session data', type: 'info', delay: 40, hasStatus: true, status: '[  OK  ]' },
+            { text: 'Uploading progress to secure cloud storage', type: 'info', delay: 60, hasStatus: true, status: '[  OK  ]' },
+            { text: 'Verifying data integrity', type: 'info', delay: 30, hasStatus: true, status: '[  OK  ]' },
+            { text: '', type: 'info', delay: 30 },
+            { text: 'Thank you for training with CyberQuest Academy', type: 'success', delay: 50 },
+            { text: 'Your progress has been securely saved', type: 'info', delay: 30 },
+            { text: 'System shutdown complete', type: 'success', delay: 40 },
+            { text: '', type: 'info', delay: 100 }
         ];
         this.currentLine = 0;
         this.setupContainer();
     }
 
     setupContainer() {
-        // Set up container similar to boot sequence but with shutdown styling
-        this.container.className = 'fixed inset-0 bg-black text-cyan-400 font-mono text-sm leading-relaxed p-10 overflow-y-auto flex flex-col justify-start items-start';
+        this.container.className = 'fixed inset-0 bg-black text-green-400 font-mono text-sm leading-relaxed p-10 overflow-y-auto flex flex-col justify-start items-start';
     }
 
     async start() {
         return new Promise((resolve) => {
             this.container.innerHTML = '';
-            this.typeNextLine(resolve);
+            this.displayNextLine(resolve);
         });
     }
 
-    typeNextLine(onComplete) {
+    displayNextLine(onComplete) {
         if (this.currentLine >= this.shutdownLines.length) {
-            // Complete shutdown without final message
+            // Add blinking cursor briefly, then fade out
+            const cursor = document.createElement('span');
+            cursor.className = 'inline-block w-2 h-3.5 bg-green-400 boot-cursor';
+            this.container.appendChild(cursor);
+            
             setTimeout(() => {
-                onComplete();
-            }, 1000);
+                // Fade out the entire container
+                this.container.style.transition = 'opacity 1s ease-out';
+                this.container.style.opacity = '0';
+                
+                setTimeout(() => {
+                    onComplete();
+                }, 1000);
+            }, 200);
             return;
         }
 
         const line = this.shutdownLines[this.currentLine];
         const lineElement = document.createElement('div');
         
-        // Apply Tailwind classes based on line type
+        // Apply styling based on line type
         let typeClasses = '';
         switch(line.type) {
             case 'success':
-                typeClasses = 'text-cyan-400';
+                typeClasses = 'text-green-400';
                 break;
             case 'warning':
                 typeClasses = 'text-yellow-400';
@@ -65,32 +75,90 @@ export class ShutdownSequence {
                 typeClasses = 'text-red-400';
                 break;
             default:
-                typeClasses = 'text-cyan-400';
+                typeClasses = 'text-green-400';
         }
         
-        lineElement.className = `shutdown-line opacity-0 mb-0.5 whitespace-pre-wrap ${typeClasses} transition-opacity duration-200`;
-        lineElement.textContent = line.text;
+        lineElement.className = `shutdown-line mb-0.5 whitespace-pre-wrap ${typeClasses}`;
         
         this.container.appendChild(lineElement);
         
-        // Trigger animation
-        setTimeout(() => {
-            lineElement.classList.remove('opacity-0');
-        }, 10);
+        // Display the line instantly
+        if (line.text.trim() !== '') {
+            if (line.hasStatus) {
+                // For lines with status, show text, brief loading, then status
+                lineElement.textContent = line.text;
+                
+                this.showQuickStatus(lineElement, line, () => {
+                    this.currentLine++;
+                    setTimeout(() => {
+                        this.displayNextLine(onComplete);
+                    }, line.delay);
+                });
+            } else {
+                // For regular lines, display instantly
+                lineElement.textContent = line.text;
+                
+                this.currentLine++;
+                setTimeout(() => {
+                    this.displayNextLine(onComplete);
+                }, line.delay);
+            }
+        } else {
+            // For empty lines, just move to next immediately
+            this.currentLine++;
+            setTimeout(() => {
+                this.displayNextLine(onComplete);
+            }, line.delay);
+        }
+    }
+
+    showQuickStatus(element, line, onComplete) {
+        // Add quick loading dots
+        const dotsElement = document.createElement('span');
+        dotsElement.className = 'loading-dots ml-2 text-green-400';
+        element.appendChild(dotsElement);
         
-        // Scroll to bottom
-        this.container.scrollTop = this.container.scrollHeight;
+        // Show dots very briefly for SSD-like speed
+        let dotCount = 0;
+        const maxDots = 2; // Reduced dots for faster loading
+        const dotInterval = 30; // Very fast dots
         
-        this.currentLine++;
+        const addDot = () => {
+            if (dotCount < maxDots) {
+                dotsElement.textContent += '.';
+                dotCount++;
+                setTimeout(addDot, dotInterval);
+            } else {
+                // Replace dots with status after minimal delay
+                setTimeout(() => {
+                    dotsElement.remove();
+                    
+                    // Add status with appropriate color
+                    const statusElement = document.createElement('span');
+                    statusElement.className = 'ml-4 font-bold';
+                    
+                    if (line.status === '[ WARN ]') {
+                        statusElement.className += ' text-yellow-400';
+                    } else if (line.status === '[ FAIL ]') {
+                        statusElement.className += ' text-red-400';
+                    } else {
+                        statusElement.className += ' text-green-400';
+                    }
+                    
+                    statusElement.textContent = line.status;
+                    element.appendChild(statusElement);
+                    
+                    onComplete();
+                }, 40); // Minimal delay
+            }
+        };
         
-        setTimeout(() => {
-            this.typeNextLine(onComplete);
-        }, line.delay);
+        setTimeout(addDot, 20); // Start quickly
     }
 
     // Static method to create and run shutdown sequence
     static async runShutdown(container) {
-        const shutdown = new ShutdownSequence(container);
-        await shutdown.start();
+        const shutdownSequence = new ShutdownSequence(container);
+        return await shutdownSequence.start();
     }
 }
