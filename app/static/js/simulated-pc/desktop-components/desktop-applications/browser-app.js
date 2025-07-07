@@ -73,21 +73,6 @@ export class BrowserApp extends WindowBase {
                             <i class="bi bi-camera text-purple-400 text-xs"></i>
                             <span>Image Search</span>
                         </button>
-                        <button class="bookmark-item px-2 py-1 bg-gray-700 hover:bg-gray-500 text-white rounded border border-gray-500 transition-colors duration-200 cursor-pointer flex items-center space-x-1 whitespace-nowrap" 
-                                data-url="https://tools.cyberquest.academy/location-verify" title="Location Verification Tool">
-                            <i class="bi bi-geo-alt text-orange-400 text-xs"></i>
-                            <span>Location Verify</span>
-                        </button>
-                        <button class="bookmark-item px-2 py-1 bg-gray-700 hover:bg-gray-500 text-white rounded border border-gray-500 transition-colors duration-200 cursor-pointer flex items-center space-x-1 whitespace-nowrap" 
-                                data-url="https://tools.cyberquest.academy/metadata-analyzer" title="Image Metadata Analyzer">
-                            <i class="bi bi-file-earmark-image text-cyan-400 text-xs"></i>
-                            <span>Metadata Analyzer</span>
-                        </button>
-                        <button class="bookmark-item px-2 py-1 bg-gray-700 hover:bg-gray-500 text-white rounded border border-gray-500 transition-colors duration-200 cursor-pointer flex items-center space-x-1 whitespace-nowrap" 
-                                data-url="https://tools.cyberquest.academy/weather-verify" title="Weather Verification Tool">
-                            <i class="bi bi-cloud-sun text-yellow-400 text-xs"></i>
-                            <span>Weather Verify</span>
-                        </button>
                     </div>
                 </div>
                 
