@@ -14,9 +14,6 @@ import { Challenge4Page } from './level-one/challenge4/challenge4-page.js';
 // Import Level 1 Tool Pages
 import { CrossReferenceToolPage } from './level-one/cross-reference-tool.js';
 import { ReverseImageSearchPage } from './level-one/reverse-image-search.js';
-import { MetadataAnalyzerPage } from './level-one/metadata-analyzer.js';
-import { WeatherVerifyPage } from './level-one/weather-verify.js';
-import { LocationVerifyPage } from './level-one/location-verify.js';
 
 // Import Level 2 Pages
 import { CyberQuestPasswordResetPage } from './level-two/cyberquest-password-reset.js';
@@ -49,9 +46,6 @@ export class PageRegistry {
         // Register Level 1 Tool Pages
         this.registerPage(CrossReferenceToolPage);
         this.registerPage(ReverseImageSearchPage);
-        this.registerPage(MetadataAnalyzerPage);
-        this.registerPage(WeatherVerifyPage);
-        this.registerPage(LocationVerifyPage);
         
         // Register Level 2 Pages
         this.registerPage(CyberQuestPasswordResetPage);
