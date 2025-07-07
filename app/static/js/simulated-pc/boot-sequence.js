@@ -2,28 +2,28 @@ export class BootSequence {
     constructor(container) {
         this.container = container;
         this.bootLines = [
-            { text: 'CyberQuest Security Training Environment v2.1.0', type: 'info', delay: 100 },
-            { text: 'Copyright (c) 2025 CyberQuest Training Systems', type: 'info', delay: 100 },
-            { text: '', type: 'info', delay: 50 },
-            { text: 'Initializing secure training environment', type: 'info', delay: 150, hasStatus: true, status: '[  OK  ]' },
-            { text: 'Loading kernel modules and core services', type: 'info', delay: 200, hasStatus: true, status: '[  OK  ]' },
-            { text: '', type: 'info', delay: 50 },
-            { text: 'Starting security services', type: 'success', delay: 100, hasStatus: true, status: '[  OK  ]', bundle: 'security' },
-            { text: 'Loading Network Manager', type: 'success', delay: 50, hasStatus: false, bundle: 'security' },
-            { text: 'Loading Firewall Protection', type: 'success', delay: 50, hasStatus: false, bundle: 'security' },
-            { text: 'Loading Intrusion Detection System', type: 'success', delay: 50, hasStatus: false, bundle: 'security' },
-            { text: 'Loading Security Monitor Service', type: 'success', delay: 50, hasStatus: false, bundle: 'security' },
-            { text: 'Scanning for network devices', type: 'warning', delay: 150, hasStatus: true, status: '[ WARN ]' },
-            { text: 'Running security scan', type: 'success', delay: 100, hasStatus: true, status: '[  OK  ]' },
-            { text: '', type: 'info', delay: 50 },
-            { text: 'Preparing training environment', type: 'info', delay: 100, hasStatus: true, status: '[  OK  ]', bundle: 'training' },
-            { text: 'Loading scenario data', type: 'info', delay: 50, hasStatus: false, bundle: 'training' },
-            { text: 'Preparing virtual environment', type: 'info', delay: 50, hasStatus: false, bundle: 'training' },
-            { text: 'Finalizing training setup', type: 'success', delay: 100, hasStatus: false, bundle: 'training' },
-            { text: '', type: 'info', delay: 100 },
-            { text: 'Welcome to the CyberQuest Training Lab', type: 'success', delay: 150 },
-            { text: 'Type "help" for available commands', type: 'info', delay: 100 },
-            { text: '', type: 'info', delay: 200 }
+            { text: 'CyberQuest Security Training Environment v2.1.0', type: 'info', delay: 30 },
+            { text: 'Copyright (c) 2025 CyberQuest Training Systems', type: 'info', delay: 30 },
+            { text: '', type: 'info', delay: 10 },
+            { text: 'Initializing secure training environment', type: 'info', delay: 50, hasStatus: true, status: '[  OK  ]' },
+            { text: 'Loading kernel modules and core services', type: 'info', delay: 60, hasStatus: true, status: '[  OK  ]' },
+            { text: '', type: 'info', delay: 10 },
+            { text: 'Starting security services', type: 'success', delay: 40, hasStatus: true, status: '[  OK  ]', bundle: 'security' },
+            { text: 'Loading Network Manager', type: 'success', delay: 20, hasStatus: false, bundle: 'security' },
+            { text: 'Loading Firewall Protection', type: 'success', delay: 20, hasStatus: false, bundle: 'security' },
+            { text: 'Loading Intrusion Detection System', type: 'success', delay: 20, hasStatus: false, bundle: 'security' },
+            { text: 'Loading Security Monitor Service', type: 'success', delay: 20, hasStatus: false, bundle: 'security' },
+            { text: 'Scanning for network devices', type: 'warning', delay: 50, hasStatus: true, status: '[ WARN ]' },
+            { text: 'Running security scan', type: 'success', delay: 40, hasStatus: true, status: '[  OK  ]' },
+            { text: '', type: 'info', delay: 10 },
+            { text: 'Preparing training environment', type: 'info', delay: 40, hasStatus: true, status: '[  OK  ]', bundle: 'training' },
+            { text: 'Loading scenario data', type: 'info', delay: 20, hasStatus: false, bundle: 'training' },
+            { text: 'Preparing virtual environment', type: 'info', delay: 20, hasStatus: false, bundle: 'training' },
+            { text: 'Finalizing training setup', type: 'success', delay: 30, hasStatus: false, bundle: 'training' },
+            { text: '', type: 'info', delay: 30 },
+            { text: 'Welcome to the CyberQuest Training Lab', type: 'success', delay: 50 },
+            { text: 'Type "help" for available commands', type: 'info', delay: 30 },
+            { text: '', type: 'info', delay: 100 }
         ];
         this.currentLine = 0;
         this.audioEnabled = false;
@@ -67,7 +67,7 @@ export class BootSequence {
             
             setTimeout(() => {
                 onComplete();
-            }, 500);
+            }, 200);
             return;
         }
 
@@ -132,10 +132,10 @@ export class BootSequence {
         dotsElement.className = 'loading-dots ml-2 text-green-400';
         element.appendChild(dotsElement);
         
-        // Show dots briefly
+        // Show dots very briefly for SSD-like speed
         let dotCount = 0;
-        const maxDots = 3;
-        const dotInterval = 80; // Very fast dots
+        const maxDots = 2; // Reduced dots for faster loading
+        const dotInterval = 30; // Very fast dots
         
         const addDot = () => {
             if (dotCount < maxDots) {
@@ -143,7 +143,7 @@ export class BootSequence {
                 dotCount++;
                 setTimeout(addDot, dotInterval);
             } else {
-                // Replace dots with status after brief delay
+                // Replace dots with status after minimal delay
                 setTimeout(() => {
                     dotsElement.remove();
                     
@@ -161,11 +161,11 @@ export class BootSequence {
                     element.appendChild(statusElement);
                     
                     onComplete();
-                }, 100);
+                }, 40); // Minimal delay
             }
         };
         
-        setTimeout(addDot, 50);
+        setTimeout(addDot, 20); // Start quickly
     }
 
     async start() {
