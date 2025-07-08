@@ -295,9 +295,3 @@ def get_mixed_news_articles():
             'success': False,
             'error': str(e)
         }), 500
-
-# Keep the old endpoint for backward compatibility
-@levels_bp.route('/get-random-news-url', methods=['GET'])
-def get_random_news_url():
-    """Legacy endpoint - redirects to get-random-news-article"""
-    return get_random_news_article()
