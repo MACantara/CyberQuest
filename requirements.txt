@@ -37,3 +37,6 @@ flask-hcaptcha
 
 # Password strength checking
 zxcvbn
+
+# HTTP client for external API requests
+Requests
