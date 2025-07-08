@@ -151,8 +151,8 @@ class Challenge1PageClass extends BasePage {
                     </div>
                     
                     <!-- Article Image Placeholder -->
-                    <div style="width: 100%; height: 300px; background: ${isFakeNews ? 'linear-gradient(135deg, #dc2626, #ea580c)' : '#f3f4f6'}; margin-bottom: 20px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: ${isFakeNews ? 'white' : '#6b7280'}; font-size: 18px;">
-                        ${isFakeNews ? '📸 SHOCKING EXCLUSIVE FOOTAGE' : '📸 News Image'}
+                    <div style="width: 100%; height: 300px; background: #f3f4f6; margin-bottom: 20px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6b7280; font-size: 18px;">
+                        📸 News Image
                     </div>
                     
                     <!-- Article Text -->
