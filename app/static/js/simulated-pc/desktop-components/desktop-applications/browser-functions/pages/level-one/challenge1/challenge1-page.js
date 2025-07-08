@@ -149,11 +149,8 @@ class Challenge1PageClass extends BasePage {
                         ${isFakeNews ? '🚨 ' : ''}${currentArticle.title}${isFakeNews ? ' 🚨' : ''}
                     </h2>
                     
-                    <div style="color: #6b7280; margin-bottom: 20px; font-size: 14px; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="color: #6b7280; margin-bottom: 20px; font-size: 14px;">
                         <span>Published: ${formattedDate} | By: ${isFakeNews ? 'Anonymous Source' : 'Staff Reporter'}</span>
-                        <span style="background: ${isFakeNews ? '#dc2626' : '#10b981'}; color: white; padding: 4px 8px; border-radius: 12px; font-size: 12px;">
-                            ${isFakeNews ? 'EXCLUSIVE' : 'VERIFIED'}
-                        </span>
                     </div>
                     
                     <!-- Article Image Placeholder -->
