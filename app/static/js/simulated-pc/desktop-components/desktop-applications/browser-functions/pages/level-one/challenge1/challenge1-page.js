@@ -98,14 +98,11 @@ class Challenge1PageClass extends BasePage {
         
         // Add suspicious elements if this is fake news
         const isFakeNews = !currentArticle.is_real;
-        const urgentBanner = isFakeNews ? this.createUrgentBanner() : '';
         const sharingBox = isFakeNews ? this.createSharingUrgencyBox() : '';
         const testimonials = isFakeNews ? this.createFakeTestimonials() : '';
         
         return `
-            <div style="font-family: Arial, sans-serif; background: #ffffff; min-height: 100vh;">
-                ${urgentBanner}
-                
+            <div style="font-family: Arial, sans-serif; background: #ffffff; min-height: 100vh;">             
                 <!-- Header -->
                 <header style="background: #1f2937; color: white; padding: 20px;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -286,14 +283,6 @@ class Challenge1PageClass extends BasePage {
             
             return `<p style="margin: 0 0 16px 0;">${formattedParagraph}</p>`;
         }).join('');
-    }
-
-    createUrgentBanner() {
-        return `
-            <div style="background: linear-gradient(90deg, #dc2626, #ea580c); color: white; padding: 15px; text-align: center; font-weight: bold; animation: pulse 2s infinite;">
-                🚨 BREAKING: EXCLUSIVE STORY! SHARE BEFORE IT'S CENSORED! 🚨
-            </div>
-        `;
     }
 
     createSharingUrgencyBox() {
