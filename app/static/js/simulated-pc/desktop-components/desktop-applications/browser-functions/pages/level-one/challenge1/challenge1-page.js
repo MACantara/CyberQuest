@@ -24,17 +24,18 @@ class Challenge1PageClass extends BasePage {
         });
         
         this.eventHandlers = new EventHandlers(this);
-        this.articleData = null; // Will be set when fetched
+        this.articlesData = []; // Store all 15 articles
+        this.currentArticleIndex = 0; // Track which article is being displayed
         this.fetchPromise = null;
     }
 
     async createContent() {
-        // If we don't have article data yet, fetch it
-        if (!this.articleData) {
+        // If we don't have articles data yet, fetch it
+        if (this.articlesData.length === 0) {
             try {
-                await this.fetchRandomNewsArticle();
+                await this.fetchMixedNewsArticles();
             } catch (error) {
-                console.error('Failed to fetch random news article:', error);
+                console.error('Failed to fetch mixed news articles:', error);
                 return this.createErrorContent();
             }
         }
@@ -42,11 +43,11 @@ class Challenge1PageClass extends BasePage {
         return this.generateNewsPageHTML();
     }
 
-    async fetchRandomNewsArticle() {
+    async fetchMixedNewsArticles() {
         try {
-            console.log('Fetching random news article from CSV datasets...');
+            console.log('Fetching mixed news articles (15 total: 50% fake, 50% real)...');
             
-            const response = await fetch('/levels/get-random-news-article');
+            const response = await fetch('/levels/get-mixed-news-articles');
             
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -54,42 +55,49 @@ class Challenge1PageClass extends BasePage {
 
             const data = await response.json();
             
-            if (data.success && data.article) {
-                this.articleData = data.article;
+            if (data.success && data.articles) {
+                this.articlesData = data.articles;
                 
-                // Update page metadata based on the article
-                this.title = `${data.article.title} - Daily Politico News`;
+                // Update page metadata based on the first article
+                this.title = `${data.articles[0].title} - Daily Politico News`;
+                this.articleData = data.articles[0]; // Set current article for overlay tools
                 
-                console.log('Random news article selected:', {
-                    title: data.article.title.substring(0, 50) + '...',
-                    isReal: data.article.is_real,
-                    source: data.article.source,
-                    date: data.article.date
+                console.log('Mixed news articles loaded:', {
+                    total: data.articles.length,
+                    fakeCount: data.articles.filter(a => !a.is_real).length,
+                    realCount: data.articles.filter(a => a.is_real).length,
+                    firstArticle: {
+                        title: data.articles[0].title.substring(0, 50) + '...',
+                        isReal: data.articles[0].is_real,
+                        source: data.articles[0].source
+                    }
                 });
                 
-                return data.article;
+                return data.articles;
             } else {
-                throw new Error(data.error || 'Failed to get random news article');
+                throw new Error(data.error || 'Failed to get mixed news articles');
             }
         } catch (error) {
-            console.error('Error fetching random news article:', error);
+            console.error('Error fetching mixed news articles:', error);
             throw error;
         }
     }
 
     generateNewsPageHTML() {
-        if (!this.articleData) {
+        if (this.articlesData.length === 0) {
             return this.createErrorContent();
         }
 
+        const currentArticle = this.articlesData[this.currentArticleIndex];
+        
         // Format the date for display
-        const formattedDate = this.formatDate(this.articleData.date);
+        const formattedDate = this.formatDate(currentArticle.date);
         
         // Truncate text if too long for better display
-        const displayText = this.truncateText(this.articleData.text, 1500);
+        const displayText = this.truncateText(currentArticle.text, 1200);
         
         // Add suspicious elements if this is fake news
-        const isFakeNews = !this.articleData.is_real;
+        const isFakeNews = !currentArticle.is_real;
         const urgentBanner = isFakeNews ? this.createUrgentBanner() : '';
         const sharingBox = isFakeNews ? this.createSharingUrgencyBox() : '';
         const testimonials = isFakeNews ? this.createFakeTestimonials() : '';
@@ -100,14 +108,51 @@ class Challenge1PageClass extends BasePage {
                 
                 <!-- Header -->
                 <header style="background: #1f2937; color: white; padding: 20px;">
-                    <h1 style="margin: 0; font-size: 28px;">Daily Politico News</h1>
-                    <p style="margin: 5px 0 0 0; color: #9ca3af;">Your Source for ${isFakeNews ? 'REAL' : 'Reliable'} News</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h1 style="margin: 0; font-size: 28px;">Daily Politico News</h1>
+                            <p style="margin: 5px 0 0 0; color: #9ca3af;">Your Source for ${isFakeNews ? 'REAL' : 'Reliable'} News</p>
+                        </div>
+                        
+                        <!-- Article Navigation -->
+                        <div style="background: rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 8px;">
+                            <div style="color: #10b981; font-size: 14px; margin-bottom: 5px;">Training Articles</div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <button onclick="window.challenge1Page?.previousArticle()" 
+                                        style="background: #374151; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; ${this.currentArticleIndex === 0 ? 'opacity: 0.5;' : ''}"
+                                        ${this.currentArticleIndex === 0 ? 'disabled' : ''}>
+                                    ← Previous
+                                </button>
+                                
+                                <span style="color: #e5e7eb; font-size: 14px; min-width: 80px; text-align: center;">
+                                    ${this.currentArticleIndex + 1} of ${this.articlesData.length}
+                                </span>
+                                
+                                <button onclick="window.challenge1Page?.nextArticle()" 
+                                        style="background: #374151; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; ${this.currentArticleIndex === this.articlesData.length - 1 ? 'opacity: 0.5;' : ''}"
+                                        ${this.currentArticleIndex === this.articlesData.length - 1 ? 'disabled' : ''}>
+                                    Next →
+                                </button>
+                            </div>
+                            
+                            <!-- Progress Bar -->
+                            <div style="background: rgba(255,255,255,0.2); height: 4px; border-radius: 2px; margin-top: 8px; overflow: hidden;">
+                                <div style="background: #10b981; height: 100%; width: ${((this.currentArticleIndex + 1) / this.articlesData.length) * 100}%; transition: width 0.3s ease;"></div>
+                            </div>
+                        </div>
+                    </div>
                 </header>
+                
+                <!-- Article Type Indicator -->
+                <div style="background: ${isFakeNews ? '#dc2626' : '#10b981'}; color: white; padding: 8px 30px; font-size: 12px; text-align: center;">
+                    ${isFakeNews ? '🚨 TRAINING EXAMPLE: Misinformation/Fake News' : '✅ TRAINING EXAMPLE: Legitimate News'}
+                    ${isFakeNews ? ' - Look for red flags and manipulation tactics' : ' - Notice credible reporting standards'}
+                </div>
                 
                 <!-- Main Content -->
                 <main style="padding: 30px; max-width: 800px; margin: 0 auto;">
                     <h2 style="color: ${isFakeNews ? '#dc2626' : '#374151'}; font-size: 32px; margin-bottom: 10px; ${isFakeNews ? 'text-transform: uppercase;' : ''}">
-                        ${isFakeNews ? '🚨 ' : ''}${this.articleData.title}${isFakeNews ? ' 🚨' : ''}
+                        ${isFakeNews ? '🚨 ' : ''}${currentArticle.title}${isFakeNews ? ' 🚨' : ''}
                     </h2>
                     
                     <div style="color: #6b7280; margin-bottom: 20px; font-size: 14px; display: flex; justify-content: space-between; align-items: center;">
@@ -129,15 +174,85 @@ class Challenge1PageClass extends BasePage {
                     
                     ${sharingBox}
                     ${testimonials}
+                    
+                    <!-- Analysis Section -->
+                    <div style="background: #f9fafb; border: 2px solid #e5e7eb; border-radius: 8px; padding: 20px; margin: 30px 0;">
+                        <h3 style="color: #374151; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
+                            <span style="background: #10b981; color: white; padding: 4px 8px; border-radius: 4px; font-size: 12px;">TRAINING</span>
+                            Analyze This Article
+                        </h3>
+                        <div style="font-size: 14px; color: #6b7280; margin-bottom: 15px;">
+                            Use the CyberQuest Analysis Tools (top-right panel) to evaluate this article's credibility.
+                            ${isFakeNews ? 
+                                'Look for: emotional manipulation, urgent language, lack of sources, and pressure to share.' :
+                                'Notice: proper attribution, balanced reporting, credible sources, and professional language.'
+                            }
+                        </div>
+                        
+                        <!-- Quick Analysis Questions -->
+                        <div style="background: white; padding: 15px; border-radius: 6px; border-left: 4px solid #10b981;">
+                            <h4 style="color: #374151; margin: 0 0 10px 0; font-size: 14px;">Quick Analysis Questions:</h4>
+                            <ul style="color: #6b7280; font-size: 13px; margin: 0; padding-left: 20px; line-height: 1.5;">
+                                <li>Does the headline seem sensational or emotionally charged?</li>
+                                <li>Is there clear author attribution and publication date?</li>
+                                <li>Are sources and evidence properly cited?</li>
+                                <li>Does the language pressure you to act quickly or share immediately?</li>
+                                <li>Does the story seem too good/bad to be true?</li>
+                            </ul>
+                        </div>
+                    </div>
                 </main>
                 
                 <!-- Footer -->
                 <footer style="background: #f3f4f6; padding: 20px; text-align: center; color: #6b7280;">
                     <p>© 2024 Daily Politico News | Contact: tips@daily-politico-news.com</p>
-                    <p style="font-size: 12px;">This website is for CyberQuest training purposes. Article source: ${this.articleData.source}</p>
+                    <p style="font-size: 12px;">
+                        This website is for CyberQuest training purposes. Article source: ${currentArticle.source} 
+                        | Type: ${currentArticle.is_real ? 'Real News' : 'Fake News'} (Training Label)
+                    </p>
                 </footer>
             </div>
         `;
+    }
+
+    // Navigation methods for articles
+    nextArticle() {
+        if (this.currentArticleIndex < this.articlesData.length - 1) {
+            this.currentArticleIndex++;
+            this.articleData = this.articlesData[this.currentArticleIndex]; // Update for overlay tools
+            this.updatePageContent();
+        }
+    }
+
+    previousArticle() {
+        if (this.currentArticleIndex > 0) {
+            this.currentArticleIndex--;
+            this.articleData = this.articlesData[this.currentArticleIndex]; // Update for overlay tools
+            this.updatePageContent();
+        }
+    }
+
+    updatePageContent() {
+        // Find the browser content element and update it
+        const browserContent = document.querySelector('#browser-content');
+        if (browserContent) {
+            browserContent.innerHTML = this.generateNewsPageHTML();
+            
+            // Re-bind navigation events
+            window.challenge1Page = this;
+            
+            // Update the training overlay to reflect the new article
+            this.updateTrainingOverlay();
+        }
+    }
+
+    updateTrainingOverlay() {
+        // Update the article metadata in the training overlay if it exists
+        const metadataBtn = document.querySelector('#check-article-metadata');
+        if (metadataBtn) {
+            // The button will use the updated this.articleData when clicked
+            console.log('Training overlay updated for article:', this.articleData.title.substring(0, 50) + '...');
+        }
     }
 
     formatDate(dateString) {
@@ -226,9 +341,9 @@ class Challenge1PageClass extends BasePage {
         return `
             <div style="font-family: Arial, sans-serif; background: #ffffff; min-height: 100vh; display: flex; align-items: center; justify-content: center;">
                 <div style="text-align: center; max-width: 500px; padding: 20px;">
-                    <h1 style="color: #dc2626; font-size: 24px; margin-bottom: 16px;">⚠️ Error Loading Article</h1>
+                    <h1 style="color: #dc2626; font-size: 24px; margin-bottom: 16px;">⚠️ Error Loading Articles</h1>
                     <p style="color: #6b7280; margin-bottom: 20px;">
-                        Unable to load news article. This could be due to missing CSV data files or a server error.
+                        Unable to load news articles. This could be due to missing CSV data files or a server error.
                     </p>
                     <button onclick="location.reload()" style="background: #10b981; color: white; padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer;">
                         Try Again
@@ -260,5 +375,8 @@ class Challenge1PageClass extends BasePage {
     }
 }
 
+// Set up global reference for navigation
+window.challenge1Page = new Challenge1PageClass();
+
 // Export as page object for compatibility
-export const Challenge1Page = new Challenge1PageClass().toPageObject();
+export const Challenge1Page = window.challenge1Page.toPageObject();

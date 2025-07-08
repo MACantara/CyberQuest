@@ -237,6 +237,65 @@ def get_random_news_article():
             'error': str(e)
         }), 500
 
+@levels_bp.route('/get-mixed-news-articles', methods=['GET'])
+def get_mixed_news_articles():
+    """Get a balanced mix of 15 news articles (50% fake, 50% real)"""
+    try:
+        news_data = load_fake_news_data()
+        
+        if not news_data:
+            return jsonify({
+                'success': False,
+                'error': 'No news data available'
+            }), 500
+        
+        # Separate real and fake news
+        real_news = [article for article in news_data if article['is_real']]
+        fake_news = [article for article in news_data if not article['is_real']]
+        
+        # Ensure we have enough articles of each type
+        if len(real_news) < 7 or len(fake_news) < 8:
+            return jsonify({
+                'success': False,
+                'error': f'Insufficient articles: {len(real_news)} real, {len(fake_news)} fake'
+            }), 500
+        
+        # Select 7 real and 8 fake articles (totaling 15, with slight favor to fake for training)
+        selected_real = random.sample(real_news, 7)
+        selected_fake = random.sample(fake_news, 8)
+        
+        # Combine and shuffle the articles
+        mixed_articles = selected_real + selected_fake
+        random.shuffle(mixed_articles)
+        
+        # Format articles for frontend
+        formatted_articles = []
+        for article in mixed_articles:
+            formatted_articles.append({
+                'title': article['title'],
+                'text': article['text'],
+                'date': article['date'],
+                'is_real': article['is_real'],
+                'source': article['source']
+            })
+        
+        return jsonify({
+            'success': True,
+            'articles': formatted_articles,
+            'summary': {
+                'total': len(formatted_articles),
+                'real_count': len(selected_real),
+                'fake_count': len(selected_fake)
+            }
+        })
+        
+    except Exception as e:
+        print(f"Error getting mixed news articles: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
 # Keep the old endpoint for backward compatibility
 @levels_bp.route('/get-random-news-url', methods=['GET'])
 def get_random_news_url():
