@@ -130,98 +130,13 @@ class Challenge1PageClass extends BasePage {
             body {
                 font-family: Arial, sans-serif !important;
             }
-            
-            /* CyberQuest verification tools overlay */
-            .cyberquest-verification-tools {
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                background: rgba(31, 41, 55, 0.95);
-                backdrop-filter: blur(10px);
-                border-radius: 12px;
-                padding: 20px;
-                max-width: 400px;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-                z-index: 10000;
-                border: 2px solid #10b981;
-                font-family: Arial, sans-serif;
-            }
-            
-            .cyberquest-verification-tools h3 {
-                color: #10b981 !important;
-                margin-bottom: 15px !important;
-                font-size: 18px !important;
-                font-weight: 600 !important;
-            }
-            
-            .cyberquest-verification-tools p {
-                color: #d1d5db !important;
-                font-size: 14px !important;
-                margin-bottom: 15px !important;
-            }
-            
-            .cyberquest-verification-tools button {
-                background: #10b981 !important;
-                color: white !important;
-                border: none !important;
-                padding: 10px 15px !important;
-                border-radius: 6px !important;
-                cursor: pointer !important;
-                font-size: 14px !important;
-                margin: 5px !important;
-                transition: background-color 0.2s !important;
-            }
-            
-            .cyberquest-verification-tools button:hover {
-                background: #059669 !important;
-            }
-            
-            .cyberquest-verification-tools .analysis-form {
-                background: rgba(55, 65, 81, 0.8);
-                padding: 15px;
-                border-radius: 8px;
-                margin-top: 15px;
-            }
-            
-            .cyberquest-verification-tools input[type="radio"] {
-                margin-right: 8px !important;
-            }
-            
-            .cyberquest-verification-tools label {
-                color: #d1d5db !important;
-                font-size: 12px !important;
-                display: block !important;
-                margin: 8px 0 !important;
-            }
-            
-            .cyberquest-verification-tools textarea {
-                width: 100% !important;
-                background: rgba(75, 85, 99, 0.8) !important;
-                color: white !important;
-                border: 1px solid #6b7280 !important;
-                border-radius: 4px !important;
-                padding: 8px !important;
-                font-size: 12px !important;
-                resize: vertical !important;
-            }
-            
-            /* Make content area have extra padding for our overlay */
-            body {
-                padding-top: 50px !important;
-            }
         `;
-
-        // Create our verification tools section
-        const verificationSection = document.createElement('div');
-        verificationSection.innerHTML = this.renderVerificationTools();
-        verificationSection.className = 'cyberquest-verification-tools';
 
         // Find the body or main content area
         const bodyElement = tempContainer.querySelector('body') || tempContainer;
         
         // Inject our custom elements
         bodyElement.insertBefore(customStyles, bodyElement.firstChild);
-        bodyElement.appendChild(verificationSection);
 
         // Modify some text content to make it look like political news
         this.modifyContentToSuspiciousNews(tempContainer);
@@ -259,40 +174,6 @@ class Challenge1PageClass extends BasePage {
                 </div>
             `;
         }
-    }
-
-    renderVerificationTools() {
-        return `
-            <div>
-                <h3>🔍 CyberQuest Analysis Tools</h3>
-                <p>Use these tools to verify the authenticity of this news story.</p>
-                
-                <div>
-                    <button id="cross-reference-tool" data-url="https://fact-checker.cyberquest.academy/cross-reference">
-                        Cross-Reference Story
-                    </button>
-                    <button id="source-analysis-tool">
-                        Analyze Source Credibility
-                    </button>
-                </div>
-
-                <div class="analysis-form">
-                    <label><strong>Your Analysis:</strong></label>
-                    <textarea rows="3" placeholder="What did you discover about this story?" id="analysis-notes"></textarea>
-                    
-                    <div style="margin-top: 10px;">
-                        <label><strong>Is this story credible?</strong></label>
-                        <label><input type="radio" name="credibility" value="yes">Yes, appears legitimate</label>
-                        <label><input type="radio" name="credibility" value="no">No, appears to be misinformation</label>
-                        <label><input type="radio" name="credibility" value="unsure">Need more information</label>
-                    </div>
-                    
-                    <button id="submit-analysis" style="margin-top: 15px; width: 100%;">
-                        Submit Analysis
-                    </button>
-                </div>
-            </div>
-        `;
     }
 
     async bindEvents(contentElement) {
