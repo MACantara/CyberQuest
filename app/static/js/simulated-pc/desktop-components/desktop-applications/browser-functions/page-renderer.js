@@ -6,18 +6,72 @@ export class PageRenderer {
         this.pageRegistry = new PageRegistry();
     }
 
-    renderPage(url) {
+    async renderPage(url) {
         const pageConfig = this.pageRegistry.getPage(url) || this.pageRegistry.createNotFoundPage(url);
         const contentElement = this.browserApp.windowElement?.querySelector('#browser-content');
         
         if (contentElement) {
-            contentElement.innerHTML = pageConfig.createContent();
-            this.updatePageTitle(pageConfig.title);
-            this.bindPageEvents(url);
+            // Show loading state while content is being generated
+            this.showLoadingState(contentElement);
             
-            // Reset scroll position to top
-            contentElement.scrollTop = 0;
+            try {
+                // Handle both sync and async content creation
+                let content;
+                if (typeof pageConfig.createContent === 'function') {
+                    const result = pageConfig.createContent();
+                    
+                    // Check if it's a Promise (async)
+                    if (result && typeof result.then === 'function') {
+                        content = await result;
+                    } else {
+                        content = result;
+                    }
+                } else {
+                    content = pageConfig.createContent || '<div>No content available</div>';
+                }
+                
+                contentElement.innerHTML = content;
+                this.updatePageTitle(pageConfig.title);
+                this.bindPageEvents(url);
+                
+                // Reset scroll position to top
+                contentElement.scrollTop = 0;
+                
+            } catch (error) {
+                console.error('Error rendering page content:', error);
+                contentElement.innerHTML = this.createErrorContent(error.message);
+            }
         }
+    }
+
+    showLoadingState(contentElement) {
+        contentElement.innerHTML = `
+            <div class="min-h-screen bg-white flex items-center justify-center">
+                <div class="text-center">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <h2 class="text-xl font-semibold text-gray-800 mb-2">Loading page...</h2>
+                    <p class="text-gray-600">Please wait while we fetch the content</p>
+                </div>
+            </div>
+        `;
+    }
+
+    createErrorContent(errorMessage) {
+        return `
+            <div class="min-h-screen bg-white flex items-center justify-center">
+                <div class="text-center max-w-md mx-auto p-6">
+                    <div class="text-red-500 mb-4">
+                        <i class="bi bi-exclamation-triangle text-6xl"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold text-gray-800 mb-2">Error Loading Page</h2>
+                    <p class="text-gray-600 mb-4">${errorMessage}</p>
+                    <button onclick="window.location.reload()" 
+                            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors">
+                        Try Again
+                    </button>
+                </div>
+            </div>
+        `;
     }
 
     updatePageTitle(title) {
