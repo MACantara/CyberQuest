@@ -92,19 +92,21 @@ def load_fake_news_data():
         with open(csv_path, 'r', encoding='utf-8') as file:
             reader = csv.DictReader(file)
             for row in reader:
-                # Only include rows with required fields
-                if row.get('title') and row.get('text') and row.get('author'):
+                # Only include rows with required fields including valid main_img_url
+                main_img_url = row.get('main_img_url', '').strip()
+                if (row.get('title') and row.get('text') and row.get('author') and 
+                    main_img_url and (main_img_url.startswith('http://') or main_img_url.startswith('https://'))):
                     _csv_cache.append({
                         'author': row.get('author', '').strip(),
                         'published': row.get('published', '').strip(),
                         'title': row.get('title', '').strip(),
                         'text': row.get('text', '').strip(),
-                        'main_img_url': row.get('main_img_url', '').strip(),
+                        'main_img_url': main_img_url,
                         'is_real': row.get('label', '').lower() == 'real',  # Use 'label' column to determine authenticity
                         'source': 'news_articles.csv'
                     })
         
-        print(f"Loaded {len(_csv_cache)} news articles from news_articles.csv")
+        print(f"Loaded {len(_csv_cache)} news articles from news_articles.csv (with valid HTTP/HTTPS images only)")
         print(f"Real news articles: {len([a for a in _csv_cache if a['is_real']])}")
         print(f"Fake news articles: {len([a for a in _csv_cache if not a['is_real']])}")
         
