@@ -69,7 +69,8 @@ class Challenge1PageClass extends BasePage {
                     firstArticle: {
                         title: data.articles[0].title.substring(0, 50) + '...',
                         isReal: data.articles[0].is_real,
-                        source: data.articles[0].source
+                        source: data.articles[0].source,
+                        author: data.articles[0].author
                     }
                 });
                 
@@ -90,24 +91,27 @@ class Challenge1PageClass extends BasePage {
 
         const currentArticle = this.articlesData[this.currentArticleIndex];
         
-        // Format the date for display
-        const formattedDate = this.formatDate(currentArticle.date);
+        // Format the published date for display
+        const formattedDate = this.formatDate(currentArticle.published);
         
         // Truncate text if too long for better display
         const displayText = this.truncateText(currentArticle.text, 1200);
         
         // Add suspicious elements if this is fake news
         const isFakeNews = !currentArticle.is_real;
+        const urgentBanner = isFakeNews ? this.createUrgentBanner() : '';
         const testimonials = isFakeNews ? this.createFakeTestimonials() : '';
         
         return `
-            <div style="font-family: Arial, sans-serif; background: #ffffff; min-height: 100vh;">             
+            <div style="font-family: Arial, sans-serif; background: #ffffff; min-height: 100vh;">
+                ${urgentBanner}
+                
                 <!-- Header -->
                 <header style="background: #1f2937; color: white; padding: 20px;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <h1 style="margin: 0; font-size: 28px;">Daily Politico News</h1>
-                            <p style="margin: 5px 0 0 0; color: #9ca3af;">Your Source for News</p>
+                            <p style="margin: 5px 0 0 0; color: #9ca3af;">Your Source for ${isFakeNews ? 'REAL' : 'Reliable'} News</p>
                         </div>
                         
                         <!-- Article Navigation -->
@@ -141,18 +145,16 @@ class Challenge1PageClass extends BasePage {
                 
                 <!-- Main Content -->
                 <main style="padding: 30px; max-width: 800px; margin: 0 auto;">
-                    <h2 style="color: #374151; font-size: 32px; margin-bottom: 10px;">
-                        ${currentArticle.title}
+                    <h2 style="color: ${isFakeNews ? '#dc2626' : '#374151'}; font-size: 32px; margin-bottom: 10px; ${isFakeNews ? 'text-transform: uppercase;' : ''}">
+                        ${isFakeNews ? '🚨 ' : ''}${currentArticle.title}${isFakeNews ? ' 🚨' : ''}
                     </h2>
                     
                     <div style="color: #6b7280; margin-bottom: 20px; font-size: 14px;">
-                        <span>Published: ${formattedDate} | By: ${isFakeNews ? 'Anonymous Source' : 'Staff Reporter'}</span>
+                        <span>Published: ${formattedDate} | By: ${currentArticle.author || (isFakeNews ? 'Anonymous Source' : 'Staff Reporter')}</span>
                     </div>
                     
-                    <!-- Article Image Placeholder -->
-                    <div style="width: 100%; height: 300px; background: #f3f4f6; margin-bottom: 20px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #6b7280; font-size: 18px;">
-                        📸 News Image
-                    </div>
+                    <!-- Article Image -->
+                    ${this.createArticleImage(currentArticle, isFakeNews)}
                     
                     <!-- Article Text -->
                     <div style="font-size: 18px; line-height: 1.6; color: #374151;">
@@ -199,6 +201,130 @@ class Challenge1PageClass extends BasePage {
         `;
     }
 
+    formatDate(dateString) {
+        try {
+            // Try to parse and format the date
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) {
+                return dateString; // Return original if parsing fails
+            }
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        } catch (error) {
+            return dateString; // Return original on error
+        }
+    }
+
+    truncateText(text, maxLength) {
+        if (text.length <= maxLength) {
+            return text;
+        }
+        
+        // Truncate at word boundary
+        const truncated = text.substring(0, maxLength);
+        const lastSpace = truncated.lastIndexOf(' ');
+        return truncated.substring(0, lastSpace) + '...';
+    }
+
+    createArticleImage(article, isFakeNews) {
+        // Use the main_img_url from the dataset if available, otherwise use placeholder
+        const imageUrl = article.main_img_url || '/static/images/level-one/news-placeholder.jpg';
+        
+        return `
+            <div style="width: 100%; height: 300px; margin-bottom: 20px; border-radius: 8px; overflow: hidden; position: relative;">
+                <img src="${imageUrl}" 
+                     alt="News article image" 
+                     style="width: 100%; height: 100%; object-fit: cover;"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div style="display: none; width: 100%; height: 100%; background: ${isFakeNews ? 'linear-gradient(135deg, #dc2626, #ea580c)' : '#f3f4f6'}; align-items: center; justify-content: center; color: ${isFakeNews ? 'white' : '#6b7280'}; font-size: 18px;">
+                    ${isFakeNews ? '📸 SHOCKING EXCLUSIVE FOOTAGE' : '📸 News Image'}
+                </div>
+            </div>
+        `;
+    }
+
+    createSharingBox(isFakeNews) {
+        const boxStyle = isFakeNews 
+            ? 'background: #dc2626; color: white; padding: 20px; margin: 20px 0; border-radius: 8px; text-align: center; border: 3px solid #f59e0b;'
+            : 'background: #f3f4f6; color: #374151; padding: 20px; margin: 20px 0; border-radius: 8px; text-align: center; border: 1px solid #e5e7eb;';
+        
+        const headingText = isFakeNews ? 'URGENT: YOUR ACTION NEEDED' : 'Share This Story';
+        const descriptionText = isFakeNews 
+            ? 'Share this story immediately! Don\'t let the mainstream media hide the truth!'
+            : 'Found this article interesting? Share it with your friends and family.';
+        
+        return `
+            <div style="${boxStyle}">
+                <h3 style="margin: 0 0 10px 0;">${headingText}</h3>
+                <p style="margin: 0 0 15px 0;">${descriptionText}</p>
+                <button style="background: #1d4ed8; color: white; padding: 12px 24px; border: none; border-radius: 4px; margin: 5px; font-weight: bold; cursor: pointer;">Share on Facebook</button>
+                <button style="background: #1da1f2; color: white; padding: 12px 24px; border: none; border-radius: 4px; margin: 5px; font-weight: bold; cursor: pointer;">Tweet Now</button>
+            </div>
+        `;
+    }
+
+    formatArticleText(text, isFakeNews) {
+        // Split text into paragraphs
+        const paragraphs = text.split('\n\n').filter(p => p.trim().length > 0);
+        
+        return paragraphs.map(paragraph => {
+            let formattedParagraph = paragraph.trim();
+            
+            if (isFakeNews) {
+                // Add sensational formatting to fake news
+                formattedParagraph = formattedParagraph
+                    .replace(/\b(BREAKING|EXCLUSIVE|URGENT|SHOCKING|SCANDAL|LEAKED)\b/gi, '<strong style="color: #dc2626;">$1</strong>')
+                    .replace(/\b(millions?|billions?|thousands?)\b/gi, '<strong style="color: #ea580c;">$1</strong>');
+            }
+            
+            return `<p style="margin: 0 0 16px 0;">${formattedParagraph}</p>`;
+        }).join('');
+    }
+
+    createUrgentBanner() {
+        return `
+            <div style="background: linear-gradient(90deg, #dc2626, #ea580c); color: white; padding: 15px; text-align: center; font-weight: bold; animation: pulse 2s infinite;">
+                🚨 BREAKING: EXCLUSIVE STORY! SHARE BEFORE IT'S CENSORED! 🚨
+            </div>
+        `;
+    }
+
+    createFakeTestimonials() {
+        return `
+            <div style="background: #f9fafb; padding: 20px; margin: 20px 0; border-radius: 8px;">
+                <h3 style="color: #374151; margin-bottom: 15px;">What People Are Saying:</h3>
+                <blockquote style="margin: 15px 0; padding: 10px; border-left: 3px solid #10b981; background: white;">
+                    "I KNEW something was fishy! Thanks for exposing the TRUTH!" - PatriotFreedom2024
+                </blockquote>
+                <blockquote style="margin: 15px 0; padding: 10px; border-left: 3px solid #10b981; background: white;">
+                    "Finally, REAL journalism! The mainstream media would never report this!" - TruthSeeker99
+                </blockquote>
+                <blockquote style="margin: 15px 0; padding: 10px; border-left: 3px solid #10b981; background: white;">
+                    "Shared this everywhere! Everyone needs to know!" - WakeUpAmerica
+                </blockquote>
+            </div>
+        `;
+    }
+
+    createErrorContent() {
+        return `
+            <div style="font-family: Arial, sans-serif; background: #ffffff; min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+                <div style="text-align: center; max-width: 500px; padding: 20px;">
+                    <h1 style="color: #dc2626; font-size: 24px; margin-bottom: 16px;">⚠️ Error Loading Articles</h1>
+                    <p style="color: #6b7280; margin-bottom: 20px;">
+                        Unable to load news articles. This could be due to missing CSV data files or a server error.
+                    </p>
+                    <button onclick="location.reload()" style="background: #10b981; color: white; padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer;">
+                        Try Again
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
     // Navigation methods for articles
     nextArticle() {
         if (this.currentArticleIndex < this.articlesData.length - 1) {
@@ -239,106 +365,6 @@ class Challenge1PageClass extends BasePage {
         }
     }
 
-    formatDate(dateString) {
-        try {
-            // Try to parse and format the date
-            const date = new Date(dateString);
-            if (isNaN(date.getTime())) {
-                return dateString; // Return original if parsing fails
-            }
-            return date.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-        } catch (error) {
-            return dateString; // Return original on error
-        }
-    }
-
-    truncateText(text, maxLength) {
-        if (text.length <= maxLength) {
-            return text;
-        }
-        
-        // Truncate at word boundary
-        const truncated = text.substring(0, maxLength);
-        const lastSpace = truncated.lastIndexOf(' ');
-        return truncated.substring(0, lastSpace) + '...';
-    }
-
-    formatArticleText(text, isFakeNews) {
-        // Split text into paragraphs
-        const paragraphs = text.split('\n\n').filter(p => p.trim().length > 0);
-        
-        return paragraphs.map(paragraph => {
-            let formattedParagraph = paragraph.trim();
-            
-            if (isFakeNews) {
-                // Add sensational formatting to fake news
-                formattedParagraph = formattedParagraph
-                    .replace(/\b(BREAKING|EXCLUSIVE|URGENT|SHOCKING|SCANDAL|LEAKED)\b/gi, '<strong style="color: #dc2626;">$1</strong>')
-                    .replace(/\b(millions?|billions?|thousands?)\b/gi, '<strong style="color: #ea580c;">$1</strong>');
-            }
-            
-            return `<p style="margin: 0 0 16px 0;">${formattedParagraph}</p>`;
-        }).join('');
-    }
-
-    // Updated method to create sharing box that appears on all articles
-    createSharingBox(isFakeNews) {
-        const boxStyle = isFakeNews 
-            ? 'background: #dc2626; color: white; padding: 20px; margin: 20px 0; border-radius: 8px; text-align: center; border: 3px solid #f59e0b;'
-            : 'background: #f3f4f6; color: #374151; padding: 20px; margin: 20px 0; border-radius: 8px; text-align: center; border: 1px solid #e5e7eb;';
-        
-        const headingText = isFakeNews ? 'URGENT: YOUR ACTION NEEDED' : 'Share This Story';
-        const descriptionText = isFakeNews 
-            ? 'Share this story immediately! Don\'t let the mainstream media hide the truth!'
-            : 'Found this article interesting? Share it with your friends and family.';
-        
-        return `
-            <div style="${boxStyle}">
-                <h3 style="margin: 0 0 10px 0;">${headingText}</h3>
-                <p style="margin: 0 0 15px 0;">${descriptionText}</p>
-                <button style="background: #1d4ed8; color: white; padding: 12px 24px; border: none; border-radius: 4px; margin: 5px; font-weight: bold; cursor: pointer;">Share on Facebook</button>
-                <button style="background: #1da1f2; color: white; padding: 12px 24px; border: none; border-radius: 4px; margin: 5px; font-weight: bold; cursor: pointer;">Tweet Now</button>
-            </div>
-        `;
-    }
-
-    createFakeTestimonials() {
-        return `
-            <div style="background: #f9fafb; padding: 20px; margin: 20px 0; border-radius: 8px;">
-                <h3 style="color: #374151; margin-bottom: 15px;">What People Are Saying:</h3>
-                <blockquote style="margin: 15px 0; padding: 10px; border-left: 3px solid #10b981; background: white;">
-                    "I KNEW something was fishy! Thanks for exposing the TRUTH!" - PatriotFreedom2024
-                </blockquote>
-                <blockquote style="margin: 15px 0; padding: 10px; border-left: 3px solid #10b981; background: white;">
-                    "Finally, REAL journalism! The mainstream media would never report this!" - TruthSeeker99
-                </blockquote>
-                <blockquote style="margin: 15px 0; padding: 10px; border-left: 3px solid #10b981; background: white;">
-                    "Shared this everywhere! Everyone needs to know!" - WakeUpAmerica
-                </blockquote>
-            </div>
-        `;
-    }
-
-    createErrorContent() {
-        return `
-            <div style="font-family: Arial, sans-serif; background: #ffffff; min-height: 100vh; display: flex; align-items: center; justify-content: center;">
-                <div style="text-align: center; max-width: 500px; padding: 20px;">
-                    <h1 style="color: #dc2626; font-size: 24px; margin-bottom: 16px;">⚠️ Error Loading Articles</h1>
-                    <p style="color: #6b7280; margin-bottom: 20px;">
-                        Unable to load news articles. This could be due to missing CSV data files or a server error.
-                    </p>
-                    <button onclick="location.reload()" style="background: #10b981; color: white; padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer;">
-                        Try Again
-                    </button>
-                </div>
-            </div>
-        `;
-    }
-
     bindEvents(contentElement) {
         // Events are now handled by the overlay in page-renderer
         setTimeout(() => {
@@ -356,7 +382,8 @@ class Challenge1PageClass extends BasePage {
             security: this.security,
             useIframe: this.useIframe,
             createContent: () => pageInstance.createContent(),
-            bindEvents: (contentElement) => pageInstance.bindEvents(contentElement)
+            bindEvents: (contentElement) => pageInstance.bindEvents(contentElement),
+            articleData: pageInstance.articleData // Make sure articleData is accessible
         };
     }
 }

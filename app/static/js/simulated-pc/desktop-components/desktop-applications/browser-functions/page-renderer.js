@@ -403,10 +403,11 @@ export class PageRenderer {
                         <h3 class="font-semibold text-gray-800 mb-2">Article Analysis:</h3>
                         <ul class="text-sm text-gray-700 space-y-1 mb-4">
                             ${articleData ? `
-                                <li>• <strong>Source Domain:</strong> ${articleData.domain || 'daily-politico-news.com'}</li>
+                                <li>• <strong>Author:</strong> ${articleData.author || 'Unknown'}</li>
+                                <li>• <strong>Published:</strong> ${articleData.published || 'Unknown date'}</li>
                                 <li>• <strong>Article Type:</strong> ${articleData.is_real ? 'Real News' : 'Misinformation'}</li>
                                 <li>• <strong>Data Source:</strong> ${articleData.source || 'Training Dataset'}</li>
-                                <li>• <strong>Publication Date:</strong> ${articleData.date || 'Unknown'}</li>
+                                <li>• <strong>Image URL:</strong> ${articleData.main_img_url ? 'Available' : 'Not provided'}</li>
                             ` : `
                                 <li>• <strong>Source Domain:</strong> daily-politico-news.com</li>
                                 <li>• <strong>Domain Age:</strong> Recently registered</li>

@@ -77,65 +77,41 @@ CYBERSECURITY_LEVELS = [
 ]
 
 def load_fake_news_data():
-    """Load and cache data from both Fake.csv and True.csv files"""
+    """Load and cache the news_articles.csv data"""
     global _csv_cache
     if _csv_cache is not None:
         return _csv_cache
     
     try:
-        # Get the data directory path
-        data_dir = os.path.join(
+        csv_path = os.path.join(
             os.path.dirname(os.path.dirname(__file__)), 
-            'static', 'js', 'simulated-pc', 'levels', 'level-one', 'data'
+            'static', 'js', 'simulated-pc', 'levels', 'level-one', 'data', 'news_articles.csv'
         )
         
-        fake_csv_path = os.path.join(data_dir, 'Fake.csv')
-        true_csv_path = os.path.join(data_dir, 'True.csv')
-        
         _csv_cache = []
+        with open(csv_path, 'r', encoding='utf-8') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                # Only include rows with required fields
+                if row.get('title') and row.get('text') and row.get('author'):
+                    _csv_cache.append({
+                        'author': row.get('author', '').strip(),
+                        'published': row.get('published', '').strip(),
+                        'title': row.get('title', '').strip(),
+                        'text': row.get('text', '').strip(),
+                        'main_img_url': row.get('main_img_url', '').strip(),
+                        'is_real': row.get('label', '').lower() == 'real',  # Use 'label' column to determine authenticity
+                        'source': 'news_articles.csv'
+                    })
         
-        # Load fake news data
-        if os.path.exists(fake_csv_path):
-            with open(fake_csv_path, 'r', encoding='utf-8') as file:
-                reader = csv.DictReader(file)
-                for row in reader:
-                    # Only include rows with required fields
-                    if row.get('title') and row.get('text') and row.get('date'):
-                        _csv_cache.append({
-                            'title': row.get('title', '').strip(),
-                            'text': row.get('text', '').strip(),
-                            'date': row.get('date', '').strip(),
-                            'is_real': False,  # Fake news
-                            'source': 'Fake.csv'
-                        })
-        else:
-            print(f"Warning: Fake.csv not found at {fake_csv_path}")
-        
-        # Load true news data
-        if os.path.exists(true_csv_path):
-            with open(true_csv_path, 'r', encoding='utf-8') as file:
-                reader = csv.DictReader(file)
-                for row in reader:
-                    # Only include rows with required fields
-                    if row.get('title') and row.get('text') and row.get('date'):
-                        _csv_cache.append({
-                            'title': row.get('title', '').strip(),
-                            'text': row.get('text', '').strip(),
-                            'date': row.get('date', '').strip(),
-                            'is_real': True,  # Real news
-                            'source': 'True.csv'
-                        })
-        else:
-            print(f"Warning: True.csv not found at {true_csv_path}")
-        
-        print(f"Loaded {len(_csv_cache)} news articles from CSV files")
-        print(f"Fake news articles: {len([a for a in _csv_cache if not a['is_real']])}")
+        print(f"Loaded {len(_csv_cache)} news articles from news_articles.csv")
         print(f"Real news articles: {len([a for a in _csv_cache if a['is_real']])}")
+        print(f"Fake news articles: {len([a for a in _csv_cache if not a['is_real']])}")
         
         return _csv_cache
         
     except Exception as e:
-        print(f"Error loading news CSV files: {e}")
+        print(f"Error loading news_articles.csv: {e}")
         return []
 
 @levels_bp.route('/')
@@ -206,7 +182,7 @@ def start_level(level_id):
 
 @levels_bp.route('/get-random-news-article', methods=['GET'])
 def get_random_news_article():
-    """Get a random news article from both CSV datasets"""
+    """Get a random news article from the dataset"""
     try:
         news_data = load_fake_news_data()
         
@@ -222,9 +198,11 @@ def get_random_news_article():
         return jsonify({
             'success': True,
             'article': {
+                'author': random_article['author'],
+                'published': random_article['published'],
                 'title': random_article['title'],
                 'text': random_article['text'],
-                'date': random_article['date'],
+                'main_img_url': random_article['main_img_url'],
                 'is_real': random_article['is_real'],
                 'source': random_article['source']
             }
@@ -272,9 +250,11 @@ def get_mixed_news_articles():
         formatted_articles = []
         for article in mixed_articles:
             formatted_articles.append({
+                'author': article['author'],
+                'published': article['published'],
                 'title': article['title'],
                 'text': article['text'],
-                'date': article['date'],
+                'main_img_url': article['main_img_url'],
                 'is_real': article['is_real'],
                 'source': article['source']
             })
