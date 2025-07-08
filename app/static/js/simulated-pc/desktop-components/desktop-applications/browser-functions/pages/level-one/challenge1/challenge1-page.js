@@ -108,7 +108,7 @@ class Challenge1PageClass extends BasePage {
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <h1 style="margin: 0; font-size: 28px;">Daily Politico News</h1>
-                            <p style="margin: 5px 0 0 0; color: #9ca3af;">Your Source for ${isFakeNews ? 'REAL' : 'Reliable'} News</p>
+                            <p style="margin: 5px 0 0 0; color: #9ca3af;">Your Source for News</p>
                         </div>
                         
                         <!-- Article Navigation -->
