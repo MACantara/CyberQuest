@@ -2,9 +2,15 @@ from flask import Blueprint, render_template, current_app, flash, redirect, url_
 from flask_login import login_required, current_user
 import json
 import requests
+import csv
+import random
+import os
 from urllib.parse import urlparse
 
 levels_bp = Blueprint('levels', __name__, url_prefix='/levels')
+
+# Cache for CSV data to avoid reading file multiple times
+_csv_cache = None
 
 # Define all levels with their metadata
 CYBERSECURITY_LEVELS = [
@@ -69,6 +75,39 @@ CYBERSECURITY_LEVELS = [
         'unlocked': True
     }
 ]
+
+def load_fake_news_data():
+    """Load and cache the FakeNewsNet CSV data"""
+    global _csv_cache
+    if _csv_cache is not None:
+        return _csv_cache
+    
+    try:
+        csv_path = os.path.join(
+            os.path.dirname(os.path.dirname(__file__)), 
+            'static', 'js', 'simulated-pc', 'levels', 'level-one', 'data', 'FakeNewsNet.csv'
+        )
+        
+        _csv_cache = []
+        with open(csv_path, 'r', encoding='utf-8') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                # Only include rows with valid URLs
+                if row.get('news_url') and row['news_url'].startswith('http'):
+                    _csv_cache.append({
+                        'title': row.get('title', ''),
+                        'url': row.get('news_url', ''),
+                        'domain': row.get('source_domain', ''),
+                        'is_real': row.get('real', '0') == '1',
+                        'tweet_count': row.get('tweet_num', '0')
+                    })
+        
+        print(f"Loaded {len(_csv_cache)} news articles from FakeNewsNet.csv")
+        return _csv_cache
+        
+    except Exception as e:
+        print(f"Error loading FakeNewsNet CSV: {e}")
+        return []
 
 @levels_bp.route('/')
 @login_required
@@ -135,6 +174,39 @@ def start_level(level_id):
                          level=level, 
                          level_data=level_data,
                          level_json=level_json)
+
+@levels_bp.route('/get-random-news-url', methods=['GET'])
+def get_random_news_url():
+    """Get a random news URL from the FakeNewsNet dataset"""
+    try:
+        news_data = load_fake_news_data()
+        
+        if not news_data:
+            return jsonify({
+                'success': False,
+                'error': 'No news data available'
+            }), 500
+        
+        # Get a random article
+        random_article = random.choice(news_data)
+        
+        return jsonify({
+            'success': True,
+            'article': {
+                'title': random_article['title'],
+                'url': random_article['url'],
+                'domain': random_article['domain'],
+                'is_real': random_article['is_real'],
+                'tweet_count': random_article['tweet_count']
+            }
+        })
+        
+    except Exception as e:
+        print(f"Error getting random news URL: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
 @levels_bp.route('/fetch-website')
 def fetch_website():

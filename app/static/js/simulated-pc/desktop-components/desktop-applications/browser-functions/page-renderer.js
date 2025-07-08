@@ -119,7 +119,7 @@ export class PageRenderer {
                     <button class="toggle-panel">−</button>
                 </div>
                 <div class="panel-content">
-                    <p>Use these tools to verify the authenticity of this news story.</p>
+                    <p>Analyze this news story for authenticity and credibility.</p>
                     
                     <div class="tool-buttons">
                         <button id="cross-reference-tool" class="tool-btn primary" 
@@ -128,6 +128,9 @@ export class PageRenderer {
                         </button>
                         <button id="source-analysis-tool" class="tool-btn secondary">
                             <i class="bi bi-shield-check"></i> Analyze Source
+                        </button>
+                        <button id="check-article-metadata" class="tool-btn secondary">
+                            <i class="bi bi-info-circle"></i> Check Article Info
                         </button>
                     </div>
 
@@ -385,6 +388,14 @@ export class PageRenderer {
             });
         }
         
+        // Check article metadata tool
+        const metadataBtn = overlay.querySelector('#check-article-metadata');
+        if (metadataBtn) {
+            metadataBtn.addEventListener('click', () => {
+                this.showArticleMetadata(pageConfig);
+            });
+        }
+        
         // Submit analysis
         const submitBtn = overlay.querySelector('#submit-analysis');
         if (submitBtn) {
@@ -432,6 +443,47 @@ export class PageRenderer {
         document.body.appendChild(modal);
     }
 
+    showArticleMetadata(pageConfig) {
+        // Get article data if available
+        const articleData = pageConfig.articleData || null;
+        
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-black/75 flex items-center justify-center z-50';
+        modal.innerHTML = `
+            <div class="bg-white rounded-lg p-6 max-w-md mx-4">
+                <div class="text-center">
+                    <i class="bi bi-info-circle text-6xl text-blue-500 mb-4"></i>
+                    <h2 class="text-xl font-bold text-blue-600 mb-4">📊 Article Metadata</h2>
+                    <div class="text-left">
+                        <h3 class="font-semibold text-gray-800 mb-2">Article Information:</h3>
+                        <ul class="text-sm text-gray-700 space-y-1 mb-4">
+                            ${articleData ? `
+                                <li>• <strong>Source Domain:</strong> ${articleData.domain || 'Unknown'}</li>
+                                <li>• <strong>Social Media Shares:</strong> ${articleData.tweet_count || '0'} tweets</li>
+                                <li>• <strong>URL:</strong> ${articleData.url ? articleData.url.substring(0, 50) + '...' : 'N/A'}</li>
+                            ` : `
+                                <li>• Article metadata not available</li>
+                                <li>• Check the URL structure and domain</li>
+                                <li>• Look for author information</li>
+                                <li>• Verify publication date</li>
+                            `}
+                        </ul>
+                        <div class="bg-blue-50 border border-blue-200 rounded p-3">
+                            <p class="text-sm text-blue-700">
+                                <strong>Tip:</strong> Always verify news sources through multiple reputable outlets and check for proper journalism standards.
+                            </p>
+                        </div>
+                    </div>
+                    <button onclick="this.closest('.fixed').remove()" 
+                            class="mt-4 bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors">
+                        Close Analysis
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+
     handleAnalysisSubmission(overlay) {
         const notes = overlay.querySelector('#analysis-notes').value;
         const credibility = overlay.querySelector('input[name="credibility"]:checked')?.value;
@@ -439,6 +491,33 @@ export class PageRenderer {
         if (!credibility) {
             alert('Please select whether you think this story is credible or not.');
             return;
+        }
+        
+        // Get the current page's article data
+        const pageConfig = this.pageRegistry?.getPage(window.location.hash) || {};
+        const articleData = pageConfig.articleData;
+        
+        // Determine if the user's assessment was correct
+        let isCorrect = false;
+        let feedback = '';
+        
+        if (articleData) {
+            const actuallyReal = articleData.is_real;
+            const userSaidReal = credibility === 'yes';
+            
+            isCorrect = (actuallyReal && userSaidReal) || (!actuallyReal && credibility === 'no');
+            
+            if (isCorrect) {
+                feedback = actuallyReal 
+                    ? 'Correct! This was legitimate news from a credible source.'
+                    : 'Excellent! You correctly identified this as misinformation.';
+            } else {
+                feedback = actuallyReal
+                    ? 'This was actually legitimate news. Look for credible sources and proper journalism standards.'
+                    : 'This was misinformation. Watch for sensational language, urgent calls to action, and lack of credible sources.';
+            }
+        } else {
+            feedback = 'Analysis complete! Remember to always verify sources and cross-reference information.';
         }
         
         // Mark challenge as completed
@@ -449,17 +528,19 @@ export class PageRenderer {
         modal.innerHTML = `
             <div class="bg-white rounded-lg p-6 max-w-md mx-4">
                 <div class="text-center">
-                    <i class="bi bi-check-circle text-6xl text-green-500 mb-4"></i>
-                    <h2 class="text-xl font-bold text-green-600 mb-4">✅ Analysis Complete!</h2>
-                    <p class="text-gray-700 mb-4">
-                        ${credibility === 'no' ? 
-                            'Excellent! You correctly identified this as misinformation. You\'ve completed Level 1!' :
-                            'Thank you for your analysis. Remember to always verify sources and look for red flags in news stories.'
-                        }
-                    </p>
+                    <i class="bi bi-check-circle text-6xl ${isCorrect ? 'text-green-500' : 'text-orange-500'} mb-4"></i>
+                    <h2 class="text-xl font-bold ${isCorrect ? 'text-green-600' : 'text-orange-600'} mb-4">
+                        ${isCorrect ? '✅ Great Analysis!' : '📚 Learning Opportunity!'}
+                    </h2>
+                    <p class="text-gray-700 mb-4">${feedback}</p>
+                    <div class="bg-blue-50 border border-blue-200 rounded p-3 mb-4">
+                        <p class="text-sm text-blue-700">
+                            <strong>Key Learning:</strong> Always check multiple sources, look for proper attribution, and be wary of emotionally charged language that pressures you to share immediately.
+                        </p>
+                    </div>
                     <button onclick="this.closest('.fixed').remove(); window.challenge1EventHandlers?.completeLevelOne?.()" 
-                            class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition-colors">
-                        Continue
+                            class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors">
+                        Continue Training
                     </button>
                 </div>
             </div>
@@ -470,6 +551,8 @@ export class PageRenderer {
         localStorage.setItem('cyberquest_challenge1_analysis', JSON.stringify({
             notes,
             credibility,
+            correct: isCorrect,
+            articleData: articleData,
             timestamp: new Date().toISOString()
         }));
     }
