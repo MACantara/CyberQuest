@@ -77,36 +77,65 @@ CYBERSECURITY_LEVELS = [
 ]
 
 def load_fake_news_data():
-    """Load and cache the FakeNewsNet CSV data"""
+    """Load and cache data from both Fake.csv and True.csv files"""
     global _csv_cache
     if _csv_cache is not None:
         return _csv_cache
     
     try:
-        csv_path = os.path.join(
+        # Get the data directory path
+        data_dir = os.path.join(
             os.path.dirname(os.path.dirname(__file__)), 
-            'static', 'js', 'simulated-pc', 'levels', 'level-one', 'data', 'FakeNewsNet.csv'
+            'static', 'js', 'simulated-pc', 'levels', 'level-one', 'data'
         )
         
-        _csv_cache = []
-        with open(csv_path, 'r', encoding='utf-8') as file:
-            reader = csv.DictReader(file)
-            for row in reader:
-                # Only include rows with valid URLs
-                if row.get('news_url') and row['news_url'].startswith('http'):
-                    _csv_cache.append({
-                        'title': row.get('title', ''),
-                        'url': row.get('news_url', ''),
-                        'domain': row.get('source_domain', ''),
-                        'is_real': row.get('real', '0') == '1',
-                        'tweet_count': row.get('tweet_num', '0')
-                    })
+        fake_csv_path = os.path.join(data_dir, 'Fake.csv')
+        true_csv_path = os.path.join(data_dir, 'True.csv')
         
-        print(f"Loaded {len(_csv_cache)} news articles from FakeNewsNet.csv")
+        _csv_cache = []
+        
+        # Load fake news data
+        if os.path.exists(fake_csv_path):
+            with open(fake_csv_path, 'r', encoding='utf-8') as file:
+                reader = csv.DictReader(file)
+                for row in reader:
+                    # Only include rows with required fields
+                    if row.get('title') and row.get('text') and row.get('date'):
+                        _csv_cache.append({
+                            'title': row.get('title', '').strip(),
+                            'text': row.get('text', '').strip(),
+                            'date': row.get('date', '').strip(),
+                            'is_real': False,  # Fake news
+                            'source': 'Fake.csv'
+                        })
+        else:
+            print(f"Warning: Fake.csv not found at {fake_csv_path}")
+        
+        # Load true news data
+        if os.path.exists(true_csv_path):
+            with open(true_csv_path, 'r', encoding='utf-8') as file:
+                reader = csv.DictReader(file)
+                for row in reader:
+                    # Only include rows with required fields
+                    if row.get('title') and row.get('text') and row.get('date'):
+                        _csv_cache.append({
+                            'title': row.get('title', '').strip(),
+                            'text': row.get('text', '').strip(),
+                            'date': row.get('date', '').strip(),
+                            'is_real': True,  # Real news
+                            'source': 'True.csv'
+                        })
+        else:
+            print(f"Warning: True.csv not found at {true_csv_path}")
+        
+        print(f"Loaded {len(_csv_cache)} news articles from CSV files")
+        print(f"Fake news articles: {len([a for a in _csv_cache if not a['is_real']])}")
+        print(f"Real news articles: {len([a for a in _csv_cache if a['is_real']])}")
+        
         return _csv_cache
         
     except Exception as e:
-        print(f"Error loading FakeNewsNet CSV: {e}")
+        print(f"Error loading news CSV files: {e}")
         return []
 
 @levels_bp.route('/')
@@ -175,9 +204,9 @@ def start_level(level_id):
                          level_data=level_data,
                          level_json=level_json)
 
-@levels_bp.route('/get-random-news-url', methods=['GET'])
-def get_random_news_url():
-    """Get a random news URL from the FakeNewsNet dataset"""
+@levels_bp.route('/get-random-news-article', methods=['GET'])
+def get_random_news_article():
+    """Get a random news article from both CSV datasets"""
     try:
         news_data = load_fake_news_data()
         
@@ -194,16 +223,22 @@ def get_random_news_url():
             'success': True,
             'article': {
                 'title': random_article['title'],
-                'url': random_article['url'],
-                'domain': random_article['domain'],
+                'text': random_article['text'],
+                'date': random_article['date'],
                 'is_real': random_article['is_real'],
-                'tweet_count': random_article['tweet_count']
+                'source': random_article['source']
             }
         })
         
     except Exception as e:
-        print(f"Error getting random news URL: {e}")
+        print(f"Error getting random news article: {e}")
         return jsonify({
             'success': False,
             'error': str(e)
         }), 500
+
+# Keep the old endpoint for backward compatibility
+@levels_bp.route('/get-random-news-url', methods=['GET'])
+def get_random_news_url():
+    """Legacy endpoint - redirects to get-random-news-article"""
+    return get_random_news_article()

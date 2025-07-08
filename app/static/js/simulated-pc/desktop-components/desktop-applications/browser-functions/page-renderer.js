@@ -16,9 +16,9 @@ export class PageRenderer {
             try {
                 let htmlContent;
                 
-                // For challenge1 page, create static content instead of fetching
+                // For challenge1 page, use the page's createContent method
                 if (url === 'https://daily-politico-news.com/breaking-news') {
-                    htmlContent = await this.createChallenge1Content();
+                    htmlContent = await pageConfig.createContent();
                 } else {
                     htmlContent = pageConfig.createContent();
                 }
@@ -38,88 +38,6 @@ export class PageRenderer {
                 contentElement.innerHTML = this.createErrorContent(error.message);
             }
         }
-    }
-
-    async createChallenge1Content() {
-        // Create static misinformation content for training
-        return `
-            <div style="font-family: Arial, sans-serif; background: #ffffff; min-height: 100vh;">
-                <!-- Urgent Banner -->
-                <div style="background: linear-gradient(90deg, #dc2626, #ea580c); color: white; padding: 15px; text-align: center; font-weight: bold; animation: pulse 2s infinite;">
-                    🚨 BREAKING: EXCLUSIVE STORY! SHARE BEFORE IT'S CENSORED! 🚨
-                </div>
-                
-                <!-- Header -->
-                <header style="background: #1f2937; color: white; padding: 20px;">
-                    <h1 style="margin: 0; font-size: 28px;">Daily Politico News</h1>
-                    <p style="margin: 5px 0 0 0; color: #9ca3af;">Your Source for REAL News</p>
-                </header>
-                
-                <!-- Main Content -->
-                <main style="padding: 30px; max-width: 800px; margin: 0 auto;">
-                    <h2 style="color: #dc2626; font-size: 32px; margin-bottom: 10px;">
-                        SHOCKING: Senator Johnson Caught in Massive Hacking Scandal!
-                    </h2>
-                    
-                    <div style="color: #6b7280; margin-bottom: 20px; font-size: 14px;">
-                        Published: Today | By: Anonymous Source | Category: EXCLUSIVE
-                    </div>
-                    
-                    <img src="/static/images/level-one/fake-news-image.jpg" 
-                         alt="Fake scandal image" 
-                         style="width: 100%; height: 300px; object-fit: cover; margin-bottom: 20px; border-radius: 8px;"
-                         onerror="this.style.background='#f3f4f6'; this.alt='Image not available';">
-                    
-                    <div style="font-size: 18px; line-height: 1.6; color: #374151;">
-                        <p><strong>EXCLUSIVE BREAKING NEWS:</strong> Senator Margaret Johnson has been caught red-handed in a massive cyber-attack scandal that will SHOCK you to your core!</p>
-                        
-                        <p>According to our EXCLUSIVE sources (who must remain anonymous for their safety), Senator Johnson has been secretly working with foreign hackers to steal classified government documents!</p>
-                        
-                        <p style="background: #fef3c7; padding: 15px; border-left: 4px solid #f59e0b; margin: 20px 0;">
-                            <strong>WARNING:</strong> The mainstream media is trying to HIDE this story! Share this immediately before they take it down!
-                        </p>
-                        
-                        <p>Our investigation reveals:</p>
-                        <ul style="margin: 20px 0; padding-left: 30px;">
-                            <li>🔥 SECRET meetings with known cyber-criminals</li>
-                            <li>🔥 MILLIONS of dollars in suspicious transactions</li>
-                            <li>🔥 CLASSIFIED documents found on her personal devices</li>
-                            <li>🔥 Cover-up attempts by government officials</li>
-                        </ul>
-                        
-                        <p style="color: #dc2626; font-weight: bold;">This story is EXPLOSIVE and could change everything! The deep state doesn't want you to know the TRUTH!</p>
-                    </div>
-                    
-                    <!-- Sharing Urgency Box -->
-                    <div style="background: #dc2626; color: white; padding: 20px; margin: 20px 0; border-radius: 8px; text-align: center; border: 3px solid #f59e0b;">
-                        <h3 style="margin: 0 0 10px 0;">URGENT: YOUR ACTION NEEDED</h3>
-                        <p style="margin: 0 0 15px 0;">Share this story immediately! Don't let the mainstream media hide the truth!</p>
-                        <button style="background: #1d4ed8; color: white; padding: 12px 24px; border: none; border-radius: 4px; margin: 5px; font-weight: bold; cursor: pointer;">Share on Facebook</button>
-                        <button style="background: #1da1f2; color: white; padding: 12px 24px; border: none; border-radius: 4px; margin: 5px; font-weight: bold; cursor: pointer;">Tweet Now</button>
-                    </div>
-                    
-                    <!-- Fake Testimonials -->
-                    <div style="background: #f9fafb; padding: 20px; margin: 20px 0; border-radius: 8px;">
-                        <h3 style="color: #374151; margin-bottom: 15px;">What People Are Saying:</h3>
-                        <blockquote style="margin: 15px 0; padding: 10px; border-left: 3px solid #10b981; background: white;">
-                            "I KNEW something was fishy about her! Thanks for exposing the TRUTH!" - PatriotFreedom2024
-                        </blockquote>
-                        <blockquote style="margin: 15px 0; padding: 10px; border-left: 3px solid #10b981; background: white;">
-                            "Finally, REAL journalism! The mainstream media would never report this!" - TruthSeeker99
-                        </blockquote>
-                        <blockquote style="margin: 15px 0; padding: 10px; border-left: 3px solid #10b981; background: white;">
-                            "Shared this everywhere! Everyone needs to know!" - WakeUpAmerica
-                        </blockquote>
-                    </div>
-                </main>
-                
-                <!-- Footer -->
-                <footer style="background: #f3f4f6; padding: 20px; text-align: center; color: #6b7280;">
-                    <p>© 2024 Daily Politico News | "No catch, totally legitimate" | Contact: tips@daily-politico-news.com</p>
-                    <p style="font-size: 12px;">This website is for CyberQuest training purposes and contains simulated misinformation.</p>
-                </footer>
-            </div>
-        `;
     }
 
     addTrainingOverlay(contentElement, pageConfig) {
@@ -471,6 +389,9 @@ export class PageRenderer {
     }
 
     showArticleMetadata(pageConfig) {
+        // Get article data if available from the challenge1 page
+        const articleData = pageConfig.articleData || null;
+        
         const modal = document.createElement('div');
         modal.className = 'fixed inset-0 bg-black/75 flex items-center justify-center z-50';
         modal.innerHTML = `
@@ -481,15 +402,21 @@ export class PageRenderer {
                     <div class="text-left">
                         <h3 class="font-semibold text-gray-800 mb-2">Article Analysis:</h3>
                         <ul class="text-sm text-gray-700 space-y-1 mb-4">
-                            <li>• <strong>Source Domain:</strong> daily-politico-news.com</li>
-                            <li>• <strong>Domain Age:</strong> Registered 2 weeks ago</li>
-                            <li>• <strong>Author:</strong> "Anonymous Source" (Red flag!)</li>
-                            <li>• <strong>Verification:</strong> No credible sources cited</li>
-                            <li>• <strong>Language:</strong> Highly emotional and urgent</li>
+                            ${articleData ? `
+                                <li>• <strong>Source Domain:</strong> ${articleData.domain || 'daily-politico-news.com'}</li>
+                                <li>• <strong>Article Type:</strong> ${articleData.is_real ? 'Real News' : 'Misinformation'}</li>
+                                <li>• <strong>Data Source:</strong> ${articleData.source || 'Training Dataset'}</li>
+                                <li>• <strong>Publication Date:</strong> ${articleData.date || 'Unknown'}</li>
+                            ` : `
+                                <li>• <strong>Source Domain:</strong> daily-politico-news.com</li>
+                                <li>• <strong>Domain Age:</strong> Recently registered</li>
+                                <li>• <strong>Author:</strong> No clear attribution</li>
+                                <li>• <strong>Language:</strong> Highly emotional and urgent</li>
+                            `}
                         </ul>
                         <div class="bg-red-50 border border-red-200 rounded p-3">
                             <p class="text-sm text-red-700">
-                                <strong>Warning:</strong> Multiple indicators suggest this is misinformation designed to manipulate emotions and encourage rapid sharing.
+                                <strong>Assessment:</strong> ${articleData && articleData.is_real ? 'This appears to be legitimate news content.' : 'Multiple indicators suggest this is misinformation designed to manipulate emotions and encourage rapid sharing.'}
                             </p>
                         </div>
                     </div>
@@ -512,11 +439,36 @@ export class PageRenderer {
             return;
         }
         
-        // For the static training content, we know it's misinformation
-        const isCorrect = credibility === 'no';
-        const feedback = isCorrect 
-            ? 'Excellent! You correctly identified this as misinformation. The urgent language, anonymous sources, emotional manipulation, and lack of credible evidence are all red flags.'
-            : 'This was actually misinformation designed for training. Look for: anonymous sources, urgent sharing pressure, emotional language, lack of credible evidence, and new domain registration.';
+        // Get the current page's article data
+        const pageConfig = this.pageRegistry?.getPage(window.location.hash) || {};
+        const articleData = pageConfig.articleData;
+        
+        // Determine if the user's assessment was correct
+        let isCorrect = false;
+        let feedback = '';
+        
+        if (articleData) {
+            const actuallyReal = articleData.is_real;
+            const userSaidReal = credibility === 'yes';
+            
+            isCorrect = (actuallyReal && userSaidReal) || (!actuallyReal && credibility === 'no');
+            
+            if (isCorrect) {
+                feedback = actuallyReal 
+                    ? 'Correct! This was legitimate news from a credible source.'
+                    : 'Excellent! You correctly identified this as misinformation.';
+            } else {
+                feedback = actuallyReal
+                    ? 'This was actually legitimate news. Look for credible sources and proper journalism standards.'
+                    : 'This was misinformation. Watch for sensational language, urgent calls to action, and lack of credible sources.';
+            }
+        } else {
+            // Fallback for static content - assume it's misinformation training
+            isCorrect = credibility === 'no';
+            feedback = isCorrect 
+                ? 'Excellent! You correctly identified this as misinformation. The urgent language, anonymous sources, emotional manipulation, and lack of credible evidence are all red flags.'
+                : 'This was actually misinformation designed for training. Look for: anonymous sources, urgent sharing pressure, emotional language, lack of credible evidence, and new domain registration.';
+        }
         
         // Mark challenge as completed
         localStorage.setItem('cyberquest_challenge1_completed', 'true');
@@ -550,6 +502,7 @@ export class PageRenderer {
             notes,
             credibility,
             correct: isCorrect,
+            articleData: articleData,
             timestamp: new Date().toISOString()
         }));
     }
