@@ -95,18 +95,27 @@ export class BrowserNavigation {
         this.showLoadingState();
 
         // Simulate loading delay for realism
-        const loadingDelay = Math.random() * 1000 + 500; // 0.5-1.5 second delay
+        const loadingDelay = Math.random() * 1000 + 500;
         
         try {
             await new Promise(resolve => setTimeout(resolve, loadingDelay));
             
-            // Render page (now async)
+            // Render page (now async with iframe support)
             await this.browserApp.pageRenderer.renderPage(url);
             
             // Run security check after page loads
             if (this.browserApp.securityChecker) {
                 this.browserApp.securityChecker.runSecurityScan(url);
             }
+            
+            // Emit navigation event for network monitoring
+            document.dispatchEvent(new CustomEvent('browser-navigate', {
+                detail: { 
+                    url: url, 
+                    action: isRefresh ? 'refresh' : 'navigate',
+                    timestamp: new Date().toISOString()
+                }
+            }));
             
         } catch (error) {
             console.error('Error loading page:', error);

@@ -8,6 +8,7 @@ class Challenge1PageClass extends BasePage {
             title: 'BREAKING: Senator Johnson Hacking Scandal - Daily Politico News',
             ipAddress: '192.0.2.47',
             securityLevel: 'suspicious',
+            useIframe: true, // Flag to use iframe rendering
             security: {
                 isHttps: false,
                 hasValidCertificate: false,
@@ -25,11 +26,11 @@ class Challenge1PageClass extends BasePage {
         this.eventHandlers = new EventHandlers(this);
         this.realWebsiteUrl = 'https://www.today.com/style/see-people-s-choice-awards-red-carpet-looks-t141832';
         this.htmlContent = null;
-        this.fetchPromise = null; // Cache the fetch promise
+        this.fetchPromise = null;
     }
 
     async createContent() {
-        // If we already have cached content, return it with training overlay
+        // If we already have cached content, return it
         if (this.htmlContent) {
             return this.processHtmlContent(this.htmlContent);
         }
@@ -56,42 +57,10 @@ class Challenge1PageClass extends BasePage {
         }
     }
 
-    createLoadingContent() {
-        return `
-            <div class="min-h-screen bg-white flex items-center justify-center">
-                <div class="text-center">
-                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
-                    <h2 class="text-xl font-semibold text-gray-800 mb-2">Loading Daily Politico News...</h2>
-                    <p class="text-gray-600">Fetching breaking news content</p>
-                </div>
-            </div>
-        `;
-    }
-
-    createErrorContent() {
-        return `
-            <div class="min-h-screen bg-white flex items-center justify-center">
-                <div class="text-center max-w-md mx-auto p-6">
-                    <div class="text-red-500 mb-4">
-                        <i class="bi bi-exclamation-triangle text-6xl"></i>
-                    </div>
-                    <h2 class="text-xl font-semibold text-gray-800 mb-2">Failed to Load Content</h2>
-                    <p class="text-gray-600 mb-4">Unable to fetch the website content. This might be a network issue or the site may be unavailable.</p>
-                    <button onclick="window.location.reload()" 
-                            class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors">
-                        Try Again
-                    </button>
-                </div>
-            </div>
-        `;
-    }
-
-    // Fetch real website content from our server proxy
     async fetchRealWebsiteContent() {
         try {
             console.log('Fetching real website content from:', this.realWebsiteUrl);
             
-            // Use our fetch-website route to get real HTML content
             const response = await fetch(`/levels/fetch-website?url=${encodeURIComponent(this.realWebsiteUrl)}`);
             
             if (!response.ok) {
@@ -101,7 +70,6 @@ class Challenge1PageClass extends BasePage {
             const data = await response.json();
             
             if (data.success && data.html) {
-                // Store the fetched HTML content
                 this.htmlContent = data.html;
                 console.log('Successfully fetched website content');
                 return this.htmlContent;
@@ -113,47 +81,40 @@ class Challenge1PageClass extends BasePage {
             this.htmlContent = null;
             throw error;
         } finally {
-            this.fetchPromise = null; // Clear the promise
+            this.fetchPromise = null;
         }
     }
 
-    // Process the fetched HTML to inject our training tools and modify content
     processHtmlContent(rawHtml) {
-        // Create a temporary container to parse and modify the HTML
-        const tempContainer = document.createElement('div');
-        tempContainer.innerHTML = rawHtml;
-
-        // Inject custom styles to make it look like a suspicious news site
-        const customStyles = document.createElement('style');
-        customStyles.textContent = `
-            /* Override site styling to make it look like a suspicious news site */
-            body {
-                font-family: Arial, sans-serif !important;
-            }
-        `;
-
-        // Find the body or main content area
-        const bodyElement = tempContainer.querySelector('body') || tempContainer;
+        // Parse the HTML and modify it for the misinformation training
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(rawHtml, 'text/html');
         
-        // Inject our custom elements
-        bodyElement.insertBefore(customStyles, bodyElement.firstChild);
-
-        // Modify some text content to make it look like political news
-        this.modifyContentToSuspiciousNews(tempContainer);
-
-        return tempContainer.innerHTML;
+        // Modify content to look like political misinformation
+        this.modifyContentToSuspiciousNews(doc);
+        
+        // Return the modified HTML
+        return new XMLSerializer().serializeToString(doc);
     }
 
-    // Modify the content to make it look like suspicious political news
-    modifyContentToSuspiciousNews(container) {
-        // Find and modify headlines
-        const headlines = container.querySelectorAll('h1, h2, .headline, [class*="headline"], [class*="title"]');
+    modifyContentToSuspiciousNews(doc) {
+        // Change page title
+        const title = doc.querySelector('title');
+        if (title) {
+            title.textContent = "BREAKING: Senator Johnson's Private Emails Hacked - Daily Politico News";
+        }
+        
+        // Modify main headlines
+        const headlines = doc.querySelectorAll('h1, h2, [class*="headline"], [class*="title"]');
         if (headlines.length > 0) {
             headlines[0].textContent = "SENATOR JOHNSON'S PRIVATE EMAILS HACKED: EXPLOSIVE REVELATIONS";
+            if (headlines[1]) {
+                headlines[1].textContent = "Anonymous hackers reveal corruption evidence";
+            }
         }
-
-        // Find and modify some paragraphs to political content
-        const paragraphs = container.querySelectorAll('p');
+        
+        // Modify article content
+        const paragraphs = doc.querySelectorAll('p');
         if (paragraphs.length > 0) {
             paragraphs[0].innerHTML = `<strong>EXCLUSIVE:</strong> In a shocking turn of events, anonymous hackers have breached the personal email account of Senator Michael Johnson, revealing damning evidence of corruption and collusion with foreign powers.`;
         }
@@ -161,29 +122,97 @@ class Challenge1PageClass extends BasePage {
         if (paragraphs.length > 1) {
             paragraphs[1].textContent = "According to the leaked emails, Senator Johnson has been secretly communicating with representatives from a foreign government, promising political favors in exchange for financial contributions to his campaign.";
         }
-
-        // Add some urgent call-to-action elements
-        const callToAction = container.querySelector('.share, [class*="share"], .social');
-        if (callToAction) {
-            callToAction.innerHTML = `
-                <div style="background: #dc2626; color: white; padding: 15px; margin: 20px 0; border-radius: 8px; text-align: center;">
-                    <h3 style="margin: 0 0 10px 0; color: white;">URGENT: YOUR ACTION NEEDED</h3>
-                    <p style="margin: 0 0 10px 0; color: white;">Share this story immediately to spread awareness about government corruption! The mainstream media won't report on this!</p>
-                    <button style="background: #1d4ed8; color: white; padding: 10px 20px; border: none; border-radius: 4px; margin: 5px;">Share on Facebook</button>
-                    <button style="background: #1da1f2; color: white; padding: 10px 20px; border: none; border-radius: 4px; margin: 5px;">Tweet Now</button>
-                </div>
+        
+        if (paragraphs.length > 2) {
+            paragraphs[2].innerHTML = `The emails, obtained by whistleblowers and verified by independent sources, show a pattern of <strong>systematic corruption</strong> that reaches the highest levels of government.`;
+        }
+        
+        // Add urgent call-to-action elements
+        const body = doc.querySelector('body');
+        if (body) {
+            // Insert urgent banner at the top
+            const urgentBanner = doc.createElement('div');
+            urgentBanner.style.cssText = `
+                background: linear-gradient(90deg, #dc2626, #ea580c);
+                color: white;
+                padding: 15px;
+                text-align: center;
+                font-weight: bold;
+                animation: pulse 2s infinite;
+                position: sticky;
+                top: 0;
+                z-index: 1000;
             `;
+            urgentBanner.innerHTML = `🚨 BREAKING: EXCLUSIVE POLITICAL SCANDAL EXPOSED! SHARE BEFORE IT'S CENSORED! 🚨`;
+            body.insertBefore(urgentBanner, body.firstChild);
+            
+            // Add sharing urgency box
+            const shareBox = doc.createElement('div');
+            shareBox.style.cssText = `
+                background: #dc2626;
+                color: white;
+                padding: 20px;
+                margin: 20px;
+                border-radius: 8px;
+                text-align: center;
+                border: 3px solid #f59e0b;
+            `;
+            shareBox.innerHTML = `
+                <h3 style="margin: 0 0 10px 0; color: white;">URGENT: YOUR ACTION NEEDED</h3>
+                <p style="margin: 0 0 15px 0; color: white;">Share this story immediately! The mainstream media won't report this truth!</p>
+                <button style="background: #1d4ed8; color: white; padding: 12px 24px; border: none; border-radius: 4px; margin: 5px; font-weight: bold; cursor: pointer;">Share on Facebook</button>
+                <button style="background: #1da1f2; color: white; padding: 12px 24px; border: none; border-radius: 4px; margin: 5px; font-weight: bold; cursor: pointer;">Tweet Now</button>
+            `;
+            body.appendChild(shareBox);
+        }
+        
+        // Modify any existing images to look more political
+        const images = doc.querySelectorAll('img');
+        images.forEach((img, index) => {
+            if (index === 0) {
+                img.alt = "Senator Johnson (allegedly)";
+                img.title = "Leaked photo from private meeting";
+            }
+        });
+        
+        // Add suspicious metadata
+        const head = doc.querySelector('head');
+        if (head) {
+            const suspiciousMeta = doc.createElement('meta');
+            suspiciousMeta.setAttribute('name', 'author');
+            suspiciousMeta.setAttribute('content', 'Anonymous Whistleblower');
+            head.appendChild(suspiciousMeta);
         }
     }
 
-    async bindEvents(contentElement) {
-        // Wait a moment for the content to be fully rendered
+    createErrorContent() {
+        return `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Error Loading Content</title>
+                <style>
+                    body { font-family: Arial, sans-serif; padding: 40px; text-align: center; }
+                    .error { color: #dc2626; }
+                </style>
+            </head>
+            <body>
+                <div class="error">
+                    <h1>Failed to Load Content</h1>
+                    <p>Unable to fetch the news story. Please try refreshing the page.</p>
+                </div>
+            </body>
+            </html>
+        `;
+    }
+
+    bindEvents(contentElement) {
+        // Events are now handled by the overlay in page-renderer
         setTimeout(() => {
             this.eventHandlers.bindAllEvents(document);
         }, 100);
     }
 
-    // Override toPageObject to work with the registry
     toPageObject() {
         const pageInstance = this;
         return {
@@ -192,7 +221,8 @@ class Challenge1PageClass extends BasePage {
             ipAddress: this.ipAddress,
             securityLevel: this.securityLevel,
             security: this.security,
-            createContent: () => pageInstance.createContent(), // This will return a Promise
+            useIframe: this.useIframe,
+            createContent: () => pageInstance.createContent(),
             bindEvents: (contentElement) => pageInstance.bindEvents(contentElement)
         };
     }
