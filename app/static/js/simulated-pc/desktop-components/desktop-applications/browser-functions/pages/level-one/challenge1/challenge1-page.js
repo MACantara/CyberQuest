@@ -143,12 +143,6 @@ class Challenge1PageClass extends BasePage {
                     </div>
                 </header>
                 
-                <!-- Article Type Indicator -->
-                <div style="background: ${isFakeNews ? '#dc2626' : '#10b981'}; color: white; padding: 8px 30px; font-size: 12px; text-align: center;">
-                    ${isFakeNews ? '🚨 TRAINING EXAMPLE: Misinformation/Fake News' : '✅ TRAINING EXAMPLE: Legitimate News'}
-                    ${isFakeNews ? ' - Look for red flags and manipulation tactics' : ' - Notice credible reporting standards'}
-                </div>
-                
                 <!-- Main Content -->
                 <main style="padding: 30px; max-width: 800px; margin: 0 auto;">
                     <h2 style="color: ${isFakeNews ? '#dc2626' : '#374151'}; font-size: 32px; margin-bottom: 10px; ${isFakeNews ? 'text-transform: uppercase;' : ''}">
@@ -183,10 +177,7 @@ class Challenge1PageClass extends BasePage {
                         </h3>
                         <div style="font-size: 14px; color: #6b7280; margin-bottom: 15px;">
                             Use the CyberQuest Analysis Tools (top-right panel) to evaluate this article's credibility.
-                            ${isFakeNews ? 
-                                'Look for: emotional manipulation, urgent language, lack of sources, and pressure to share.' :
-                                'Notice: proper attribution, balanced reporting, credible sources, and professional language.'
-                            }
+                            Look for signs of emotional manipulation, urgent language, lack of sources, and pressure to share.
                         </div>
                         
                         <!-- Quick Analysis Questions -->
@@ -207,8 +198,7 @@ class Challenge1PageClass extends BasePage {
                 <footer style="background: #f3f4f6; padding: 20px; text-align: center; color: #6b7280;">
                     <p>© 2024 Daily Politico News | Contact: tips@daily-politico-news.com</p>
                     <p style="font-size: 12px;">
-                        This website is for CyberQuest training purposes. Article source: ${currentArticle.source} 
-                        | Type: ${currentArticle.is_real ? 'Real News' : 'Fake News'} (Training Label)
+                        This website is for CyberQuest training purposes. Article source: ${currentArticle.source}
                     </p>
                 </footer>
             </div>
