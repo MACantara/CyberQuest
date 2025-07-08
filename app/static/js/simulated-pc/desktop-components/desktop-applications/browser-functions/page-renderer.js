@@ -11,104 +11,131 @@ export class PageRenderer {
         const contentElement = this.browserApp.windowElement?.querySelector('#browser-content');
         
         if (contentElement) {
-            // Show loading state while content is being generated
             this.showLoadingState(contentElement);
             
             try {
-                // Check if this is a page that should use iframe (like challenge1)
-                if (this.shouldUseIframe(pageConfig)) {
-                    await this.renderInIframe(pageConfig, contentElement);
+                let htmlContent;
+                
+                // For challenge1 page, create static content instead of fetching
+                if (url === 'https://daily-politico-news.com/breaking-news') {
+                    htmlContent = await this.createChallenge1Content();
                 } else {
-                    // Handle regular simulated pages normally
-                    let content;
-                    if (typeof pageConfig.createContent === 'function') {
-                        const result = pageConfig.createContent();
-                        
-                        // Check if it's a Promise (async)
-                        if (result && typeof result.then === 'function') {
-                            content = await result;
-                        } else {
-                            content = result;
-                        }
-                    } else {
-                        content = pageConfig.createContent || '<div>No content available</div>';
-                    }
-                    
-                    contentElement.innerHTML = content;
-                    this.bindPageEvents(url);
+                    htmlContent = pageConfig.createContent();
+                }
+                
+                contentElement.innerHTML = htmlContent;
+                
+                // Create overlay for CyberQuest training tools if this is challenge1
+                if (url === 'https://daily-politico-news.com/breaking-news') {
+                    this.addTrainingOverlay(contentElement, pageConfig);
                 }
                 
                 this.updatePageTitle(pageConfig.title);
-                
-                // Reset scroll position to top
-                contentElement.scrollTop = 0;
+                this.bindPageEvents(url);
                 
             } catch (error) {
-                console.error('Error rendering page content:', error);
+                console.error('Error rendering page:', error);
                 contentElement.innerHTML = this.createErrorContent(error.message);
             }
         }
     }
 
-    shouldUseIframe(pageConfig) {
-        // Use iframe for pages that fetch external content
-        return pageConfig.url === 'https://daily-politico-news.com/breaking-news' ||
-               pageConfig.useIframe === true;
+    async createChallenge1Content() {
+        // Create static misinformation content for training
+        return `
+            <div style="font-family: Arial, sans-serif; background: #ffffff; min-height: 100vh;">
+                <!-- Urgent Banner -->
+                <div style="background: linear-gradient(90deg, #dc2626, #ea580c); color: white; padding: 15px; text-align: center; font-weight: bold; animation: pulse 2s infinite;">
+                    🚨 BREAKING: EXCLUSIVE STORY! SHARE BEFORE IT'S CENSORED! 🚨
+                </div>
+                
+                <!-- Header -->
+                <header style="background: #1f2937; color: white; padding: 20px;">
+                    <h1 style="margin: 0; font-size: 28px;">Daily Politico News</h1>
+                    <p style="margin: 5px 0 0 0; color: #9ca3af;">Your Source for REAL News</p>
+                </header>
+                
+                <!-- Main Content -->
+                <main style="padding: 30px; max-width: 800px; margin: 0 auto;">
+                    <h2 style="color: #dc2626; font-size: 32px; margin-bottom: 10px;">
+                        SHOCKING: Senator Johnson Caught in Massive Hacking Scandal!
+                    </h2>
+                    
+                    <div style="color: #6b7280; margin-bottom: 20px; font-size: 14px;">
+                        Published: Today | By: Anonymous Source | Category: EXCLUSIVE
+                    </div>
+                    
+                    <img src="/static/images/level-one/fake-news-image.jpg" 
+                         alt="Fake scandal image" 
+                         style="width: 100%; height: 300px; object-fit: cover; margin-bottom: 20px; border-radius: 8px;"
+                         onerror="this.style.background='#f3f4f6'; this.alt='Image not available';">
+                    
+                    <div style="font-size: 18px; line-height: 1.6; color: #374151;">
+                        <p><strong>EXCLUSIVE BREAKING NEWS:</strong> Senator Margaret Johnson has been caught red-handed in a massive cyber-attack scandal that will SHOCK you to your core!</p>
+                        
+                        <p>According to our EXCLUSIVE sources (who must remain anonymous for their safety), Senator Johnson has been secretly working with foreign hackers to steal classified government documents!</p>
+                        
+                        <p style="background: #fef3c7; padding: 15px; border-left: 4px solid #f59e0b; margin: 20px 0;">
+                            <strong>WARNING:</strong> The mainstream media is trying to HIDE this story! Share this immediately before they take it down!
+                        </p>
+                        
+                        <p>Our investigation reveals:</p>
+                        <ul style="margin: 20px 0; padding-left: 30px;">
+                            <li>🔥 SECRET meetings with known cyber-criminals</li>
+                            <li>🔥 MILLIONS of dollars in suspicious transactions</li>
+                            <li>🔥 CLASSIFIED documents found on her personal devices</li>
+                            <li>🔥 Cover-up attempts by government officials</li>
+                        </ul>
+                        
+                        <p style="color: #dc2626; font-weight: bold;">This story is EXPLOSIVE and could change everything! The deep state doesn't want you to know the TRUTH!</p>
+                    </div>
+                    
+                    <!-- Sharing Urgency Box -->
+                    <div style="background: #dc2626; color: white; padding: 20px; margin: 20px 0; border-radius: 8px; text-align: center; border: 3px solid #f59e0b;">
+                        <h3 style="margin: 0 0 10px 0;">URGENT: YOUR ACTION NEEDED</h3>
+                        <p style="margin: 0 0 15px 0;">Share this story immediately! Don't let the mainstream media hide the truth!</p>
+                        <button style="background: #1d4ed8; color: white; padding: 12px 24px; border: none; border-radius: 4px; margin: 5px; font-weight: bold; cursor: pointer;">Share on Facebook</button>
+                        <button style="background: #1da1f2; color: white; padding: 12px 24px; border: none; border-radius: 4px; margin: 5px; font-weight: bold; cursor: pointer;">Tweet Now</button>
+                    </div>
+                    
+                    <!-- Fake Testimonials -->
+                    <div style="background: #f9fafb; padding: 20px; margin: 20px 0; border-radius: 8px;">
+                        <h3 style="color: #374151; margin-bottom: 15px;">What People Are Saying:</h3>
+                        <blockquote style="margin: 15px 0; padding: 10px; border-left: 3px solid #10b981; background: white;">
+                            "I KNEW something was fishy about her! Thanks for exposing the TRUTH!" - PatriotFreedom2024
+                        </blockquote>
+                        <blockquote style="margin: 15px 0; padding: 10px; border-left: 3px solid #10b981; background: white;">
+                            "Finally, REAL journalism! The mainstream media would never report this!" - TruthSeeker99
+                        </blockquote>
+                        <blockquote style="margin: 15px 0; padding: 10px; border-left: 3px solid #10b981; background: white;">
+                            "Shared this everywhere! Everyone needs to know!" - WakeUpAmerica
+                        </blockquote>
+                    </div>
+                </main>
+                
+                <!-- Footer -->
+                <footer style="background: #f3f4f6; padding: 20px; text-align: center; color: #6b7280;">
+                    <p>© 2024 Daily Politico News | "No catch, totally legitimate" | Contact: tips@daily-politico-news.com</p>
+                    <p style="font-size: 12px;">This website is for CyberQuest training purposes and contains simulated misinformation.</p>
+                </footer>
+            </div>
+        `;
     }
 
-    async renderInIframe(pageConfig, contentElement) {
-        // Create iframe container
-        const iframeContainer = document.createElement('div');
-        iframeContainer.className = 'iframe-container w-full h-full relative';
-        
-        // Create the iframe
-        const iframe = document.createElement('iframe');
-        iframe.className = 'w-full h-full border-0';
-        iframe.src = 'about:blank';
-        iframe.style.background = 'white';
-        
-        // Create overlay for CyberQuest training tools
+    addTrainingOverlay(contentElement, pageConfig) {
         const overlay = document.createElement('div');
         overlay.className = 'cyberquest-training-overlay';
         overlay.innerHTML = this.createTrainingOverlay();
         
-        iframeContainer.appendChild(iframe);
-        iframeContainer.appendChild(overlay);
-        contentElement.innerHTML = '';
-        contentElement.appendChild(iframeContainer);
+        // Position overlay relative to content
+        contentElement.style.position = 'relative';
+        contentElement.appendChild(overlay);
         
         // Add styles for the overlay
         this.addOverlayStyles();
         
-        // Wait for iframe to load, then inject content
-        iframe.onload = async () => {
-            try {
-                // Get the content (this will trigger the fetch for external pages)
-                let content;
-                if (typeof pageConfig.createContent === 'function') {
-                    const result = pageConfig.createContent();
-                    content = result && typeof result.then === 'function' ? await result : result;
-                } else {
-                    content = pageConfig.createContent || '<div>No content available</div>';
-                }
-                
-                // Write content to iframe
-                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                iframeDoc.open();
-                iframeDoc.write(content);
-                iframeDoc.close();
-                
-                // Bind events to the overlay
-                this.bindOverlayEvents(overlay, pageConfig);
-                
-            } catch (error) {
-                console.error('Error loading iframe content:', error);
-                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                iframeDoc.open();
-                iframeDoc.write(this.createErrorContent(error.message));
-                iframeDoc.close();
-            }
-        };
+        // Bind overlay events
+        this.bindOverlayEvents(overlay, pageConfig);
     }
 
     createTrainingOverlay() {
@@ -444,9 +471,6 @@ export class PageRenderer {
     }
 
     showArticleMetadata(pageConfig) {
-        // Get article data if available
-        const articleData = pageConfig.articleData || null;
-        
         const modal = document.createElement('div');
         modal.className = 'fixed inset-0 bg-black/75 flex items-center justify-center z-50';
         modal.innerHTML = `
@@ -455,22 +479,17 @@ export class PageRenderer {
                     <i class="bi bi-info-circle text-6xl text-blue-500 mb-4"></i>
                     <h2 class="text-xl font-bold text-blue-600 mb-4">📊 Article Metadata</h2>
                     <div class="text-left">
-                        <h3 class="font-semibold text-gray-800 mb-2">Article Information:</h3>
+                        <h3 class="font-semibold text-gray-800 mb-2">Article Analysis:</h3>
                         <ul class="text-sm text-gray-700 space-y-1 mb-4">
-                            ${articleData ? `
-                                <li>• <strong>Source Domain:</strong> ${articleData.domain || 'Unknown'}</li>
-                                <li>• <strong>Social Media Shares:</strong> ${articleData.tweet_count || '0'} tweets</li>
-                                <li>• <strong>URL:</strong> ${articleData.url ? articleData.url.substring(0, 50) + '...' : 'N/A'}</li>
-                            ` : `
-                                <li>• Article metadata not available</li>
-                                <li>• Check the URL structure and domain</li>
-                                <li>• Look for author information</li>
-                                <li>• Verify publication date</li>
-                            `}
+                            <li>• <strong>Source Domain:</strong> daily-politico-news.com</li>
+                            <li>• <strong>Domain Age:</strong> Registered 2 weeks ago</li>
+                            <li>• <strong>Author:</strong> "Anonymous Source" (Red flag!)</li>
+                            <li>• <strong>Verification:</strong> No credible sources cited</li>
+                            <li>• <strong>Language:</strong> Highly emotional and urgent</li>
                         </ul>
-                        <div class="bg-blue-50 border border-blue-200 rounded p-3">
-                            <p class="text-sm text-blue-700">
-                                <strong>Tip:</strong> Always verify news sources through multiple reputable outlets and check for proper journalism standards.
+                        <div class="bg-red-50 border border-red-200 rounded p-3">
+                            <p class="text-sm text-red-700">
+                                <strong>Warning:</strong> Multiple indicators suggest this is misinformation designed to manipulate emotions and encourage rapid sharing.
                             </p>
                         </div>
                     </div>
@@ -493,32 +512,11 @@ export class PageRenderer {
             return;
         }
         
-        // Get the current page's article data
-        const pageConfig = this.pageRegistry?.getPage(window.location.hash) || {};
-        const articleData = pageConfig.articleData;
-        
-        // Determine if the user's assessment was correct
-        let isCorrect = false;
-        let feedback = '';
-        
-        if (articleData) {
-            const actuallyReal = articleData.is_real;
-            const userSaidReal = credibility === 'yes';
-            
-            isCorrect = (actuallyReal && userSaidReal) || (!actuallyReal && credibility === 'no');
-            
-            if (isCorrect) {
-                feedback = actuallyReal 
-                    ? 'Correct! This was legitimate news from a credible source.'
-                    : 'Excellent! You correctly identified this as misinformation.';
-            } else {
-                feedback = actuallyReal
-                    ? 'This was actually legitimate news. Look for credible sources and proper journalism standards.'
-                    : 'This was misinformation. Watch for sensational language, urgent calls to action, and lack of credible sources.';
-            }
-        } else {
-            feedback = 'Analysis complete! Remember to always verify sources and cross-reference information.';
-        }
+        // For the static training content, we know it's misinformation
+        const isCorrect = credibility === 'no';
+        const feedback = isCorrect 
+            ? 'Excellent! You correctly identified this as misinformation. The urgent language, anonymous sources, emotional manipulation, and lack of credible evidence are all red flags.'
+            : 'This was actually misinformation designed for training. Look for: anonymous sources, urgent sharing pressure, emotional language, lack of credible evidence, and new domain registration.';
         
         // Mark challenge as completed
         localStorage.setItem('cyberquest_challenge1_completed', 'true');
@@ -528,7 +526,7 @@ export class PageRenderer {
         modal.innerHTML = `
             <div class="bg-white rounded-lg p-6 max-w-md mx-4">
                 <div class="text-center">
-                    <i class="bi bi-check-circle text-6xl ${isCorrect ? 'text-green-500' : 'text-orange-500'} mb-4"></i>
+                    <i class="bi bi-${isCorrect ? 'check-circle text-green-500' : 'info-circle text-orange-500'} text-6xl mb-4"></i>
                     <h2 class="text-xl font-bold ${isCorrect ? 'text-green-600' : 'text-orange-600'} mb-4">
                         ${isCorrect ? '✅ Great Analysis!' : '📚 Learning Opportunity!'}
                     </h2>
@@ -552,7 +550,6 @@ export class PageRenderer {
             notes,
             credibility,
             correct: isCorrect,
-            articleData: articleData,
             timestamp: new Date().toISOString()
         }));
     }
