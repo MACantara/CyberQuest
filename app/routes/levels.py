@@ -16,7 +16,8 @@ CYBERSECURITY_LEVELS = [
         'category': 'Information Literacy',
         'estimated_time': '15 minutes',
         'skills': ['Critical Thinking', 'Source Verification', 'Fact Checking'],
-        'unlocked': True
+        'unlocked': True,
+        'coming_soon': False
     },
     {
         'id': 2,
@@ -28,7 +29,8 @@ CYBERSECURITY_LEVELS = [
         'category': 'Email Security',
         'estimated_time': '20 minutes',
         'skills': ['Phishing Detection', 'Email Analysis', 'Social Engineering'],
-        'unlocked': False
+        'unlocked': False,
+        'coming_soon': False
     },
     {
         'id': 3,
@@ -40,7 +42,8 @@ CYBERSECURITY_LEVELS = [
         'category': 'Threat Detection',
         'estimated_time': '25 minutes',
         'skills': ['Malware Recognition', 'System Security', 'Threat Analysis'],
-        'unlocked': False
+        'unlocked': False,
+        'coming_soon': True
     },
     {
         'id': 4,
@@ -52,7 +55,8 @@ CYBERSECURITY_LEVELS = [
         'category': 'Ethical Hacking',
         'estimated_time': '30 minutes',
         'skills': ['Penetration Testing', 'Vulnerability Assessment', 'Ethical Hacking'],
-        'unlocked': False
+        'unlocked': False,
+        'coming_soon': True
     },
     {
         'id': 5,
@@ -64,7 +68,8 @@ CYBERSECURITY_LEVELS = [
         'category': 'Digital Forensics',
         'estimated_time': '40 minutes',
         'skills': ['Digital Forensics', 'Evidence Analysis', 'Advanced Investigation'],
-        'unlocked': False
+        'unlocked': False,
+        'coming_soon': True
     }
 ]
 

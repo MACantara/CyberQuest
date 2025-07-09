@@ -58,6 +58,7 @@
             <div class="level-card group relative opacity-0 animate-fade-in-up" 
                  data-level-id="{{ level.id }}"
                  data-level-xp="{{ level.xp_reward }}"
+                 data-coming-soon="{{ level.coming_soon | lower }}"
                  style="animation-delay: {{ loop.index * 0.1 }}s;">
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 level-content">
                     
@@ -146,8 +147,9 @@ document.addEventListener('DOMContentLoaded', function() {
         levelCards.forEach((card, index) => {
             const levelId = parseInt(card.dataset.levelId);
             const levelXP = parseInt(card.dataset.levelXp);
+            const isComingSoon = card.dataset.comingSoon === 'true';
             const isCompleted = checkLevelCompletion(levelId);
-            const isUnlocked = levelId === 1 || checkLevelCompletion(levelId - 1); // Level 1 always unlocked, others unlock when previous is completed
+            const isUnlocked = levelId === 1 || checkLevelCompletion(levelId - 1);
             
             const levelContent = card.querySelector('.level-content');
             const levelIcon = card.querySelector('.level-icon');
@@ -167,6 +169,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 levelButton.innerHTML = '<i class="bi bi-play-circle mr-2"></i>Replay Level';
                 levelButton.className = 'level-button w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-green-500/25 shadow-lg hover:shadow-xl';
                 levelButton.style.pointerEvents = 'auto';
+                
+            } else if (isComingSoon) {
+                // Mark as coming soon
+                levelIcon.className = 'level-icon w-12 h-12 rounded-lg flex items-center justify-center text-white text-xl mr-4 bg-gradient-to-br from-purple-500 to-indigo-600';
+                lockIcon.className = 'level-lock-icon bi bi-clock text-purple-500 text-xl';
+                levelContent.className = 'bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-purple-400 dark:border-purple-500 level-content';
+                card.className = 'level-card group relative opacity-0 animate-fade-in-up cursor-not-allowed';
+                
+                levelButton.innerHTML = '<i class="bi bi-clock mr-2"></i>Coming Soon';
+                levelButton.className = 'level-button w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-semibold rounded-lg cursor-not-allowed opacity-80';
+                levelButton.style.pointerEvents = 'none';
                 
             } else if (isUnlocked) {
                 // Mark as unlocked but not completed
@@ -191,11 +204,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 levelButton.style.pointerEvents = 'none';
             }
             
-            // Add click handler for locked levels
-            if (!isUnlocked) {
+            // Add click handler for locked levels (not coming soon)
+            if (!isUnlocked && !isComingSoon) {
                 card.addEventListener('click', function(e) {
                     e.preventDefault();
                     showLockedLevelModal(levelId);
+                });
+            } else if (isComingSoon) {
+                card.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showComingSoonModal(levelId);
                 });
             }
         });
@@ -225,6 +243,32 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button onclick="this.closest('.fixed').remove()" 
                             class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors">
                         Got it!
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+    
+    function showComingSoonModal(levelId) {
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-black/75 flex items-center justify-center z-50';
+        modal.innerHTML = `
+            <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md mx-4">
+                <div class="text-center">
+                    <i class="bi bi-clock text-6xl text-purple-500 mb-4"></i>
+                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">🚀 Coming Soon!</h2>
+                    <p class="text-gray-700 dark:text-gray-300 mb-4">
+                        Level ${levelId} is currently in development. Stay tuned for exciting new cybersecurity challenges!
+                    </p>
+                    <div class="bg-purple-50 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-700 rounded p-3 mb-4">
+                        <p class="text-sm text-purple-700 dark:text-purple-300">
+                            💡 <strong>Pro Tip:</strong> Complete the available levels to master the fundamentals while we prepare advanced content for you!
+                        </p>
+                    </div>
+                    <button onclick="this.closest('.fixed').remove()" 
+                            class="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700 transition-colors">
+                        Can't wait!
                     </button>
                 </div>
             </div>
