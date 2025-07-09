@@ -5,19 +5,28 @@ export class LevelCompletionDialogue extends BaseDialogue {
         super(desktop, character);
         this.messages = [
             {
-                text: "Congratulations! You've successfully completed Level 1: The Misinformation Maze. You've demonstrated excellent skills in identifying and combating false information."
+                text: "Congratulations, Agent! You've successfully completed Level 1: The Misinformation Maze."
             },
             {
-                text: "You've mastered the fundamentals: source verification, cross-referencing, image verification, and social media investigation. These skills are essential in today's information landscape."
+                text: "Your performance in analyzing news articles shows real promise in cybersecurity awareness."
             },
             {
-                text: "You've earned 100 XP in Information Literacy and unlocked the 'Fact-Checker' badge. Your training has prepared you to help protect others from misinformation."
+                text: "You've demonstrated key skills: identifying suspicious headlines, verifying source credibility, and recognizing emotional manipulation tactics."
             },
             {
-                text: "Remember: misinformation spreads fast, but the truth spreads faster when people like you know how to verify and share accurate information."
+                text: "Through the Interactive Analysis system, you learned to spot red flags like biased language, questionable sources, and missing author credentials."
             },
             {
-                text: "You're now ready for more advanced challenges. Keep practicing these skills in real life - verify before you share, question suspicious content, and help others learn these critical skills!"
+                text: "These skills are essential in today's digital landscape where misinformation can influence elections, spread conspiracy theories, and undermine public trust."
+            },
+            {
+                text: "You've earned 100 XP in Information Literacy and unlocked the 'Fact-Checker' badge for your analytical abilities."
+            },
+            {
+                text: "Remember: Always verify before you share, cross-reference multiple sources, and question information that seems designed to provoke strong emotions."
+            },
+            {
+                text: "You're now ready for Level 2: Shadow Inbox, where you'll face more sophisticated threats in email security and phishing detection."
             }
         ];
     }
@@ -52,12 +61,12 @@ export class LevelCompletionDialogue extends BaseDialogue {
     }
 
     getFinalButtonText() {
-        return 'Continue Training';
+        return 'Continue to Level 2';
     }
 
     static shouldAutoStart() {
         const levelCompleted = localStorage.getItem('cyberquest_level_1_completed');
-        const challenge4Completed = localStorage.getItem('cyberquest_challenge4_completed');
-        return challenge4Completed && !levelCompleted;
+        const challenge1Completed = localStorage.getItem('cyberquest_challenge1_interactive_results');
+        return challenge1Completed && !levelCompleted;
     }
 }

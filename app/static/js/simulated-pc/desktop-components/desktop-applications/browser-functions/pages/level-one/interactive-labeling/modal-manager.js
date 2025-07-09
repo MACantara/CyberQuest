@@ -57,8 +57,8 @@ export class ModalManager {
                     
                     <button onclick="window.interactiveLabeling?.nextArticle()" class="w-full bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 transition-colors font-semibold cursor-pointer flex items-center justify-center gap-2">
                         ${this.labelingSystem.currentArticleIndex >= this.labelingSystem.totalArticles - 1 ? 
-                            '<><i class="bi bi-bar-chart-fill"></i>View Detailed Summary</>' : 
-                            '<><i class="bi bi-arrow-right-circle-fill"></i>Continue to Next Article</>'}
+                            '<i class="bi bi-bar-chart-fill"></i>View Detailed Summary' : 
+                            '<i class="bi bi-arrow-right-circle-fill"></i>Continue to Next Article'}
                     </button>
                 </div>
             </div>
