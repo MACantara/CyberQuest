@@ -735,7 +735,7 @@ export class InteractiveLabeling {
                 </div>
                 
                 <div style="text-align: center; margin-top: 30px;">
-                    <button onclick="this.closest('.feedback-modal').remove(); window.challenge1EventHandlers?.completeLevelOne?.()" 
+                    <button onclick="window.interactiveLabeling?.continueToNextLevel()" 
                             style="background: #10b981; color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 16px;">
                         Continue to Next Level
                     </button>
@@ -748,38 +748,49 @@ export class InteractiveLabeling {
         // Mark challenge as completed
         localStorage.setItem('cyberquest_challenge1_completed', 'true');
         localStorage.setItem('cyberquest_challenge1_interactive_results', JSON.stringify(this.articleResults));
+        localStorage.setItem('cyberquest_level1_score', overallScore.toString());
     }
 
-    getKeyIndicators(articleData) {
-        if (!articleData) return "No article data available";
+    continueToNextLevel() {
+        // Close the summary modal
+        const modal = document.querySelector('.feedback-modal');
+        if (modal) modal.remove();
         
-        // Check for new nested structure with numeric IDs
-        if (typeof articleData === 'object') {
-            const articleIds = Object.keys(articleData).filter(key => !isNaN(key));
-            if (articleIds.length > 0) {
-                const articleId = articleIds[this.currentArticleIndex] || articleIds[0];
-                const articleContent = articleData[articleId];
-                
-                if (articleContent?.clickable_elements && Array.isArray(articleContent.clickable_elements)) {
-                    const indicators = articleContent.clickable_elements
-                        .map(element => element.reasoning)
-                        .filter(reasoning => reasoning && reasoning.length > 0)
-                        .slice(0, 2);
-                    return indicators.join(', ') || 'Batch analysis available';
-                }
+        // Clean up current level
+        this.cleanup();
+        
+        // Navigate to Level 2
+        this.navigateToLevel(2);
+    }
+
+    navigateToLevel(levelId) {
+        console.log(`Navigating to Level ${levelId}...`);
+        
+        // Store completion data
+        const completionData = {
+            levelId: 1,
+            completed: true,
+            score: localStorage.getItem('cyberquest_level1_score'),
+            timestamp: new Date().toISOString(),
+            results: this.articleResults
+        };
+        
+        // Save to localStorage for demo purposes
+        localStorage.setItem(`cyberquest_level_1_completion`, JSON.stringify(completionData));
+        
+        // Navigate to the levels page or directly to Level 2
+        if (window.location.pathname.includes('/levels/1/start')) {
+            // We're in the simulation, navigate to Level 2
+            window.location.href = `/levels/${levelId}`;
+        } else {
+            // Fallback: try to navigate using browser history
+            if (window.history && window.history.pushState) {
+                window.history.pushState({}, '', `/levels/${levelId}`);
+                window.location.reload();
+            } else {
+                window.location.href = `/levels/${levelId}`;
             }
         }
-        
-        // Fallback: Use clickable_elements directly from old structure
-        if (articleData.clickable_elements && Array.isArray(articleData.clickable_elements)) {
-            const indicators = articleData.clickable_elements
-                .map(element => element.reasoning)
-                .filter(reasoning => reasoning && reasoning.length > 0)
-                .slice(0, 2);
-            return indicators.join(', ') || 'Batch analysis available';
-        }
-        
-        return 'No clickable elements available';
     }
 
     cleanup() {
