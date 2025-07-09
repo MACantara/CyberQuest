@@ -184,41 +184,6 @@ def start_level(level_id):
                          level_data=level_data,
                          level_json=level_json)
 
-@levels_bp.route('/get-random-news-article', methods=['GET'])
-def get_random_news_article():
-    """Get a random news article from the dataset"""
-    try:
-        news_data = load_fake_news_data()
-        
-        if not news_data:
-            return jsonify({
-                'success': False,
-                'error': 'No news data available'
-            }), 500
-        
-        # Get a random article
-        random_article = random.choice(news_data)
-        
-        return jsonify({
-            'success': True,
-            'article': {
-                'author': random_article['author'],
-                'published': random_article['published'],
-                'title': random_article['title'],
-                'text': random_article['text'],
-                'main_img_url': random_article['main_img_url'],
-                'is_real': random_article['is_real'],
-                'source': random_article['source']
-            }
-        })
-        
-    except Exception as e:
-        print(f"Error getting random news article: {e}")
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
-
 @levels_bp.route('/get-mixed-news-articles', methods=['GET'])
 def get_mixed_news_articles():
     """Get a balanced mix of 15 news articles (50% fake, 50% real)"""
