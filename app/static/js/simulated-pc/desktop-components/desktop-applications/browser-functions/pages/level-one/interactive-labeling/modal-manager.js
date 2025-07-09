@@ -39,13 +39,6 @@ export class ModalManager {
                     }).join('')}
                 </div>
                 
-                <div class="bg-blue-900/30 border border-blue-600 rounded p-3 mt-4">
-                    <p class="text-sm">
-                        <strong>📊 Analysis Source:</strong> This feedback is based on pre-analyzed batch training data from batch-1.json<br>
-                        <small class="text-gray-300">Note: Text matching handles case differences between displayed and batch data</small>
-                    </p>
-                </div>
-                
                 <button onclick="window.interactiveLabeling?.nextArticle()" class="w-full bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition-colors mt-4 cursor-pointer">
                     ${this.labelingSystem.currentArticleIndex >= this.labelingSystem.totalArticles - 1 ? 'View Final Summary' : 'Next Article'}
                 </button>
