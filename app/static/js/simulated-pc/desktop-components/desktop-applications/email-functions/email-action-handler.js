@@ -263,6 +263,12 @@ export class EmailActionHandler {
      * @param {string} reason - Reason for reporting
      */
     handleReportEmail(email, reason = 'Suspicious content') {
+        // Check if email can be recategorized
+        if (!this.emailApp.state?.securityManager?.canEmailBeRecategorized?.(email.id)) {
+            this.showActionFeedback('This email has already been categorized and cannot be changed.', 'error');
+            return { success: false, action: 'report', error: 'Already categorized' };
+        }
+
         // Use security manager which will trigger feedback automatically
         if (this.emailApp.state?.securityManager) {
             this.emailApp.state.securityManager.confirmPhishingReport(email.id, this.emailApp);
@@ -280,6 +286,12 @@ export class EmailActionHandler {
      * @param {Object} email - Email object to trust
      */
     handleTrustEmail(email) {
+        // Check if email can be recategorized
+        if (!this.emailApp.state?.securityManager?.canEmailBeRecategorized?.(email.id)) {
+            this.showActionFeedback('This email has already been categorized and cannot be changed.', 'error');
+            return { success: false, action: 'trust', error: 'Already categorized' };
+        }
+
         // Use security manager which will trigger feedback automatically
         if (this.emailApp.state?.securityManager) {
             this.emailApp.state.securityManager.markEmailAsLegitimate(email.id, this.emailApp);
@@ -297,6 +309,12 @@ export class EmailActionHandler {
      * @param {Object} email - Email object to delete
      */
     handleDeleteEmail(email) {
+        // Check if email can be recategorized
+        if (!this.emailApp.state?.securityManager?.canEmailBeRecategorized?.(email.id)) {
+            this.showActionFeedback('This email has already been categorized and cannot be changed.', 'error');
+            return { success: false, action: 'delete', error: 'Already categorized' };
+        }
+
         // Use security manager which will trigger feedback automatically
         if (this.emailApp.state?.securityManager) {
             this.emailApp.state.securityManager.deleteEmail(email.id, this.emailApp);
@@ -332,6 +350,10 @@ export class EmailActionHandler {
             existingMenu.remove();
         }
 
+        // Check if email can be recategorized
+        const canRecategorize = this.emailApp.state?.securityManager?.canEmailBeRecategorized?.(email.id) ?? true;
+        const currentStatus = this.emailApp.state?.securityManager?.getEmailStatus?.(email.id) ?? 'unverified';
+
         const menu = document.createElement('div');
         menu.className = 'email-context-menu fixed bg-white border border-gray-300 rounded-lg shadow-lg z-50 py-2 min-w-48';
         menu.style.left = `${x}px`;
@@ -341,45 +363,70 @@ export class EmailActionHandler {
             {
                 label: '🚨 Report as Suspicious',
                 action: () => this.handleReportEmail(email),
-                class: 'text-red-600 hover:bg-red-50',
-                show: true
+                class: canRecategorize ? 'text-red-600 hover:bg-red-50' : 'text-gray-400 cursor-not-allowed',
+                show: true,
+                disabled: !canRecategorize
             },
             {
                 label: '✅ Mark as Legitimate',
                 action: () => this.handleTrustEmail(email),
-                class: 'text-green-600 hover:bg-green-50',
-                show: true
+                class: canRecategorize ? 'text-green-600 hover:bg-green-50' : 'text-gray-400 cursor-not-allowed',
+                show: true,
+                disabled: !canRecategorize
             },
             {
                 label: '🗑️ Delete Email',
                 action: () => this.handleDeleteEmail(email),
-                class: 'text-red-500 hover:bg-red-50',
-                show: true
+                class: canRecategorize ? 'text-red-500 hover:bg-red-50' : 'text-gray-400 cursor-not-allowed',
+                show: true,
+                disabled: !canRecategorize
             },
             {
                 label: '📂 Process Normally',
                 action: () => this.handleIgnoreEmail(email),
-                class: 'text-blue-600 hover:bg-blue-50',
-                show: true
+                class: canRecategorize ? 'text-blue-600 hover:bg-blue-50' : 'text-gray-400 cursor-not-allowed',
+                show: true,
+                disabled: !canRecategorize
             },
             {
                 label: '📊 View Details',
                 action: () => this.showEmailDetails(email),
                 class: 'text-gray-600 hover:bg-gray-50',
-                show: true
+                show: true,
+                disabled: false
             }
         ];
+
+        // Add current status indicator if email is already categorized
+        if (!canRecategorize) {
+            const statusItem = document.createElement('div');
+            statusItem.className = 'px-4 py-2 bg-gray-50 border-b border-gray-200';
+            statusItem.innerHTML = `
+                <div class="text-xs text-gray-600 font-medium">Current Status:</div>
+                <div class="text-xs text-gray-800 capitalize">${currentStatus}</div>
+            `;
+            menu.appendChild(statusItem);
+        }
 
         menuItems.forEach(item => {
             if (!item.show) return;
             
             const menuItem = document.createElement('div');
-            menuItem.className = `px-4 py-2 cursor-pointer text-sm ${item.class || 'hover:bg-gray-50'}`;
+            menuItem.className = `px-4 py-2 text-sm ${item.class || 'hover:bg-gray-50'}`;
+            if (!item.disabled) {
+                menuItem.classList.add('cursor-pointer');
+            }
             menuItem.textContent = item.label;
-            menuItem.addEventListener('click', () => {
-                item.action();
-                menu.remove();
-            });
+            
+            if (!item.disabled) {
+                menuItem.addEventListener('click', () => {
+                    item.action();
+                    menu.remove();
+                });
+            } else {
+                menuItem.title = 'Email has already been categorized';
+            }
+            
             menu.appendChild(menuItem);
         });
 
