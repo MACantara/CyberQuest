@@ -311,12 +311,7 @@ export class EmailSecurityManager {
         
         // If email has already been categorized, don't show action buttons
         if (currentStatus === 'phishing' || currentStatus === 'legitimate') {
-            return `
-                <div class="px-3 py-2 bg-gray-100 text-gray-600 rounded text-xs font-medium">
-                    <i class="bi bi-check-circle mr-1"></i>
-                    Already categorized as ${currentStatus}
-                </div>
-            `;
+            return '';
         }
         
         if (currentFolder === 'spam') {
