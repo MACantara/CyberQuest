@@ -32,7 +32,12 @@ export class ArticleFormatter {
         });
     }
 
-    static formatArticleText(text, isFakeNews) {
+    static formatArticleText(text, isFakeNews, articleData = null) {
+        // Get content analysis from AI data if available
+        const contentAnalysis = articleData?.ai_analysis?.clickable_elements?.find(
+            el => el.element_id === 'content_analysis'
+        );
+        
         // Split text into paragraphs
         const paragraphs = text.split('\n\n').filter(p => p.trim().length > 0);
         
@@ -46,5 +51,44 @@ export class ArticleFormatter {
             
             return `<p style="margin: 0 0 16px 0; text-align: justify;">${formattedParagraph}</p>`;
         }).join('');
+    }
+
+    static getElementAnalysis(articleData, elementType) {
+        if (!articleData?.ai_analysis?.clickable_elements) {
+            return null;
+        }
+        
+        const elementIdMap = {
+            'title': 'title_analysis',
+            'author': 'author_analysis', 
+            'content': 'content_analysis',
+            'date': 'date_analysis',
+            'source': 'source_analysis'
+        };
+        
+        const elementId = elementIdMap[elementType];
+        return articleData.ai_analysis.clickable_elements.find(
+            el => el.element_id === elementId
+        );
+    }
+
+    static formatWithAnalysis(text, elementType, articleData) {
+        const analysis = this.getElementAnalysis(articleData, elementType);
+        
+        if (analysis) {
+            const isExpectedFake = analysis.expected_label === 'fake';
+            const reasoning = analysis.reasoning || '';
+            
+            // Add subtle visual cues based on analysis
+            const dataAttrs = `data-analysis-available="true" data-expected-label="${analysis.expected_label}" title="${reasoning}"`;
+            
+            if (isExpectedFake) {
+                return `<span ${dataAttrs} style="position: relative;">${text}</span>`;
+            } else {
+                return `<span ${dataAttrs}>${text}</span>`;
+            }
+        }
+        
+        return text;
     }
 }

@@ -92,27 +92,28 @@ class Challenge1PageClass extends BasePage {
                 
                 <!-- Main Content -->
                 <main style="padding: 30px; max-width: 800px; margin: 0 auto;">
-                    <h2 style="color: #374151; font-size: 32px; margin-bottom: 10px;">
+                    <h2 style="color: #374151; font-size: 32px; margin-bottom: 10px;" data-element-type="title">
                         ${ArticleFormatter.toTitleCase(currentArticle.title)}
                     </h2>
                     
-                    <div style="color: #6b7280; margin-bottom: 20px; font-size: 14px;">
-                        <span>Published: ${formattedDate} | By: ${currentArticle.author || 'Staff Reporter'}</span>
+                    <div style="color: #6b7280; margin-bottom: 20px; font-size: 14px;" data-element-type="metadata">
+                        <span data-element-type="date">Published: ${formattedDate}</span> | 
+                        <span data-element-type="author">By: ${currentArticle.author || 'Staff Reporter'}</span>
                     </div>
                     
                     <!-- Article Image -->
                     ${ArticleImage.create(currentArticle, isFakeNews)}
                     
                     <!-- Article Text -->
-                    <div style="font-size: 18px; line-height: 1.6; color: #374151;">
-                        ${ArticleFormatter.formatArticleText(displayText, isFakeNews)}
+                    <div style="font-size: 18px; line-height: 1.6; color: #374151;" data-element-type="content">
+                        ${ArticleFormatter.formatArticleText(displayText, isFakeNews, currentArticle)}
                     </div>
                     
                     <!-- Social Media Sharing Box -->
                     ${SharingBox.create(isFakeNews)}
                     
                     <!-- Analysis Section -->
-                    ${AnalysisSection.create()}
+                    ${AnalysisSection.create(currentArticle)}
                 </main>
                 
                 <!-- Footer -->
