@@ -12,53 +12,56 @@ Article Details:
 
 Generate a JSON response with clickable elements for training purposes:
 {
-    "article_metadata": {
-        "article_id": "{article_id}",
-        "title": "{title}",
-        "author": "{author}",
-        "source": "{site_url}",
-        "published_date": "{published}",
-        "actual_label": "{label}",
-        "article_type": "{type}"
-    },
-    "clickable_elements": [
-        {
-            "element_id": "title_analysis",
-            "element_name": "Article Title",
-            "element_text": "{title}",
-            "expected_label": "fake" or "real",
-            "reasoning": "Analysis of title credibility, sensationalism, emotional manipulation",
+    "{article_id}": {
+        "article_metadata": {
+            "title": "{title}",
+            "author": "{author}",
+            "source": "{site_url}",
+            "published_date": "{published}",
+            "actual_label": "{label}",
+            "article_type": "{type}"
         },
-        {
-            "element_id": "author_analysis",
-            "element_name": "Author Information",
-            "element_text": "{author}",
-            "expected_label": "fake" or "real",
-            "reasoning": "Analysis of author credibility and attribution",
-        },
-        {
-            "element_id": "source_analysis",
-            "element_name": "Source Website",
-            "element_text": "{site_url}",
-            "expected_label": "fake" or "real",
-            "reasoning": "Analysis of source domain credibility and reputation",
-        },
-        {
-            "element_id": "content_analysis",
-            "element_name": "Article Content",
-            "element_text": "{text}",
-            "expected_label": "fake" or "real",
-            "reasoning": "Analysis of content accuracy, bias, and factual claims",
-        },
-        {
-            "element_id": "date_analysis",
-            "element_name": "Publication Date",
-            "element_text": "{published}",
-            "expected_label": "fake" or "real",
-            "reasoning": "Analysis of publication timing and context",
-        }
-    ],
+        "clickable_elements": [
+            {
+                "element_id": "title_analysis",
+                "element_name": "Article Title",
+                "element_text": "{title}",
+                "expected_label": "fake" or "real",
+                "reasoning": "Analysis of title credibility, sensationalism, emotional manipulation",
+            },
+            {
+                "element_id": "author_analysis",
+                "element_name": "Author Information",
+                "element_text": "{author}",
+                "expected_label": "fake" or "real",
+                "reasoning": "Analysis of author credibility and attribution",
+            },
+            {
+                "element_id": "source_analysis",
+                "element_name": "Source Website",
+                "element_text": "{site_url}",
+                "expected_label": "fake" or "real",
+                "reasoning": "Analysis of source domain credibility and reputation",
+            },
+            {
+                "element_id": "content_analysis",
+                "element_name": "Article Content",
+                "element_text": "{text}",
+                "expected_label": "fake" or "real",
+                "reasoning": "Analysis of content accuracy, bias, and factual claims",
+            },
+            {
+                "element_id": "date_analysis",
+                "element_name": "Publication Date",
+                "element_text": "{published}",
+                "expected_label": "fake" or "real",
+                "reasoning": "Analysis of publication timing and context",
+            }
+        ]
+    }
 }
+
+Use numeric article IDs only (0, 1, 2, 3, etc.) for the parent keys.
 
 Focus on these key cybersecurity training elements:
 1. **Headline Analysis** - sensationalism, emotional manipulation, clickbait patterns
