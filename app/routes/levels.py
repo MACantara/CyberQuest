@@ -1,16 +1,8 @@
-from flask import Blueprint, render_template, current_app, flash, redirect, url_for, request, jsonify
-from flask_login import login_required, current_user
+from flask import Blueprint, render_template, current_app, flash, redirect, url_for
+from flask_login import login_required
 import json
-import requests
-import csv
-import random
-import os
-from urllib.parse import urlparse
 
 levels_bp = Blueprint('levels', __name__, url_prefix='/levels')
-
-# Cache for CSV data to avoid reading file multiple times
-_csv_cache = None
 
 # Define all levels with their metadata
 CYBERSECURITY_LEVELS = [
@@ -75,48 +67,6 @@ CYBERSECURITY_LEVELS = [
         'unlocked': True
     }
 ]
-
-def load_fake_news_data():
-    """Load and cache the news_articles.csv data"""
-    global _csv_cache
-    if _csv_cache is not None:
-        return _csv_cache
-    
-    try:
-        csv_path = os.path.join(
-            os.path.dirname(os.path.dirname(__file__)), 
-            'static', 'js', 'simulated-pc', 'levels', 'level-one', 'data', 'news_articles.csv'
-        )
-        
-        _csv_cache = []
-        with open(csv_path, 'r', encoding='utf-8') as file:
-            reader = csv.DictReader(file)
-            for row in reader:
-                # Only include rows with required fields including valid main_img_url and English language
-                main_img_url = row.get('main_img_url', '').strip()
-                language = row.get('language', '').strip().lower()
-                if (row.get('title') and row.get('text') and row.get('author') and 
-                    main_img_url and (main_img_url.startswith('http://') or main_img_url.startswith('https://')) and
-                    language == 'english'):
-                    _csv_cache.append({
-                        'author': row.get('author', '').strip(),
-                        'published': row.get('published', '').strip(),
-                        'title': row.get('title', '').strip(),
-                        'text': row.get('text', '').strip(),
-                        'main_img_url': main_img_url,
-                        'is_real': row.get('label', '').lower() == 'real',  # Use 'label' column to determine authenticity
-                        'source': 'news_articles.csv'
-                    })
-        
-        print(f"Loaded {len(_csv_cache)} English news articles from news_articles.csv (with valid HTTP/HTTPS images only)")
-        print(f"Real news articles: {len([a for a in _csv_cache if a['is_real']])}")
-        print(f"Fake news articles: {len([a for a in _csv_cache if not a['is_real']])}")
-        
-        return _csv_cache
-        
-    except Exception as e:
-        print(f"Error loading news_articles.csv: {e}")
-        return []
 
 @levels_bp.route('/')
 @login_required
@@ -183,64 +133,3 @@ def start_level(level_id):
                          level=level, 
                          level_data=level_data,
                          level_json=level_json)
-
-@levels_bp.route('/get-mixed-news-articles', methods=['GET'])
-def get_mixed_news_articles():
-    """Get a balanced mix of 15 news articles (50% fake, 50% real)"""
-    try:
-        news_data = load_fake_news_data()
-        
-        if not news_data:
-            return jsonify({
-                'success': False,
-                'error': 'No news data available'
-            }), 500
-        
-        # Separate real and fake news
-        real_news = [article for article in news_data if article['is_real']]
-        fake_news = [article for article in news_data if not article['is_real']]
-        
-        # Ensure we have enough articles of each type
-        if len(real_news) < 7 or len(fake_news) < 8:
-            return jsonify({
-                'success': False,
-                'error': f'Insufficient articles: {len(real_news)} real, {len(fake_news)} fake'
-            }), 500
-        
-        # Select 7 real and 8 fake articles (totaling 15, with slight favor to fake for training)
-        selected_real = random.sample(real_news, 7)
-        selected_fake = random.sample(fake_news, 8)
-        
-        # Combine and shuffle the articles
-        mixed_articles = selected_real + selected_fake
-        random.shuffle(mixed_articles)
-        
-        # Format articles for frontend
-        formatted_articles = []
-        for article in mixed_articles:
-            formatted_articles.append({
-                'author': article['author'],
-                'published': article['published'],
-                'title': article['title'],
-                'text': article['text'],
-                'main_img_url': article['main_img_url'],
-                'is_real': article['is_real'],
-                'source': article['source']
-            })
-        
-        return jsonify({
-            'success': True,
-            'articles': formatted_articles,
-            'summary': {
-                'total': len(formatted_articles),
-                'real_count': len(selected_real),
-                'fake_count': len(selected_fake)
-            }
-        })
-        
-    except Exception as e:
-        print(f"Error getting mixed news articles: {e}")
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500

@@ -3,7 +3,7 @@ export class ArticleService {
         try {
             console.log('Fetching news articles for analysis...');
             
-            const response = await fetch('/levels/get-mixed-news-articles');
+            const response = await fetch('/api/news/mixed-articles');
             
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -27,6 +27,23 @@ export class ArticleService {
             }
         } catch (error) {
             console.error('Error fetching news articles:', error);
+            throw error;
+        }
+    }
+
+    static async fetchNewsStats() {
+        try {
+            const response = await fetch('/api/news/stats');
+            const data = await response.json();
+            
+            if (data.success) {
+                return data.stats;
+            } else {
+                console.error('Failed to fetch news stats:', data.error);
+                throw new Error(data.error || 'Failed to fetch stats');
+            }
+        } catch (error) {
+            console.error('Error fetching news stats:', error);
             throw error;
         }
     }
