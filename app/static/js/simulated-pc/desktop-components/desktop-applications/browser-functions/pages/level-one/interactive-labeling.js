@@ -171,15 +171,15 @@ export class InteractiveLabeling {
                 top: 80px;
                 right: 20px;
                 width: 320px;
-                background: rgba(31, 41, 55, 0.95);
+                background: rgba(55, 65, 81, 0.95);
                 backdrop-filter: blur(10px);
                 border-radius: 12px;
-                border: 2px solid #10b981;
+                border: 2px solid #374151;
                 color: white;
                 padding: 20px;
                 font-family: 'Inter', sans-serif;
                 z-index: 1000;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             }
             
             .instructions-header {
@@ -211,6 +211,7 @@ export class InteractiveLabeling {
                 align-items: center;
                 gap: 8px;
                 font-size: 13px;
+                color: #d1d5db;
             }
             
             .legend-color {
@@ -235,7 +236,8 @@ export class InteractiveLabeling {
                 color: #9ca3af;
                 text-align: center;
                 padding: 8px;
-                background: rgba(55, 65, 81, 0.5);
+                background: rgba(31, 41, 55, 0.8);
+                border: 1px solid #4b5563;
                 border-radius: 6px;
                 margin-bottom: 15px;
             }
@@ -250,17 +252,20 @@ export class InteractiveLabeling {
                 font-weight: 600;
                 cursor: pointer;
                 transition: all 0.2s ease;
+                font-size: 14px;
             }
             
             .submit-analysis-btn:hover {
                 background: linear-gradient(135deg, #059669 0%, #047857 100%);
                 transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
             }
             
             .submit-analysis-btn:disabled {
-                background: #6b7280;
+                background: #4b5563;
                 cursor: not-allowed;
                 transform: none;
+                box-shadow: none;
             }
             
             .feedback-modal {
@@ -269,7 +274,7 @@ export class InteractiveLabeling {
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background: rgba(0, 0, 0, 0.8);
+                background: rgba(0, 0, 0, 0.85);
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -277,7 +282,8 @@ export class InteractiveLabeling {
             }
             
             .feedback-content {
-                background: white;
+                background: #1f2937;
+                border: 2px solid #374151;
                 border-radius: 16px;
                 padding: 30px;
                 max-width: 500px;
@@ -285,6 +291,14 @@ export class InteractiveLabeling {
                 max-height: 80vh;
                 overflow-y: auto;
                 text-align: center;
+                color: white;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            }
+            
+            .feedback-content h2 {
+                color: white;
+                font-size: 24px;
+                margin-bottom: 20px;
             }
             
             .feedback-score {
@@ -305,46 +319,82 @@ export class InteractiveLabeling {
                 color: #ef4444;
             }
             
+            .feedback-content p {
+                color: #d1d5db;
+                margin-bottom: 20px;
+            }
+            
             .feedback-details {
                 text-align: left;
                 margin: 20px 0;
             }
             
+            .feedback-details h3 {
+                color: #f3f4f6;
+                font-size: 16px;
+                margin-bottom: 15px;
+            }
+            
             .feedback-item {
                 margin: 10px 0;
-                padding: 10px;
+                padding: 15px;
                 border-radius: 8px;
                 border-left: 4px solid;
             }
             
             .feedback-item.correct {
-                background: #f0fdf4;
+                background: rgba(34, 197, 94, 0.1);
                 border-color: #22c55e;
+                color: #d1fae5;
             }
             
             .feedback-item.incorrect {
-                background: #fef2f2;
+                background: rgba(239, 68, 68, 0.1);
                 border-color: #ef4444;
+                color: #fee2e2;
             }
             
             .feedback-item.unlabeled {
-                background: #f8fafc;
+                background: rgba(75, 85, 99, 0.2);
                 border-color: #6b7280;
+                color: #f3f4f6;
+            }
+            
+            .feedback-item strong {
+                color: white;
+            }
+            
+            .feedback-item small {
+                color: #9ca3af;
             }
             
             .final-summary {
-                background: white;
+                background: #1f2937;
+                border: 2px solid #374151;
                 border-radius: 16px;
                 padding: 40px;
                 max-width: 700px;
                 width: 95%;
                 max-height: 90vh;
                 overflow-y: auto;
+                color: white;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
             }
             
             .summary-header {
                 text-align: center;
                 margin-bottom: 30px;
+            }
+            
+            .summary-header h1 {
+                color: white;
+                font-size: 32px;
+                margin-bottom: 20px;
+            }
+            
+            .summary-header p {
+                color: #d1d5db;
+                font-size: 16px;
             }
             
             .overall-score {
@@ -357,14 +407,15 @@ export class InteractiveLabeling {
                 margin: 20px 0;
                 padding: 20px;
                 border-radius: 12px;
-                background: #f8fafc;
-                border: 1px solid #e2e8f0;
+                background: #374151;
+                border: 1px solid #4b5563;
             }
             
             .article-title {
                 font-weight: 600;
-                color: #1f2937;
+                color: #f3f4f6;
                 margin-bottom: 10px;
+                font-size: 16px;
             }
             
             .article-score {
@@ -373,26 +424,37 @@ export class InteractiveLabeling {
                 margin-bottom: 10px;
             }
             
+            .article-explanation {
+                color: #d1d5db;
+                font-size: 14px;
+                line-height: 1.5;
+            }
+            
+            .article-explanation strong {
+                color: #f3f4f6;
+            }
+            
             .ai-insights {
-                background: #f0f9ff;
-                border: 1px solid #0ea5e9;
+                background: rgba(59, 130, 246, 0.1);
+                border: 1px solid #3b82f6;
                 border-radius: 8px;
                 padding: 15px;
                 margin: 15px 0;
             }
             
             .ai-insights h3 {
-                color: #0ea5e9;
+                color: #60a5fa;
                 margin: 0 0 10px 0;
             }
             
             .ai-insights ul {
                 margin: 0;
                 padding-left: 20px;
+                color: #dbeafe;
             }
             
             .ai-warnings {
-                background: #fef2f2;
+                background: rgba(239, 68, 68, 0.1);
                 border: 1px solid #ef4444;
                 border-radius: 8px;
                 padding: 15px;
@@ -400,13 +462,56 @@ export class InteractiveLabeling {
             }
             
             .ai-warnings h3 {
-                color: #ef4444;
+                color: #f87171;
                 margin: 0 0 10px 0;
             }
             
             .ai-warnings ul {
                 margin: 0;
                 padding-left: 20px;
+                color: #fecaca;
+            }
+            
+            /* Button styles to match email app */
+            .feedback-content button, .final-summary button {
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 14px;
+                transition: all 0.2s ease;
+            }
+            
+            .feedback-content button:hover, .final-summary button:hover {
+                background: linear-gradient(135deg, #059669 0%, #047857 100%);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            }
+            
+            /* Analysis source info styling */
+            .analysis-source-info {
+                background: rgba(59, 130, 246, 0.1);
+                border: 1px solid #3b82f6;
+                border-radius: 8px;
+                padding: 15px;
+                margin: 20px 0;
+            }
+            
+            .analysis-source-info p {
+                margin: 0;
+                font-size: 14px;
+                color: #dbeafe;
+            }
+            
+            .analysis-source-info strong {
+                color: #60a5fa;
+            }
+            
+            .analysis-source-info small {
+                color: #93c5fd;
             }
         `;
         document.head.appendChild(style);
@@ -666,15 +771,14 @@ export class InteractiveLabeling {
                     }).join('')}
                 </div>
                 
-                <div style="margin-top: 20px; padding: 15px; background: #f0f9ff; border-radius: 8px; border: 1px solid #0ea5e9;">
-                    <p style="margin: 0; font-size: 14px; color: #0369a1;">
+                <div class="analysis-source-info">
+                    <p>
                         <strong>📊 Analysis Source:</strong> This feedback is based on pre-analyzed batch training data from batch-1.json<br>
                         <small>Note: Text matching handles case differences between displayed and batch data</small>
                     </p>
                 </div>
                 
-                <button onclick="window.interactiveLabeling?.nextArticle()" 
-                        style="background: #10b981; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                <button onclick="window.interactiveLabeling?.nextArticle()">
                     ${this.currentArticleIndex >= this.totalArticles - 1 ? 'View Final Summary' : 'Next Article'}
                 </button>
             </div>
@@ -713,7 +817,7 @@ export class InteractiveLabeling {
                     <h1>🎯 Level 1 Complete!</h1>
                     <div class="overall-score ${overallClass}">${overallScore}%</div>
                     <p>Overall Performance Across All Articles</p>
-                    <p style="font-size: 14px; color: #6b7280;">
+                    <p style="font-size: 14px; color: #9ca3af;">
                         ${batchAnalysisCount} articles used batch analysis data
                     </p>
                 </div>
@@ -735,8 +839,7 @@ export class InteractiveLabeling {
                 </div>
                 
                 <div style="text-align: center; margin-top: 30px;">
-                    <button onclick="window.interactiveLabeling?.continueToNextLevel()" 
-                            style="background: #10b981; color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 16px;">
+                    <button onclick="window.interactiveLabeling?.continueToNextLevel()">
                         Continue to Next Level
                     </button>
                 </div>
