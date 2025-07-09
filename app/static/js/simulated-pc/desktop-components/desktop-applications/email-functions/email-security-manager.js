@@ -164,12 +164,21 @@ export class EmailSecurityManager {
 
         const totalEmails = ALL_EMAILS.length;
         const processedEmails = this.reportedPhishing.size + this.legitimateEmails.size;
-        const completionThreshold = Math.ceil(totalEmails * 0.75); // 75% of emails
+        const completionThreshold = Math.ceil(totalEmails * 0.6); // 60% of emails
 
         if (processedEmails >= completionThreshold) {
-            // Show completion notification
+            // Get current session stats
+            const sessionStats = emailApp.actionHandler.feedback.getSessionStats();
+            const feedbackHistory = emailApp.actionHandler.feedback.feedbackHistory;
+            
+            // Use completion tracker to handle the completion flow
             setTimeout(() => {
-                emailApp.actionHandler.completeEmailTraining();
+                if (emailApp.actionHandler.completionTracker) {
+                    emailApp.actionHandler.completionTracker.checkAndTriggerCompletion(sessionStats, feedbackHistory);
+                } else {
+                    // Fallback to direct completion
+                    emailApp.actionHandler.completeEmailTraining();
+                }
             }, 1000);
         }
     }

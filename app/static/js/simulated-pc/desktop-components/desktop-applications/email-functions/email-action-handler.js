@@ -1,16 +1,19 @@
 import { ALL_EMAILS } from './emails/email-registry.js';
 import { EmailFeedback } from './email-feedback.js';
 import { EmailSessionSummary } from './email-session-summary.js';
+import { EmailCompletionTracker } from './email-completion-tracker.js';
 
 export class EmailActionHandler {
     constructor(emailApp) {
         this.emailApp = emailApp;
         this.feedback = new EmailFeedback(emailApp);
         this.sessionSummary = new EmailSessionSummary(emailApp);
+        this.completionTracker = new EmailCompletionTracker(emailApp);
         this.sessionStartTime = new Date().toISOString();
         
         // Load previous session data
         this.feedback.loadSessionData();
+        this.completionTracker.initialize();
     }
 
     // Handle reporting an email as phishing
@@ -208,10 +211,15 @@ export class EmailActionHandler {
         const sessionStats = this.feedback.getSessionStats();
         const feedbackHistory = this.feedback.feedbackHistory;
         
-        // Show comprehensive session summary
-        this.sessionSummary.showSessionSummary(sessionStats, feedbackHistory);
+        // Use completion tracker to handle the full completion flow
+        const completionTriggered = this.completionTracker.checkAndTriggerCompletion(sessionStats, feedbackHistory);
         
-        // Mark email training as completed
+        if (!completionTriggered) {
+            // If level completion criteria not met, just show training completion
+            this.completionTracker.showTrainingCompletionOnly(sessionStats, feedbackHistory);
+        }
+        
+        // Mark email training as completed regardless of level completion
         localStorage.setItem('cyberquest_email_training_completed', 'true');
         localStorage.setItem('cyberquest_email_training_score', sessionStats.accuracy.toString());
     }
@@ -244,6 +252,9 @@ export class EmailActionHandler {
             const modals = this.emailApp.windowElement.querySelectorAll('.email-modal');
             modals.forEach(modal => modal.remove());
         }
+
+        // Clean up completion tracker
+        this.completionTracker.cleanup();
     }
 
     /**
