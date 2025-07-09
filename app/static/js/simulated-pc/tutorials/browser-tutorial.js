@@ -43,7 +43,7 @@ export class BrowserTutorial extends BaseTutorial {
             {
                 target: '#browser-content',
                 title: 'Browser Security Complete!',
-                content: 'Excellent! You\'ve learned to identify key warning signs of scam websites: suspicious URLs, fake urgency, unrealistic offers, pressure tactics, and false testimonials. Always be skeptical and verify before trusting!',
+                content: 'Excellent! You\'ve learned to identify key warning signs of scam websites: suspicious URLs, fake urgency, unrealistic offers, and pressure tactics. Always be skeptical and verify before trusting!',
                 action: 'highlight',
                 position: 'right',
                 final: true

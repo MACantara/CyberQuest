@@ -1,23 +1,84 @@
 import { PageRegistry } from './pages/page-registry.js';
+import { InteractiveLabeling } from './pages/level-one/interactive-labeling.js';
 
 export class PageRenderer {
     constructor(browserApp) {
         this.browserApp = browserApp;
         this.pageRegistry = new PageRegistry();
+        this.interactiveLabeling = new InteractiveLabeling(browserApp, this.pageRegistry);
     }
 
-    renderPage(url) {
+    async renderPage(url) {
         const pageConfig = this.pageRegistry.getPage(url) || this.pageRegistry.createNotFoundPage(url);
         const contentElement = this.browserApp.windowElement?.querySelector('#browser-content');
         
         if (contentElement) {
-            contentElement.innerHTML = pageConfig.createContent();
-            this.updatePageTitle(pageConfig.title);
-            this.bindPageEvents(url);
+            this.showLoadingState(contentElement);
             
-            // Reset scroll position to top
-            contentElement.scrollTop = 0;
+            try {
+                let htmlContent;
+                
+                // For challenge1 page, use the page's createContent method
+                if (url === 'https://daily-politico-news.com/breaking-news') {
+                    htmlContent = await pageConfig.createContent();
+                } else {
+                    htmlContent = pageConfig.createContent();
+                }
+                
+                contentElement.innerHTML = htmlContent;
+                
+                // Initialize interactive labeling for CyberQuest training if this is challenge1
+                if (url === 'https://daily-politico-news.com/breaking-news') {
+                    const challenge1Page = window.challenge1Page;
+                    
+                    if (challenge1Page && challenge1Page.articlesData && challenge1Page.articlesData.length > 0) {
+                        console.log('Initializing interactive labeling with', challenge1Page.articlesData.length, 'articles');
+                        
+                        // Initialize the interactive labeling system with all articles
+                        await this.interactiveLabeling.initializeWithArticles(challenge1Page.articlesData);
+                    } else {
+                        console.warn('Challenge1 page or articles data not available for interactive labeling');
+                    }
+                }
+                
+                this.updatePageTitle(pageConfig.title);
+                this.bindPageEvents(url);
+                
+            } catch (error) {
+                console.error('Error rendering page:', error);
+                contentElement.innerHTML = this.createErrorContent(error.message);
+            }
         }
+    }
+
+    showLoadingState(contentElement) {
+        contentElement.innerHTML = `
+            <div class="min-h-screen bg-white flex items-center justify-center">
+                <div class="text-center">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <h2 class="text-xl font-semibold text-gray-800 mb-2">Loading page...</h2>
+                    <p class="text-gray-600">Please wait while we fetch the content</p>
+                </div>
+            </div>
+        `;
+    }
+
+    createErrorContent(errorMessage) {
+        return `
+            <div class="min-h-screen bg-white flex items-center justify-center">
+                <div class="text-center max-w-md mx-auto p-6">
+                    <div class="text-red-500 mb-4">
+                        <i class="bi bi-exclamation-triangle text-6xl"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold text-gray-800 mb-2">Error Loading Page</h2>
+                    <p class="text-gray-600 mb-4">${errorMessage}</p>
+                    <button onclick="window.location.reload()" 
+                            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors">
+                        Try Again
+                    </button>
+                </div>
+            </div>
+        `;
     }
 
     updatePageTitle(title) {
@@ -129,72 +190,5 @@ export class PageRenderer {
             `;
             document.body.appendChild(modal);
         }
-    }
-
-    generateSuspiciousSiteHTML() {
-        return `
-            <div class="bg-gradient-to-br from-red-500 via-orange-500 to-yellow-500 min-h-full p-8 text-center">
-                <div class="max-w-4xl mx-auto">
-                    <div class="mb-8">
-                        <h1 class="text-6xl font-bold text-white mb-4 animate-bounce" id="scam-headline">
-                            🎉 CONGRATULATIONS! 🎉
-                        </h1>
-                        <h2 class="text-3xl font-bold text-yellow-300 mb-6" id="scam-subheading">
-                            You've Won $10,000,000!
-                        </h2>
-                        <p class="text-xl text-white mb-8" id="scam-description">
-                            You are the 1,000,000th visitor to this website! Click below to claim your prize NOW!
-                        </p>
-                    </div>
-                    
-                    <div class="bg-white/90 backdrop-blur-sm rounded-lg p-6 mb-8 shadow-2xl">
-                        <div class="flex justify-center items-center mb-6">
-                            <div class="animate-pulse bg-green-500 text-white px-6 py-3 rounded-full text-xl font-bold" id="timer-display">
-                                ⏰ LIMITED TIME: 05:43 remaining!
-                            </div>
-                        </div>
-                        
-                        <button class="bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-12 rounded-full text-2xl animate-pulse shadow-lg transform hover:scale-105 transition-all duration-200 cursor-pointer" id="scam-button">
-                            🚨 CLAIM NOW - FREE MONEY! 🚨
-                        </button>
-                        
-                        <div class="mt-6 space-y-3">
-                            <div class="flex items-center justify-center text-green-600 font-semibold">
-                                <i class="bi bi-check-circle-fill mr-2"></i>
-                                <span>100% Guaranteed</span>
-                            </div>
-                            <div class="flex items-center justify-center text-green-600 font-semibold" id="fake-disclaimer">
-                                <i class="bi bi-shield-check-fill mr-2"></i>
-                                <span>No catch, totally legitimate</span>
-                            </div>
-                            <div class="flex items-center justify-center text-green-600 font-semibold" id="urgency-message">
-                                <i class="bi bi-lightning-fill mr-2"></i>
-                                <span>Act fast - offer expires soon!</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="grid md:grid-cols-3 gap-6 mb-8">
-                        <div class="bg-white/80 rounded-lg p-4 text-center" id="fake-testimonial-1">
-                            <div class="text-2xl mb-2">👤</div>
-                            <p class="text-sm text-gray-700">"I won $50,000 last week!" - Sarah K.</p>
-                        </div>
-                        <div class="bg-white/80 rounded-lg p-4 text-center" id="fake-testimonial-2">
-                            <div class="text-2xl mb-2">👤</div>
-                            <p class="text-sm text-gray-700">"Easy money, no scam!" - Mike R.</p>
-                        </div>
-                        <div class="bg-white/80 rounded-lg p-4 text-center" id="fake-testimonial-3">
-                            <div class="text-2xl mb-2">👤</div>
-                            <p class="text-sm text-gray-700">"Received payment instantly!" - Lisa M.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="text-xs text-white/70 max-w-2xl mx-auto" id="fine-print">
-                        <p class="mb-2">* This is a cybersecurity training simulation. This is not a real offer or legitimate website.</p>
-                        <p>Real scam sites use similar tactics: urgent language, fake testimonials, and pressure to act quickly.</p>
-                    </div>
-                </div>
-            </div>
-        `;
     }
 }

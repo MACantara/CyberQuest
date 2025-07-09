@@ -37,3 +37,14 @@ flask-hcaptcha
 
 # Password strength checking
 zxcvbn
+
+# HTTP client for external API requests
+Requests
+
+# Google Gemini AI
+google-genai
+
+# Data processing (for preprocessing scripts)
+pandas
+numpy
+requests

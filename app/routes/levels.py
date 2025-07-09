@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, current_app, flash, redirect, url_for
-from flask_login import login_required, current_user
+from flask import Blueprint, render_template, current_app, flash, redirect, url_for, request, session
+from flask_login import login_required
 import json
 
 levels_bp = Blueprint('levels', __name__, url_prefix='/levels')
@@ -28,7 +28,7 @@ CYBERSECURITY_LEVELS = [
         'category': 'Email Security',
         'estimated_time': '20 minutes',
         'skills': ['Phishing Detection', 'Email Analysis', 'Social Engineering'],
-        'unlocked': True
+        'unlocked': False
     },
     {
         'id': 3,
@@ -40,7 +40,7 @@ CYBERSECURITY_LEVELS = [
         'category': 'Threat Detection',
         'estimated_time': '25 minutes',
         'skills': ['Malware Recognition', 'System Security', 'Threat Analysis'],
-        'unlocked': True
+        'unlocked': False
     },
     {
         'id': 4,
@@ -52,7 +52,7 @@ CYBERSECURITY_LEVELS = [
         'category': 'Ethical Hacking',
         'estimated_time': '30 minutes',
         'skills': ['Penetration Testing', 'Vulnerability Assessment', 'Ethical Hacking'],
-        'unlocked': True
+        'unlocked': False
     },
     {
         'id': 5,
@@ -64,27 +64,28 @@ CYBERSECURITY_LEVELS = [
         'category': 'Digital Forensics',
         'estimated_time': '40 minutes',
         'skills': ['Digital Forensics', 'Evidence Analysis', 'Advanced Investigation'],
-        'unlocked': True
+        'unlocked': False
     }
 ]
+
+def check_level_completion_status():
+    """Check which levels are completed/unlocked based on localStorage simulation"""
+    # This function is now mainly for documentation
+    # The actual logic is handled client-side in the HTML template
+    return {
+        'level_1_completed': False,  # Will be checked client-side
+        'level_2_unlocked': False,   # Will be determined client-side
+        'level_3_unlocked': False,
+        'level_4_unlocked': False,
+        'level_5_unlocked': False
+    }
 
 @levels_bp.route('/')
 @login_required
 def levels_overview():
     """Display all cybersecurity levels."""
-    if current_app.config.get('DISABLE_DATABASE', False):
-        # In demo mode, unlock first 3 levels
-        demo_levels = CYBERSECURITY_LEVELS.copy()
-        for i, level in enumerate(demo_levels):
-            if i < 3:
-                level['unlocked'] = True
-        return render_template('levels/levels.html', levels=demo_levels)
-    
-    # TODO: In future, determine unlocked levels based on user progress
-    # For now, only first level is unlocked for authenticated users
-    user_levels = CYBERSECURITY_LEVELS.copy()
-    
-    return render_template('levels/levels.html', levels=user_levels)
+    # Simplified - unlock logic now handled client-side
+    return render_template('levels/levels.html', levels=CYBERSECURITY_LEVELS)
 
 @levels_bp.route('/<int:level_id>')
 @login_required  
@@ -94,11 +95,7 @@ def level_detail(level_id):
     
     if not level:
         return render_template('404.html'), 404
-    
-    # Check if level is unlocked
-    if not level['unlocked'] and not current_app.config.get('DISABLE_DATABASE', False):
-        return render_template('levels/level-locked.html', level=level)
-    
+
     return render_template('levels/level-detail.html', level=level)
 
 @levels_bp.route('/<int:level_id>/start')
@@ -110,11 +107,7 @@ def start_level(level_id):
     if not level:
         flash('Level not found.', 'error')
         return redirect(url_for('levels.levels_overview'))
-    
-    # Check if level is unlocked
-    if not level['unlocked'] and not current_app.config.get('DISABLE_DATABASE', False):
-        flash('This level is locked. Complete previous levels to unlock it.', 'warning')
-        return redirect(url_for('levels.levels_overview'))
+
     
     # Prepare level data for simulation
     level_data = {
@@ -133,3 +126,41 @@ def start_level(level_id):
                          level=level, 
                          level_data=level_data,
                          level_json=level_json)
+
+@levels_bp.route('/api/complete/<int:level_id>', methods=['POST'])
+@login_required
+def complete_level(level_id):
+    """API endpoint to mark a level as completed."""
+    try:
+        # In a real app, this would update the database
+        # For demo purposes, we just return success
+        
+        level = next((l for l in CYBERSECURITY_LEVELS if l['id'] == level_id), None)
+        if not level:
+            return {'success': False, 'error': 'Level not found'}, 404
+        
+        # Simulate marking level as completed
+        completion_data = {
+            'level_id': level_id,
+            'completed': True,
+            'timestamp': request.json.get('timestamp') if request.json else None,
+            'score': request.json.get('score') if request.json else None
+        }
+        
+        # Determine next unlocked level
+        next_level_id = None
+        if level_id == 1:
+            next_level_id = 2  # Unlock Level 2 after completing Level 1
+        elif level_id == 2:
+            next_level_id = 3  # Unlock Level 3 after completing Level 2
+        # etc.
+        
+        return {
+            'success': True,
+            'level_completed': level_id,
+            'next_level_unlocked': next_level_id,
+            'xp_earned': level['xp_reward']
+        }
+        
+    except Exception as e:
+        return {'success': False, 'error': str(e)}, 500
