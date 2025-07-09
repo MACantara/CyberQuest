@@ -1,8 +1,16 @@
 import { ALL_EMAILS } from './emails/email-registry.js';
+import { EmailFeedback } from './email-feedback.js';
+import { EmailSessionSummary } from './email-session-summary.js';
 
 export class EmailActionHandler {
     constructor(emailApp) {
         this.emailApp = emailApp;
+        this.feedback = new EmailFeedback(emailApp);
+        this.sessionSummary = new EmailSessionSummary(emailApp);
+        this.sessionStartTime = new Date().toISOString();
+        
+        // Load previous session data
+        this.feedback.loadSessionData();
     }
 
     // Handle reporting an email as phishing
@@ -168,34 +176,44 @@ export class EmailActionHandler {
 
     // Get email statistics for progress tracking
     getEmailStatistics() {
-        const allEmailIds = ALL_EMAILS.map(email => email.id);
-        const readingStats = this.emailApp.readTracker.getReadingStats(ALL_EMAILS);
-        const securityStats = this.emailApp.state.securityManager.getSecurityStats();
-        
+        const stats = this.feedback.getSessionStats();
         return {
-            ...readingStats,
-            categorized: securityStats.totalReported + securityStats.totalLegitimate,
-            phishingDetected: securityStats.totalReported,
-            legitimateConfirmed: securityStats.totalLegitimate,
-            categorizedPercentage: Math.round(((securityStats.totalReported + securityStats.totalLegitimate) / allEmailIds.length) * 100)
+            categorized: stats.totalReported + stats.totalLegitimate,
+            phishingDetected: stats.totalReported,
+            legitimateConfirmed: stats.totalLegitimate,
+            categorizedPercentage: Math.round(((stats.totalReported + stats.totalLegitimate) / ALL_EMAILS.length) * 100),
+            emailSecurityAccuracy: stats.accuracy
         };
     }
 
     // Export user actions for analysis
     exportUserActions() {
         const stats = this.getEmailStatistics();
-        const securityStats = this.emailApp.state.securityManager.getSecurityStats();
         
         return {
             timestamp: new Date().toISOString(),
             userStats: stats,
-            securityActions: securityStats,
-            readEmails: Array.from(this.emailApp.readEmails),
+            feedbackHistory: this.feedback.feedbackHistory,
             sessionData: {
-                startTime: this.sessionStartTime || new Date().toISOString(),
+                startTime: this.sessionStartTime,
                 endTime: new Date().toISOString()
             }
         };
+    }
+
+    /**
+     * Complete email security training session
+     */
+    completeEmailTraining() {
+        const sessionStats = this.feedback.getSessionStats();
+        const feedbackHistory = this.feedback.feedbackHistory;
+        
+        // Show comprehensive session summary
+        this.sessionSummary.showSessionSummary(sessionStats, feedbackHistory);
+        
+        // Mark email training as completed
+        localStorage.setItem('cyberquest_email_training_completed', 'true');
+        localStorage.setItem('cyberquest_email_training_score', sessionStats.accuracy.toString());
     }
 
     // Initialize action handler
@@ -226,5 +244,142 @@ export class EmailActionHandler {
             const modals = this.emailApp.windowElement.querySelectorAll('.email-modal');
             modals.forEach(modal => modal.remove());
         }
+    }
+
+    /**
+     * Handle email reporting action
+     * @param {Object} email - Email object to report
+     * @param {string} reason - Reason for reporting
+     */
+    handleReportEmail(email, reason = 'Suspicious content') {
+        // Use security manager which will trigger feedback automatically
+        if (this.emailApp.state?.securityManager) {
+            this.emailApp.state.securityManager.confirmPhishingReport(email.id, this.emailApp);
+            
+            // Check if training should be completed
+            this.emailApp.state.securityManager.checkTrainingCompletion(this.emailApp);
+        }
+        
+        console.log(`Email reported: ${email.subject}`);
+        return { success: true, action: 'report' };
+    }
+
+    /**
+     * Handle email trust action
+     * @param {Object} email - Email object to trust
+     */
+    handleTrustEmail(email) {
+        // Use security manager which will trigger feedback automatically
+        if (this.emailApp.state?.securityManager) {
+            this.emailApp.state.securityManager.markEmailAsLegitimate(email.id, this.emailApp);
+            
+            // Check if training should be completed
+            this.emailApp.state.securityManager.checkTrainingCompletion(this.emailApp);
+        }
+        
+        console.log(`Email trusted: ${email.subject}`);
+        return { success: true, action: 'trust' };
+    }
+
+    /**
+     * Handle email deletion action
+     * @param {Object} email - Email object to delete
+     */
+    handleDeleteEmail(email) {
+        // Use security manager which will trigger feedback automatically
+        if (this.emailApp.state?.securityManager) {
+            this.emailApp.state.securityManager.deleteEmail(email.id, this.emailApp);
+            
+            // Check if training should be completed
+            this.emailApp.state.securityManager.checkTrainingCompletion(this.emailApp);
+        }
+        
+        console.log(`Email deleted: ${email.subject}`);
+        return { success: true, action: 'delete' };
+    }
+
+    /**
+     * Handle email ignore action (normal processing)
+     * @param {Object} email - Email object to process normally
+     */
+    handleIgnoreEmail(email) {
+        // Use security manager which will trigger feedback automatically
+        if (this.emailApp.state?.securityManager) {
+            this.emailApp.state.securityManager.ignoreEmail(email.id, this.emailApp);
+            
+            // Check if training should be completed
+            this.emailApp.state.securityManager.checkTrainingCompletion(this.emailApp);
+        }
+        
+        console.log(`Email processed normally: ${email.subject}`);
+        return { success: true, action: 'ignore' };
+    }
+
+    showEmailContextMenu(email, x, y) {
+        const existingMenu = document.querySelector('.email-context-menu');
+        if (existingMenu) {
+            existingMenu.remove();
+        }
+
+        const menu = document.createElement('div');
+        menu.className = 'email-context-menu fixed bg-white border border-gray-300 rounded-lg shadow-lg z-50 py-2 min-w-48';
+        menu.style.left = `${x}px`;
+        menu.style.top = `${y}px`;
+
+        const menuItems = [
+            {
+                label: '🚨 Report as Suspicious',
+                action: () => this.handleReportEmail(email),
+                class: 'text-red-600 hover:bg-red-50',
+                show: true
+            },
+            {
+                label: '✅ Mark as Legitimate',
+                action: () => this.handleTrustEmail(email),
+                class: 'text-green-600 hover:bg-green-50',
+                show: true
+            },
+            {
+                label: '🗑️ Delete Email',
+                action: () => this.handleDeleteEmail(email),
+                class: 'text-red-500 hover:bg-red-50',
+                show: true
+            },
+            {
+                label: '📂 Process Normally',
+                action: () => this.handleIgnoreEmail(email),
+                class: 'text-blue-600 hover:bg-blue-50',
+                show: true
+            },
+            {
+                label: '📊 View Details',
+                action: () => this.showEmailDetails(email),
+                class: 'text-gray-600 hover:bg-gray-50',
+                show: true
+            }
+        ];
+
+        menuItems.forEach(item => {
+            if (!item.show) return;
+            
+            const menuItem = document.createElement('div');
+            menuItem.className = `px-4 py-2 cursor-pointer text-sm ${item.class || 'hover:bg-gray-50'}`;
+            menuItem.textContent = item.label;
+            menuItem.addEventListener('click', () => {
+                item.action();
+                menu.remove();
+            });
+            menu.appendChild(menuItem);
+        });
+
+        document.body.appendChild(menu);
+
+        // Remove menu when clicking outside
+        setTimeout(() => {
+            document.addEventListener('click', function removeMenu() {
+                menu.remove();
+                document.removeEventListener('click', removeMenu);
+            });
+        }, 100);
     }
 }
