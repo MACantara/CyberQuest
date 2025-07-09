@@ -17,7 +17,7 @@ export class InteractiveUI {
             'bi-database-check text-blue-400' : 'bi-exclamation-triangle text-red-400';
         
         const instructions = document.createElement('div');
-        instructions.className = 'labeling-instructions fixed top-20 right-5 w-80 bg-gray-800 border border-gray-600 rounded-lg p-5 shadow-xl text-white font-sans z-50';
+        instructions.className = 'labeling-instructions fixed top-20 right-5 w-80 bg-gray-800 border border-gray-600 rounded p-5 shadow-xl text-white font-sans z-50';
         instructions.innerHTML = `
             <h3 class="text-emerald-400 text-sm font-bold mb-4 pb-1 border-b border-gray-600 flex items-center gap-2">
                 <i class="bi bi-bullseye"></i>
