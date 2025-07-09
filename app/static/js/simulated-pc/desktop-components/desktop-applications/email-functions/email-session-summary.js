@@ -93,16 +93,6 @@ export class EmailSessionSummary {
                         Close Summary
                     </button>
                 </div>
-                
-                <!-- Export Options -->
-                <div class="text-center mt-6 pt-6 border-t border-gray-600">
-                    <div class="text-sm text-gray-400 mb-3">Want to keep track of your progress?</div>
-                    <button onclick="window.emailSessionSummary?.exportResults?.()" 
-                            class="text-blue-400 hover:text-blue-300 font-medium text-sm transition-colors">
-                        <i class="bi bi-download mr-1"></i>
-                        Export Training Results
-                    </button>
-                </div>
             </div>
         `;
         
@@ -488,26 +478,5 @@ export class EmailSessionSummary {
         `;
         
         document.body.appendChild(modal);
-    }
-
-    exportResults() {
-        const results = {
-            sessionStats: this.lastSessionStats,
-            feedbackHistory: this.lastFeedbackHistory,
-            timestamp: new Date().toISOString(),
-            level: 'Level 2: Shadow in the Inbox'
-        };
-        
-        const dataStr = JSON.stringify(results, null, 2);
-        const dataBlob = new Blob([dataStr], {type: 'application/json'});
-        
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(dataBlob);
-        link.download = `cyberquest-email-training-results-${new Date().toISOString().split('T')[0]}.json`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        
-        console.log('Training results exported');
     }
 }
