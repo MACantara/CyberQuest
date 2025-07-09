@@ -5,7 +5,6 @@ import { PhishingBankPage } from './bank.js';
 import { NewsSitePage } from './news-site.js';
 
 // Import Level 1 Challenge Pages
-import { TutorialPage } from './level-one/tutorial.js';
 import { Challenge1Page } from './level-one/challenge1/challenge1-page.js';
 
 // Import Level 1 Tool Pages
@@ -34,7 +33,6 @@ export class PageRegistry {
         this.registerPage(NewsSitePage);
         
         // Register Level 1 Challenge Pages
-        this.registerPage(TutorialPage);
         this.registerPage(Challenge1Page);
         
         // Register Level 1 Tool Pages
