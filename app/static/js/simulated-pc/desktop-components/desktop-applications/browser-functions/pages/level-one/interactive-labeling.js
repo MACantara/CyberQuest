@@ -33,33 +33,54 @@ export class InteractiveLabeling {
     }
 
     loadAnalysisFromBatch(articleData) {
-        // Check if article has clickable_elements directly from batch-1.json structure
-        if (articleData && articleData.clickable_elements && Array.isArray(articleData.clickable_elements)) {
-            this.batchAnalysis = articleData;
-            this.analysisSource = 'batch-json';
-            console.log('Using batch-1.json analysis for article:', articleData.article_metadata?.title?.substring(0, 50) || 'Unknown');
-            console.log('Clickable elements found:', articleData.clickable_elements.length);
+        // Check if article data has the new nested structure with numeric ID
+        if (articleData && typeof articleData === 'object') {
+            // Look for numeric keys (article IDs) in the data
+            const articleIds = Object.keys(articleData).filter(key => !isNaN(key));
             
-            // Log the clickable elements for debugging
-            articleData.clickable_elements.forEach((element, index) => {
-                console.log(`Element ${index}:`, {
-                    id: element.element_id,
-                    name: element.element_name,
-                    expected: element.expected_label,
-                    text_sample: element.element_text?.substring(0, 30) || 'No text'
-                });
-            });
-        } else {
-            console.error('No clickable_elements found in article data');
-            console.log('Available articleData structure:', {
-                keys: Object.keys(articleData || {}),
-                hasClickableElements: !!(articleData?.clickable_elements),
-                isArray: Array.isArray(articleData?.clickable_elements),
-                clickableElementsLength: articleData?.clickable_elements?.length || 0
-            });
-            this.batchAnalysis = null;
-            this.analysisSource = 'none';
+            if (articleIds.length > 0) {
+                // Use the first numeric key found (should match current article index)
+                const articleId = articleIds[this.currentArticleIndex] || articleIds[0];
+                const articleContent = articleData[articleId];
+                
+                if (articleContent && articleContent.clickable_elements && Array.isArray(articleContent.clickable_elements)) {
+                    this.batchAnalysis = articleContent;
+                    this.analysisSource = 'batch-json';
+                    console.log(`Using batch-1.json analysis for article ID ${articleId}:`, articleContent.article_metadata?.title?.substring(0, 50) || 'Unknown');
+                    console.log('Clickable elements found:', articleContent.clickable_elements.length);
+                    
+                    // Log the clickable elements for debugging
+                    articleContent.clickable_elements.forEach((element, index) => {
+                        console.log(`Element ${index}:`, {
+                            id: element.element_id,
+                            name: element.element_name,
+                            expected: element.expected_label,
+                            text_sample: element.element_text?.substring(0, 30) || 'No text'
+                        });
+                    });
+                    return;
+                }
+            }
+            
+            // Fallback: check for direct clickable_elements (old structure)
+            if (articleData.clickable_elements && Array.isArray(articleData.clickable_elements)) {
+                this.batchAnalysis = articleData;
+                this.analysisSource = 'batch-json';
+                console.log('Using legacy batch structure for article:', articleData.article_metadata?.title?.substring(0, 50) || 'Unknown');
+                console.log('Clickable elements found:', articleData.clickable_elements.length);
+                return;
+            }
         }
+        
+        console.error('No clickable_elements found in article data');
+        console.log('Available articleData structure:', {
+            keys: Object.keys(articleData || {}),
+            numericKeys: Object.keys(articleData || {}).filter(key => !isNaN(key)),
+            hasClickableElements: !!(articleData?.clickable_elements),
+            isArray: Array.isArray(articleData?.clickable_elements)
+        });
+        this.batchAnalysis = null;
+        this.analysisSource = 'none';
     }
 
     addInteractiveStyles() {
@@ -712,7 +733,24 @@ export class InteractiveLabeling {
     getKeyIndicators(articleData) {
         if (!articleData) return "No article data available";
         
-        // Use clickable_elements directly from batch-1.json structure
+        // Check for new nested structure with numeric IDs
+        if (typeof articleData === 'object') {
+            const articleIds = Object.keys(articleData).filter(key => !isNaN(key));
+            if (articleIds.length > 0) {
+                const articleId = articleIds[this.currentArticleIndex] || articleIds[0];
+                const articleContent = articleData[articleId];
+                
+                if (articleContent?.clickable_elements && Array.isArray(articleContent.clickable_elements)) {
+                    const indicators = articleContent.clickable_elements
+                        .map(element => element.reasoning)
+                        .filter(reasoning => reasoning && reasoning.length > 0)
+                        .slice(0, 2);
+                    return indicators.join(', ') || 'Batch analysis available';
+                }
+            }
+        }
+        
+        // Fallback: Use clickable_elements directly from old structure
         if (articleData.clickable_elements && Array.isArray(articleData.clickable_elements)) {
             const indicators = articleData.clickable_elements
                 .map(element => element.reasoning)
