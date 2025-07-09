@@ -1,3 +1,8 @@
+import { InteractiveUI } from './interactive-labeling/interactive-ui.js';
+import { ModalManager } from './interactive-labeling/modal-manager.js';
+import { AnalysisCalculator } from './interactive-labeling/analysis-calculator.js';
+import { NavigationHandler } from './interactive-labeling/navigation-handler.js';
+
 export class InteractiveLabeling {
     constructor(browserApp, pageRegistry) {
         this.browserApp = browserApp;
@@ -12,6 +17,12 @@ export class InteractiveLabeling {
         this.analysisSource = 'batch-json';
         this.articlesData = []; // Store all articles data centrally
         this.initialized = false;
+        
+        // Initialize modular components
+        this.ui = new InteractiveUI(this);
+        this.modalManager = new ModalManager(this);
+        this.analysisCalculator = new AnalysisCalculator(this);
+        this.navigationHandler = new NavigationHandler(this);
         
         // Bind methods to preserve context
         this.handleElementClick = this.handleElementClick.bind(this);
@@ -39,7 +50,6 @@ export class InteractiveLabeling {
             return;
         }
 
-        // Clean up previous article if any
         this.cleanupCurrentElements();
         
         this.currentArticleIndex = articleIndex;
@@ -48,16 +58,12 @@ export class InteractiveLabeling {
         console.log(`Loading article ${articleIndex + 1} of ${this.totalArticles}:`, 
                     articleData.title?.substring(0, 50) || 'Unknown');
 
-        // Add styles for interactive elements
-        this.addInteractiveStyles();
-        
-        // Load analysis from batch JSON data
+        // No need to add custom styles anymore
         this.loadAnalysisFromBatch(articleData);
         
-        // Wait for DOM to be ready, then make elements interactive
         setTimeout(() => {
             this.makeElementsInteractive();
-            this.showInstructions();
+            this.ui.showInstructions();
         }, 200);
         
         this.isActive = true;
@@ -80,22 +86,28 @@ export class InteractiveLabeling {
     }
 
     cleanupCurrentElements() {
-        // Clear interactive elements more thoroughly
+        // Clear interactive elements and remove Tailwind classes
         document.querySelectorAll('.interactive-element').forEach(el => {
-            el.classList.remove('interactive-element', 'labeled-fake', 'labeled-real', 'correct', 'incorrect');
+            el.classList.remove(
+                'interactive-element', 'cursor-pointer', 'transition-all', 'duration-300', 
+                'relative', 'rounded', 'p-1', 'm-1',
+                'bg-red-600/20', 'border-2', 'border-red-500',
+                'bg-green-600/20', 'border-green-500',
+                'bg-green-600/30', 'border-green-500',
+                'bg-red-600/30', 'border-red-500',
+                'hover:bg-blue-600/10', 'hover:shadow-lg'
+            );
             el.removeAttribute('data-element-id');
             el.removeAttribute('data-label');
             el.removeAttribute('data-reasoning');
             el.removeAttribute('title');
             
-            // Remove event listeners safely
             if (el._interactiveClickHandler) {
                 el.removeEventListener('click', el._interactiveClickHandler);
                 delete el._interactiveClickHandler;
             }
         });
         
-        // Clear the labeled elements map
         this.labeledElements.clear();
     }
 
@@ -124,397 +136,6 @@ export class InteractiveLabeling {
         });
         this.batchAnalysis = null;
         this.analysisSource = 'none';
-    }
-
-    addInteractiveStyles() {
-        if (document.getElementById('interactive-labeling-styles')) return;
-        
-        const style = document.createElement('style');
-        style.id = 'interactive-labeling-styles';
-        style.textContent = `
-            .interactive-element {
-                cursor: pointer;
-                transition: all 0.3s ease;
-                position: relative;
-                border-radius: 4px;
-                padding: 2px 4px;
-                margin: -2px -4px;
-            }
-            
-            .interactive-element:hover {
-                background-color: rgba(59, 130, 246, 0.1);
-                box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
-            }
-            
-            .interactive-element.labeled-fake {
-                background-color: rgba(239, 68, 68, 0.2);
-                border: 2px solid #ef4444;
-            }
-            
-            .interactive-element.labeled-real {
-                background-color: rgba(34, 197, 94, 0.2);
-                border: 2px solid #22c55e;
-            }
-            
-            .interactive-element.correct {
-                background-color: rgba(34, 197, 94, 0.3);
-                border: 2px solid #22c55e;
-            }
-            
-            .interactive-element.incorrect {
-                background-color: rgba(239, 68, 68, 0.3);
-                border: 2px solid #ef4444;
-            }
-            
-            .labeling-instructions {
-                position: fixed;
-                top: 80px;
-                right: 20px;
-                width: 320px;
-                background: rgba(55, 65, 81, 0.95);
-                backdrop-filter: blur(10px);
-                border-radius: 12px;
-                border: 2px solid #374151;
-                color: white;
-                padding: 20px;
-                font-family: 'Inter', sans-serif;
-                z-index: 1000;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            }
-            
-            .instructions-header {
-                color: #10b981;
-                font-size: 16px;
-                font-weight: 600;
-                margin-bottom: 15px;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            }
-            
-            .instructions-content {
-                font-size: 14px;
-                line-height: 1.5;
-                color: #d1d5db;
-                margin-bottom: 15px;
-            }
-            
-            .labeling-legend {
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-                margin-bottom: 15px;
-            }
-            
-            .legend-item {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                font-size: 13px;
-                color: #d1d5db;
-            }
-            
-            .legend-color {
-                width: 16px;
-                height: 16px;
-                border-radius: 4px;
-                border: 2px solid;
-            }
-            
-            .legend-fake {
-                background: rgba(239, 68, 68, 0.2);
-                border-color: #ef4444;
-            }
-            
-            .legend-real {
-                background: rgba(34, 197, 94, 0.2);
-                border-color: #22c55e;
-            }
-            
-            .progress-info {
-                font-size: 12px;
-                color: #9ca3af;
-                text-align: center;
-                padding: 8px;
-                background: rgba(31, 41, 55, 0.8);
-                border: 1px solid #4b5563;
-                border-radius: 6px;
-                margin-bottom: 15px;
-            }
-            
-            .submit-analysis-btn {
-                width: 100%;
-                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-                color: white;
-                border: none;
-                padding: 12px;
-                border-radius: 8px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.2s ease;
-                font-size: 14px;
-            }
-            
-            .submit-analysis-btn:hover {
-                background: linear-gradient(135deg, #059669 0%, #047857 100%);
-                transform: translateY(-1px);
-                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-            }
-            
-            .submit-analysis-btn:disabled {
-                background: #4b5563;
-                cursor: not-allowed;
-                transform: none;
-                box-shadow: none;
-            }
-            
-            .feedback-modal {
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0, 0, 0, 0.85);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 2000;
-            }
-            
-            .feedback-content {
-                background: #1f2937;
-                border: 2px solid #374151;
-                border-radius: 16px;
-                padding: 30px;
-                max-width: 500px;
-                width: 90%;
-                max-height: 80vh;
-                overflow-y: auto;
-                text-align: center;
-                color: white;
-                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-            }
-            
-            .feedback-content h2 {
-                color: white;
-                font-size: 24px;
-                margin-bottom: 20px;
-            }
-            
-            .feedback-score {
-                font-size: 48px;
-                font-weight: bold;
-                margin: 20px 0;
-            }
-            
-            .feedback-score.good {
-                color: #22c55e;
-            }
-            
-            .feedback-score.medium {
-                color: #f59e0b;
-            }
-            
-            .feedback-score.poor {
-                color: #ef4444;
-            }
-            
-            .feedback-content p {
-                color: #d1d5db;
-                margin-bottom: 20px;
-            }
-            
-            .feedback-details {
-                text-align: left;
-                margin: 20px 0;
-            }
-            
-            .feedback-details h3 {
-                color: #f3f4f6;
-                font-size: 16px;
-                margin-bottom: 15px;
-            }
-            
-            .feedback-item {
-                margin: 10px 0;
-                padding: 15px;
-                border-radius: 8px;
-                border-left: 4px solid;
-            }
-            
-            .feedback-item.correct {
-                background: rgba(34, 197, 94, 0.1);
-                border-color: #22c55e;
-                color: #d1fae5;
-            }
-            
-            .feedback-item.incorrect {
-                background: rgba(239, 68, 68, 0.1);
-                border-color: #ef4444;
-                color: #fee2e2;
-            }
-            
-            .feedback-item.unlabeled {
-                background: rgba(75, 85, 99, 0.2);
-                border-color: #6b7280;
-                color: #f3f4f6;
-            }
-            
-            .feedback-item strong {
-                color: white;
-            }
-            
-            .feedback-item small {
-                color: #9ca3af;
-            }
-            
-            .final-summary {
-                background: #1f2937;
-                border: 2px solid #374151;
-                border-radius: 16px;
-                padding: 40px;
-                max-width: 700px;
-                width: 95%;
-                max-height: 90vh;
-                overflow-y: auto;
-                color: white;
-                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-            }
-            
-            .summary-header {
-                text-align: center;
-                margin-bottom: 30px;
-            }
-            
-            .summary-header h1 {
-                color: white;
-                font-size: 32px;
-                margin-bottom: 20px;
-            }
-            
-            .summary-header p {
-                color: #d1d5db;
-                font-size: 16px;
-            }
-            
-            .overall-score {
-                font-size: 64px;
-                font-weight: bold;
-                margin: 20px 0;
-            }
-            
-            .article-summary {
-                margin: 20px 0;
-                padding: 20px;
-                border-radius: 12px;
-                background: #374151;
-                border: 1px solid #4b5563;
-            }
-            
-            .article-title {
-                font-weight: 600;
-                color: #f3f4f6;
-                margin-bottom: 10px;
-                font-size: 16px;
-            }
-            
-            .article-score {
-                font-size: 24px;
-                font-weight: bold;
-                margin-bottom: 10px;
-            }
-            
-            .article-explanation {
-                color: #d1d5db;
-                font-size: 14px;
-                line-height: 1.5;
-            }
-            
-            .article-explanation strong {
-                color: #f3f4f6;
-            }
-            
-            .ai-insights {
-                background: rgba(59, 130, 246, 0.1);
-                border: 1px solid #3b82f6;
-                border-radius: 8px;
-                padding: 15px;
-                margin: 15px 0;
-            }
-            
-            .ai-insights h3 {
-                color: #60a5fa;
-                margin: 0 0 10px 0;
-            }
-            
-            .ai-insights ul {
-                margin: 0;
-                padding-left: 20px;
-                color: #dbeafe;
-            }
-            
-            .ai-warnings {
-                background: rgba(239, 68, 68, 0.1);
-                border: 1px solid #ef4444;
-                border-radius: 8px;
-                padding: 15px;
-                margin: 15px 0;
-            }
-            
-            .ai-warnings h3 {
-                color: #f87171;
-                margin: 0 0 10px 0;
-            }
-            
-            .ai-warnings ul {
-                margin: 0;
-                padding-left: 20px;
-                color: #fecaca;
-            }
-            
-            /* Button styles to match email app */
-            .feedback-content button, .final-summary button {
-                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-                color: white;
-                border: none;
-                padding: 12px 24px;
-                border-radius: 8px;
-                cursor: pointer;
-                font-weight: 600;
-                font-size: 14px;
-                transition: all 0.2s ease;
-            }
-            
-            .feedback-content button:hover, .final-summary button:hover {
-                background: linear-gradient(135deg, #059669 0%, #047857 100%);
-                transform: translateY(-1px);
-                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-            }
-            
-            /* Analysis source info styling */
-            .analysis-source-info {
-                background: rgba(59, 130, 246, 0.1);
-                border: 1px solid #3b82f6;
-                border-radius: 8px;
-                padding: 15px;
-                margin: 20px 0;
-            }
-            
-            .analysis-source-info p {
-                margin: 0;
-                font-size: 14px;
-                color: #dbeafe;
-            }
-            
-            .analysis-source-info strong {
-                color: #60a5fa;
-            }
-            
-            .analysis-source-info small {
-                color: #93c5fd;
-            }
-        `;
-        document.head.appendChild(style);
     }
 
     makeElementsInteractive() {
@@ -547,7 +168,12 @@ export class InteractiveLabeling {
         interactiveElements.forEach(elementDef => {
             const element = document.querySelector(elementDef.selector);
             if (element) {
-                element.classList.add('interactive-element');
+                // Add Tailwind classes for interactive styling
+                element.classList.add(
+                    'interactive-element', 'cursor-pointer', 'transition-all', 'duration-300', 
+                    'relative', 'rounded', 'p-1', 'm-1',
+                    'hover:bg-blue-600/10', 'hover:shadow-lg'
+                );
                 element.setAttribute('data-element-id', elementDef.id);
                 element.setAttribute('data-label', elementDef.label);
                 element.setAttribute('data-reasoning', elementDef.reasoning);
@@ -588,89 +214,33 @@ export class InteractiveLabeling {
         const elementData = this.labeledElements.get(elementId);
         if (!elementData) return;
         
+        // Remove previous styling
+        elementData.element.classList.remove(
+            'bg-red-600/20', 'border-2', 'border-red-500',
+            'bg-green-600/20', 'border-green-500'
+        );
+        
         // Toggle between fake/real/unlabeled
         if (!elementData.labeled) {
-            // First click - mark as fake
+            // First click - mark as fake with Tailwind classes
             elementData.labeled = true;
             elementData.labeledAsFake = true;
-            elementData.element.classList.add('labeled-fake');
-            elementData.element.classList.remove('labeled-real');
+            elementData.element.classList.add('bg-red-600/20', 'border-2', 'border-red-500');
         } else if (elementData.labeledAsFake) {
-            // Second click - mark as real
+            // Second click - mark as real with Tailwind classes
             elementData.labeledAsFake = false;
-            elementData.element.classList.add('labeled-real');
-            elementData.element.classList.remove('labeled-fake');
+            elementData.element.classList.add('bg-green-600/20', 'border-2', 'border-green-500');
         } else {
             // Third click - remove label
             elementData.labeled = false;
-            elementData.element.classList.remove('labeled-real', 'labeled-fake');
         }
         
-        this.updateInstructions();
-    }
-
-    showInstructions() {
-        // Remove existing instructions
-        const existing = document.querySelector('.labeling-instructions');
-        if (existing) existing.remove();
-        
-        // Get educational notes from batch analysis
-        const educationalNotes = this.batchAnalysis?.educational_focus || 
-                               'Click on different parts of the article to label them as fake or real. This data comes from pre-analyzed batch training data.';
-        
-        const analysisSourceText = this.analysisSource === 'batch-json' ? 
-            '📊 Batch Analysis Data' : '❌ No Analysis Data';
-        
-        const instructions = document.createElement('div');
-        instructions.className = 'labeling-instructions';
-        instructions.innerHTML = `
-            <div class="instructions-header">
-                <span>🎯</span>
-                <span>Interactive Analysis</span>
-            </div>
-            <div class="instructions-content">
-                ${educationalNotes}
-            </div>
-            <div class="labeling-legend">
-                <div class="legend-item">
-                    <div class="legend-color legend-fake"></div>
-                    <span>Fake/Suspicious</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color legend-real"></div>
-                    <span>Real/Legitimate</span>
-                </div>
-            </div>
-            <div class="progress-info">
-                Article ${this.currentArticleIndex + 1} of ${this.totalArticles}
-                <br>${analysisSourceText}
-            </div>
-            <button class="submit-analysis-btn" onclick="window.interactiveLabeling?.submitAnalysis()">
-                Submit Analysis
-            </button>
-        `;
-        
-        document.body.appendChild(instructions);
-        
-        // Store global reference
-        window.interactiveLabeling = this;
-    }
-
-    updateInstructions() {
-        const progressInfo = document.querySelector('.progress-info');
-        if (progressInfo) {
-            const labeledCount = Array.from(this.labeledElements.values()).filter(el => el.labeled).length;
-            const totalCount = this.labeledElements.size;
-            progressInfo.innerHTML = `
-                Article ${this.currentArticleIndex + 1} of ${this.totalArticles}<br>
-                Labeled: ${labeledCount}/${totalCount} elements
-            `;
-        }
+        this.ui.updateInstructions();
     }
 
     submitAnalysis() {
-        const results = this.calculateResults();
-        this.showFeedback(results);
+        const results = this.analysisCalculator.calculateResults();
+        this.modalManager.showFeedback(results);
         
         // Store results for final summary
         this.articleResults.push({
@@ -683,279 +253,27 @@ export class InteractiveLabeling {
         // Check if this is the last article
         if (this.currentArticleIndex >= this.totalArticles - 1) {
             setTimeout(() => {
-                this.showFinalSummary();
+                this.modalManager.showFinalSummary();
+                this.navigationHandler.markLevelCompleted();
             }, 3000);
         }
     }
 
-    calculateResults() {
-        const results = {
-            totalElements: this.labeledElements.size,
-            correctLabels: 0,
-            incorrectLabels: 0,
-            unlabeledElements: 0,
-            details: []
-        };
-        
-        this.labeledElements.forEach((elementData, elementId) => {
-            const isCorrect = elementData.labeled ? 
-                (elementData.labeledAsFake === elementData.expectedFake) : 
-                false;
-            
-            if (!elementData.labeled) {
-                results.unlabeledElements++;
-                results.details.push({
-                    label: elementData.label,
-                    status: 'unlabeled',
-                    expected: elementData.expectedFake ? 'fake' : 'real',
-                    actual: 'not labeled'
-                });
-            } else if (isCorrect) {
-                results.correctLabels++;
-                results.details.push({
-                    label: elementData.label,
-                    status: 'correct',
-                    expected: elementData.expectedFake ? 'fake' : 'real',
-                    actual: elementData.labeledAsFake ? 'fake' : 'real'
-                });
-                // Visual feedback
-                elementData.element.classList.add('correct');
-            } else {
-                results.incorrectLabels++;
-                results.details.push({
-                    label: elementData.label,
-                    status: 'incorrect',
-                    expected: elementData.expectedFake ? 'fake' : 'real',
-                    actual: elementData.labeledAsFake ? 'fake' : 'real'
-                });
-                // Visual feedback
-                elementData.element.classList.add('incorrect');
-            }
-        });
-        
-        results.percentage = Math.round((results.correctLabels / results.totalElements) * 100);
-        
-        return results;
-    }
-
-    showFeedback(results) {
-        const modal = document.createElement('div');
-        modal.className = 'feedback-modal';
-        
-        const scoreClass = results.percentage >= 75 ? 'good' : results.percentage >= 50 ? 'medium' : 'poor';
-        const emoji = results.percentage >= 75 ? '🎉' : results.percentage >= 50 ? '👍' : '🤔';
-        
-        modal.innerHTML = `
-            <div class="feedback-content">
-                <h2>${emoji} Analysis Complete!</h2>
-                <div class="feedback-score ${scoreClass}">${results.percentage}%</div>
-                <p>You correctly identified ${results.correctLabels} out of ${results.totalElements} elements.</p>
-                
-                <div class="feedback-details">
-                    <h3>Detailed Results:</h3>
-                    ${results.details.map(detail => {
-                        const elementData = this.labeledElements.get(
-                            Object.keys(Object.fromEntries(this.labeledElements))
-                                .find(key => this.labeledElements.get(key).label === detail.label)
-                        );
-                        const reasoning = elementData?.reasoning || 'No reasoning available';
-                        return `
-                            <div class="feedback-item ${detail.status}">
-                                <strong>${detail.label}:</strong> 
-                                ${detail.status === 'unlabeled' ? 'Not labeled' : 
-                                  detail.status === 'correct' ? '✅ Correct' : '❌ Incorrect'}
-                                ${detail.status !== 'unlabeled' ? `<br><small>Expected: ${detail.expected}, You labeled: ${detail.actual}</small>` : ''}
-                                <br><small><em>Insight: ${reasoning}</em></small>
-                            </div>
-                        `;
-                    }).join('')}
-                </div>
-                
-                <div class="analysis-source-info">
-                    <p>
-                        <strong>📊 Analysis Source:</strong> This feedback is based on pre-analyzed batch training data from batch-1.json<br>
-                        <small>Note: Text matching handles case differences between displayed and batch data</small>
-                    </p>
-                </div>
-                
-                <button onclick="window.interactiveLabeling?.nextArticle()">
-                    ${this.currentArticleIndex >= this.totalArticles - 1 ? 'View Final Summary' : 'Next Article'}
-                </button>
-            </div>
-        `;
-        
-        document.body.appendChild(modal);
-    }
-
-    nextArticle() {
-        // Remove the feedback modal
-        const modal = document.querySelector('.feedback-modal');
-        if (modal) modal.remove();
+    async nextArticle() {
+        // Remove the feedback modal using modalManager
+        this.modalManager.removeModal();
         
         // Navigate to next article
-        this.nextArticleHandler();
-    }
-
-    showFinalSummary() {
-        const modal = document.createElement('div');
-        modal.className = 'feedback-modal';
-        
-        const overallScore = Math.round(
-            this.articleResults.reduce((sum, result) => sum + result.results.percentage, 0) / 
-            this.articleResults.length
-        );
-        
-        const overallClass = overallScore >= 75 ? 'good' : overallScore >= 50 ? 'medium' : 'poor';
-        const batchAnalysisCount = this.articleResults.filter(result => 
-            result.articleData.clickable_elements || 
-            (result.articleData.batchAnalysis && Object.keys(result.articleData.batchAnalysis).length > 0)
-        ).length;
-        
-        modal.innerHTML = `
-            <div class="final-summary">
-                <div class="summary-header">
-                    <h1>🎯 Level 1 Complete!</h1>
-                    <div class="overall-score ${overallClass}">${overallScore}%</div>
-                    <p>Overall Performance Across All Articles</p>
-                    <p style="font-size: 14px; color: #9ca3af;">
-                        ${batchAnalysisCount} articles used batch analysis data
-                    </p>
-                </div>
-                
-                <div class="article-summaries">
-                    ${this.articleResults.map((articleResult, index) => `
-                        <div class="article-summary">
-                            <div class="article-title">Article ${index + 1}: ${articleResult.articleData.title?.substring(0, 60) || articleResult.articleData.article_metadata?.title?.substring(0, 60) || 'Unknown Article'}...</div>
-                            <div class="article-score ${articleResult.results.percentage >= 75 ? 'good' : articleResult.results.percentage >= 50 ? 'medium' : 'poor'}">
-                                ${articleResult.results.percentage}%
-                            </div>
-                            <div class="article-explanation">
-                                <strong>Article Type:</strong> ${articleResult.articleData.is_real ? 'Real News' : articleResult.articleData.article_metadata?.actual_label || 'Unknown'}<br>
-                                <strong>Analysis Source:</strong> ${articleResult.articleData.clickable_elements || (articleResult.articleData.batchAnalysis && Object.keys(articleResult.articleData.batchAnalysis).length > 0) ? 'Batch Analysis' : 'No Analysis'}<br>
-                                <strong>Key Indicators:</strong> ${this.getKeyIndicators(articleResult.articleData)}
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-                
-                <div style="text-align: center; margin-top: 30px;">
-                    <button onclick="window.interactiveLabeling?.continueToNextLevel()">
-                        Continue to Next Level
-                    </button>
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(modal);
-        
-        // Mark challenge as completed
-        localStorage.setItem('cyberquest_challenge1_completed', 'true');
-        localStorage.setItem('cyberquest_challenge1_interactive_results', JSON.stringify(this.articleResults));
-        localStorage.setItem('cyberquest_level1_score', overallScore.toString());
+        await this.nextArticleHandler();
     }
 
     continueToNextLevel() {
-        // Close the summary modal
-        const modal = document.querySelector('.feedback-modal');
-        if (modal) modal.remove();
-        
-        // Clean up current level
-        this.cleanup();
-        
-        // Navigate to Level 2
-        this.navigateToLevel(2);
-    }
-
-    navigateToLevel(levelId) {
-        console.log(`Navigating to Level ${levelId}...`);
-        
-        // Store completion data
-        const completionData = {
-            levelId: 1,
-            completed: true,
-            score: localStorage.getItem('cyberquest_level1_score'),
-            timestamp: new Date().toISOString(),
-            results: this.articleResults
-        };
-        
-        // Save to localStorage for demo purposes - this is what the server checks
-        localStorage.setItem('cyberquest_level_1_completion', JSON.stringify(completionData));
-        localStorage.setItem('cyberquest_level_1_completed', 'true'); // Key flag for unlocking Level 2
-        
-        console.log('Level 1 completion stored in localStorage:', {
-            completion_flag: localStorage.getItem('cyberquest_level_1_completed'),
-            completion_data: localStorage.getItem('cyberquest_level_1_completion')
-        });
-        
-        // Navigate to the levels page or directly to Level 2
-        if (window.location.pathname.includes('/levels/1/start')) {
-            // We're in the simulation, navigate to Level 2
-            window.location.href = `/levels/${levelId}`;
-        } else {
-            // Fallback: try to navigate using browser history
-            if (window.history && window.history.pushState) {
-                window.history.pushState({}, '', `/levels/${levelId}`);
-                window.location.reload();
-            } else {
-                window.location.href = `/levels/${levelId}`;
-            }
-        }
-    }
-
-    getKeyIndicators(articleData) {
-        if (!articleData) return "No article data available";
-        
-        // Check if article data has batchAnalysis property
-        if (articleData.batchAnalysis && articleData.batchAnalysis.clickable_elements) {
-            const indicators = articleData.batchAnalysis.clickable_elements
-                .map(element => element.reasoning)
-                .filter(reasoning => reasoning && reasoning.length > 0)
-                .slice(0, 2);
-            return indicators.join(', ') || 'Batch analysis available';
-        }
-        
-        // Check for new nested structure with numeric IDs
-        if (typeof articleData === 'object') {
-            const articleIds = Object.keys(articleData).filter(key => !isNaN(key));
-            if (articleIds.length > 0) {
-                const articleId = articleIds[this.currentArticleIndex] || articleIds[0];
-                const articleContent = articleData[articleId];
-                
-                if (articleContent?.clickable_elements && Array.isArray(articleContent.clickable_elements)) {
-                    const indicators = articleContent.clickable_elements
-                        .map(element => element.reasoning)
-                        .filter(reasoning => reasoning && reasoning.length > 0)
-                        .slice(0, 2);
-                    return indicators.join(', ') || 'Batch analysis available';
-                }
-            }
-        }
-        
-        // Fallback: Use clickable_elements directly from old structure
-        if (articleData.clickable_elements && Array.isArray(articleData.clickable_elements)) {
-            const indicators = articleData.clickable_elements
-                .map(element => element.reasoning)
-                .filter(reasoning => reasoning && reasoning.length > 0)
-                .slice(0, 2);
-            return indicators.join(', ') || 'Batch analysis available';
-        }
-        
-        return 'No clickable elements available';
+        this.navigationHandler.continueToNextLevel();
     }
 
     cleanup() {
-        // Remove instructions
-        const instructions = document.querySelector('.labeling-instructions');
-        if (instructions) instructions.remove();
-        
-        // More thorough cleanup of interactive elements
+        this.ui.cleanup();
         this.cleanupCurrentElements();
-        
-        // Remove styles (but only if no other instances are active)
-        const styles = document.getElementById('interactive-labeling-styles');
-        if (styles && !document.querySelector('.labeling-instructions')) {
-            styles.remove();
-        }
         
         this.isActive = false;
         this.batchAnalysis = null;
