@@ -63,16 +63,6 @@ export class BrowserApp extends WindowBase {
                             <i class="bi bi-shield-check text-green-400 text-xs"></i>
                             <span>CyberQuest</span>
                         </button>
-                        <button class="bookmark-item px-2 py-1 bg-gray-700 hover:bg-gray-500 text-white rounded border border-gray-500 transition-colors duration-200 cursor-pointer flex items-center space-x-1 whitespace-nowrap" 
-                                data-url="https://fact-checker.cyberquest.academy/cross-reference" title="Cross-Reference Tool">
-                            <i class="bi bi-search text-blue-400 text-xs"></i>
-                            <span>Cross-Reference</span>
-                        </button>
-                        <button class="bookmark-item px-2 py-1 bg-gray-700 hover:bg-gray-500 text-white rounded border border-gray-500 transition-colors duration-200 cursor-pointer flex items-center space-x-1 whitespace-nowrap" 
-                                data-url="https://image-verify.cyberquest.academy/reverse-search" title="Reverse Image Search">
-                            <i class="bi bi-camera text-purple-400 text-xs"></i>
-                            <span>Image Search</span>
-                        </button>
                     </div>
                 </div>
                 
