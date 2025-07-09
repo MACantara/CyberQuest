@@ -5,7 +5,7 @@ export class ModalManager {
 
     showFeedback(results) {
         const modal = document.createElement('div');
-        modal.className = 'fixed inset-0 bg-black/75 flex items-center justify-center z-50';
+        modal.className = 'fixed inset-0 bg-black/75 flex items-center justify-center z-50 feedback-modal';
         
         const scoreClass = results.percentage >= 75 ? 'text-green-400' : results.percentage >= 50 ? 'text-yellow-400' : 'text-red-400';
         const emoji = results.percentage >= 75 ? '🎉' : results.percentage >= 50 ? '👍' : '🤔';
@@ -151,7 +151,17 @@ export class ModalManager {
     }
 
     removeModal() {
-        const modal = document.querySelector('.fixed.inset-0.bg-black');
-        if (modal) modal.remove();
+        // Remove any feedback modal by class name
+        const modal = document.querySelector('.feedback-modal');
+        if (modal) {
+            modal.remove();
+            return;
+        }
+        
+        // Fallback: remove by combined selector
+        const modalAlt = document.querySelector('.fixed.inset-0.bg-black');
+        if (modalAlt) {
+            modalAlt.remove();
+        }
     }
 }

@@ -260,12 +260,11 @@ export class InteractiveLabeling {
     }
 
     async nextArticle() {
-        // Remove the feedback modal
-        const modal = document.querySelector('.feedback-modal');
-        if (modal) modal.remove();
+        // Remove the feedback modal using modalManager
+        this.modalManager.removeModal();
         
         // Navigate to next article
-        this.nextArticleHandler();
+        await this.nextArticleHandler();
     }
 
     continueToNextLevel() {
