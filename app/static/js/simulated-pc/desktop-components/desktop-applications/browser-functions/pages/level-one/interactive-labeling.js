@@ -9,7 +9,7 @@ export class InteractiveLabeling {
         this.currentArticleIndex = 0;
         this.totalArticles = 0;
         this.aiAnalysis = null;
-        this.analysisSource = 'fallback'; // Track analysis source
+        this.analysisSource = 'batch-json'; // Track that we're using batch JSON data
     }
 
     async initializeForArticle(pageConfig, articleIndex, totalArticles) {
@@ -22,8 +22,8 @@ export class InteractiveLabeling {
         // Add styles for interactive elements
         this.addInteractiveStyles();
         
-        // Use AI analysis if available, otherwise fall back to default
-        this.loadAnalysisForArticle(pageConfig.articleData);
+        // Load analysis from batch JSON data
+        this.loadAnalysisFromBatch(pageConfig.articleData);
         
         // Make article elements interactive
         this.makeElementsInteractive();
@@ -32,14 +32,15 @@ export class InteractiveLabeling {
         this.showInstructions();
     }
 
-    loadAnalysisForArticle(articleData) {
-        // Check if article has AI analysis data
-        if (articleData && articleData.ai_analysis && Object.keys(articleData.ai_analysis).length > 0) {
+    loadAnalysisFromBatch(articleData) {
+        // Check if article has batch analysis data
+        if (articleData && articleData.ai_analysis && articleData.ai_analysis.clickable_elements) {
             this.aiAnalysis = articleData.ai_analysis;
-            this.analysisSource = 'ai-generated';
-            console.log('Using AI-generated analysis for article:', articleData.title.substring(0, 50));
+            this.analysisSource = 'batch-json';
+            console.log('Using batch JSON analysis for article:', articleData.title.substring(0, 50));
+            console.log('Clickable elements found:', articleData.ai_analysis.clickable_elements.length);
         } else {
-            // Fall back to manual analysis
+            // Fall back to manual analysis if batch data is incomplete
             this.aiAnalysis = this.createFallbackAnalysis(articleData);
             this.analysisSource = 'fallback';
             console.log('Using fallback analysis for article:', articleData?.title?.substring(0, 50) || 'Unknown');
@@ -460,27 +461,32 @@ export class InteractiveLabeling {
             
             let interactiveElements = [];
             
-            // Use AI analysis clickable elements if available
+            // Use batch JSON clickable elements if available
             if (this.aiAnalysis && this.aiAnalysis.clickable_elements && this.aiAnalysis.clickable_elements.length > 0) {
-                interactiveElements = this.aiAnalysis.clickable_elements.map(element => ({
-                    selector: element.css_selector || element.selector,
-                    id: element.element_id,
-                    expectedFake: element.expected_label === 'fake' || element.expected_fake,
-                    label: element.element_name,
-                    reasoning: element.reasoning,
-                    difficulty: element.difficulty,
-                    redFlags: element.red_flags || [],
-                    credibilityIndicators: element.credibility_indicators || []
-                }));
-                console.log('Using AI-generated clickable elements:', interactiveElements.length);
+                interactiveElements = this.aiAnalysis.clickable_elements.map(element => {
+                    // Handle different possible property names from batch JSON
+                    const elementId = element.element_id || element.id;
+                    const expectedLabel = element.expected_label || (element.expected_fake ? 'fake' : 'real');
+                    
+                    return {
+                        selector: this.mapElementIdToSelector(elementId),
+                        id: elementId,
+                        expectedFake: expectedLabel === 'fake',
+                        label: element.element_name || element.label,
+                        reasoning: element.reasoning || 'No reasoning provided',
+                        difficulty: element.difficulty || 'medium',
+                        redFlags: element.red_flags || [],
+                        credibilityIndicators: element.credibility_indicators || []
+                    };
+                });
+                console.log('Using batch JSON clickable elements:', interactiveElements.length);
             } else {
                 // Fallback to default elements
                 const isReal = article?.is_real ?? true;
                 interactiveElements = [
                     { selector: 'h2', id: 'title', expectedFake: !isReal, label: 'Title', reasoning: 'Check headline for sensationalism', difficulty: 'easy' },
                     { selector: 'main > div:nth-child(2)', id: 'author', expectedFake: !isReal, label: 'Author Info', reasoning: 'Verify author credentials', difficulty: 'medium' },
-                    { selector: 'main > div:nth-child(4)', id: 'content', expectedFake: !isReal, label: 'Article Content', reasoning: 'Analyze content for accuracy', difficulty: 'hard' },
-                    { selector: '[style*="sharing"]', id: 'sharing', expectedFake: !isReal, label: 'Sharing Box', reasoning: 'Check for pressure tactics', difficulty: 'medium' }
+                    { selector: 'main > div:nth-child(4)', id: 'content', expectedFake: !isReal, label: 'Article Content', reasoning: 'Analyze content for accuracy', difficulty: 'hard' }
                 ];
                 console.log('Using fallback clickable elements');
             }
@@ -512,9 +518,29 @@ export class InteractiveLabeling {
                         e.preventDefault();
                         this.handleElementClick(elementDef.id);
                     });
+                } else {
+                    console.warn(`Element not found for selector: ${elementDef.selector}`);
                 }
             });
         }, 100);
+    }
+
+    mapElementIdToSelector(elementId) {
+        // Map batch JSON element IDs to CSS selectors
+        const selectorMap = {
+            'title_analysis': 'h2',
+            'title': 'h2',
+            'author_analysis': 'main > div:nth-child(2)',
+            'author': 'main > div:nth-child(2)',
+            'source_analysis': 'main > div:nth-child(3)',
+            'source': 'main > div:nth-child(3)',
+            'content_analysis': 'main > div:nth-child(4)',
+            'content': 'main > div:nth-child(4)',
+            'date_analysis': 'main > div:nth-child(5)',
+            'date': 'main > div:nth-child(5)'
+        };
+        
+        return selectorMap[elementId] || `[data-element-id="${elementId}"]`;
     }
 
     handleElementClick(elementId) {
@@ -547,13 +573,12 @@ export class InteractiveLabeling {
         const existing = document.querySelector('.labeling-instructions');
         if (existing) existing.remove();
         
-        // Get educational notes from analysis
+        // Get educational notes from batch analysis
         const educationalNotes = this.aiAnalysis?.article_analysis?.educational_focus || 
-                               this.aiAnalysis?.article_analysis?.educational_notes ||
-                               'Click on different parts of the article to label them as fake or real.';
+                               'Click on different parts of the article to label them as fake or real. This data comes from pre-analyzed batch training data.';
         
-        const analysisSourceText = this.analysisSource === 'ai-generated' ? 
-            '🤖 AI-Powered Analysis' : '📊 Training Analysis';
+        const analysisSourceText = this.analysisSource === 'batch-json' ? 
+            '📊 Batch Analysis Data' : '🔄 Fallback Analysis';
         
         const instructions = document.createElement('div');
         instructions.className = 'labeling-instructions';
@@ -679,11 +704,9 @@ export class InteractiveLabeling {
         const scoreClass = results.percentage >= 75 ? 'good' : results.percentage >= 50 ? 'medium' : 'poor';
         const emoji = results.percentage >= 75 ? '🎉' : results.percentage >= 50 ? '👍' : '🤔';
         
-        // Get insights for feedback from AI analysis
-        const keyIndicators = this.aiAnalysis?.article_analysis?.credibility_factors || 
-                             this.aiAnalysis?.article_analysis?.key_indicators || [];
-        const redFlags = this.aiAnalysis?.article_analysis?.primary_red_flags || 
-                        this.aiAnalysis?.article_analysis?.red_flags || [];
+        // Get insights for feedback from batch analysis
+        const keyIndicators = this.aiAnalysis?.article_analysis?.credibility_factors || [];
+        const redFlags = this.aiAnalysis?.article_analysis?.primary_red_flags || [];
         const verificationTips = this.aiAnalysis?.article_analysis?.verification_tips || [];
         const misinformationTactics = this.aiAnalysis?.article_analysis?.misinformation_tactics || [];
         
@@ -740,6 +763,12 @@ export class InteractiveLabeling {
                         <ul>${verificationTips.map(tip => `<li>${tip}</li>`).join('')}</ul>
                     </div>
                 ` : ''}
+                
+                <div style="margin-top: 20px; padding: 15px; background: #f0f9ff; border-radius: 8px; border: 1px solid #0ea5e9;">
+                    <p style="margin: 0; font-size: 14px; color: #0369a1;">
+                        <strong>📊 Analysis Source:</strong> This feedback is based on pre-analyzed batch training data from batch-1.json
+                    </p>
+                </div>
                 
                 <button onclick="this.closest('.feedback-modal').remove(); window.interactiveLabeling?.nextArticle()" 
                         style="background: #10b981; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600;">
@@ -834,7 +863,7 @@ export class InteractiveLabeling {
         if (aiAnalysis && aiAnalysis.article_analysis) {
             const indicators = aiAnalysis.article_analysis.credibility_factors || 
                              aiAnalysis.article_analysis.primary_red_flags || [];
-            return indicators.slice(0, 2).join(', ') || 'General analysis';
+            return indicators.slice(0, 2).join(', ') || 'Batch analysis data';
         }
         
         return articleData.is_real ? 'Professional journalism' : 'Misinformation patterns';
