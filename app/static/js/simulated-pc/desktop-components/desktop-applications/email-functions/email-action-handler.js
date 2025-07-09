@@ -73,12 +73,6 @@ export class EmailActionHandler {
         this.emailApp.state.securityManager.markEmailAsLegitimate(emailId, this.emailApp);
     }
 
-    // Handle moving an email from spam back to inbox
-    moveEmailToInbox(emailId) {
-        // Use security manager to handle the action
-        this.emailApp.state.securityManager.moveEmailToInbox(emailId, this.emailApp);
-    }
-
     // Show toast notification for user feedback within the email client
     showActionFeedback(message, type) {
         // Get the email app window element
