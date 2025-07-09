@@ -1,0 +1,45 @@
+Analyze this news article for cybersecurity training. Identify specific parts that users should be able to label as "fake" or "real" elements.
+
+Article Details:
+- Title: {title}
+- Author: {author}  
+- Text Preview: {text}
+- Actual Classification: {'Real News' if is_real else 'Misinformation/Fake News'}
+
+Generate a JSON response with clickable elements for training purposes:
+{
+    "clickable_elements": [
+        {
+            "element_id": "unique_identifier",
+            "element_name": "Human-readable name",
+            "css_selector": "CSS selector for element",
+            "expected_label": "fake" or "real",
+            "reasoning": "Brief explanation of why this should be labeled as fake/real",
+            "difficulty": "easy|medium|hard",
+            "red_flags": ["list of specific warning signs if fake"],
+            "credibility_indicators": ["list of credibility signs if real"]
+        }
+    ],
+    "article_analysis": {
+        "overall_credibility": "high|medium|low",
+        "primary_red_flags": ["main warning signs for fake news"],
+        "credibility_factors": ["main trust indicators for real news"],
+        "educational_focus": "Key learning points for cybersecurity training",
+        "misinformation_tactics": ["specific tactics used if fake news"],
+        "verification_tips": ["how users can verify this type of content"]
+    }
+}
+
+Focus on these taggable elements:
+1. **Title/Headline** - sensationalism, emotional manipulation, clickbait
+2. **Author Information** - credibility, proper attribution, expertise
+3. **Article Content** - factual accuracy, bias, unsupported claims  
+4. **Source/Publication** - domain credibility, contact information
+5. **Social Elements** - sharing pressure, urgency tactics
+
+Make the analysis educational for cybersecurity awareness training.
+
+Configuration used:
+- Model: gemini-2.5-flash
+- Temperature: 0.1
+- Thinking Budget: 0 (disabled for faster responses)
