@@ -793,6 +793,47 @@ export class InteractiveLabeling {
         }
     }
 
+    getKeyIndicators(articleData) {
+        if (!articleData) return "No article data available";
+        
+        // Check if article data has batchAnalysis property
+        if (articleData.batchAnalysis && articleData.batchAnalysis.clickable_elements) {
+            const indicators = articleData.batchAnalysis.clickable_elements
+                .map(element => element.reasoning)
+                .filter(reasoning => reasoning && reasoning.length > 0)
+                .slice(0, 2);
+            return indicators.join(', ') || 'Batch analysis available';
+        }
+        
+        // Check for new nested structure with numeric IDs
+        if (typeof articleData === 'object') {
+            const articleIds = Object.keys(articleData).filter(key => !isNaN(key));
+            if (articleIds.length > 0) {
+                const articleId = articleIds[this.currentArticleIndex] || articleIds[0];
+                const articleContent = articleData[articleId];
+                
+                if (articleContent?.clickable_elements && Array.isArray(articleContent.clickable_elements)) {
+                    const indicators = articleContent.clickable_elements
+                        .map(element => element.reasoning)
+                        .filter(reasoning => reasoning && reasoning.length > 0)
+                        .slice(0, 2);
+                    return indicators.join(', ') || 'Batch analysis available';
+                }
+            }
+        }
+        
+        // Fallback: Use clickable_elements directly from old structure
+        if (articleData.clickable_elements && Array.isArray(articleData.clickable_elements)) {
+            const indicators = articleData.clickable_elements
+                .map(element => element.reasoning)
+                .filter(reasoning => reasoning && reasoning.length > 0)
+                .slice(0, 2);
+            return indicators.join(', ') || 'Batch analysis available';
+        }
+        
+        return 'No clickable elements available';
+    }
+
     cleanup() {
         // Remove instructions
         const instructions = document.querySelector('.labeling-instructions');
