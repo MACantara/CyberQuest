@@ -1,8 +1,19 @@
 import { ALL_EMAILS } from './emails/email-registry.js';
+import { EmailFeedback } from './email-feedback.js';
+import { EmailSessionSummary } from './email-session-summary.js';
+import { EmailCompletionTracker } from './email-completion-tracker.js';
 
 export class EmailActionHandler {
     constructor(emailApp) {
         this.emailApp = emailApp;
+        this.feedback = new EmailFeedback(emailApp);
+        this.sessionSummary = new EmailSessionSummary(emailApp);
+        this.completionTracker = new EmailCompletionTracker(emailApp);
+        this.sessionStartTime = new Date().toISOString();
+        
+        // Load previous session data
+        this.feedback.loadSessionData();
+        this.completionTracker.initialize();
     }
 
     // Handle reporting an email as phishing
@@ -168,34 +179,49 @@ export class EmailActionHandler {
 
     // Get email statistics for progress tracking
     getEmailStatistics() {
-        const allEmailIds = ALL_EMAILS.map(email => email.id);
-        const readingStats = this.emailApp.readTracker.getReadingStats(ALL_EMAILS);
-        const securityStats = this.emailApp.state.securityManager.getSecurityStats();
-        
+        const stats = this.feedback.getSessionStats();
         return {
-            ...readingStats,
-            categorized: securityStats.totalReported + securityStats.totalLegitimate,
-            phishingDetected: securityStats.totalReported,
-            legitimateConfirmed: securityStats.totalLegitimate,
-            categorizedPercentage: Math.round(((securityStats.totalReported + securityStats.totalLegitimate) / allEmailIds.length) * 100)
+            categorized: stats.totalReported + stats.totalLegitimate,
+            phishingDetected: stats.totalReported,
+            legitimateConfirmed: stats.totalLegitimate,
+            categorizedPercentage: Math.round(((stats.totalReported + stats.totalLegitimate) / ALL_EMAILS.length) * 100),
+            emailSecurityAccuracy: stats.accuracy
         };
     }
 
     // Export user actions for analysis
     exportUserActions() {
         const stats = this.getEmailStatistics();
-        const securityStats = this.emailApp.state.securityManager.getSecurityStats();
         
         return {
             timestamp: new Date().toISOString(),
             userStats: stats,
-            securityActions: securityStats,
-            readEmails: Array.from(this.emailApp.readEmails),
+            feedbackHistory: this.feedback.feedbackHistory,
             sessionData: {
-                startTime: this.sessionStartTime || new Date().toISOString(),
+                startTime: this.sessionStartTime,
                 endTime: new Date().toISOString()
             }
         };
+    }
+
+    /**
+     * Complete email security training session
+     */
+    completeEmailTraining() {
+        const sessionStats = this.feedback.getSessionStats();
+        const feedbackHistory = this.feedback.feedbackHistory;
+        
+        // Use completion tracker to handle the full completion flow
+        const completionTriggered = this.completionTracker.checkAndTriggerCompletion(sessionStats, feedbackHistory);
+        
+        if (!completionTriggered) {
+            // If level completion criteria not met, just show training completion
+            this.completionTracker.showTrainingCompletionOnly(sessionStats, feedbackHistory);
+        }
+        
+        // Mark email training as completed regardless of level completion
+        localStorage.setItem('cyberquest_email_training_completed', 'true');
+        localStorage.setItem('cyberquest_email_training_score', sessionStats.accuracy.toString());
     }
 
     // Initialize action handler
@@ -226,5 +252,192 @@ export class EmailActionHandler {
             const modals = this.emailApp.windowElement.querySelectorAll('.email-modal');
             modals.forEach(modal => modal.remove());
         }
+
+        // Clean up completion tracker
+        this.completionTracker.cleanup();
+    }
+
+    /**
+     * Handle email reporting action
+     * @param {Object} email - Email object to report
+     * @param {string} reason - Reason for reporting
+     */
+    handleReportEmail(email, reason = 'Suspicious content') {
+        // Check if email can be recategorized
+        if (!this.emailApp.state?.securityManager?.canEmailBeRecategorized?.(email.id)) {
+            this.showActionFeedback('This email has already been categorized and cannot be changed.', 'error');
+            return { success: false, action: 'report', error: 'Already categorized' };
+        }
+
+        // Use security manager which will trigger feedback automatically
+        if (this.emailApp.state?.securityManager) {
+            this.emailApp.state.securityManager.confirmPhishingReport(email.id, this.emailApp);
+            
+            // Check if training should be completed
+            this.emailApp.state.securityManager.checkTrainingCompletion(this.emailApp);
+        }
+        
+        console.log(`Email reported: ${email.subject}`);
+        return { success: true, action: 'report' };
+    }
+
+    /**
+     * Handle email trust action
+     * @param {Object} email - Email object to trust
+     */
+    handleTrustEmail(email) {
+        // Check if email can be recategorized
+        if (!this.emailApp.state?.securityManager?.canEmailBeRecategorized?.(email.id)) {
+            this.showActionFeedback('This email has already been categorized and cannot be changed.', 'error');
+            return { success: false, action: 'trust', error: 'Already categorized' };
+        }
+
+        // Use security manager which will trigger feedback automatically
+        if (this.emailApp.state?.securityManager) {
+            this.emailApp.state.securityManager.markEmailAsLegitimate(email.id, this.emailApp);
+            
+            // Check if training should be completed
+            this.emailApp.state.securityManager.checkTrainingCompletion(this.emailApp);
+        }
+        
+        console.log(`Email trusted: ${email.subject}`);
+        return { success: true, action: 'trust' };
+    }
+
+    /**
+     * Handle email deletion action
+     * @param {Object} email - Email object to delete
+     */
+    handleDeleteEmail(email) {
+        // Check if email can be recategorized
+        if (!this.emailApp.state?.securityManager?.canEmailBeRecategorized?.(email.id)) {
+            this.showActionFeedback('This email has already been categorized and cannot be changed.', 'error');
+            return { success: false, action: 'delete', error: 'Already categorized' };
+        }
+
+        // Use security manager which will trigger feedback automatically
+        if (this.emailApp.state?.securityManager) {
+            this.emailApp.state.securityManager.deleteEmail(email.id, this.emailApp);
+            
+            // Check if training should be completed
+            this.emailApp.state.securityManager.checkTrainingCompletion(this.emailApp);
+        }
+        
+        console.log(`Email deleted: ${email.subject}`);
+        return { success: true, action: 'delete' };
+    }
+
+    /**
+     * Handle email ignore action (normal processing)
+     * @param {Object} email - Email object to process normally
+     */
+    handleIgnoreEmail(email) {
+        // Use security manager which will trigger feedback automatically
+        if (this.emailApp.state?.securityManager) {
+            this.emailApp.state.securityManager.ignoreEmail(email.id, this.emailApp);
+            
+            // Check if training should be completed
+            this.emailApp.state.securityManager.checkTrainingCompletion(this.emailApp);
+        }
+        
+        console.log(`Email processed normally: ${email.subject}`);
+        return { success: true, action: 'ignore' };
+    }
+
+    showEmailContextMenu(email, x, y) {
+        const existingMenu = document.querySelector('.email-context-menu');
+        if (existingMenu) {
+            existingMenu.remove();
+        }
+
+        // Check if email can be recategorized
+        const canRecategorize = this.emailApp.state?.securityManager?.canEmailBeRecategorized?.(email.id) ?? true;
+        const currentStatus = this.emailApp.state?.securityManager?.getEmailStatus?.(email.id) ?? 'unverified';
+
+        const menu = document.createElement('div');
+        menu.className = 'email-context-menu fixed bg-white border border-gray-300 rounded-lg shadow-lg z-50 py-2 min-w-48';
+        menu.style.left = `${x}px`;
+        menu.style.top = `${y}px`;
+
+        const menuItems = [
+            {
+                label: '🚨 Report as Suspicious',
+                action: () => this.handleReportEmail(email),
+                class: canRecategorize ? 'text-red-600 hover:bg-red-50' : 'text-gray-400 cursor-not-allowed',
+                show: true,
+                disabled: !canRecategorize
+            },
+            {
+                label: '✅ Mark as Legitimate',
+                action: () => this.handleTrustEmail(email),
+                class: canRecategorize ? 'text-green-600 hover:bg-green-50' : 'text-gray-400 cursor-not-allowed',
+                show: true,
+                disabled: !canRecategorize
+            },
+            {
+                label: '🗑️ Delete Email',
+                action: () => this.handleDeleteEmail(email),
+                class: canRecategorize ? 'text-red-500 hover:bg-red-50' : 'text-gray-400 cursor-not-allowed',
+                show: true,
+                disabled: !canRecategorize
+            },
+            {
+                label: '📂 Process Normally',
+                action: () => this.handleIgnoreEmail(email),
+                class: canRecategorize ? 'text-blue-600 hover:bg-blue-50' : 'text-gray-400 cursor-not-allowed',
+                show: true,
+                disabled: !canRecategorize
+            },
+            {
+                label: '📊 View Details',
+                action: () => this.showEmailDetails(email),
+                class: 'text-gray-600 hover:bg-gray-50',
+                show: true,
+                disabled: false
+            }
+        ];
+
+        // Add current status indicator if email is already categorized
+        if (!canRecategorize) {
+            const statusItem = document.createElement('div');
+            statusItem.className = 'px-4 py-2 bg-gray-50 border-b border-gray-200';
+            statusItem.innerHTML = `
+                <div class="text-xs text-gray-600 font-medium">Current Status:</div>
+                <div class="text-xs text-gray-800 capitalize">${currentStatus}</div>
+            `;
+            menu.appendChild(statusItem);
+        }
+
+        menuItems.forEach(item => {
+            if (!item.show) return;
+            
+            const menuItem = document.createElement('div');
+            menuItem.className = `px-4 py-2 text-sm ${item.class || 'hover:bg-gray-50'}`;
+            if (!item.disabled) {
+                menuItem.classList.add('cursor-pointer');
+            }
+            menuItem.textContent = item.label;
+            
+            if (!item.disabled) {
+                menuItem.addEventListener('click', () => {
+                    item.action();
+                    menu.remove();
+                });
+            } else {
+                menuItem.title = 'Email has already been categorized';
+            }
+            
+            menu.appendChild(menuItem);
+        });
+
+        document.body.appendChild(menu);
+
+        // Remove menu when clicking outside
+        setTimeout(() => {
+            document.addEventListener('click', function removeMenu() {
+                menu.remove();
+                document.removeEventListener('click', removeMenu);
+            });
+        }, 100);
     }
 }
