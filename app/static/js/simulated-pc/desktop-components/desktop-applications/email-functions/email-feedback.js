@@ -223,27 +223,38 @@ export class EmailFeedback {
         if (this.totalActions < 5) return; // Minimum actions before suggesting completion
         
         const modal = document.createElement('div');
-        modal.className = 'fixed inset-0 bg-black/50 flex items-center justify-center z-50';
+        modal.className = 'fixed inset-0 bg-black/85 flex items-center justify-center z-50';
         
         modal.innerHTML = `
-            <div class="bg-white rounded-lg p-6 max-w-md mx-4">
+            <div class="bg-gray-800 rounded-lg border border-gray-600 shadow-2xl p-6 max-w-md mx-4">
                 <div class="text-center">
                     <div class="text-4xl mb-4">📧</div>
-                    <h2 class="text-xl font-bold text-gray-900 mb-4">Great Progress!</h2>
-                    <p class="text-gray-700 mb-4">
-                        You've processed ${this.totalActions} emails with ${this.sessionScore} correct decisions 
-                        (${Math.round((this.sessionScore / this.totalActions) * 100)}% accuracy).
+                    <h2 class="text-xl font-bold text-white mb-4">Great Progress!</h2>
+                    <p class="text-gray-300 mb-4">
+                        You've processed <span class="text-yellow-400 font-semibold">${this.totalActions}</span> emails with 
+                        <span class="text-green-400 font-semibold">${this.sessionScore}</span> correct decisions 
+                        (<span class="text-blue-400 font-semibold">${Math.round((this.sessionScore / this.totalActions) * 100)}%</span> accuracy).
                     </p>
-                    <p class="text-gray-600 text-sm mb-6">
+                    <p class="text-gray-400 text-sm mb-6">
                         Feel free to continue practicing or complete your training session now.
                     </p>
+                    
+                    <!-- Progress Indicator -->
+                    <div class="mb-6">
+                        <div class="w-full bg-gray-600 rounded-full h-3">
+                            <div class="bg-gradient-to-r from-green-500 to-emerald-500 h-3 rounded-full transition-all duration-1000" 
+                                 style="width: ${(this.sessionScore / this.totalActions) * 100}%"></div>
+                        </div>
+                        <div class="text-xs text-gray-400 mt-1">Training Progress</div>
+                    </div>
+                    
                     <div class="flex space-x-3 justify-center">
                         <button onclick="this.closest('.fixed').remove()" 
-                                class="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 transition-colors">
+                                class="bg-gray-600 text-gray-200 px-4 py-2 rounded hover:bg-gray-500 transition-colors">
                             Continue Training
                         </button>
                         <button onclick="window.emailFeedback?.completeTrainingSession?.(); this.closest('.fixed').remove()" 
-                                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors">
+                                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors font-semibold">
                             Complete Session
                         </button>
                     </div>
@@ -256,12 +267,12 @@ export class EmailFeedback {
         // Store global reference for button handlers
         window.emailFeedback = this;
         
-        // Auto-remove after 8 seconds if user doesn't interact
+        // Auto-remove after 10 seconds if user doesn't interact
         setTimeout(() => {
             if (modal.parentNode) {
                 modal.remove();
             }
-        }, 8000);
+        }, 10000);
     }
 
     /**
@@ -279,71 +290,77 @@ export class EmailFeedback {
      */
     showFeedbackModal(feedbackData) {
         const modal = document.createElement('div');
-        modal.className = 'fixed inset-0 bg-black/75 flex items-center justify-center z-50';
+        modal.className = 'fixed inset-0 bg-black/85 flex items-center justify-center z-50';
         
         const { feedback } = feedbackData;
         const resultClass = feedback.result === 'correct' ? 'correct' : 'incorrect';
-        const borderColor = feedback.result === 'correct' ? '#22c55e' : '#ef4444';
-        const bgColor = feedback.result === 'correct' ? '#f0fdf4' : '#fef2f2';
+        const resultColor = feedback.result === 'correct' ? '#22c55e' : '#ef4444';
+        const bgColor = feedback.result === 'correct' ? '#064e3b' : '#7f1d1d';
         
         modal.innerHTML = `
-            <div class="bg-white rounded-lg p-6 max-w-lg mx-4 max-h-96 overflow-y-auto">
+            <div class="bg-gray-800 rounded-lg border border-gray-600 shadow-2xl p-6 max-w-lg mx-4 max-h-96 overflow-y-auto">
                 <div class="text-center mb-6">
                     <div class="text-6xl mb-3">${feedback.result === 'correct' ? '✅' : '❌'}</div>
-                    <h2 class="text-xl font-bold mb-2" style="color: ${feedback.result === 'correct' ? '#059669' : '#dc2626'}">${feedback.title}</h2>
-                    <p class="text-gray-700">${feedback.message}</p>
+                    <h2 class="text-xl font-bold mb-2 text-white" style="color: ${resultColor}">${feedback.title}</h2>
+                    <p class="text-gray-300">${feedback.message}</p>
                 </div>
 
                 <div class="space-y-4">
                     <!-- Email Details -->
-                    <div class="bg-gray-50 rounded-lg p-3">
-                        <h3 class="font-semibold text-gray-900 mb-2">📧 Email Details</h3>
-                        <div class="text-sm text-gray-600 space-y-1">
-                            <div><strong>From:</strong> ${feedbackData.emailSender}</div>
-                            <div><strong>Subject:</strong> ${feedbackData.emailSubject}</div>
-                            <div><strong>Your Action:</strong> ${feedbackData.playerAction.charAt(0).toUpperCase() + feedbackData.playerAction.slice(1)}</div>
-                            <div><strong>Email Type:</strong> ${feedbackData.isSuspicious ? 'Suspicious/Phishing' : 'Legitimate'}</div>
+                    <div class="bg-gray-700 rounded-lg p-3 border border-gray-600">
+                        <h3 class="font-semibold text-white mb-2">📧 Email Details</h3>
+                        <div class="text-sm text-gray-300 space-y-1">
+                            <div><strong class="text-gray-200">From:</strong> ${feedbackData.emailSender}</div>
+                            <div><strong class="text-gray-200">Subject:</strong> ${feedbackData.emailSubject}</div>
+                            <div><strong class="text-gray-200">Your Action:</strong> ${feedbackData.playerAction.charAt(0).toUpperCase() + feedbackData.playerAction.slice(1)}</div>
+                            <div><strong class="text-gray-200">Email Type:</strong> <span class="${feedbackData.isSuspicious ? 'text-red-400' : 'text-green-400'}">${feedbackData.isSuspicious ? 'Suspicious/Phishing' : 'Legitimate'}</span></div>
                         </div>
                     </div>
 
                     ${feedback.redFlags.length > 0 ? `
-                    <div class="bg-red-50 border border-red-200 rounded-lg p-3">
-                        <h3 class="font-semibold text-red-800 mb-2">🚩 Red Flags Identified</h3>
-                        <ul class="text-sm text-red-700 space-y-1">
-                            ${feedback.redFlags.map(flag => `<li>• ${flag}</li>`).join('')}
+                    <div class="bg-red-900/30 border border-red-700 rounded-lg p-3">
+                        <h3 class="font-semibold text-red-400 mb-2">🚩 Red Flags Identified</h3>
+                        <ul class="text-sm text-red-300 space-y-1">
+                            ${feedback.redFlags.map(flag => `<li class="flex items-start"><span class="text-red-500 mr-2">•</span>${flag}</li>`).join('')}
                         </ul>
                     </div>
                     ` : ''}
 
                     ${feedback.goodSigns.length > 0 ? `
-                    <div class="bg-green-50 border border-green-200 rounded-lg p-3">
-                        <h3 class="font-semibold text-green-800 mb-2">✅ Positive Indicators</h3>
-                        <ul class="text-sm text-green-700 space-y-1">
-                            ${feedback.goodSigns.map(sign => `<li>• ${sign}</li>`).join('')}
+                    <div class="bg-green-900/30 border border-green-700 rounded-lg p-3">
+                        <h3 class="font-semibold text-green-400 mb-2">✅ Positive Indicators</h3>
+                        <ul class="text-sm text-green-300 space-y-1">
+                            ${feedback.goodSigns.map(sign => `<li class="flex items-start"><span class="text-green-500 mr-2">•</span>${sign}</li>`).join('')}
                         </ul>
                     </div>
                     ` : ''}
 
-                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                        <h3 class="font-semibold text-blue-800 mb-2">💡 Security Tips</h3>
-                        <ul class="text-sm text-blue-700 space-y-1">
-                            ${feedback.tips.map(tip => `<li>• ${tip}</li>`).join('')}
+                    <div class="bg-blue-900/30 border border-blue-700 rounded-lg p-3">
+                        <h3 class="font-semibold text-blue-400 mb-2">💡 Security Tips</h3>
+                        <ul class="text-sm text-blue-300 space-y-1">
+                            ${feedback.tips.map(tip => `<li class="flex items-start"><span class="text-blue-500 mr-2">•</span>${tip}</li>`).join('')}
                         </ul>
                     </div>
 
                     <!-- Session Progress -->
-                    <div class="bg-gray-50 rounded-lg p-3">
-                        <h3 class="font-semibold text-gray-900 mb-2">📊 Your Progress</h3>
-                        <div class="text-sm text-gray-600">
-                            <div>Correct Actions: ${this.sessionScore}/${this.totalActions}</div>
-                            <div>Accuracy: ${this.totalActions > 0 ? Math.round((this.sessionScore / this.totalActions) * 100) : 0}%</div>
+                    <div class="bg-gray-700 rounded-lg p-3 border border-gray-600">
+                        <h3 class="font-semibold text-white mb-2">📊 Your Progress</h3>
+                        <div class="text-sm text-gray-300">
+                            <div class="mb-2">Correct Actions: <span class="text-green-400 font-semibold">${this.sessionScore}</span>/<span class="text-gray-200">${this.totalActions}</span></div>
+                            <div class="mb-3">Accuracy: <span class="text-yellow-400 font-semibold">${this.totalActions > 0 ? Math.round((this.sessionScore / this.totalActions) * 100) : 0}%</span></div>
+                            
+                            <!-- Progress Bar -->
+                            <div class="w-full bg-gray-600 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full transition-all duration-500" 
+                                     style="width: ${this.totalActions > 0 ? (this.sessionScore / this.totalActions) * 100 : 0}%"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="text-center mt-6">
                     <button onclick="this.closest('.fixed').remove()" 
-                            class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors">
+                            class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors font-semibold">
                         Continue Training
                     </button>
                 </div>
@@ -352,12 +369,12 @@ export class EmailFeedback {
         
         document.body.appendChild(modal);
         
-        // Auto-remove after 10 seconds if user doesn't interact
+        // Auto-remove after 12 seconds if user doesn't interact
         setTimeout(() => {
             if (modal.parentNode) {
                 modal.remove();
             }
-        }, 10000);
+        }, 12000);
     }
 
     /**
@@ -411,28 +428,44 @@ export class EmailFeedback {
     showSessionSummary() {
         const stats = this.getSessionStats();
         const modal = document.createElement('div');
-        modal.className = 'fixed inset-0 bg-black/75 flex items-center justify-center z-50';
+        modal.className = 'fixed inset-0 bg-black/85 flex items-center justify-center z-50';
         
-        const accuracyClass = stats.accuracy >= 80 ? 'text-green-600' : stats.accuracy >= 60 ? 'text-yellow-600' : 'text-red-600';
+        const accuracyClass = stats.accuracy >= 80 ? 'text-green-400' : stats.accuracy >= 60 ? 'text-yellow-400' : 'text-red-400';
         const emoji = stats.accuracy >= 80 ? '🏆' : stats.accuracy >= 60 ? '👍' : '📚';
+        const bgGradient = stats.accuracy >= 80 ? 'from-green-600 to-emerald-600' : stats.accuracy >= 60 ? 'from-yellow-600 to-orange-600' : 'from-red-600 to-pink-600';
         
         modal.innerHTML = `
-            <div class="bg-white rounded-lg p-8 max-w-md mx-4">
+            <div class="bg-gray-800 rounded-lg border border-gray-600 shadow-2xl p-8 max-w-md mx-4">
                 <div class="text-center">
                     <div class="text-6xl mb-4">${emoji}</div>
-                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Email Security Training Complete!</h2>
+                    <h2 class="text-2xl font-bold text-white mb-4">Email Security Training Complete!</h2>
                     
                     <div class="space-y-3 mb-6">
                         <div class="text-lg">
-                            <span class="font-semibold">Final Score:</span>
-                            <span class="${accuracyClass} font-bold text-xl"> ${stats.accuracy}%</span>
+                            <span class="font-semibold text-gray-200">Final Score:</span>
+                            <span class="${accuracyClass} font-bold text-2xl"> ${stats.accuracy}%</span>
                         </div>
-                        <div class="text-gray-600">
-                            Correct Actions: ${stats.correctActions} out of ${stats.totalActions}
+                        
+                        <!-- Animated Progress Ring -->
+                        <div class="relative w-24 h-24 mx-auto mb-4">
+                            <svg class="w-24 h-24 transform -rotate-90" viewBox="0 0 36 36">
+                                <path class="text-gray-600" stroke="currentColor" stroke-width="2" fill="none" 
+                                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                <path class="${accuracyClass}" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"
+                                      stroke-dasharray="${stats.accuracy}, 100" 
+                                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span class="${accuracyClass} text-lg font-bold">${stats.accuracy}%</span>
+                            </div>
+                        </div>
+                        
+                        <div class="text-gray-300 text-sm">
+                            Correct Actions: <span class="text-green-400 font-semibold">${stats.correctActions}</span> out of <span class="text-gray-200">${stats.totalActions}</span>
                         </div>
                     </div>
                     
-                    <div class="text-sm text-gray-600 mb-6">
+                    <div class="text-sm text-gray-400 mb-6 p-3 bg-gray-700 rounded-lg border border-gray-600">
                         ${stats.accuracy >= 80 ? 
                             'Excellent work! You demonstrated strong email security awareness.' :
                             stats.accuracy >= 60 ?
@@ -442,7 +475,7 @@ export class EmailFeedback {
                     </div>
                     
                     <button onclick="this.closest('.fixed').remove()" 
-                            class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold">
+                            class="bg-gradient-to-r ${bgGradient} text-white px-8 py-3 rounded-lg hover:shadow-lg transition-all duration-300 font-semibold">
                         Continue to Next Level
                     </button>
                 </div>
