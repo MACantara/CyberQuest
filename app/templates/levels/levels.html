@@ -117,8 +117,9 @@
                         </div>
 
                         <!-- Action Button -->
-                        <a href="{{ url_for('levels.level_detail', level_id=level.id) }}" 
-                           class="level-button w-full inline-flex items-center justify-center px-4 py-3 bg-gray-400 dark:bg-gray-600 text-white font-semibold rounded-lg cursor-not-allowed opacity-60">
+                        <a href="#" 
+                           class="level-button w-full inline-flex items-center justify-center px-4 py-3 bg-gray-400 dark:bg-gray-600 text-white font-semibold rounded-lg cursor-not-allowed opacity-60"
+                           data-level-id="{{ level.id }}">
                             <i class="bi bi-lock mr-2"></i>
                             Locked
                         </a>
@@ -168,6 +169,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 levelButton.innerHTML = '<i class="bi bi-play-circle mr-2"></i>Replay Level';
                 levelButton.className = 'level-button w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-green-500/25 shadow-lg hover:shadow-xl';
+                levelButton.href = '#';
                 levelButton.style.pointerEvents = 'auto';
                 
             } else if (isComingSoon) {
@@ -179,6 +181,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 levelButton.innerHTML = '<i class="bi bi-clock mr-2"></i>Coming Soon';
                 levelButton.className = 'level-button w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-semibold rounded-lg cursor-not-allowed opacity-80';
+                levelButton.href = '#';
                 levelButton.style.pointerEvents = 'none';
                 
             } else if (isUnlocked) {
@@ -190,6 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 levelButton.innerHTML = '<i class="bi bi-play-circle mr-2"></i>Start Level';
                 levelButton.className = 'level-button w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/25 shadow-lg hover:shadow-xl';
+                levelButton.href = '#';
                 levelButton.style.pointerEvents = 'auto';
                 
             } else {
@@ -201,7 +205,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 levelButton.innerHTML = '<i class="bi bi-lock mr-2"></i>Locked';
                 levelButton.className = 'level-button w-full inline-flex items-center justify-center px-4 py-3 bg-gray-400 dark:bg-gray-600 text-white font-semibold rounded-lg cursor-not-allowed opacity-60';
+                levelButton.href = '#';
                 levelButton.style.pointerEvents = 'none';
+            }
+            
+            // Add click handler for level start buttons
+            if (isUnlocked || isCompleted) {
+                levelButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    startLevel(levelId);
+                });
             }
             
             // Add click handler for locked levels (not coming soon)
@@ -226,6 +240,14 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('total-xp').textContent = totalXP;
         document.getElementById('progress-bar').style.width = `${progressPercentage}%`;
         document.getElementById('progress-percentage').textContent = progressPercentage;
+    }
+    
+    function startLevel(levelId) {
+        // Store autostart flag and navigate to level start
+        sessionStorage.setItem('cyberquest_auto_audio', 'true');
+        
+        // Navigate to level start URL
+        window.location.href = `/levels/${levelId}/start?autostart=true`;
     }
     
     function showLockedLevelModal(levelId) {
