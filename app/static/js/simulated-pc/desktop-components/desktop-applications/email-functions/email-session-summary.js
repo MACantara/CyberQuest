@@ -66,30 +66,30 @@ export class EmailSessionSummary {
                 <div class="flex flex-col sm:flex-row gap-4 justify-center mt-8">
                     ${levelCompleted ? `
                         <button onclick="window.emailSessionSummary?.completeLevel2?.()" 
-                                class="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-8 py-3 rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-300 font-semibold text-lg shadow-lg">
+                                class="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-8 py-3 rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-300 font-semibold text-lg shadow-lg cursor-pointer">
                             <i class="bi bi-trophy mr-2"></i>
                             Continue to Next Level
                         </button>
                         <button onclick="window.emailSessionSummary?.reviewMistakes?.()" 
-                                class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold border border-blue-500">
+                                class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold border border-blue-500 cursor-pointer">
                             <i class="bi bi-eye mr-2"></i>
                             Review Mistakes
                         </button>
                     ` : `
                         <button onclick="window.emailSessionSummary?.retryTraining?.()" 
-                                class="bg-orange-600 text-white px-8 py-3 rounded-lg hover:bg-orange-700 transition-colors font-semibold text-lg border border-orange-500">
+                                class="bg-orange-600 text-white px-8 py-3 rounded-lg hover:bg-orange-700 transition-colors font-semibold text-lg border border-orange-500 cursor-pointer">
                             <i class="bi bi-arrow-clockwise mr-2"></i>
                             Retry Training
                         </button>
                         <button onclick="window.emailSessionSummary?.reviewMistakes?.()" 
-                                class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold border border-blue-500">
+                                class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold border border-blue-500 cursor-pointer">
                             <i class="bi bi-eye mr-2"></i>
                             Review Mistakes
                         </button>
                     `}
                     
                     <button onclick="this.closest('.fixed').remove()" 
-                            class="bg-gray-600 text-gray-200 px-6 py-3 rounded-lg hover:bg-gray-500 transition-colors font-semibold border border-gray-500">
+                            class="bg-gray-600 text-gray-200 px-6 py-3 rounded-lg hover:bg-gray-500 transition-colors font-semibold border border-gray-500 cursor-pointer">
                         Close Summary
                     </button>
                 </div>
@@ -470,7 +470,7 @@ export class EmailSessionSummary {
                 
                 <div class="text-center mt-6">
                     <button onclick="this.closest('.fixed').remove()" 
-                            class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors border border-blue-500">
+                            class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors border border-blue-500 cursor-pointer">
                         Close Review
                     </button>
                 </div>
