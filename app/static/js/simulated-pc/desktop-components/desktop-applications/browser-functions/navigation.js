@@ -1,8 +1,8 @@
 export class BrowserNavigation {
     constructor(browserApp) {
         this.browserApp = browserApp;
-        this.history = ['https://suspicious-site.com'];
-        this.currentIndex = 0;
+        this.history = []; // Start with empty history
+        this.currentIndex = -1; // No current page initially
         this.isLoading = false;
     }
 
@@ -182,7 +182,7 @@ export class BrowserNavigation {
     }
 
     getCurrentUrl() {
-        return this.history[this.currentIndex] || '';
+        return this.currentIndex >= 0 ? this.history[this.currentIndex] : '';
     }
 
     getHistory() {
