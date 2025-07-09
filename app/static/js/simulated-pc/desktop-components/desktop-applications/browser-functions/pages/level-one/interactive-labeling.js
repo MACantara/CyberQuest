@@ -50,7 +50,6 @@ export class InteractiveLabeling {
             return;
         }
 
-        // Clean up previous article if any
         this.cleanupCurrentElements();
         
         this.currentArticleIndex = articleIndex;
@@ -59,13 +58,9 @@ export class InteractiveLabeling {
         console.log(`Loading article ${articleIndex + 1} of ${this.totalArticles}:`, 
                     articleData.title?.substring(0, 50) || 'Unknown');
 
-        // Add styles for interactive elements
-        this.ui.addInteractiveStyles();
-        
-        // Load analysis from batch JSON data
+        // No need to add custom styles anymore
         this.loadAnalysisFromBatch(articleData);
         
-        // Wait for DOM to be ready, then make elements interactive
         setTimeout(() => {
             this.makeElementsInteractive();
             this.ui.showInstructions();
@@ -91,22 +86,28 @@ export class InteractiveLabeling {
     }
 
     cleanupCurrentElements() {
-        // Clear interactive elements more thoroughly
+        // Clear interactive elements and remove Tailwind classes
         document.querySelectorAll('.interactive-element').forEach(el => {
-            el.classList.remove('interactive-element', 'labeled-fake', 'labeled-real', 'correct', 'incorrect');
+            el.classList.remove(
+                'interactive-element', 'cursor-pointer', 'transition-all', 'duration-300', 
+                'relative', 'rounded', 'p-1', 'm-1',
+                'bg-red-600/20', 'border-2', 'border-red-500',
+                'bg-green-600/20', 'border-green-500',
+                'bg-green-600/30', 'border-green-500',
+                'bg-red-600/30', 'border-red-500',
+                'hover:bg-blue-600/10', 'hover:shadow-lg'
+            );
             el.removeAttribute('data-element-id');
             el.removeAttribute('data-label');
             el.removeAttribute('data-reasoning');
             el.removeAttribute('title');
             
-            // Remove event listeners safely
             if (el._interactiveClickHandler) {
                 el.removeEventListener('click', el._interactiveClickHandler);
                 delete el._interactiveClickHandler;
             }
         });
         
-        // Clear the labeled elements map
         this.labeledElements.clear();
     }
 
@@ -167,7 +168,12 @@ export class InteractiveLabeling {
         interactiveElements.forEach(elementDef => {
             const element = document.querySelector(elementDef.selector);
             if (element) {
-                element.classList.add('interactive-element');
+                // Add Tailwind classes for interactive styling
+                element.classList.add(
+                    'interactive-element', 'cursor-pointer', 'transition-all', 'duration-300', 
+                    'relative', 'rounded', 'p-1', 'm-1',
+                    'hover:bg-blue-600/10', 'hover:shadow-lg'
+                );
                 element.setAttribute('data-element-id', elementDef.id);
                 element.setAttribute('data-label', elementDef.label);
                 element.setAttribute('data-reasoning', elementDef.reasoning);
@@ -208,22 +214,25 @@ export class InteractiveLabeling {
         const elementData = this.labeledElements.get(elementId);
         if (!elementData) return;
         
+        // Remove previous styling
+        elementData.element.classList.remove(
+            'bg-red-600/20', 'border-2', 'border-red-500',
+            'bg-green-600/20', 'border-green-500'
+        );
+        
         // Toggle between fake/real/unlabeled
         if (!elementData.labeled) {
-            // First click - mark as fake
+            // First click - mark as fake with Tailwind classes
             elementData.labeled = true;
             elementData.labeledAsFake = true;
-            elementData.element.classList.add('labeled-fake');
-            elementData.element.classList.remove('labeled-real');
+            elementData.element.classList.add('bg-red-600/20', 'border-2', 'border-red-500');
         } else if (elementData.labeledAsFake) {
-            // Second click - mark as real
+            // Second click - mark as real with Tailwind classes
             elementData.labeledAsFake = false;
-            elementData.element.classList.add('labeled-real');
-            elementData.element.classList.remove('labeled-fake');
+            elementData.element.classList.add('bg-green-600/20', 'border-2', 'border-green-500');
         } else {
             // Third click - remove label
             elementData.labeled = false;
-            elementData.element.classList.remove('labeled-real', 'labeled-fake');
         }
         
         this.ui.updateInstructions();
