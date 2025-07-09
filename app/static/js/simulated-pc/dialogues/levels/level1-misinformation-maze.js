@@ -43,6 +43,11 @@ export class Level1MisinformationMazeDialogue extends BaseDialogue {
                     
                     // Navigate directly to the challenge1 page
                     browserApp.navigation.navigateToUrl('https://daily-politico-news.com/breaking-news');
+                    
+                    // Wait for page to load, then trigger challenge1 dialogue
+                    setTimeout(() => {
+                        this.triggerChallenge1Dialogue();
+                    }, 1000);
                 }
                 
                 // Mark the challenge as started
@@ -51,6 +56,18 @@ export class Level1MisinformationMazeDialogue extends BaseDialogue {
                 console.error('Failed to open browser:', error);
             }
         }
+    }
+
+    triggerChallenge1Dialogue() {
+        // Ensure no other dialogue is active
+        if (window.currentDialogue) {
+            window.currentDialogue.cleanup();
+        }
+        
+        // Start the challenge1 dialogue
+        const challenge1Dialogue = new Challenge1Dialogue(this.desktop);
+        window.currentDialogue = challenge1Dialogue;
+        challenge1Dialogue.start();
     }
 
     getFinalButtonText() {
