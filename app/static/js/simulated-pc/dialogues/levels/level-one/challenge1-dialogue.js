@@ -23,23 +23,12 @@ export class Challenge1Dialogue extends BaseDialogue {
     }
 
     async onComplete() {
-        // Navigate to challenge 1
-        if (this.desktop?.windowManager) {
-            try {
-                const browserApp = this.desktop.windowManager.applications.get('browser');
-                if (browserApp) {
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                    browserApp.navigation.navigateToUrl('https://daily-politico-news.com/breaking-news');
-                }
-                localStorage.setItem('cyberquest_challenge1_started', 'true');
-            } catch (error) {
-                console.error('Failed to navigate to challenge 1:', error);
-            }
-        }
+        // Just mark the challenge as started - navigation is handled elsewhere
+        localStorage.setItem('cyberquest_challenge1_started', 'true');
     }
 
     getFinalButtonText() {
-        return 'Investigate Story';
+        return 'Begin Investigation';
     }
 
     static shouldAutoStart() {
