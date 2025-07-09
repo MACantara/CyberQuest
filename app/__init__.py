@@ -58,12 +58,7 @@ def create_app(config_name=None):
     from app.routes import register_blueprints
     register_blueprints(app)
 
-    # Register new news API blueprint
-    from .routes.news_api import news_api_bp
-    from .routes.ai_analysis import ai_analysis_bp
-    
-    app.register_blueprint(news_api_bp)
-    app.register_blueprint(ai_analysis_bp)
+    # Remove the duplicate registrations - they're now handled in routes/__init__.py
     
     # Create database tables only in non-Vercel environments
     with app.app_context():
