@@ -37,7 +37,7 @@ def convert_batch_to_article_format(batch_data):
     """Convert batch JSON format to article format expected by frontend"""
     articles = []
     
-    for item in batch_data:
+    for article_id, item in batch_data.items():
         if not item.get('article_metadata'):
             continue
             
@@ -57,7 +57,7 @@ def convert_batch_to_article_format(batch_data):
         
         # Extract article data
         article = {
-            'id': f'article_{len(articles)}',
+            'id': f'article_{article_id}',
             'author': metadata.get('author', 'Unknown'),
             'published': metadata.get('published_date', ''),
             'title': metadata.get('title', ''),
@@ -66,6 +66,7 @@ def convert_batch_to_article_format(batch_data):
             'is_real': metadata.get('actual_label', '').lower() == 'real',
             'source': metadata.get('source', 'unknown'),
             'article_type': metadata.get('article_type', 'unknown'),
+            'batchAnalysis': item,  # Preserve original batch structure for interactive labeling
             'ai_analysis': {
                 'clickable_elements': item.get('clickable_elements', []),
                 'article_analysis': {
