@@ -55,9 +55,14 @@ export class PageRenderer {
         contentElement.innerHTML = `
             <div class="min-h-screen bg-white flex items-center justify-center">
                 <div class="text-center">
-                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                    <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-6"></div>
                     <h2 class="text-xl font-semibold text-gray-800 mb-2">Loading page...</h2>
-                    <p class="text-gray-600">Please wait while we fetch the content</p>
+                    <p class="text-gray-600 mb-4">Please wait while we fetch the content</p>
+                    <div class="flex items-center justify-center space-x-2 text-sm text-gray-500">
+                        <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce"></div>
+                        <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+                        <div class="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                    </div>
                 </div>
             </div>
         `;
