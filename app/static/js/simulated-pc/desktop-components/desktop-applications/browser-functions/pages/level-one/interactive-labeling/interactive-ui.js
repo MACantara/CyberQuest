@@ -28,13 +28,13 @@ export class InteractiveUI {
             <div class="flex flex-col gap-2 mb-4">
                 <div class="flex items-center gap-2 text-xs text-gray-300">
                     <div class="w-4 h-4 rounded bg-red-600 bg-opacity-20 border-2 border-red-500 flex items-center justify-center">
-                        <i class="bi bi-x-circle text-red-500 text-xs"></i>
+                        <i class="bi bi-x-circle text-red-500 text-sm"></i>
                     </div>
                     <span>Fake/Suspicious</span>
                 </div>
                 <div class="flex items-center gap-2 text-xs text-gray-300">
                     <div class="w-4 h-4 rounded bg-green-600 bg-opacity-20 border-2 border-green-500 flex items-center justify-center">
-                        <i class="bi bi-check-circle text-green-500 text-xs"></i>
+                        <i class="bi bi-check-circle text-green-500 text-sm"></i>
                     </div>
                     <span>Real/Legitimate</span>
                 </div>
