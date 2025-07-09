@@ -1,4 +1,4 @@
-export class NavigationControls {
+export class ProgressBar {
     static create(currentIndex, totalArticles) {
         return `
             <div class="bg-white/10 backdrop-blur-sm rounded p-4 border border-white border-opacity-20">

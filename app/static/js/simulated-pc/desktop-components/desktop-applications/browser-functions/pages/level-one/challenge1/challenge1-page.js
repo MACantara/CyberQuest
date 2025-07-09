@@ -3,7 +3,7 @@ import { EventHandlers } from './utils/event-handlers.js';
 import { ArticleFormatter } from './utils/article-formatter.js';
 import { ArticleImage } from './components/article-image.js';
 import { SharingBox } from './components/sharing-box.js';
-import { NavigationControls } from './components/navigation-controls.js';
+import { ProgressBar } from './components/progress-bar.js';
 import { AnalysisSection } from './components/analysis-section.js';
 import { ArticleService } from './services/article-service.js';
 
@@ -93,8 +93,8 @@ class Challenge1PageClass extends BasePage {
                             <p style="margin: 5px 0 0 0; color: #9ca3af;">Your Source for News and Analysis</p>
                         </div>
                         
-                        <!-- Article Navigation -->
-                        ${NavigationControls.create(this.currentArticleIndex, this.articlesData.length)}
+                        <!-- Progress Bar -->
+                        ${ProgressBar.create(this.currentArticleIndex, this.articlesData.length)}
                     </div>
                 </header>
                 
