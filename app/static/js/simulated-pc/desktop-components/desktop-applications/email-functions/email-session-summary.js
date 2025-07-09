@@ -17,7 +17,7 @@ export class EmailSessionSummary {
         const levelCompleted = sessionStats.accuracy >= 70; // 70% threshold for completion
         
         modal.innerHTML = `
-            <div class="bg-gray-800 text-white rounded-lg p-8 max-w-4xl mx-4 max-h-96 overflow-y-auto border border-gray-600 shadow-2xl">
+            <div class="bg-gray-800 text-white rounded-lg p-8 max-w-4xl mx-4 max-h-128 overflow-y-auto border border-gray-600 shadow-2xl">
                 <div class="text-center mb-8">
                     <div class="text-6xl mb-4">${emoji}</div>
                     <h2 class="text-3xl font-bold text-white mb-4">
