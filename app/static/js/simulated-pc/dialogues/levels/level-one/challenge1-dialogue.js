@@ -5,19 +5,22 @@ export class Challenge1Dialogue extends BaseDialogue {
         super(desktop, character);
         this.messages = [
             {
-                text: "Excellent! Now for your first real challenge. You've discovered a viral news story about a senator's email hack that's spreading rapidly across social media."
+                text: "Excellent! Now for your first real challenge. You'll analyze multiple news articles using our Interactive Analysis system to identify misinformation and credible sources."
             },
             {
-                text: "This is a perfect example of how misinformation can influence public opinion, especially during election periods. Your job is to determine if this story is legitimate or fabricated."
+                text: "You'll work through several articles where different elements can be labeled as 'fake' or 'real'. Click on titles, author names, content sections, and other parts to classify them based on credibility indicators."
             },
             {
-                text: "Pay close attention to the website design, the language used, and most importantly - check if other credible news sources are reporting the same story."
+                text: "Look for red flags like sensational headlines, questionable sources, missing author credentials, emotional manipulation, and biased language. Pay attention to factual accuracy and source verification."
             },
             {
-                text: "Use the verification tools you learned about in the tutorial. Look for red flags like emotional language, missing author information, and suspicious website details."
+                text: "The Interactive Analysis panel on the right will guide you through the process. It shows your progress and provides feedback as you work. Each article is powered by AI-analyzed training data."
             },
             {
-                text: "Remember: Real news stories are typically reported by multiple credible sources. If only one questionable website is covering a major story, that's a huge red flag!"
+                text: "Remember: Click elements once to mark as 'fake/suspicious', twice to mark as 'real/legitimate', and three times to remove the label. Take your time to analyze each article thoroughly."
+            },
+            {
+                text: "After labeling elements in each article, submit your analysis to get feedback. You'll see detailed results and learn from any mistakes before moving to the next article."
             }
         ];
     }
@@ -28,12 +31,11 @@ export class Challenge1Dialogue extends BaseDialogue {
     }
 
     getFinalButtonText() {
-        return 'Begin Investigation';
+        return 'Begin Interactive Analysis';
     }
 
     static shouldAutoStart() {
         const challenge1Started = localStorage.getItem('cyberquest_challenge1_started');
-        const tutorialCompleted = localStorage.getItem('cyberquest_tutorial_completed');
-        return tutorialCompleted && !challenge1Started;
+        return !challenge1Started;
     }
 }
