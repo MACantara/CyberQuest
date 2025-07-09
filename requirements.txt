@@ -40,3 +40,6 @@ zxcvbn
 
 # HTTP client for external API requests
 Requests
+
+# Google Gemini AI
+google-genai
