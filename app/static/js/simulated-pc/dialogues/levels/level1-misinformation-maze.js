@@ -41,12 +41,12 @@ export class Level1MisinformationMazeDialogue extends BaseDialogue {
                     // Wait a moment for the browser to initialize
                     await new Promise(resolve => setTimeout(resolve, 500));
                     
-                    // Navigate to the tutorial page using the navigation component
-                    browserApp.navigation.navigateToUrl('https://cyberquest.academy/level/1/tutorial');
+                    // Navigate directly to the challenge1 page
+                    browserApp.navigation.navigateToUrl('https://daily-politico-news.com/breaking-news');
                 }
                 
-                // Mark the tutorial as started
-                localStorage.setItem('cyberquest_level_1_tutorial_started', 'true');
+                // Mark the challenge as started
+                localStorage.setItem('cyberquest_challenge1_started', 'true');
             } catch (error) {
                 console.error('Failed to open browser:', error);
             }
