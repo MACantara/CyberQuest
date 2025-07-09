@@ -13,7 +13,7 @@ def filter_english_articles():
     project_root = Path(__file__).parent.parent
     
     # Define input and output file paths
-    input_file = project_root / 'app' / 'static' / 'js' / 'simulated-pc' / 'levels' / 'level-one' / 'data' / 'news_articles.csv'
+    input_file = project_root / 'data' / 'news_articles.csv'
     output_file = project_root / 'data' / 'processed' / 'english_news_articles.csv'
     
     # Create output directory if it doesn't exist
