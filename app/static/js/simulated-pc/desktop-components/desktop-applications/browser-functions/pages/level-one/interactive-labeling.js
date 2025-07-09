@@ -21,20 +21,76 @@ export class InteractiveLabeling {
         // Add styles for interactive elements
         this.addInteractiveStyles();
         
-        // Get AI analysis for this article
-        try {
-            this.aiAnalysis = await this.getAIAnalysis(pageConfig.articleData);
-            console.log('AI Analysis received:', this.aiAnalysis);
-        } catch (error) {
-            console.error('Failed to get AI analysis:', error);
-            this.aiAnalysis = null;
-        }
+        // Use fallback analysis since AI analysis is standalone
+        this.aiAnalysis = this.createFallbackAnalysis(pageConfig.articleData);
+        console.log('Using fallback analysis for article labeling');
         
         // Make article elements interactive
         this.makeElementsInteractive();
         
         // Show instructions
         this.showInstructions();
+    }
+
+    createFallbackAnalysis(articleData) {
+        const is_real = articleData.is_real;
+        
+        return {
+            "clickable_elements": [
+                {
+                    "element_id": "title",
+                    "element_name": "Article Title",
+                    "selector": "h2",
+                    "expected_fake": !is_real,
+                    "reasoning": is_real ? "Real news typically uses factual, professional headlines" : "Fake news often uses sensational or emotionally charged headlines",
+                    "difficulty": "easy"
+                },
+                {
+                    "element_id": "author",
+                    "element_name": "Author Information",
+                    "selector": "main > div:nth-child(2)",
+                    "expected_fake": !is_real,
+                    "reasoning": is_real ? "Check for proper author attribution and credentials" : "Fake news often lacks proper author information",
+                    "difficulty": "medium"
+                },
+                {
+                    "element_id": "content",
+                    "element_name": "Article Content",
+                    "selector": "main > div:nth-child(4)",
+                    "expected_fake": !is_real,
+                    "reasoning": is_real ? "Analyze the content for factual accuracy and bias" : "Look for emotional manipulation and unsubstantiated claims",
+                    "difficulty": "hard"
+                },
+                {
+                    "element_id": "sharing",
+                    "element_name": "Social Sharing Section",
+                    "selector": "[style*='sharing']",
+                    "expected_fake": !is_real,
+                    "reasoning": is_real ? "Legitimate news doesn't pressure immediate sharing" : "Fake news often uses urgent sharing tactics",
+                    "difficulty": "medium"
+                }
+            ],
+            "article_analysis": {
+                "overall_credibility": is_real ? "high" : "low",
+                "key_indicators": is_real ? [
+                    "Proper attribution and sourcing",
+                    "Professional language and tone",
+                    "Factual reporting without bias"
+                ] : [
+                    "Sensational headlines",
+                    "Emotional manipulation",
+                    "Lack of credible sources",
+                    "Urgent sharing pressure"
+                ],
+                "red_flags": is_real ? [] : [
+                    "Clickbait headline",
+                    "Anonymous or questionable author",
+                    "Emotional rather than factual content",
+                    "Pressure to share immediately"
+                ],
+                "educational_notes": `This article demonstrates ${is_real ? "professional journalism standards" : "common misinformation tactics used to manipulate readers"}`
+            }
+        };
     }
 
     addInteractiveStyles() {
@@ -323,31 +379,6 @@ export class InteractiveLabeling {
         document.head.appendChild(style);
     }
 
-    async getAIAnalysis(articleData) {
-        try {
-            const response = await fetch('/api/ai-analysis/analyze-article', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    article: articleData
-                })
-            });
-            
-            const data = await response.json();
-            
-            if (data.success) {
-                return data.analysis;
-            } else {
-                throw new Error(data.error || 'AI analysis failed');
-            }
-        } catch (error) {
-            console.error('Error fetching AI analysis:', error);
-            throw error;
-        }
-    }
-
     makeElementsInteractive() {
         // Wait for DOM to be ready
         setTimeout(() => {
@@ -436,7 +467,7 @@ export class InteractiveLabeling {
         const existing = document.querySelector('.labeling-instructions');
         if (existing) existing.remove();
         
-        // Get educational notes from AI analysis
+        // Get educational notes from analysis
         const educationalNotes = this.aiAnalysis?.article_analysis?.educational_notes || 
                                'Click on different parts of the article to label them as fake or real.';
         
@@ -444,8 +475,8 @@ export class InteractiveLabeling {
         instructions.className = 'labeling-instructions';
         instructions.innerHTML = `
             <div class="instructions-header">
-                <span>🤖</span>
-                <span>AI-Powered Analysis</span>
+                <span>🎯</span>
+                <span>Interactive Analysis</span>
             </div>
             <div class="instructions-content">
                 ${educationalNotes}
@@ -462,7 +493,7 @@ export class InteractiveLabeling {
             </div>
             <div class="progress-info">
                 Article ${this.currentArticleIndex + 1} of ${this.totalArticles}
-                ${this.aiAnalysis ? '<br>✅ AI Analysis Active' : '<br>⚠️ Using Fallback Analysis'}
+                <br>📊 Using Training Analysis
             </div>
             <button class="submit-analysis-btn" onclick="window.interactiveLabeling?.submitAnalysis()">
                 Submit Analysis
@@ -564,13 +595,13 @@ export class InteractiveLabeling {
         const scoreClass = results.percentage >= 75 ? 'good' : results.percentage >= 50 ? 'medium' : 'poor';
         const emoji = results.percentage >= 75 ? '🎉' : results.percentage >= 50 ? '👍' : '🤔';
         
-        // Get AI insights for feedback
+        // Get insights for feedback
         const keyIndicators = this.aiAnalysis?.article_analysis?.key_indicators || [];
         const redFlags = this.aiAnalysis?.article_analysis?.red_flags || [];
         
         modal.innerHTML = `
             <div class="feedback-content">
-                <h2>${emoji} AI-Enhanced Analysis Complete!</h2>
+                <h2>${emoji} Analysis Complete!</h2>
                 <div class="feedback-score ${scoreClass}">${results.percentage}%</div>
                 <p>You correctly identified ${results.correctLabels} out of ${results.totalElements} elements.</p>
                 
@@ -585,7 +616,7 @@ export class InteractiveLabeling {
                                 ${detail.status === 'unlabeled' ? 'Not labeled' : 
                                   detail.status === 'correct' ? '✅ Correct' : '❌ Incorrect'}
                                 ${detail.status !== 'unlabeled' ? `<br><small>Expected: ${detail.expected}, You labeled: ${detail.actual}</small>` : ''}
-                                <br><small><em>AI Insight: ${reasoning}</em></small>
+                                <br><small><em>Insight: ${reasoning}</em></small>
                             </div>
                         `;
                     }).join('')}

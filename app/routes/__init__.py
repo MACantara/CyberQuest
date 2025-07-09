@@ -11,7 +11,6 @@ from .logs import logs_bp
 from .levels import levels_bp
 from .api import api_bp
 from .news_api import news_api_bp
-from .ai_analysis import ai_analysis_bp
 
 def register_blueprints(app):
     """Register all blueprints with the Flask app."""
@@ -27,4 +26,3 @@ def register_blueprints(app):
     app.register_blueprint(levels_bp)
     app.register_blueprint(api_bp)
     app.register_blueprint(news_api_bp)
-    app.register_blueprint(ai_analysis_bp)
