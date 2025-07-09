@@ -36,6 +36,7 @@ python scripts/preprocess_english_articles.py --analyze
 
 - Python 3.6+
 - Standard library modules (csv, os, sys, pathlib)
+- `requests` library (for image accessibility verification)
 
 ## Directory Structure
 

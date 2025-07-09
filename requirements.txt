@@ -47,3 +47,4 @@ google-genai
 # Data processing (for preprocessing scripts)
 pandas
 numpy
+requests
