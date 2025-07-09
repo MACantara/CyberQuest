@@ -34,11 +34,30 @@ export class PageRenderer {
                     const articleIndex = challenge1Page?.currentArticleIndex || 0;
                     const totalArticles = challenge1Page?.articlesData?.length || 1;
                     
-                    // Ensure we have valid page config before initializing
-                    if (challenge1Page && pageConfig) {
+                    // Ensure we have valid page config and articles data before initializing
+                    if (challenge1Page && pageConfig && challenge1Page.articlesData && challenge1Page.articlesData.length > 0) {
+                        // Get the current article data (already includes batch analysis from API)
+                        const currentArticle = challenge1Page.articlesData[articleIndex];
+                        
+                        // Update pageConfig with current article data
+                        pageConfig.articleData = currentArticle;
+                        
+                        console.log('Initializing interactive labeling with article:', {
+                            index: articleIndex,
+                            title: currentArticle.title?.substring(0, 50),
+                            hasBatchAnalysis: !!(currentArticle.batchAnalysis),
+                            clickableElements: currentArticle.batchAnalysis?.clickable_elements?.length || 0
+                        });
+                        
                         this.interactiveLabeling.initializeForArticle(pageConfig, articleIndex, totalArticles);
                     } else {
-                        console.warn('Challenge1 page or config not available for interactive labeling');
+                        console.warn('Challenge1 page, config, or articles data not available for interactive labeling');
+                        console.log('Debug info:', {
+                            challenge1Page: !!challenge1Page,
+                            pageConfig: !!pageConfig,
+                            articlesData: challenge1Page?.articlesData?.length || 0,
+                            currentIndex: articleIndex
+                        });
                     }
                 }
                 
