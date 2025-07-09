@@ -1,7 +1,7 @@
 export class ArticleService {
     static async fetchMixedNewsArticles() {
         try {
-            console.log('Fetching news articles for analysis...');
+            console.log('Fetching news articles with AI analysis...');
             
             const response = await fetch('/api/news/mixed-articles');
             
@@ -14,10 +14,12 @@ export class ArticleService {
             if (data.success && data.articles) {
                 console.log('News articles loaded:', {
                     total: data.articles.length,
+                    aiAnalysisAvailable: data.summary.ai_analysis_available || 0,
                     firstArticle: {
                         title: data.articles[0].title.substring(0, 50) + '...',
                         source: data.articles[0].source,
-                        author: data.articles[0].author
+                        author: data.articles[0].author,
+                        hasAiAnalysis: !!data.articles[0].ai_analysis
                     }
                 });
                 
@@ -44,6 +46,23 @@ export class ArticleService {
             }
         } catch (error) {
             console.error('Error fetching news stats:', error);
+            throw error;
+        }
+    }
+
+    static async fetchAnalysisStatus() {
+        try {
+            const response = await fetch('/api/news/analysis-status');
+            const data = await response.json();
+            
+            if (data.success) {
+                return data;
+            } else {
+                console.error('Failed to fetch analysis status:', data.error);
+                throw new Error(data.error || 'Failed to fetch analysis status');
+            }
+        } catch (error) {
+            console.error('Error fetching analysis status:', error);
             throw error;
         }
     }

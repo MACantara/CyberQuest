@@ -9,6 +9,7 @@ export class InteractiveLabeling {
         this.currentArticleIndex = 0;
         this.totalArticles = 0;
         this.aiAnalysis = null;
+        this.analysisSource = 'fallback'; // Track analysis source
     }
 
     async initializeForArticle(pageConfig, articleIndex, totalArticles) {
@@ -21,9 +22,8 @@ export class InteractiveLabeling {
         // Add styles for interactive elements
         this.addInteractiveStyles();
         
-        // Use fallback analysis since AI analysis is standalone
-        this.aiAnalysis = this.createFallbackAnalysis(pageConfig.articleData);
-        console.log('Using fallback analysis for article labeling');
+        // Use AI analysis if available, otherwise fall back to default
+        this.loadAnalysisForArticle(pageConfig.articleData);
         
         // Make article elements interactive
         this.makeElementsInteractive();
@@ -32,7 +32,25 @@ export class InteractiveLabeling {
         this.showInstructions();
     }
 
+    loadAnalysisForArticle(articleData) {
+        // Check if article has AI analysis data
+        if (articleData && articleData.ai_analysis && Object.keys(articleData.ai_analysis).length > 0) {
+            this.aiAnalysis = articleData.ai_analysis;
+            this.analysisSource = 'ai-generated';
+            console.log('Using AI-generated analysis for article:', articleData.title.substring(0, 50));
+        } else {
+            // Fall back to manual analysis
+            this.aiAnalysis = this.createFallbackAnalysis(articleData);
+            this.analysisSource = 'fallback';
+            console.log('Using fallback analysis for article:', articleData?.title?.substring(0, 50) || 'Unknown');
+        }
+    }
+
     createFallbackAnalysis(articleData) {
+        if (!articleData) {
+            return this.getDefaultAnalysis();
+        }
+        
         const is_real = articleData.is_real;
         
         return {
@@ -40,55 +58,107 @@ export class InteractiveLabeling {
                 {
                     "element_id": "title",
                     "element_name": "Article Title",
-                    "selector": "h2",
-                    "expected_fake": !is_real,
-                    "reasoning": is_real ? "Real news typically uses factual, professional headlines" : "Fake news often uses sensational or emotionally charged headlines",
-                    "difficulty": "easy"
+                    "css_selector": "h2",
+                    "expected_label": is_real ? "real" : "fake",
+                    "reasoning": is_real ? "Real news uses factual headlines" : "Fake news often uses sensational headlines",
+                    "difficulty": "easy",
+                    "red_flags": is_real ? [] : ["Sensational language", "Emotional manipulation", "Clickbait"],
+                    "credibility_indicators": is_real ? ["Professional tone", "Factual language", "Proper grammar"] : []
                 },
                 {
                     "element_id": "author",
                     "element_name": "Author Information",
-                    "selector": "main > div:nth-child(2)",
-                    "expected_fake": !is_real,
-                    "reasoning": is_real ? "Check for proper author attribution and credentials" : "Fake news often lacks proper author information",
-                    "difficulty": "medium"
+                    "css_selector": "main > div:nth-child(2)",
+                    "expected_label": is_real ? "real" : "fake",
+                    "reasoning": is_real ? "Check author credibility and attribution" : "Fake news often lacks proper author info",
+                    "difficulty": "medium",
+                    "red_flags": is_real ? [] : ["Anonymous author", "No credentials", "Suspicious name"],
+                    "credibility_indicators": is_real ? ["Named author", "Clear attribution", "Verifiable credentials"] : []
                 },
                 {
                     "element_id": "content",
                     "element_name": "Article Content",
-                    "selector": "main > div:nth-child(4)",
-                    "expected_fake": !is_real,
-                    "reasoning": is_real ? "Analyze the content for factual accuracy and bias" : "Look for emotional manipulation and unsubstantiated claims",
-                    "difficulty": "hard"
-                },
-                {
-                    "element_id": "sharing",
-                    "element_name": "Social Sharing Section",
-                    "selector": "[style*='sharing']",
-                    "expected_fake": !is_real,
-                    "reasoning": is_real ? "Legitimate news doesn't pressure immediate sharing" : "Fake news often uses urgent sharing tactics",
-                    "difficulty": "medium"
+                    "css_selector": "main > div:nth-child(4)",
+                    "expected_label": is_real ? "real" : "fake",
+                    "reasoning": is_real ? "Analyze content for accuracy and bias" : "Look for unsubstantiated claims",
+                    "difficulty": "hard",
+                    "red_flags": is_real ? [] : ["Unsupported claims", "Emotional language", "No sources"],
+                    "credibility_indicators": is_real ? ["Cited sources", "Balanced reporting", "Factual claims"] : []
                 }
             ],
             "article_analysis": {
                 "overall_credibility": is_real ? "high" : "low",
-                "key_indicators": is_real ? [
-                    "Proper attribution and sourcing",
-                    "Professional language and tone",
-                    "Factual reporting without bias"
-                ] : [
+                "primary_red_flags": is_real ? [] : [
                     "Sensational headlines",
+                    "Emotional manipulation", 
+                    "Lack of credible sources"
+                ],
+                "credibility_factors": is_real ? [
+                    "Professional sourcing",
+                    "Factual reporting",
+                    "Proper attribution"
+                ] : [],
+                "educational_focus": `This article demonstrates ${is_real ? 'professional journalism standards' : 'common misinformation tactics'}`,
+                "misinformation_tactics": is_real ? [] : [
                     "Emotional manipulation",
-                    "Lack of credible sources",
-                    "Urgent sharing pressure"
+                    "False urgency",
+                    "Unverified claims"
                 ],
-                "red_flags": is_real ? [] : [
-                    "Clickbait headline",
-                    "Anonymous or questionable author",
-                    "Emotional rather than factual content",
-                    "Pressure to share immediately"
-                ],
-                "educational_notes": `This article demonstrates ${is_real ? "professional journalism standards" : "common misinformation tactics used to manipulate readers"}`
+                "verification_tips": [
+                    "Check multiple sources",
+                    "Verify author credentials", 
+                    "Look for official sources",
+                    "Check publication date"
+                ]
+            }
+        };
+    }
+
+    getDefaultAnalysis() {
+        return {
+            "clickable_elements": [
+                {
+                    "element_id": "title",
+                    "element_name": "Article Title",
+                    "css_selector": "h2",
+                    "expected_label": "real",
+                    "reasoning": "Practice identifying headline characteristics",
+                    "difficulty": "easy",
+                    "red_flags": [],
+                    "credibility_indicators": ["Professional presentation"]
+                },
+                {
+                    "element_id": "author",
+                    "element_name": "Author Information",
+                    "css_selector": "main > div:nth-child(2)",
+                    "expected_label": "real",
+                    "reasoning": "Check for author attribution",
+                    "difficulty": "medium",
+                    "red_flags": [],
+                    "credibility_indicators": ["Author information provided"]
+                },
+                {
+                    "element_id": "content",
+                    "element_name": "Article Content",
+                    "css_selector": "main > div:nth-child(4)",
+                    "expected_label": "real",
+                    "reasoning": "Analyze content quality",
+                    "difficulty": "hard",
+                    "red_flags": [],
+                    "credibility_indicators": ["Well-structured content"]
+                }
+            ],
+            "article_analysis": {
+                "overall_credibility": "medium",
+                "primary_red_flags": [],
+                "credibility_factors": ["Basic journalism elements present"],
+                "educational_focus": "Practice identifying key elements of news articles",
+                "misinformation_tactics": [],
+                "verification_tips": [
+                    "Always verify information from multiple sources",
+                    "Check author credentials",
+                    "Look for publication dates"
+                ]
             }
         };
     }
@@ -383,28 +453,36 @@ export class InteractiveLabeling {
         // Wait for DOM to be ready
         setTimeout(() => {
             const article = this.currentPageConfig?.articleData;
-            if (!article) return;
+            if (!article && !this.aiAnalysis) {
+                console.warn('No article data available for interactive labeling');
+                return;
+            }
             
-            // Use AI analysis if available, otherwise fall back to default elements
             let interactiveElements = [];
             
-            if (this.aiAnalysis && this.aiAnalysis.clickable_elements) {
+            // Use AI analysis clickable elements if available
+            if (this.aiAnalysis && this.aiAnalysis.clickable_elements && this.aiAnalysis.clickable_elements.length > 0) {
                 interactiveElements = this.aiAnalysis.clickable_elements.map(element => ({
-                    selector: element.selector,
+                    selector: element.css_selector || element.selector,
                     id: element.element_id,
-                    expectedFake: element.expected_fake,
+                    expectedFake: element.expected_label === 'fake' || element.expected_fake,
                     label: element.element_name,
                     reasoning: element.reasoning,
-                    difficulty: element.difficulty
+                    difficulty: element.difficulty,
+                    redFlags: element.red_flags || [],
+                    credibilityIndicators: element.credibility_indicators || []
                 }));
+                console.log('Using AI-generated clickable elements:', interactiveElements.length);
             } else {
                 // Fallback to default elements
+                const isReal = article?.is_real ?? true;
                 interactiveElements = [
-                    { selector: 'h2', id: 'title', expectedFake: !article.is_real, label: 'Title', reasoning: 'Check headline for sensationalism', difficulty: 'easy' },
-                    { selector: 'main > div:nth-child(2)', id: 'author', expectedFake: !article.is_real, label: 'Author Info', reasoning: 'Verify author credentials', difficulty: 'medium' },
-                    { selector: 'main > div:nth-child(4)', id: 'content', expectedFake: !article.is_real, label: 'Article Content', reasoning: 'Analyze content for accuracy', difficulty: 'hard' },
-                    { selector: '[style*="sharing"]', id: 'sharing', expectedFake: !article.is_real, label: 'Sharing Box', reasoning: 'Check for pressure tactics', difficulty: 'medium' }
+                    { selector: 'h2', id: 'title', expectedFake: !isReal, label: 'Title', reasoning: 'Check headline for sensationalism', difficulty: 'easy' },
+                    { selector: 'main > div:nth-child(2)', id: 'author', expectedFake: !isReal, label: 'Author Info', reasoning: 'Verify author credentials', difficulty: 'medium' },
+                    { selector: 'main > div:nth-child(4)', id: 'content', expectedFake: !isReal, label: 'Article Content', reasoning: 'Analyze content for accuracy', difficulty: 'hard' },
+                    { selector: '[style*="sharing"]', id: 'sharing', expectedFake: !isReal, label: 'Sharing Box', reasoning: 'Check for pressure tactics', difficulty: 'medium' }
                 ];
+                console.log('Using fallback clickable elements');
             }
             
             interactiveElements.forEach(elementDef => {
@@ -425,6 +503,8 @@ export class InteractiveLabeling {
                         label: elementDef.label,
                         reasoning: elementDef.reasoning,
                         difficulty: elementDef.difficulty,
+                        redFlags: elementDef.redFlags || [],
+                        credibilityIndicators: elementDef.credibilityIndicators || [],
                         element: element
                     });
                     
@@ -468,8 +548,12 @@ export class InteractiveLabeling {
         if (existing) existing.remove();
         
         // Get educational notes from analysis
-        const educationalNotes = this.aiAnalysis?.article_analysis?.educational_notes || 
+        const educationalNotes = this.aiAnalysis?.article_analysis?.educational_focus || 
+                               this.aiAnalysis?.article_analysis?.educational_notes ||
                                'Click on different parts of the article to label them as fake or real.';
+        
+        const analysisSourceText = this.analysisSource === 'ai-generated' ? 
+            '🤖 AI-Powered Analysis' : '📊 Training Analysis';
         
         const instructions = document.createElement('div');
         instructions.className = 'labeling-instructions';
@@ -493,7 +577,7 @@ export class InteractiveLabeling {
             </div>
             <div class="progress-info">
                 Article ${this.currentArticleIndex + 1} of ${this.totalArticles}
-                <br>📊 Using Training Analysis
+                <br>${analysisSourceText}
             </div>
             <button class="submit-analysis-btn" onclick="window.interactiveLabeling?.submitAnalysis()">
                 Submit Analysis
@@ -595,9 +679,13 @@ export class InteractiveLabeling {
         const scoreClass = results.percentage >= 75 ? 'good' : results.percentage >= 50 ? 'medium' : 'poor';
         const emoji = results.percentage >= 75 ? '🎉' : results.percentage >= 50 ? '👍' : '🤔';
         
-        // Get insights for feedback
-        const keyIndicators = this.aiAnalysis?.article_analysis?.key_indicators || [];
-        const redFlags = this.aiAnalysis?.article_analysis?.red_flags || [];
+        // Get insights for feedback from AI analysis
+        const keyIndicators = this.aiAnalysis?.article_analysis?.credibility_factors || 
+                             this.aiAnalysis?.article_analysis?.key_indicators || [];
+        const redFlags = this.aiAnalysis?.article_analysis?.primary_red_flags || 
+                        this.aiAnalysis?.article_analysis?.red_flags || [];
+        const verificationTips = this.aiAnalysis?.article_analysis?.verification_tips || [];
+        const misinformationTactics = this.aiAnalysis?.article_analysis?.misinformation_tactics || [];
         
         modal.innerHTML = `
             <div class="feedback-content">
@@ -608,7 +696,10 @@ export class InteractiveLabeling {
                 <div class="feedback-details">
                     <h3>Detailed Results:</h3>
                     ${results.details.map(detail => {
-                        const elementData = this.labeledElements.get(detail.label.toLowerCase().replace(/\s+/g, '_'));
+                        const elementData = this.labeledElements.get(
+                            Object.keys(Object.fromEntries(this.labeledElements))
+                                .find(key => this.labeledElements.get(key).label === detail.label)
+                        );
                         const reasoning = elementData?.reasoning || 'No reasoning available';
                         return `
                             <div class="feedback-item ${detail.status}">
@@ -624,7 +715,7 @@ export class InteractiveLabeling {
                 
                 ${keyIndicators.length > 0 ? `
                     <div class="ai-insights">
-                        <h3>🔍 Key Indicators:</h3>
+                        <h3>🔍 Credibility Indicators:</h3>
                         <ul>${keyIndicators.map(indicator => `<li>${indicator}</li>`).join('')}</ul>
                     </div>
                 ` : ''}
@@ -633,6 +724,20 @@ export class InteractiveLabeling {
                     <div class="ai-warnings">
                         <h3>🚩 Red Flags:</h3>
                         <ul>${redFlags.map(flag => `<li>${flag}</li>`).join('')}</ul>
+                    </div>
+                ` : ''}
+                
+                ${misinformationTactics.length > 0 ? `
+                    <div class="ai-warnings">
+                        <h3>⚠️ Misinformation Tactics:</h3>
+                        <ul>${misinformationTactics.map(tactic => `<li>${tactic}</li>`).join('')}</ul>
+                    </div>
+                ` : ''}
+                
+                ${verificationTips.length > 0 ? `
+                    <div class="ai-insights">
+                        <h3>✅ Verification Tips:</h3>
+                        <ul>${verificationTips.map(tip => `<li>${tip}</li>`).join('')}</ul>
                     </div>
                 ` : ''}
                 
@@ -675,6 +780,9 @@ export class InteractiveLabeling {
         );
         
         const overallClass = overallScore >= 75 ? 'good' : overallScore >= 50 ? 'medium' : 'poor';
+        const aiAnalysisCount = this.articleResults.filter(result => 
+            result.articleData.ai_analysis && Object.keys(result.articleData.ai_analysis).length > 0
+        ).length;
         
         modal.innerHTML = `
             <div class="final-summary">
@@ -682,6 +790,9 @@ export class InteractiveLabeling {
                     <h1>🎯 Level 1 Complete!</h1>
                     <div class="overall-score ${overallClass}">${overallScore}%</div>
                     <p>Overall Performance Across All Articles</p>
+                    <p style="font-size: 14px; color: #6b7280;">
+                        ${aiAnalysisCount} articles used AI-generated analysis
+                    </p>
                 </div>
                 
                 <div class="article-summaries">
@@ -693,6 +804,7 @@ export class InteractiveLabeling {
                             </div>
                             <div class="article-explanation">
                                 <strong>Article Type:</strong> ${articleResult.articleData.is_real ? 'Real News' : 'Misinformation'}<br>
+                                <strong>Analysis Source:</strong> ${articleResult.articleData.ai_analysis && Object.keys(articleResult.articleData.ai_analysis).length > 0 ? 'AI-Generated' : 'Training Fallback'}<br>
                                 <strong>Key Indicators:</strong> ${this.getKeyIndicators(articleResult.articleData)}
                             </div>
                         </div>
@@ -716,11 +828,16 @@ export class InteractiveLabeling {
     }
 
     getKeyIndicators(articleData) {
-        if (articleData.is_real) {
-            return 'Proper attribution, credible source, factual reporting';
-        } else {
-            return 'Sensational language, emotional manipulation, lack of credible sources';
+        if (!articleData) return "No article data available";
+        
+        const aiAnalysis = articleData.ai_analysis;
+        if (aiAnalysis && aiAnalysis.article_analysis) {
+            const indicators = aiAnalysis.article_analysis.credibility_factors || 
+                             aiAnalysis.article_analysis.primary_red_flags || [];
+            return indicators.slice(0, 2).join(', ') || 'General analysis';
         }
+        
+        return articleData.is_real ? 'Professional journalism' : 'Misinformation patterns';
     }
 
     cleanup() {

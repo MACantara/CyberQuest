@@ -29,11 +29,17 @@ export class PageRenderer {
                 
                 // Initialize interactive labeling for CyberQuest training if this is challenge1
                 if (url === 'https://daily-politico-news.com/breaking-news') {
-                    // Get article information from the page
-                    const articleIndex = window.challenge1Page?.currentArticleIndex || 0;
-                    const totalArticles = window.challenge1Page?.articlesData?.length || 1;
+                    // Get article information from the page with safety checks
+                    const challenge1Page = window.challenge1Page;
+                    const articleIndex = challenge1Page?.currentArticleIndex || 0;
+                    const totalArticles = challenge1Page?.articlesData?.length || 1;
                     
-                    this.interactiveLabeling.initializeForArticle(pageConfig, articleIndex, totalArticles);
+                    // Ensure we have valid page config before initializing
+                    if (challenge1Page && pageConfig) {
+                        this.interactiveLabeling.initializeForArticle(pageConfig, articleIndex, totalArticles);
+                    } else {
+                        console.warn('Challenge1 page or config not available for interactive labeling');
+                    }
                 }
                 
                 this.updatePageTitle(pageConfig.title);

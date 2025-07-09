@@ -2,6 +2,8 @@ from flask import Blueprint, jsonify, current_app
 import csv
 import random
 import os
+import json
+from pathlib import Path
 
 news_api_bp = Blueprint('news_api', __name__, url_prefix='/api/news')
 
@@ -91,17 +93,45 @@ def load_fallback_data():
         print(f"Error loading fallback dataset: {e}")
         return []
 
+def load_ai_analysis_data():
+    """Load and cache the AI analysis data"""
+    try:
+        analysis_path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 
+            'data', 'processed', 'english_news_articles_analysis.json'
+        )
+        
+        if not os.path.exists(analysis_path):
+            print(f"AI analysis file not found: {analysis_path}")
+            return {}
+        
+        with open(analysis_path, 'r', encoding='utf-8') as file:
+            analysis_data = json.load(file)
+            
+        print(f"Loaded AI analysis for {len(analysis_data.get('analyses', []))} articles")
+        return analysis_data
+        
+    except Exception as e:
+        print(f"Error loading AI analysis data: {e}")
+        return {}
+
 @news_api_bp.route('/mixed-articles', methods=['GET'])
 def get_mixed_news_articles():
-    """Get a balanced mix of 15 news articles (50% fake, 50% real)"""
+    """Get a balanced mix of 15 news articles (50% fake, 50% real) with AI analysis"""
     try:
         news_data = load_fake_news_data()
+        ai_analysis = load_ai_analysis_data()
         
         if not news_data:
             return jsonify({
                 'success': False,
                 'error': 'No news data available'
             }), 500
+        
+        # Create lookup for AI analysis by title
+        analysis_lookup = {}
+        for analysis in ai_analysis.get('analyses', []):
+            analysis_lookup[analysis.get('title', '')] = analysis.get('analysis', {})
         
         # Separate real and fake news
         real_news = [article for article in news_data if article['is_real']]
@@ -122,9 +152,12 @@ def get_mixed_news_articles():
         mixed_articles = selected_real + selected_fake
         random.shuffle(mixed_articles)
         
-        # Format articles for frontend with unique IDs
+        # Format articles for frontend with unique IDs and AI analysis
         formatted_articles = []
         for i, article in enumerate(mixed_articles):
+            # Get AI analysis for this article
+            ai_data = analysis_lookup.get(article['title'], {})
+            
             formatted_articles.append({
                 'id': f'article_{i}',
                 'author': article['author'],
@@ -133,7 +166,8 @@ def get_mixed_news_articles():
                 'text': article['text'],
                 'main_img_url': article['main_img_url'],
                 'is_real': article['is_real'],
-                'source': article['source']
+                'source': article['source'],
+                'ai_analysis': ai_data  # Include AI analysis data
             })
         
         return jsonify({
@@ -142,7 +176,8 @@ def get_mixed_news_articles():
             'summary': {
                 'total': len(formatted_articles),
                 'real_count': len(selected_real),
-                'fake_count': len(selected_fake)
+                'fake_count': len(selected_fake),
+                'ai_analysis_available': len([a for a in formatted_articles if a.get('ai_analysis')])
             }
         })
         
@@ -175,6 +210,37 @@ def get_news_stats():
         
     except Exception as e:
         print(f"Error getting news stats: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@news_api_bp.route('/analysis-status', methods=['GET'])
+def get_analysis_status():
+    """Get status of AI analysis data"""
+    try:
+        ai_analysis = load_ai_analysis_data()
+        
+        if not ai_analysis:
+            return jsonify({
+                'success': True,
+                'ai_analysis_available': False,
+                'message': 'No AI analysis data available'
+            })
+        
+        metadata = ai_analysis.get('metadata', {})
+        analyses = ai_analysis.get('analyses', [])
+        
+        return jsonify({
+            'success': True,
+            'ai_analysis_available': True,
+            'metadata': metadata,
+            'total_analyses': len(analyses),
+            'completion_status': metadata.get('completion_status', 'unknown')
+        })
+        
+    except Exception as e:
+        print(f"Error getting analysis status: {e}")
         return jsonify({
             'success': False,
             'error': str(e)

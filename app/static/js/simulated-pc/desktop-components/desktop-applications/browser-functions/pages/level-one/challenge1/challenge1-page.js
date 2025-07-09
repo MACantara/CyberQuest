@@ -41,6 +41,12 @@ class Challenge1PageClass extends BasePage {
             try {
                 this.articlesData = await ArticleService.fetchMixedNewsArticles();
                 
+                // Log AI analysis availability
+                const aiAnalysisCount = this.articlesData.filter(article => 
+                    article.ai_analysis && Object.keys(article.ai_analysis).length > 0
+                ).length;
+                console.log(`Articles loaded: ${this.articlesData.length}, AI analysis available: ${aiAnalysisCount}`);
+                
                 // Update page metadata based on the first article
                 this.title = `${this.articlesData[0].title} - Daily Politico News`;
                 this.articleData = this.articlesData[0]; // Set current article for overlay tools
@@ -146,7 +152,7 @@ class Challenge1PageClass extends BasePage {
             // Re-bind navigation events
             window.challenge1Page = this;
             
-            // Update the interactive labeling system
+            // Update the interactive labeling system with current article data including AI analysis
             this.updateInteractiveLabeling();
         }
     }
@@ -155,6 +161,9 @@ class Challenge1PageClass extends BasePage {
         // Check if we have an interactive labeling system and update it
         const pageRenderer = this.getPageRenderer();
         if (pageRenderer && pageRenderer.interactiveLabeling) {
+            // Ensure current article data includes AI analysis
+            this.articleData = this.articlesData[this.currentArticleIndex];
+            
             pageRenderer.interactiveLabeling.initializeForArticle(
                 this.toPageObject(), 
                 this.currentArticleIndex, 
