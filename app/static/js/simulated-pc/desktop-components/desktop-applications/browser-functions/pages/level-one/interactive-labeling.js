@@ -57,9 +57,9 @@ export class InteractiveLabeling {
         return {
             "clickable_elements": [
                 {
-                    "element_id": "title",
+                    "element_id": "title_analysis",
                     "element_name": "Article Title",
-                    "css_selector": "h2",
+                    "css_selector": '[data-element-id="title_analysis"]',
                     "expected_label": is_real ? "real" : "fake",
                     "reasoning": is_real ? "Real news uses factual headlines" : "Fake news often uses sensational headlines",
                     "difficulty": "easy",
@@ -67,9 +67,9 @@ export class InteractiveLabeling {
                     "credibility_indicators": is_real ? ["Professional tone", "Factual language", "Proper grammar"] : []
                 },
                 {
-                    "element_id": "author",
+                    "element_id": "author_analysis",
                     "element_name": "Author Information",
-                    "css_selector": "main > div:nth-child(2)",
+                    "css_selector": '[data-element-id="author_analysis"]',
                     "expected_label": is_real ? "real" : "fake",
                     "reasoning": is_real ? "Check author credibility and attribution" : "Fake news often lacks proper author info",
                     "difficulty": "medium",
@@ -77,9 +77,19 @@ export class InteractiveLabeling {
                     "credibility_indicators": is_real ? ["Named author", "Clear attribution", "Verifiable credentials"] : []
                 },
                 {
-                    "element_id": "content",
+                    "element_id": "date_analysis",
+                    "element_name": "Publication Date",
+                    "css_selector": '[data-element-id="date_analysis"]',
+                    "expected_label": is_real ? "real" : "fake",
+                    "reasoning": is_real ? "Check publication timing and context" : "Fake news may have suspicious timing",
+                    "difficulty": "medium",
+                    "red_flags": is_real ? [] : ["Suspicious timing", "Outdated information", "No timestamp"],
+                    "credibility_indicators": is_real ? ["Recent publication", "Proper timestamp", "Timely reporting"] : []
+                },
+                {
+                    "element_id": "content_analysis",
                     "element_name": "Article Content",
-                    "css_selector": "main > div:nth-child(4)",
+                    "css_selector": '[data-element-id="content_analysis"]',
                     "expected_label": is_real ? "real" : "fake",
                     "reasoning": is_real ? "Analyze content for accuracy and bias" : "Look for unsubstantiated claims",
                     "difficulty": "hard",
@@ -119,9 +129,9 @@ export class InteractiveLabeling {
         return {
             "clickable_elements": [
                 {
-                    "element_id": "title",
+                    "element_id": "title_analysis",
                     "element_name": "Article Title",
-                    "css_selector": "h2",
+                    "css_selector": '[data-element-id="title_analysis"]',
                     "expected_label": "real",
                     "reasoning": "Practice identifying headline characteristics",
                     "difficulty": "easy",
@@ -129,9 +139,9 @@ export class InteractiveLabeling {
                     "credibility_indicators": ["Professional presentation"]
                 },
                 {
-                    "element_id": "author",
+                    "element_id": "author_analysis",
                     "element_name": "Author Information",
-                    "css_selector": "main > div:nth-child(2)",
+                    "css_selector": '[data-element-id="author_analysis"]',
                     "expected_label": "real",
                     "reasoning": "Check for author attribution",
                     "difficulty": "medium",
@@ -139,9 +149,19 @@ export class InteractiveLabeling {
                     "credibility_indicators": ["Author information provided"]
                 },
                 {
-                    "element_id": "content",
+                    "element_id": "date_analysis",
+                    "element_name": "Publication Date",
+                    "css_selector": '[data-element-id="date_analysis"]',
+                    "expected_label": "real",
+                    "reasoning": "Check publication timing",
+                    "difficulty": "medium",
+                    "red_flags": [],
+                    "credibility_indicators": ["Proper timestamp"]
+                },
+                {
+                    "element_id": "content_analysis",
                     "element_name": "Article Content",
-                    "css_selector": "main > div:nth-child(4)",
+                    "css_selector": '[data-element-id="content_analysis"]',
                     "expected_label": "real",
                     "reasoning": "Analyze content quality",
                     "difficulty": "hard",
@@ -528,16 +548,16 @@ export class InteractiveLabeling {
     mapElementIdToSelector(elementId) {
         // Map batch JSON element IDs to CSS selectors
         const selectorMap = {
-            'title_analysis': 'h2',
-            'title': 'h2',
-            'author_analysis': 'main > div:nth-child(2)',
-            'author': 'main > div:nth-child(2)',
-            'source_analysis': 'main > div:nth-child(3)',
-            'source': 'main > div:nth-child(3)',
-            'content_analysis': 'main > div:nth-child(4)',
-            'content': 'main > div:nth-child(4)',
-            'date_analysis': 'main > div:nth-child(5)',
-            'date': 'main > div:nth-child(5)'
+            'title_analysis': '[data-element-id="title_analysis"]',
+            'title': '[data-element-id="title_analysis"]',
+            'author_analysis': '[data-element-id="author_analysis"]',
+            'author': '[data-element-id="author_analysis"]',
+            'source_analysis': '[data-element-id="source_analysis"]',
+            'source': '[data-element-id="source_analysis"]',
+            'content_analysis': '[data-element-id="content_analysis"]',
+            'content': '[data-element-id="content_analysis"]',
+            'date_analysis': '[data-element-id="date_analysis"]',
+            'date': '[data-element-id="date_analysis"]'
         };
         
         return selectorMap[elementId] || `[data-element-id="${elementId}"]`;

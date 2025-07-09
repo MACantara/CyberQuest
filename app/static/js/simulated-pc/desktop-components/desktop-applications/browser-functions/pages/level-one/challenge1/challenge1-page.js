@@ -92,20 +92,21 @@ class Challenge1PageClass extends BasePage {
                 
                 <!-- Main Content -->
                 <main style="padding: 30px; max-width: 800px; margin: 0 auto;">
-                    <h2 style="color: #374151; font-size: 32px; margin-bottom: 10px;" data-element-type="title">
+                    <h2 style="color: #374151; font-size: 32px; margin-bottom: 10px;" data-element-type="title" data-element-id="title_analysis">
                         ${ArticleFormatter.toTitleCase(currentArticle.title)}
                     </h2>
                     
-                    <div style="color: #6b7280; margin-bottom: 20px; font-size: 14px;" data-element-type="metadata">
-                        <span data-element-type="date">Published: ${formattedDate}</span> | 
-                        <span data-element-type="author">By: ${currentArticle.author || 'Staff Reporter'}</span>
+                    <div style="color: #6b7280; margin-bottom: 20px; font-size: 14px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        <span data-element-type="date" data-element-id="date_analysis" style="padding: 2px 4px; border-radius: 3px;">Published: ${formattedDate}</span>
+                        <span style="color: #d1d5db;">|</span>
+                        <span data-element-type="author" data-element-id="author_analysis" style="padding: 2px 4px; border-radius: 3px;">By: ${currentArticle.author || 'Staff Reporter'}</span>
                     </div>
                     
                     <!-- Article Image -->
                     ${ArticleImage.create(currentArticle, isFakeNews)}
                     
                     <!-- Article Text -->
-                    <div style="font-size: 18px; line-height: 1.6; color: #374151;" data-element-type="content">
+                    <div style="font-size: 18px; line-height: 1.6; color: #374151;" data-element-type="content" data-element-id="content_analysis">
                         ${ArticleFormatter.formatArticleText(displayText, isFakeNews, currentArticle)}
                     </div>
                     
