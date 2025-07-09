@@ -55,6 +55,9 @@ def convert_batch_to_article_format(batch_data):
             if content_element and content_element.get('element_text'):
                 actual_text = content_element['element_text']
         
+        # Extract main_img_url from metadata, fallback to placeholder if not available
+        main_img_url = metadata.get('main_img_url', 'https://via.placeholder.com/400x200/10b981/ffffff?text=News+Article')
+        
         # Extract article data
         article = {
             'id': f'article_{article_id}',
@@ -62,7 +65,7 @@ def convert_batch_to_article_format(batch_data):
             'published': metadata.get('published_date', ''),
             'title': metadata.get('title', ''),
             'text': actual_text,
-            'main_img_url': 'https://via.placeholder.com/400x200/10b981/ffffff?text=News+Article',
+            'main_img_url': main_img_url,
             'is_real': metadata.get('actual_label', '').lower() == 'real',
             'source': metadata.get('source', 'unknown'),
             'article_type': metadata.get('article_type', 'unknown'),
