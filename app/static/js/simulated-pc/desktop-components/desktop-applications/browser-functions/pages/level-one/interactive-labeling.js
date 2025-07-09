@@ -775,8 +775,14 @@ export class InteractiveLabeling {
             results: this.articleResults
         };
         
-        // Save to localStorage for demo purposes
-        localStorage.setItem(`cyberquest_level_1_completion`, JSON.stringify(completionData));
+        // Save to localStorage for demo purposes - this is what the server checks
+        localStorage.setItem('cyberquest_level_1_completion', JSON.stringify(completionData));
+        localStorage.setItem('cyberquest_level_1_completed', 'true'); // Key flag for unlocking Level 2
+        
+        console.log('Level 1 completion stored in localStorage:', {
+            completion_flag: localStorage.getItem('cyberquest_level_1_completed'),
+            completion_data: localStorage.getItem('cyberquest_level_1_completion')
+        });
         
         // Navigate to the levels page or directly to Level 2
         if (window.location.pathname.includes('/levels/1/start')) {

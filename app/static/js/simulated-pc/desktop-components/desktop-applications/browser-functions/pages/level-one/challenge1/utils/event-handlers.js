@@ -60,19 +60,31 @@ export class EventHandlers {
     }
 
     completeLevelOne() {
-        // Mark Level 1 as completed
+        // Mark Level 1 as completed with the specific key the server checks
         localStorage.setItem('cyberquest_level_1_completed', 'true');
+        localStorage.setItem('cyberquest_challenge1_completed', 'true');
         
-        // Navigate back to main dashboard
+        console.log('Level 1 marked as completed:', {
+            level_completed: localStorage.getItem('cyberquest_level_1_completed'),
+            challenge_completed: localStorage.getItem('cyberquest_challenge1_completed')
+        });
+        
+        // Navigate back to main dashboard or levels overview
         if (window.desktop?.windowManager) {
             try {
                 const browserApp = window.desktop.windowManager.applications.get('browser');
                 if (browserApp) {
-                    browserApp.navigation.navigateToUrl('https://cyberquest.com');
+                    // Navigate to levels overview to see Level 2 unlocked
+                    browserApp.navigation.navigateToUrl('/levels');
                 }
             } catch (error) {
-                console.error('Failed to navigate to dashboard:', error);
+                console.error('Failed to navigate to levels:', error);
+                // Fallback navigation
+                window.location.href = '/levels';
             }
+        } else {
+            // Direct navigation fallback
+            window.location.href = '/levels';
         }
     }
 }
