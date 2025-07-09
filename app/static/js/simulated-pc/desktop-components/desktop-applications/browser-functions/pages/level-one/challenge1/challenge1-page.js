@@ -4,7 +4,6 @@ import { ArticleFormatter } from './utils/article-formatter.js';
 import { ArticleImage } from './components/article-image.js';
 import { SharingBox } from './components/sharing-box.js';
 import { ProgressBar } from './components/progress-bar.js';
-import { AnalysisSection } from './components/analysis-section.js';
 import { ArticleService } from './services/article-service.js';
 
 class Challenge1PageClass extends BasePage {
@@ -120,9 +119,6 @@ class Challenge1PageClass extends BasePage {
                     
                     <!-- Social Media Sharing Box -->
                     ${SharingBox.create(isFakeNews)}
-                    
-                    <!-- Analysis Section -->
-                    ${AnalysisSection.create(currentArticle)}
                 </main>
                 
                 <!-- Footer -->
