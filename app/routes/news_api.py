@@ -81,10 +81,11 @@ def get_mixed_news_articles():
         mixed_articles = selected_real + selected_fake
         random.shuffle(mixed_articles)
         
-        # Format articles for frontend
+        # Format articles for frontend with unique IDs
         formatted_articles = []
-        for article in mixed_articles:
+        for i, article in enumerate(mixed_articles):
             formatted_articles.append({
+                'id': f'article_{i}',
                 'author': article['author'],
                 'published': article['published'],
                 'title': article['title'],

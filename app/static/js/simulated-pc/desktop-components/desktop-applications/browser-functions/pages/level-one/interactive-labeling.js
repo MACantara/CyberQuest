@@ -3,14 +3,15 @@ export class InteractiveLabeling {
         this.browserApp = browserApp;
         this.pageRegistry = pageRegistry;
         this.currentPageConfig = null;
-        this.labeledElements = new Map(); // elementId -> { labeled: true/false, correct: true/false }
-        this.articleResults = []; // Store results for each article
+        this.labeledElements = new Map();
+        this.articleResults = [];
         this.isActive = false;
         this.currentArticleIndex = 0;
         this.totalArticles = 0;
+        this.aiAnalysis = null;
     }
 
-    initializeForArticle(pageConfig, articleIndex, totalArticles) {
+    async initializeForArticle(pageConfig, articleIndex, totalArticles) {
         this.currentPageConfig = pageConfig;
         this.currentArticleIndex = articleIndex;
         this.totalArticles = totalArticles;
@@ -19,6 +20,15 @@ export class InteractiveLabeling {
         
         // Add styles for interactive elements
         this.addInteractiveStyles();
+        
+        // Get AI analysis for this article
+        try {
+            this.aiAnalysis = await this.getAIAnalysis(pageConfig.articleData);
+            console.log('AI Analysis received:', this.aiAnalysis);
+        } catch (error) {
+            console.error('Failed to get AI analysis:', error);
+            this.aiAnalysis = null;
+        }
         
         // Make article elements interactive
         this.makeElementsInteractive();
@@ -228,6 +238,11 @@ export class InteractiveLabeling {
                 border-color: #ef4444;
             }
             
+            .feedback-item.unlabeled {
+                background: #f8fafc;
+                border-color: #6b7280;
+            }
+            
             .final-summary {
                 background: white;
                 border-radius: 16px;
@@ -268,8 +283,69 @@ export class InteractiveLabeling {
                 font-weight: bold;
                 margin-bottom: 10px;
             }
+            
+            .ai-insights {
+                background: #f0f9ff;
+                border: 1px solid #0ea5e9;
+                border-radius: 8px;
+                padding: 15px;
+                margin: 15px 0;
+            }
+            
+            .ai-insights h3 {
+                color: #0ea5e9;
+                margin: 0 0 10px 0;
+            }
+            
+            .ai-insights ul {
+                margin: 0;
+                padding-left: 20px;
+            }
+            
+            .ai-warnings {
+                background: #fef2f2;
+                border: 1px solid #ef4444;
+                border-radius: 8px;
+                padding: 15px;
+                margin: 15px 0;
+            }
+            
+            .ai-warnings h3 {
+                color: #ef4444;
+                margin: 0 0 10px 0;
+            }
+            
+            .ai-warnings ul {
+                margin: 0;
+                padding-left: 20px;
+            }
         `;
         document.head.appendChild(style);
+    }
+
+    async getAIAnalysis(articleData) {
+        try {
+            const response = await fetch('/api/ai-analysis/analyze-article', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    article: articleData
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                return data.analysis;
+            } else {
+                throw new Error(data.error || 'AI analysis failed');
+            }
+        } catch (error) {
+            console.error('Error fetching AI analysis:', error);
+            throw error;
+        }
     }
 
     makeElementsInteractive() {
@@ -278,13 +354,27 @@ export class InteractiveLabeling {
             const article = this.currentPageConfig?.articleData;
             if (!article) return;
             
-            // Define elements that can be labeled and their expected labels
-            const interactiveElements = [
-                { selector: 'h2', id: 'title', expectedFake: !article.is_real, label: 'Title' },
-                { selector: 'main > div:nth-child(2)', id: 'author', expectedFake: !article.is_real, label: 'Author Info' },
-                { selector: 'main > div:nth-child(4)', id: 'content', expectedFake: !article.is_real, label: 'Article Content' },
-                { selector: '[style*="sharing"]', id: 'sharing', expectedFake: !article.is_real, label: 'Sharing Box' }
-            ];
+            // Use AI analysis if available, otherwise fall back to default elements
+            let interactiveElements = [];
+            
+            if (this.aiAnalysis && this.aiAnalysis.clickable_elements) {
+                interactiveElements = this.aiAnalysis.clickable_elements.map(element => ({
+                    selector: element.selector,
+                    id: element.element_id,
+                    expectedFake: element.expected_fake,
+                    label: element.element_name,
+                    reasoning: element.reasoning,
+                    difficulty: element.difficulty
+                }));
+            } else {
+                // Fallback to default elements
+                interactiveElements = [
+                    { selector: 'h2', id: 'title', expectedFake: !article.is_real, label: 'Title', reasoning: 'Check headline for sensationalism', difficulty: 'easy' },
+                    { selector: 'main > div:nth-child(2)', id: 'author', expectedFake: !article.is_real, label: 'Author Info', reasoning: 'Verify author credentials', difficulty: 'medium' },
+                    { selector: 'main > div:nth-child(4)', id: 'content', expectedFake: !article.is_real, label: 'Article Content', reasoning: 'Analyze content for accuracy', difficulty: 'hard' },
+                    { selector: '[style*="sharing"]', id: 'sharing', expectedFake: !article.is_real, label: 'Sharing Box', reasoning: 'Check for pressure tactics', difficulty: 'medium' }
+                ];
+            }
             
             interactiveElements.forEach(elementDef => {
                 const element = document.querySelector(elementDef.selector);
@@ -292,6 +382,8 @@ export class InteractiveLabeling {
                     element.classList.add('interactive-element');
                     element.setAttribute('data-element-id', elementDef.id);
                     element.setAttribute('data-label', elementDef.label);
+                    element.setAttribute('data-reasoning', elementDef.reasoning || 'No reasoning provided');
+                    element.setAttribute('data-difficulty', elementDef.difficulty || 'medium');
                     element.setAttribute('title', `Click to label "${elementDef.label}" as fake or real`);
                     
                     // Initialize in labeledElements
@@ -300,6 +392,8 @@ export class InteractiveLabeling {
                         labeledAsFake: false,
                         expectedFake: elementDef.expectedFake,
                         label: elementDef.label,
+                        reasoning: elementDef.reasoning,
+                        difficulty: elementDef.difficulty,
                         element: element
                     });
                     
@@ -342,15 +436,19 @@ export class InteractiveLabeling {
         const existing = document.querySelector('.labeling-instructions');
         if (existing) existing.remove();
         
+        // Get educational notes from AI analysis
+        const educationalNotes = this.aiAnalysis?.article_analysis?.educational_notes || 
+                               'Click on different parts of the article to label them as fake or real.';
+        
         const instructions = document.createElement('div');
         instructions.className = 'labeling-instructions';
         instructions.innerHTML = `
             <div class="instructions-header">
-                <span>🎯</span>
-                <span>Interactive Analysis</span>
+                <span>🤖</span>
+                <span>AI-Powered Analysis</span>
             </div>
             <div class="instructions-content">
-                Click on different parts of the article to label them as fake or real. Click multiple times to cycle through options.
+                ${educationalNotes}
             </div>
             <div class="labeling-legend">
                 <div class="legend-item">
@@ -364,6 +462,7 @@ export class InteractiveLabeling {
             </div>
             <div class="progress-info">
                 Article ${this.currentArticleIndex + 1} of ${this.totalArticles}
+                ${this.aiAnalysis ? '<br>✅ AI Analysis Active' : '<br>⚠️ Using Fallback Analysis'}
             </div>
             <button class="submit-analysis-btn" onclick="window.interactiveLabeling?.submitAnalysis()">
                 Submit Analysis
@@ -465,23 +564,46 @@ export class InteractiveLabeling {
         const scoreClass = results.percentage >= 75 ? 'good' : results.percentage >= 50 ? 'medium' : 'poor';
         const emoji = results.percentage >= 75 ? '🎉' : results.percentage >= 50 ? '👍' : '🤔';
         
+        // Get AI insights for feedback
+        const keyIndicators = this.aiAnalysis?.article_analysis?.key_indicators || [];
+        const redFlags = this.aiAnalysis?.article_analysis?.red_flags || [];
+        
         modal.innerHTML = `
             <div class="feedback-content">
-                <h2>${emoji} Article Analysis Complete!</h2>
+                <h2>${emoji} AI-Enhanced Analysis Complete!</h2>
                 <div class="feedback-score ${scoreClass}">${results.percentage}%</div>
                 <p>You correctly identified ${results.correctLabels} out of ${results.totalElements} elements.</p>
                 
                 <div class="feedback-details">
                     <h3>Detailed Results:</h3>
-                    ${results.details.map(detail => `
-                        <div class="feedback-item ${detail.status}">
-                            <strong>${detail.label}:</strong> 
-                            ${detail.status === 'unlabeled' ? 'Not labeled' : 
-                              detail.status === 'correct' ? '✅ Correct' : '❌ Incorrect'}
-                            ${detail.status !== 'unlabeled' ? `<br><small>Expected: ${detail.expected}, You labeled: ${detail.actual}</small>` : ''}
-                        </div>
-                    `).join('')}
+                    ${results.details.map(detail => {
+                        const elementData = this.labeledElements.get(detail.label.toLowerCase().replace(/\s+/g, '_'));
+                        const reasoning = elementData?.reasoning || 'No reasoning available';
+                        return `
+                            <div class="feedback-item ${detail.status}">
+                                <strong>${detail.label}:</strong> 
+                                ${detail.status === 'unlabeled' ? 'Not labeled' : 
+                                  detail.status === 'correct' ? '✅ Correct' : '❌ Incorrect'}
+                                ${detail.status !== 'unlabeled' ? `<br><small>Expected: ${detail.expected}, You labeled: ${detail.actual}</small>` : ''}
+                                <br><small><em>AI Insight: ${reasoning}</em></small>
+                            </div>
+                        `;
+                    }).join('')}
                 </div>
+                
+                ${keyIndicators.length > 0 ? `
+                    <div class="ai-insights">
+                        <h3>🔍 Key Indicators:</h3>
+                        <ul>${keyIndicators.map(indicator => `<li>${indicator}</li>`).join('')}</ul>
+                    </div>
+                ` : ''}
+                
+                ${redFlags.length > 0 ? `
+                    <div class="ai-warnings">
+                        <h3>🚩 Red Flags:</h3>
+                        <ul>${redFlags.map(flag => `<li>${flag}</li>`).join('')}</ul>
+                    </div>
+                ` : ''}
                 
                 <button onclick="this.closest('.feedback-modal').remove(); window.interactiveLabeling?.nextArticle()" 
                         style="background: #10b981; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600;">
