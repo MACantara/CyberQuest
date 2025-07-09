@@ -2,9 +2,18 @@ export class AnalysisOverlay {
     constructor(browserApp, pageRegistry) {
         this.browserApp = browserApp;
         this.pageRegistry = pageRegistry;
+        this.currentOverlay = null;
+        this.isCollapsed = false;
+        this.currentPageConfig = null;
     }
 
     addToContent(contentElement, pageConfig) {
+        // Remove existing overlay if present
+        this.removeExistingOverlay();
+        
+        // Store current page config
+        this.currentPageConfig = pageConfig;
+        
         const overlay = document.createElement('div');
         overlay.className = 'cyberquest-training-overlay';
         overlay.innerHTML = this.createOverlayHTML();
@@ -13,11 +22,104 @@ export class AnalysisOverlay {
         contentElement.style.position = 'relative';
         contentElement.appendChild(overlay);
         
+        // Store reference to current overlay
+        this.currentOverlay = overlay;
+        
         // Add styles for the overlay
         this.addOverlayStyles();
         
         // Bind overlay events
         this.bindOverlayEvents(overlay, pageConfig);
+        
+        // Apply collapsed state if it was previously collapsed
+        if (this.isCollapsed) {
+            this.toggleCollapsed();
+        }
+        
+        // Add smooth entrance animation
+        setTimeout(() => {
+            overlay.style.transform = 'translateX(0)';
+            overlay.style.opacity = '1';
+        }, 100);
+    }
+
+    removeExistingOverlay() {
+        if (this.currentOverlay) {
+            this.currentOverlay.remove();
+            this.currentOverlay = null;
+        }
+    }
+
+    updateForNewArticle(pageConfig) {
+        if (this.currentOverlay) {
+            // Update the page config
+            this.currentPageConfig = pageConfig;
+            
+            // Update the overlay content to reflect the new article
+            this.updateOverlayContent();
+            
+            // Re-bind events with new page config
+            this.bindOverlayEvents(this.currentOverlay, pageConfig);
+            
+            // Show a subtle indication that the overlay has been updated
+            this.showUpdateAnimation();
+        }
+    }
+
+    updateOverlayContent() {
+        if (!this.currentOverlay) return;
+        
+        // Update the article-specific content in the overlay
+        const analysisNotes = this.currentOverlay.querySelector('#analysis-notes');
+        if (analysisNotes) {
+            analysisNotes.placeholder = `Analyze this article for credibility and authenticity...`;
+        }
+        
+        // Reset form state for new article
+        this.resetAnalysisForm();
+    }
+
+    resetAnalysisForm() {
+        if (!this.currentOverlay) return;
+        
+        const form = this.currentOverlay.querySelector('.analysis-form');
+        if (form) {
+            // Clear textarea
+            const textarea = form.querySelector('#analysis-notes');
+            if (textarea) textarea.value = '';
+            
+            // Clear radio buttons
+            const radios = form.querySelectorAll('input[name="credibility"]');
+            radios.forEach(radio => radio.checked = false);
+        }
+    }
+
+    showUpdateAnimation() {
+        if (!this.currentOverlay) return;
+        
+        const panel = this.currentOverlay.querySelector('.training-tools-panel');
+        if (panel) {
+            panel.style.transform = 'scale(1.02)';
+            panel.style.boxShadow = '0 25px 50px rgba(0, 0, 0, 0.4)';
+            
+            setTimeout(() => {
+                panel.style.transform = 'scale(1)';
+                panel.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.3)';
+            }, 200);
+        }
+    }
+
+    toggleCollapsed() {
+        if (!this.currentOverlay) return;
+        
+        const panel = this.currentOverlay.querySelector('.training-tools-panel');
+        const toggleBtn = this.currentOverlay.querySelector('.toggle-panel');
+        
+        if (panel && toggleBtn) {
+            this.isCollapsed = !this.isCollapsed;
+            panel.classList.toggle('collapsed', this.isCollapsed);
+            toggleBtn.textContent = this.isCollapsed ? '+' : '−';
+        }
     }
 
     createOverlayHTML() {
@@ -25,20 +127,23 @@ export class AnalysisOverlay {
             <div class="training-tools-panel">
                 <div class="panel-header">
                     <h3>🔍 CyberQuest Analysis Tools</h3>
-                    <button class="toggle-panel">−</button>
+                    <button class="toggle-panel" title="Toggle panel">−</button>
                 </div>
                 <div class="panel-content">
                     <p>Analyze this news story for authenticity and credibility.</p>
                     
                     <div class="tool-buttons">
                         <button id="cross-reference-tool" class="tool-btn primary" 
-                                data-url="https://fact-checker.cyberquest.academy/cross-reference">
+                                data-url="https://fact-checker.cyberquest.academy/cross-reference"
+                                title="Cross-reference this story with other sources">
                             <i class="bi bi-search"></i> Cross-Reference Story
                         </button>
-                        <button id="source-analysis-tool" class="tool-btn secondary">
+                        <button id="source-analysis-tool" class="tool-btn secondary"
+                                title="Analyze the source credibility">
                             <i class="bi bi-shield-check"></i> Analyze Source
                         </button>
-                        <button id="check-article-metadata" class="tool-btn secondary">
+                        <button id="check-article-metadata" class="tool-btn secondary"
+                                title="Check article metadata and details">
                             <i class="bi bi-info-circle"></i> Check Article Info
                         </button>
                     </div>
@@ -79,30 +184,40 @@ export class AnalysisOverlay {
         style.id = 'cyberquest-overlay-styles';
         style.textContent = `
             .cyberquest-training-overlay {
-                position: absolute;
-                top: 20px;
+                position: fixed;
+                top: 140px;
                 right: 20px;
-                width: 350px;
-                background: rgba(31, 41, 55, 0.95);
-                backdrop-filter: blur(10px);
-                border-radius: 12px;
+                width: 360px;
+                background: rgba(31, 41, 55, 0.96);
+                backdrop-filter: blur(12px);
+                border-radius: 16px;
                 border: 2px solid #10b981;
                 font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
                 box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-                z-index: 1000;
-                transition: all 0.3s ease;
+                z-index: 999;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                transform: translateX(100%);
+                opacity: 0;
+                max-height: calc(100vh - 160px);
+                overflow: hidden;
             }
             
             .training-tools-panel {
                 color: white;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                transition: all 0.3s ease;
             }
             
             .panel-header {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                padding: 16px 20px;
+                padding: 18px 22px;
                 border-bottom: 1px solid rgba(16, 185, 129, 0.3);
+                background: rgba(16, 185, 129, 0.1);
+                border-radius: 14px 14px 0 0;
             }
             
             .panel-header h3 {
@@ -113,60 +228,87 @@ export class AnalysisOverlay {
             }
             
             .toggle-panel {
-                background: none;
-                border: none;
+                background: rgba(16, 185, 129, 0.2);
+                border: 1px solid rgba(16, 185, 129, 0.4);
                 color: #10b981;
-                font-size: 18px;
+                font-size: 16px;
                 font-weight: bold;
                 cursor: pointer;
-                padding: 4px 8px;
-                border-radius: 4px;
-                transition: background-color 0.2s;
+                padding: 6px 10px;
+                border-radius: 6px;
+                transition: all 0.2s ease;
+                min-width: 32px;
+                height: 32px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
             
             .toggle-panel:hover {
-                background: rgba(16, 185, 129, 0.1);
+                background: rgba(16, 185, 129, 0.3);
+                transform: scale(1.05);
             }
             
             .panel-content {
-                padding: 20px;
+                padding: 22px;
+                flex: 1;
+                overflow-y: auto;
             }
             
             .panel-content p {
                 color: #d1d5db;
                 font-size: 14px;
-                margin: 0 0 16px 0;
-                line-height: 1.5;
+                margin: 0 0 18px 0;
+                line-height: 1.6;
             }
             
             .tool-buttons {
                 display: flex;
                 flex-direction: column;
-                gap: 8px;
-                margin-bottom: 20px;
+                gap: 10px;
+                margin-bottom: 22px;
             }
             
             .tool-btn {
-                padding: 10px 14px;
+                padding: 12px 16px;
                 border: none;
-                border-radius: 6px;
+                border-radius: 8px;
                 font-size: 14px;
                 font-weight: 500;
                 cursor: pointer;
-                transition: all 0.2s;
+                transition: all 0.2s ease;
                 display: flex;
                 align-items: center;
-                gap: 8px;
+                gap: 10px;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .tool-btn::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+                transition: left 0.5s ease;
+            }
+            
+            .tool-btn:hover::before {
+                left: 100%;
             }
             
             .tool-btn.primary {
-                background: #10b981;
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
                 color: white;
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
             }
             
             .tool-btn.primary:hover {
-                background: #059669;
-                transform: translateY(-1px);
+                background: linear-gradient(135deg, #059669 0%, #047857 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
             }
             
             .tool-btn.secondary {
@@ -177,18 +319,20 @@ export class AnalysisOverlay {
             
             .tool-btn.secondary:hover {
                 background: rgba(16, 185, 129, 0.2);
+                border-color: rgba(16, 185, 129, 0.5);
+                transform: translateY(-1px);
             }
             
             .tool-btn.full-width {
                 width: 100%;
                 justify-content: center;
-                margin-top: 16px;
+                margin-top: 18px;
             }
             
             .analysis-form {
-                background: rgba(55, 65, 81, 0.6);
-                padding: 16px;
-                border-radius: 8px;
+                background: rgba(55, 65, 81, 0.7);
+                padding: 18px;
+                border-radius: 12px;
                 border: 1px solid rgba(16, 185, 129, 0.2);
             }
             
@@ -205,40 +349,52 @@ export class AnalysisOverlay {
                 background: rgba(75, 85, 99, 0.8);
                 color: white;
                 border: 1px solid #6b7280;
-                border-radius: 6px;
-                padding: 10px;
-                font-size: 12px;
+                border-radius: 8px;
+                padding: 12px;
+                font-size: 13px;
                 resize: vertical;
-                min-height: 60px;
-                margin-bottom: 16px;
+                min-height: 70px;
+                margin-bottom: 18px;
                 font-family: inherit;
+                transition: all 0.2s ease;
             }
             
             .analysis-form textarea:focus {
                 outline: none;
                 border-color: #10b981;
-                box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+                box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+                background: rgba(75, 85, 99, 0.9);
             }
             
             .credibility-options {
-                margin: 12px 0;
+                margin: 14px 0;
             }
             
             .radio-label {
                 display: flex !important;
                 align-items: center;
-                margin: 8px 0 !important;
+                margin: 10px 0 !important;
                 cursor: pointer;
                 font-size: 12px !important;
+                padding: 8px;
+                border-radius: 6px;
+                transition: background-color 0.2s ease;
+            }
+            
+            .radio-label:hover {
+                background: rgba(16, 185, 129, 0.1);
             }
             
             .radio-label input[type="radio"] {
-                margin-right: 8px;
+                margin-right: 10px;
                 accent-color: #10b981;
+                width: 16px;
+                height: 16px;
             }
             
             .radio-label span {
                 color: #d1d5db;
+                flex: 1;
             }
             
             /* Collapsed state */
@@ -248,7 +404,7 @@ export class AnalysisOverlay {
             
             .training-tools-panel.collapsed {
                 width: auto;
-                min-width: 200px;
+                min-width: 280px;
             }
             
             /* Responsive adjustments */
@@ -259,8 +415,35 @@ export class AnalysisOverlay {
                     right: 20px;
                     top: auto;
                     width: calc(100vw - 40px);
-                    max-width: 350px;
+                    max-width: 360px;
+                    max-height: 60vh;
                 }
+            }
+            
+            @media (max-height: 600px) {
+                .cyberquest-training-overlay {
+                    top: 80px;
+                    max-height: calc(100vh - 100px);
+                }
+            }
+            
+            /* Smooth scrollbar */
+            .panel-content::-webkit-scrollbar {
+                width: 6px;
+            }
+            
+            .panel-content::-webkit-scrollbar-track {
+                background: rgba(55, 65, 81, 0.3);
+                border-radius: 3px;
+            }
+            
+            .panel-content::-webkit-scrollbar-thumb {
+                background: rgba(16, 185, 129, 0.5);
+                border-radius: 3px;
+            }
+            
+            .panel-content::-webkit-scrollbar-thumb:hover {
+                background: rgba(16, 185, 129, 0.7);
             }
         `;
         document.head.appendChild(style);
@@ -269,12 +452,9 @@ export class AnalysisOverlay {
     bindOverlayEvents(overlay, pageConfig) {
         // Toggle panel
         const toggleBtn = overlay.querySelector('.toggle-panel');
-        const panel = overlay.querySelector('.training-tools-panel');
-        
-        if (toggleBtn && panel) {
+        if (toggleBtn) {
             toggleBtn.addEventListener('click', () => {
-                panel.classList.toggle('collapsed');
-                toggleBtn.textContent = panel.classList.contains('collapsed') ? '+' : '−';
+                this.toggleCollapsed();
             });
         }
         
@@ -353,8 +533,8 @@ export class AnalysisOverlay {
     }
 
     showArticleMetadata(pageConfig) {
-        // Get article data if available from the challenge1 page
-        const articleData = pageConfig.articleData || null;
+        // Use the current page config or fall back to stored config
+        const articleData = pageConfig?.articleData || this.currentPageConfig?.articleData || null;
         
         const modal = document.createElement('div');
         modal.className = 'fixed inset-0 bg-black/75 flex items-center justify-center z-50';
@@ -404,8 +584,8 @@ export class AnalysisOverlay {
             return;
         }
         
-        // Get the current page's article data
-        const pageConfig = this.pageRegistry?.getPage(window.location.hash) || {};
+        // Get the current page's article data using the stored config
+        const pageConfig = this.currentPageConfig || {};
         const articleData = pageConfig.articleData;
         
         // Determine if the user's assessment was correct

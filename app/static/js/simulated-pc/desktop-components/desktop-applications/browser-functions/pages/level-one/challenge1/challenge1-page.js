@@ -152,12 +152,17 @@ class Challenge1PageClass extends BasePage {
     }
 
     updateTrainingOverlay() {
-        // Update the article metadata in the training overlay if it exists
-        const metadataBtn = document.querySelector('#check-article-metadata');
-        if (metadataBtn) {
-            // The button will use the updated this.articleData when clicked
-            console.log('Training overlay updated for article:', this.articleData.title.substring(0, 50) + '...');
+        // Check if we have an analysis overlay and update it
+        const pageRenderer = this.getPageRenderer();
+        if (pageRenderer && pageRenderer.analysisOverlay) {
+            pageRenderer.analysisOverlay.updateForNewArticle(this.toPageObject());
         }
+    }
+
+    getPageRenderer() {
+        // Get the page renderer from the browser app
+        const browserApp = document.querySelector('#browser-content')?.closest('.window')?.browserApp;
+        return browserApp?.pageRenderer;
     }
 
     bindEvents(contentElement) {

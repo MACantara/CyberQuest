@@ -29,7 +29,12 @@ export class PageRenderer {
                 
                 // Create overlay for CyberQuest training tools if this is challenge1
                 if (url === 'https://daily-politico-news.com/breaking-news') {
-                    this.analysisOverlay.addToContent(contentElement, pageConfig);
+                    // Check if this is an article navigation (overlay already exists)
+                    if (this.analysisOverlay.currentOverlay) {
+                        this.analysisOverlay.updateForNewArticle(pageConfig);
+                    } else {
+                        this.analysisOverlay.addToContent(contentElement, pageConfig);
+                    }
                 }
                 
                 this.updatePageTitle(pageConfig.title);
