@@ -29,35 +29,15 @@ export class PageRenderer {
                 
                 // Initialize interactive labeling for CyberQuest training if this is challenge1
                 if (url === 'https://daily-politico-news.com/breaking-news') {
-                    // Get article information from the page with safety checks
                     const challenge1Page = window.challenge1Page;
-                    const articleIndex = challenge1Page?.currentArticleIndex || 0;
-                    const totalArticles = challenge1Page?.articlesData?.length || 1;
                     
-                    // Ensure we have valid page config and articles data before initializing
-                    if (challenge1Page && pageConfig && challenge1Page.articlesData && challenge1Page.articlesData.length > 0) {
-                        // Get the current article data (already includes batch analysis from API)
-                        const currentArticle = challenge1Page.articlesData[articleIndex];
+                    if (challenge1Page && challenge1Page.articlesData && challenge1Page.articlesData.length > 0) {
+                        console.log('Initializing interactive labeling with', challenge1Page.articlesData.length, 'articles');
                         
-                        // Update pageConfig with current article data
-                        pageConfig.articleData = currentArticle;
-                        
-                        console.log('Initializing interactive labeling with article:', {
-                            index: articleIndex,
-                            title: currentArticle.title?.substring(0, 50),
-                            hasBatchAnalysis: !!(currentArticle.batchAnalysis),
-                            clickableElements: currentArticle.batchAnalysis?.clickable_elements?.length || 0
-                        });
-                        
-                        this.interactiveLabeling.initializeForArticle(pageConfig, articleIndex, totalArticles);
+                        // Initialize the interactive labeling system with all articles
+                        await this.interactiveLabeling.initializeWithArticles(challenge1Page.articlesData);
                     } else {
-                        console.warn('Challenge1 page, config, or articles data not available for interactive labeling');
-                        console.log('Debug info:', {
-                            challenge1Page: !!challenge1Page,
-                            pageConfig: !!pageConfig,
-                            articlesData: challenge1Page?.articlesData?.length || 0,
-                            currentIndex: articleIndex
-                        });
+                        console.warn('Challenge1 page or articles data not available for interactive labeling');
                     }
                 }
                 
