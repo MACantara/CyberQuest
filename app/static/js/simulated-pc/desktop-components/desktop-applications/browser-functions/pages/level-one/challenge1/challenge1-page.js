@@ -41,11 +41,19 @@ class Challenge1PageClass extends BasePage {
             try {
                 this.articlesData = await ArticleService.fetchMixedNewsArticles();
                 
-                // Log AI analysis availability
-                const aiAnalysisCount = this.articlesData.filter(article => 
-                    article.ai_analysis && Object.keys(article.ai_analysis).length > 0
+                // Log batch analysis availability
+                const batchAnalysisCount = this.articlesData.filter(article => 
+                    article.batchAnalysis && Object.keys(article.batchAnalysis).length > 0
                 ).length;
-                console.log(`Articles loaded: ${this.articlesData.length}, AI analysis available: ${aiAnalysisCount}`);
+                console.log(`Articles loaded: ${this.articlesData.length}, Batch analysis available: ${batchAnalysisCount}`);
+                
+                // Log detailed info about first article's batch analysis
+                if (this.articlesData.length > 0 && this.articlesData[0].batchAnalysis) {
+                    console.log('First article batch analysis:', {
+                        clickableElements: this.articlesData[0].batchAnalysis.clickable_elements?.length || 0,
+                        metadata: this.articlesData[0].batchAnalysis.article_metadata?.title?.substring(0, 50) || 'No title'
+                    });
+                }
                 
                 // Update page metadata based on the first article
                 this.title = `${this.articlesData[0].title} - Daily Politico News`;
@@ -163,8 +171,15 @@ class Challenge1PageClass extends BasePage {
         // Check if we have an interactive labeling system and update it
         const pageRenderer = this.getPageRenderer();
         if (pageRenderer && pageRenderer.interactiveLabeling) {
-            // Ensure current article data includes AI analysis
+            // Ensure current article data includes batch analysis
             this.articleData = this.articlesData[this.currentArticleIndex];
+            
+            console.log('Updating interactive labeling with article:', {
+                index: this.currentArticleIndex,
+                title: this.articleData.title?.substring(0, 50),
+                hasBatchAnalysis: !!(this.articleData.batchAnalysis),
+                clickableElements: this.articleData.batchAnalysis?.clickable_elements?.length || 0
+            });
             
             pageRenderer.interactiveLabeling.initializeForArticle(
                 this.toPageObject(), 
