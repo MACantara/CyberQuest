@@ -43,13 +43,25 @@ def convert_batch_to_article_format(batch_data):
             
         metadata = item['article_metadata']
         
+        # Try to extract actual text from clickable elements
+        actual_text = 'Sample article text for training purposes. This is a placeholder for the actual article content.'
+        content_element = None
+        
+        if item.get('clickable_elements'):
+            content_element = next(
+                (el for el in item['clickable_elements'] if el.get('element_id') == 'content_analysis'),
+                None
+            )
+            if content_element and content_element.get('element_text'):
+                actual_text = content_element['element_text']
+        
         # Extract article data
         article = {
             'id': f'article_{len(articles)}',
             'author': metadata.get('author', 'Unknown'),
             'published': metadata.get('published_date', ''),
             'title': metadata.get('title', ''),
-            'text': 'Sample article text for training purposes. This is a placeholder for the actual article content.',
+            'text': actual_text,
             'main_img_url': 'https://via.placeholder.com/400x200/10b981/ffffff?text=News+Article',
             'is_real': metadata.get('actual_label', '').lower() == 'real',
             'source': metadata.get('source', 'unknown'),
