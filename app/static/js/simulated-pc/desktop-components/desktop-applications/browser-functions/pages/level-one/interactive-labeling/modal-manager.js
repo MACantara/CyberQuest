@@ -11,7 +11,7 @@ export class ModalManager {
         const iconClass = results.percentage >= 75 ? 'bi-trophy-fill' : results.percentage >= 50 ? 'bi-hand-thumbs-up-fill' : 'bi-question-circle-fill';
         
         modal.innerHTML = `
-            <div class="bg-gray-800 text-white rounded-lg p-6 max-w-md mx-4 border border-gray-600">
+            <div class="bg-gray-800 text-white rounded p-6 max-w-md mx-4 border border-gray-600">
                 <div class="text-center">
                     <i class="bi ${iconClass} text-4xl ${scoreClass} mb-4"></i>
                     <h2 class="text-xl font-bold mb-4">Analysis Complete!</h2>
@@ -19,7 +19,7 @@ export class ModalManager {
                     <p class="text-gray-300 mb-4">You correctly identified ${results.correctLabels} out of ${results.totalElements} elements.</p>
                     
                     <!-- Quick Summary -->
-                    <div class="bg-gray-700 rounded-lg p-4 mb-4">
+                    <div class="bg-gray-700 rounded p-4 mb-4">
                         <div class="grid grid-cols-3 gap-4 text-sm">
                             <div class="text-center">
                                 <div class="text-green-400 font-bold flex items-center justify-center gap-1">
@@ -55,7 +55,7 @@ export class ModalManager {
                         }
                     </div>
                     
-                    <button onclick="window.interactiveLabeling?.nextArticle()" class="w-full bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold cursor-pointer flex items-center justify-center gap-2">
+                    <button onclick="window.interactiveLabeling?.nextArticle()" class="w-full bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700 transition-colors font-semibold cursor-pointer flex items-center justify-center gap-2">
                         ${this.labelingSystem.currentArticleIndex >= this.labelingSystem.totalArticles - 1 ? 
                             '<><i class="bi bi-bar-chart-fill"></i>View Detailed Summary</>' : 
                             '<><i class="bi bi-arrow-right-circle-fill"></i>Continue to Next Article</>'}
@@ -83,7 +83,7 @@ export class ModalManager {
         ).length;
         
         modal.innerHTML = `
-            <div class="bg-gray-800 text-white rounded-lg p-8 max-w-4xl mx-4 max-h-150 overflow-y-auto border border-gray-600">
+            <div class="bg-gray-800 text-white rounded p-8 max-w-4xl mx-4 max-h-150 overflow-y-auto border border-gray-600">
                 <div class="text-center mb-8">
                     <div class="flex items-center justify-center gap-2 mb-4">
                         <i class="bi bi-bullseye text-3xl text-blue-400"></i>
@@ -108,7 +108,7 @@ export class ModalManager {
                         const articleScoreClass = articleResult.results.percentage >= 75 ? 'text-green-400' : 
                                                  articleResult.results.percentage >= 50 ? 'text-yellow-400' : 'text-red-400';
                         return `
-                            <div class="bg-gray-700 border border-gray-600 rounded-lg p-4">
+                            <div class="bg-gray-700 border border-gray-600 rounded p-4">
                                 <div class="flex justify-between items-start mb-3">
                                     <div class="flex-1">
                                         <div class="font-semibold text-white mb-1 flex items-center gap-2">
@@ -175,7 +175,7 @@ export class ModalManager {
                 </div>
                 
                 <!-- Performance Summary -->
-                <div class="bg-gray-700 border border-gray-600 rounded-lg p-6 mb-6">
+                <div class="bg-gray-700 border border-gray-600 rounded p-6 mb-6">
                     <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
                         <i class="bi bi-trophy text-yellow-400 mr-2"></i>
                         Performance Summary
@@ -206,7 +206,7 @@ export class ModalManager {
                 </div>
                 
                 <div class="text-center">
-                    <button onclick="window.interactiveLabeling?.continueToNextLevel()" class="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold text-lg cursor-pointer flex items-center justify-center gap-2 mx-auto">
+                    <button onclick="window.interactiveLabeling?.continueToNextLevel()" class="bg-green-600 text-white px-8 py-3 rounded hover:bg-green-700 transition-colors font-semibold text-lg cursor-pointer flex items-center justify-center gap-2 mx-auto">
                         <i class="bi bi-rocket-takeoff-fill"></i>
                         Continue to Level 2
                     </button>
