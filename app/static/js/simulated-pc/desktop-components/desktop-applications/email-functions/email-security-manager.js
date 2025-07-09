@@ -296,14 +296,13 @@ export class EmailSecurityManager {
     createStatusBadge(emailId) {
         const emailStatus = this.getEmailStatus(emailId);
         
-        switch(emailStatus) {
-            case 'phishing':
-                return '<span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded flex items-center"><i class="bi bi-shield-exclamation mr-1"></i>Reported as Phishing</span>';
-            case 'legitimate':
-                return '<span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded flex items-center"><i class="bi bi-shield-check mr-1"></i>Marked as Legitimate</span>';
-            default:
-                return '<span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded flex items-center"><i class="bi bi-clock mr-1"></i>Awaiting Classification</span>';
+        // Only show badge for unverified emails to encourage action
+        if (emailStatus === 'unverified') {
+            return '<span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded flex items-center"><i class="bi bi-clock mr-1"></i>Awaiting Classification</span>';
         }
+        
+        // No badge for classified emails - status is shown in action buttons
+        return '';
     }
 
     createActionButtons(emailId, currentFolder) {
