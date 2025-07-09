@@ -5,32 +5,48 @@ import requests
 from pathlib import Path
 from urllib.parse import urlparse
 import time
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
-def check_image_accessibility(url, timeout=10):
+def check_image_accessibility_batch(urls, timeout=10, max_workers=20):
     """
-    Check if an image URL is accessible by making a HEAD request
-    Returns True if accessible, False otherwise
+    Check multiple image URLs for accessibility using batch processing
+    Returns a dictionary mapping URLs to their accessibility status
     """
-    try:
-        # Parse URL to check if it's valid
-        parsed = urlparse(url)
-        if not parsed.scheme or not parsed.netloc:
-            return False
+    results = {}
+    
+    def check_single_url(url):
+        try:
+            # Parse URL to check if it's valid
+            parsed = urlparse(url)
+            if not parsed.scheme or not parsed.netloc:
+                return url, False
+            
+            # Make HEAD request to check if image exists
+            response = requests.head(url, timeout=timeout, allow_redirects=True)
+            
+            # Check if response is successful and content type is image
+            if response.status_code == 200:
+                content_type = response.headers.get('content-type', '').lower()
+                if any(img_type in content_type for img_type in ['image/', 'jpeg', 'jpg', 'png', 'gif', 'webp']):
+                    return url, True
+            
+            return url, False
+            
+        except (requests.RequestException, requests.Timeout, Exception):
+            return url, False
+    
+    # Use ThreadPoolExecutor for concurrent checking
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        # Submit all URLs for checking
+        future_to_url = {executor.submit(check_single_url, url): url for url in urls}
         
-        # Make HEAD request to check if image exists
-        response = requests.head(url, timeout=timeout, allow_redirects=True)
-        
-        # Check if response is successful and content type is image
-        if response.status_code == 200:
-            content_type = response.headers.get('content-type', '').lower()
-            if any(img_type in content_type for img_type in ['image/', 'jpeg', 'jpg', 'png', 'gif', 'webp']):
-                return True
-        
-        return False
-        
-    except (requests.RequestException, requests.Timeout, Exception) as e:
-        print(f"  Warning: Could not verify image {url[:60]}... - {str(e)}")
-        return False
+        # Collect results as they complete
+        for future in as_completed(future_to_url):
+            url, is_accessible = future.result()
+            results[url] = is_accessible
+    
+    return results
 
 def filter_english_articles():
     """
@@ -62,7 +78,9 @@ def filter_english_articles():
     skipped_inaccessible_image = 0
     
     try:
-        # Read the CSV file
+        # First pass: collect all articles with basic validation
+        candidates = []
+        
         with open(input_file, 'r', encoding='utf-8') as infile:
             reader = csv.DictReader(infile)
             
@@ -70,7 +88,7 @@ def filter_english_articles():
             fieldnames = reader.fieldnames
             
             print(f"CSV columns: {fieldnames}")
-            print("Starting image accessibility verification...")
+            print("First pass: collecting candidate articles...")
             
             for row in reader:
                 total_articles += 1
@@ -93,25 +111,47 @@ def filter_english_articles():
                         row.get('author') and 
                         row.get('label')):
                         
-                        # Check if image is accessible
-                        print(f"  Checking image for article: {title[:50]}...")
-                        if check_image_accessibility(main_img_url):
-                            english_articles.append(row)
-                            print(f"    ✓ Image accessible, article included")
-                        else:
-                            skipped_inaccessible_image += 1
-                            print(f"    ✗ Image not accessible, article skipped")
-                        
-                        # Add small delay to avoid overwhelming servers
-                        time.sleep(0.5)
+                        candidates.append((row, main_img_url))
                     else:
                         if not main_img_url or main_img_url.lower() in ['no image url', 'no image', '']:
                             skipped_no_image += 1
                 
-                # Print progress every 100 articles
-                if total_articles % 100 == 0:
-                    print(f"Processed {total_articles} articles, found {len(english_articles)} English articles with accessible images")
-                    print(f"  Skipped {skipped_no_image} with no image, {skipped_inaccessible_image} with inaccessible images")
+                # Print progress every 1000 articles
+                if total_articles % 1000 == 0:
+                    print(f"Processed {total_articles} articles, found {len(candidates)} candidates for image verification")
+        
+        print(f"\nFirst pass complete. Found {len(candidates)} candidate articles.")
+        print(f"Starting batch image verification for {len(candidates)} URLs...")
+        
+        # Second pass: batch check image accessibility
+        if candidates:
+            # Extract URLs for batch checking
+            urls_to_check = [url for _, url in candidates]
+            
+            # Process URLs in batches to avoid overwhelming servers
+            batch_size = 50
+            all_accessibility_results = {}
+            
+            for i in range(0, len(urls_to_check), batch_size):
+                batch_urls = urls_to_check[i:i + batch_size]
+                print(f"Checking batch {i//batch_size + 1}/{(len(urls_to_check) + batch_size - 1)//batch_size} ({len(batch_urls)} URLs)...")
+                
+                # Check this batch
+                batch_results = check_image_accessibility_batch(batch_urls, timeout=10, max_workers=10)
+                all_accessibility_results.update(batch_results)
+                
+                # Brief pause between batches to be respectful to servers
+                if i + batch_size < len(urls_to_check):
+                    time.sleep(2)
+            
+            # Filter candidates based on image accessibility
+            for article_data, image_url in candidates:
+                if all_accessibility_results.get(image_url, False):
+                    english_articles.append(article_data)
+                    print(f"✓ Included: {article_data.get('title', 'Unknown')[:50]}...")
+                else:
+                    skipped_inaccessible_image += 1
+                    print(f"✗ Skipped: {article_data.get('title', 'Unknown')[:50]}... (inaccessible image)")
         
         # Write filtered articles to new CSV file
         with open(output_file, 'w', newline='', encoding='utf-8') as outfile:
@@ -133,12 +173,13 @@ def filter_english_articles():
         print(f"Articles with accessible images (included): {len(english_articles):,}")
         
         # Analyze the filtered dataset
-        real_count = sum(1 for article in english_articles if article.get('label', '').lower() == 'real')
-        fake_count = len(english_articles) - real_count
-        
-        print(f"\nDataset composition:")
-        print(f"Real news articles: {real_count:,} ({(real_count/len(english_articles))*100:.1f}%)")
-        print(f"Fake news articles: {fake_count:,} ({(fake_count/len(english_articles))*100:.1f}%)")
+        if english_articles:
+            real_count = sum(1 for article in english_articles if article.get('label', '').lower() == 'real')
+            fake_count = len(english_articles) - real_count
+            
+            print(f"\nDataset composition:")
+            print(f"Real news articles: {real_count:,} ({(real_count/len(english_articles))*100:.1f}%)")
+            print(f"Fake news articles: {fake_count:,} ({(fake_count/len(english_articles))*100:.1f}%)")
         
         print(f"\nFiltered dataset saved to: {output_file}")
         
@@ -196,8 +237,8 @@ def main():
     """
     Main function to run the preprocessing script
     """
-    print("News Articles Dataset Preprocessing with Image Verification")
-    print("=" * 60)
+    print("News Articles Dataset Preprocessing with Batch Image Verification")
+    print("=" * 70)
     
     # Check if requests library is available
     try:
@@ -213,12 +254,12 @@ def main():
         # First show language distribution
         analyze_language_distribution()
         
-        # Then filter English articles with image verification
+        # Then filter English articles with batch image verification
         success = filter_english_articles()
         
         if success:
             print("\n✅ Preprocessing completed successfully!")
-            print("Note: Image accessibility was verified for all included articles.")
+            print("Note: Image accessibility was verified in batches for better performance.")
         else:
             print("\n❌ Preprocessing failed!")
             sys.exit(1)
