@@ -60,7 +60,10 @@ def create_app(config_name=None):
 
     # Register new news API blueprint
     from .routes.news_api import news_api_bp
+    from .routes.ai_analysis import ai_analysis_bp
+    
     app.register_blueprint(news_api_bp)
+    app.register_blueprint(ai_analysis_bp)
     
     # Create database tables only in non-Vercel environments
     with app.app_context():
