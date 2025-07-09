@@ -8,7 +8,7 @@ export class InteractiveLabeling {
         this.isActive = false;
         this.currentArticleIndex = 0;
         this.totalArticles = 0;
-        this.aiAnalysis = null;
+        this.batchAnalysis = null;
         this.analysisSource = 'batch-json'; // Track that we're using batch JSON data
     }
 
@@ -34,14 +34,14 @@ export class InteractiveLabeling {
 
     loadAnalysisFromBatch(articleData) {
         // Check if article has batch analysis data
-        if (articleData && articleData.ai_analysis && articleData.ai_analysis.clickable_elements) {
-            this.aiAnalysis = articleData.ai_analysis;
+        if (articleData && articleData.batchAnalysis && articleData.batchAnalysis.clickable_elements) {
+            this.batchAnalysis = articleData.batchAnalysis;
             this.analysisSource = 'batch-json';
-            console.log('Using batch JSON analysis for article:', articleData.title.substring(0, 50));
-            console.log('Clickable elements found:', articleData.ai_analysis.clickable_elements.length);
+            console.log('Using batch JSON analysis for article:', articleData.title?.substring(0, 50) || 'Unknown');
+            console.log('Clickable elements found:', articleData.batchAnalysis.clickable_elements.length);
         } else {
             // Fall back to manual analysis if batch data is incomplete
-            this.aiAnalysis = this.createFallbackAnalysis(articleData);
+            this.batchAnalysis = this.createFallbackAnalysis(articleData);
             this.analysisSource = 'fallback';
             console.log('Using fallback analysis for article:', articleData?.title?.substring(0, 50) || 'Unknown');
         }
@@ -60,64 +60,27 @@ export class InteractiveLabeling {
                     "element_id": "title_analysis",
                     "element_name": "Article Title",
                     "expected_label": is_real ? "real" : "fake",
-                    "reasoning": is_real ? "Real news uses factual headlines" : "Fake news often uses sensational headlines",
-                    "difficulty": "easy",
-                    "red_flags": is_real ? [] : ["Sensational language", "Emotional manipulation", "Clickbait"],
-                    "credibility_indicators": is_real ? ["Professional tone", "Factual language", "Proper grammar"] : []
+                    "reasoning": is_real ? "Real news uses factual headlines" : "Fake news often uses sensational headlines"
                 },
                 {
                     "element_id": "author_analysis",
                     "element_name": "Author Information",
                     "expected_label": is_real ? "real" : "fake",
-                    "reasoning": is_real ? "Check author credibility and attribution" : "Fake news often lacks proper author info",
-                    "difficulty": "medium",
-                    "red_flags": is_real ? [] : ["Anonymous author", "No credentials", "Suspicious name"],
-                    "credibility_indicators": is_real ? ["Named author", "Clear attribution", "Verifiable credentials"] : []
+                    "reasoning": is_real ? "Check author credibility and attribution" : "Fake news often lacks proper author info"
                 },
                 {
                     "element_id": "date_analysis",
                     "element_name": "Publication Date",
                     "expected_label": is_real ? "real" : "fake",
-                    "reasoning": is_real ? "Check publication timing and context" : "Fake news may have suspicious timing",
-                    "difficulty": "medium",
-                    "red_flags": is_real ? [] : ["Suspicious timing", "Outdated information", "No timestamp"],
-                    "credibility_indicators": is_real ? ["Recent publication", "Proper timestamp", "Timely reporting"] : []
+                    "reasoning": is_real ? "Check publication timing and context" : "Fake news may have suspicious timing"
                 },
                 {
                     "element_id": "content_analysis",
                     "element_name": "Article Content",
                     "expected_label": is_real ? "real" : "fake",
-                    "reasoning": is_real ? "Analyze content for accuracy and bias" : "Look for unsubstantiated claims",
-                    "difficulty": "hard",
-                    "red_flags": is_real ? [] : ["Unsupported claims", "Emotional language", "No sources"],
-                    "credibility_indicators": is_real ? ["Cited sources", "Balanced reporting", "Factual claims"] : []
+                    "reasoning": is_real ? "Analyze content for accuracy and bias" : "Look for unsubstantiated claims"
                 }
-            ],
-            "article_analysis": {
-                "overall_credibility": is_real ? "high" : "low",
-                "primary_red_flags": is_real ? [] : [
-                    "Sensational headlines",
-                    "Emotional manipulation", 
-                    "Lack of credible sources"
-                ],
-                "credibility_factors": is_real ? [
-                    "Professional sourcing",
-                    "Factual reporting",
-                    "Proper attribution"
-                ] : [],
-                "educational_focus": `This article demonstrates ${is_real ? 'professional journalism standards' : 'common misinformation tactics'}`,
-                "misinformation_tactics": is_real ? [] : [
-                    "Emotional manipulation",
-                    "False urgency",
-                    "Unverified claims"
-                ],
-                "verification_tips": [
-                    "Check multiple sources",
-                    "Verify author credentials", 
-                    "Look for official sources",
-                    "Check publication date"
-                ]
-            }
+            ]
         };
     }
 
@@ -128,51 +91,27 @@ export class InteractiveLabeling {
                     "element_id": "title_analysis",
                     "element_name": "Article Title",
                     "expected_label": "real",
-                    "reasoning": "Practice identifying headline characteristics",
-                    "difficulty": "easy",
-                    "red_flags": [],
-                    "credibility_indicators": ["Professional presentation"]
+                    "reasoning": "Practice identifying headline characteristics"
                 },
                 {
                     "element_id": "author_analysis",
                     "element_name": "Author Information",
                     "expected_label": "real",
-                    "reasoning": "Check for author attribution",
-                    "difficulty": "medium",
-                    "red_flags": [],
-                    "credibility_indicators": ["Author information provided"]
+                    "reasoning": "Check for author attribution"
                 },
                 {
                     "element_id": "date_analysis",
                     "element_name": "Publication Date",
                     "expected_label": "real",
-                    "reasoning": "Check publication timing",
-                    "difficulty": "medium",
-                    "red_flags": [],
-                    "credibility_indicators": ["Proper timestamp"]
+                    "reasoning": "Check publication timing"
                 },
                 {
                     "element_id": "content_analysis",
                     "element_name": "Article Content",
                     "expected_label": "real",
-                    "reasoning": "Analyze content quality",
-                    "difficulty": "hard",
-                    "red_flags": [],
-                    "credibility_indicators": ["Well-structured content"]
+                    "reasoning": "Analyze content quality"
                 }
-            ],
-            "article_analysis": {
-                "overall_credibility": "medium",
-                "primary_red_flags": [],
-                "credibility_factors": ["Basic journalism elements present"],
-                "educational_focus": "Practice identifying key elements of news articles",
-                "misinformation_tactics": [],
-                "verification_tips": [
-                    "Always verify information from multiple sources",
-                    "Check author credentials",
-                    "Look for publication dates"
-                ]
-            }
+            ]
         };
     }
 
@@ -466,7 +405,7 @@ export class InteractiveLabeling {
         // Wait for DOM to be ready
         setTimeout(() => {
             const article = this.currentPageConfig?.articleData;
-            if (!article && !this.aiAnalysis) {
+            if (!article && !this.batchAnalysis) {
                 console.warn('No article data available for interactive labeling');
                 return;
             }
@@ -474,21 +413,17 @@ export class InteractiveLabeling {
             let interactiveElements = [];
             
             // Use batch JSON clickable elements if available
-            if (this.aiAnalysis && this.aiAnalysis.clickable_elements && this.aiAnalysis.clickable_elements.length > 0) {
-                interactiveElements = this.aiAnalysis.clickable_elements.map(element => {
-                    // Use element_id directly from batch JSON
+            if (this.batchAnalysis && this.batchAnalysis.clickable_elements && this.batchAnalysis.clickable_elements.length > 0) {
+                interactiveElements = this.batchAnalysis.clickable_elements.map(element => {
                     const elementId = element.element_id;
-                    const expectedLabel = element.expected_label || (element.expected_fake ? 'fake' : 'real');
+                    const expectedLabel = element.expected_label;
                     
                     return {
                         selector: `[data-element-id="${elementId}"]`,
                         id: elementId,
                         expectedFake: expectedLabel === 'fake',
-                        label: element.element_name || element.label || elementId,
-                        reasoning: element.reasoning || 'No reasoning provided',
-                        difficulty: element.difficulty || 'medium',
-                        redFlags: element.red_flags || [],
-                        credibilityIndicators: element.credibility_indicators || []
+                        label: element.element_name || elementId,
+                        reasoning: element.reasoning || 'No reasoning provided'
                     };
                 });
                 console.log('Using batch JSON clickable elements:', interactiveElements.length);
@@ -496,9 +431,9 @@ export class InteractiveLabeling {
                 // Fallback to default elements
                 const isReal = article?.is_real ?? true;
                 interactiveElements = [
-                    { selector: '[data-element-id="title_analysis"]', id: 'title_analysis', expectedFake: !isReal, label: 'Title', reasoning: 'Check headline for sensationalism', difficulty: 'easy' },
-                    { selector: '[data-element-id="author_analysis"]', id: 'author_analysis', expectedFake: !isReal, label: 'Author Info', reasoning: 'Verify author credentials', difficulty: 'medium' },
-                    { selector: '[data-element-id="content_analysis"]', id: 'content_analysis', expectedFake: !isReal, label: 'Article Content', reasoning: 'Analyze content for accuracy', difficulty: 'hard' }
+                    { selector: '[data-element-id="title_analysis"]', id: 'title_analysis', expectedFake: !isReal, label: 'Title', reasoning: 'Check headline for sensationalism' },
+                    { selector: '[data-element-id="author_analysis"]', id: 'author_analysis', expectedFake: !isReal, label: 'Author Info', reasoning: 'Verify author credentials' },
+                    { selector: '[data-element-id="content_analysis"]', id: 'content_analysis', expectedFake: !isReal, label: 'Article Content', reasoning: 'Analyze content for accuracy' }
                 ];
                 console.log('Using fallback clickable elements');
             }
@@ -510,7 +445,6 @@ export class InteractiveLabeling {
                     element.setAttribute('data-element-id', elementDef.id);
                     element.setAttribute('data-label', elementDef.label);
                     element.setAttribute('data-reasoning', elementDef.reasoning || 'No reasoning provided');
-                    element.setAttribute('data-difficulty', elementDef.difficulty || 'medium');
                     element.setAttribute('title', `Click to label "${elementDef.label}" as fake or real`);
                     
                     // Initialize in labeledElements
@@ -520,9 +454,6 @@ export class InteractiveLabeling {
                         expectedFake: elementDef.expectedFake,
                         label: elementDef.label,
                         reasoning: elementDef.reasoning,
-                        difficulty: elementDef.difficulty,
-                        redFlags: elementDef.redFlags || [],
-                        credibilityIndicators: elementDef.credibilityIndicators || [],
                         element: element
                     });
                     
@@ -573,7 +504,7 @@ export class InteractiveLabeling {
         if (existing) existing.remove();
         
         // Get educational notes from batch analysis
-        const educationalNotes = this.aiAnalysis?.article_analysis?.educational_focus || 
+        const educationalNotes = this.batchAnalysis?.educational_focus || 
                                'Click on different parts of the article to label them as fake or real. This data comes from pre-analyzed batch training data.';
         
         const analysisSourceText = this.analysisSource === 'batch-json' ? 
@@ -703,12 +634,6 @@ export class InteractiveLabeling {
         const scoreClass = results.percentage >= 75 ? 'good' : results.percentage >= 50 ? 'medium' : 'poor';
         const emoji = results.percentage >= 75 ? '🎉' : results.percentage >= 50 ? '👍' : '🤔';
         
-        // Get insights for feedback from batch analysis
-        const keyIndicators = this.aiAnalysis?.article_analysis?.credibility_factors || [];
-        const redFlags = this.aiAnalysis?.article_analysis?.primary_red_flags || [];
-        const verificationTips = this.aiAnalysis?.article_analysis?.verification_tips || [];
-        const misinformationTactics = this.aiAnalysis?.article_analysis?.misinformation_tactics || [];
-        
         modal.innerHTML = `
             <div class="feedback-content">
                 <h2>${emoji} Analysis Complete!</h2>
@@ -734,34 +659,6 @@ export class InteractiveLabeling {
                         `;
                     }).join('')}
                 </div>
-                
-                ${keyIndicators.length > 0 ? `
-                    <div class="ai-insights">
-                        <h3>🔍 Credibility Indicators:</h3>
-                        <ul>${keyIndicators.map(indicator => `<li>${indicator}</li>`).join('')}</ul>
-                    </div>
-                ` : ''}
-                
-                ${redFlags.length > 0 ? `
-                    <div class="ai-warnings">
-                        <h3>🚩 Red Flags:</h3>
-                        <ul>${redFlags.map(flag => `<li>${flag}</li>`).join('')}</ul>
-                    </div>
-                ` : ''}
-                
-                ${misinformationTactics.length > 0 ? `
-                    <div class="ai-warnings">
-                        <h3>⚠️ Misinformation Tactics:</h3>
-                        <ul>${misinformationTactics.map(tactic => `<li>${tactic}</li>`).join('')}</ul>
-                    </div>
-                ` : ''}
-                
-                ${verificationTips.length > 0 ? `
-                    <div class="ai-insights">
-                        <h3>✅ Verification Tips:</h3>
-                        <ul>${verificationTips.map(tip => `<li>${tip}</li>`).join('')}</ul>
-                    </div>
-                ` : ''}
                 
                 <div style="margin-top: 20px; padding: 15px; background: #f0f9ff; border-radius: 8px; border: 1px solid #0ea5e9;">
                     <p style="margin: 0; font-size: 14px; color: #0369a1;">
