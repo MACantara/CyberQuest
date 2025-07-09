@@ -47,8 +47,15 @@ def filter_english_articles():
                 language = row.get('language', '').strip().lower()
                 
                 if language == 'english':
-                    # Additional validation for required fields
-                    if (row.get('title') and 
+                    # Additional validation for required fields including title and image URL
+                    title = row.get('title', '').strip()
+                    main_img_url = row.get('main_img_url', '').strip()
+                    
+                    if (title and  # Title must exist and not be empty
+                        title.lower() not in ['no title', 'untitled', ''] and  # Exclude common placeholder titles
+                        main_img_url and  # Image URL must exist
+                        main_img_url.lower() not in ['no image url', 'no image', ''] and  # Exclude placeholder image URLs
+                        main_img_url.startswith(('http://', 'https://')) and  # Must be valid HTTP/HTTPS URL
                         row.get('text') and 
                         row.get('author') and 
                         row.get('label')):
@@ -56,7 +63,7 @@ def filter_english_articles():
                 
                 # Print progress every 1000 articles
                 if total_articles % 1000 == 0:
-                    print(f"Processed {total_articles} articles, found {len(english_articles)} English articles")
+                    print(f"Processed {total_articles} articles, found {len(english_articles)} English articles with valid titles and image URLs")
         
         # Write filtered articles to new CSV file
         with open(output_file, 'w', newline='', encoding='utf-8') as outfile:
@@ -69,7 +76,7 @@ def filter_english_articles():
         print("FILTERING COMPLETE")
         print("="*50)
         print(f"Total articles processed: {total_articles:,}")
-        print(f"English articles found: {len(english_articles):,}")
+        print(f"English articles with valid titles and image URLs found: {len(english_articles):,}")
         print(f"Filtering ratio: {(len(english_articles)/total_articles)*100:.2f}%")
         
         # Analyze the filtered dataset
