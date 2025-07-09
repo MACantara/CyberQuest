@@ -1,11 +1,11 @@
 import { PageRegistry } from './pages/page-registry.js';
-import { AnalysisOverlay } from './pages/level-one/analysis-overlay.js';
+import { InteractiveLabeling } from './pages/level-one/interactive-labeling.js';
 
 export class PageRenderer {
     constructor(browserApp) {
         this.browserApp = browserApp;
         this.pageRegistry = new PageRegistry();
-        this.analysisOverlay = new AnalysisOverlay(browserApp, this.pageRegistry);
+        this.interactiveLabeling = new InteractiveLabeling(browserApp, this.pageRegistry);
     }
 
     async renderPage(url) {
@@ -27,14 +27,13 @@ export class PageRenderer {
                 
                 contentElement.innerHTML = htmlContent;
                 
-                // Create overlay for CyberQuest training tools if this is challenge1
+                // Initialize interactive labeling for CyberQuest training if this is challenge1
                 if (url === 'https://daily-politico-news.com/breaking-news') {
-                    // Check if this is an article navigation (overlay already exists)
-                    if (this.analysisOverlay.currentOverlay) {
-                        this.analysisOverlay.updateForNewArticle(pageConfig);
-                    } else {
-                        this.analysisOverlay.addToContent(contentElement, pageConfig);
-                    }
+                    // Get article information from the page
+                    const articleIndex = window.challenge1Page?.currentArticleIndex || 0;
+                    const totalArticles = window.challenge1Page?.articlesData?.length || 1;
+                    
+                    this.interactiveLabeling.initializeForArticle(pageConfig, articleIndex, totalArticles);
                 }
                 
                 this.updatePageTitle(pageConfig.title);

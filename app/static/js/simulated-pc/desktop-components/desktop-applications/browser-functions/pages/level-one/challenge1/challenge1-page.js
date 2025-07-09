@@ -146,8 +146,20 @@ class Challenge1PageClass extends BasePage {
             // Re-bind navigation events
             window.challenge1Page = this;
             
-            // Update the training overlay to reflect the new article
-            this.updateTrainingOverlay();
+            // Update the interactive labeling system
+            this.updateInteractiveLabeling();
+        }
+    }
+
+    updateInteractiveLabeling() {
+        // Check if we have an interactive labeling system and update it
+        const pageRenderer = this.getPageRenderer();
+        if (pageRenderer && pageRenderer.interactiveLabeling) {
+            pageRenderer.interactiveLabeling.initializeForArticle(
+                this.toPageObject(), 
+                this.currentArticleIndex, 
+                this.articlesData.length
+            );
         }
     }
 
