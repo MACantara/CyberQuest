@@ -33,15 +33,22 @@ export class InteractiveLabeling {
     }
 
     loadAnalysisFromBatch(articleData) {
-        // Only use batch analysis data
-        if (articleData && articleData.batchAnalysis && articleData.batchAnalysis.clickable_elements) {
+        // Check if article has batch analysis data directly (batch-1.json structure)
+        if (articleData && articleData.clickable_elements) {
+            // Data is at root level - this is the actual batch-1.json structure
+            this.batchAnalysis = articleData;
+            this.analysisSource = 'batch-json';
+            console.log('Using batch JSON analysis for article:', articleData.article_metadata?.title?.substring(0, 50) || 'Unknown');
+            console.log('Clickable elements found:', articleData.clickable_elements.length);
+        } else if (articleData && articleData.batchAnalysis && articleData.batchAnalysis.clickable_elements) {
+            // Legacy nested structure
             this.batchAnalysis = articleData.batchAnalysis;
             this.analysisSource = 'batch-json';
-            console.log('Using batch JSON analysis for article:', articleData.title?.substring(0, 50) || 'Unknown');
-            console.log('Batch title (original):', articleData.batchAnalysis.article_metadata?.title || 'Unknown');
+            console.log('Using nested batch JSON analysis for article:', articleData.title?.substring(0, 50) || 'Unknown');
             console.log('Clickable elements found:', articleData.batchAnalysis.clickable_elements.length);
         } else {
-            console.error('No batch analysis data available for article:', articleData?.title?.substring(0, 50) || 'Unknown');
+            console.error('No batch analysis data available for article:', articleData?.title?.substring(0, 50) || articleData?.article_metadata?.title?.substring(0, 50) || 'Unknown');
+            console.log('Available articleData properties:', Object.keys(articleData || {}));
             this.batchAnalysis = null;
             this.analysisSource = 'none';
         }
@@ -638,7 +645,8 @@ export class InteractiveLabeling {
         
         const overallClass = overallScore >= 75 ? 'good' : overallScore >= 50 ? 'medium' : 'poor';
         const batchAnalysisCount = this.articleResults.filter(result => 
-            result.articleData.batchAnalysis && Object.keys(result.articleData.batchAnalysis).length > 0
+            result.articleData.clickable_elements || 
+            (result.articleData.batchAnalysis && Object.keys(result.articleData.batchAnalysis).length > 0)
         ).length;
         
         modal.innerHTML = `
@@ -655,13 +663,13 @@ export class InteractiveLabeling {
                 <div class="article-summaries">
                     ${this.articleResults.map((articleResult, index) => `
                         <div class="article-summary">
-                            <div class="article-title">Article ${index + 1}: ${articleResult.articleData.title?.substring(0, 60) || 'Unknown Article'}...</div>
+                            <div class="article-title">Article ${index + 1}: ${articleResult.articleData.title?.substring(0, 60) || articleResult.articleData.article_metadata?.title?.substring(0, 60) || 'Unknown Article'}...</div>
                             <div class="article-score ${articleResult.results.percentage >= 75 ? 'good' : articleResult.results.percentage >= 50 ? 'medium' : 'poor'}">
                                 ${articleResult.results.percentage}%
                             </div>
                             <div class="article-explanation">
-                                <strong>Article Type:</strong> ${articleResult.articleData.is_real ? 'Real News' : 'Misinformation'}<br>
-                                <strong>Analysis Source:</strong> ${articleResult.articleData.batchAnalysis && Object.keys(articleResult.articleData.batchAnalysis).length > 0 ? 'Batch Analysis' : 'No Analysis'}<br>
+                                <strong>Article Type:</strong> ${articleResult.articleData.is_real ? 'Real News' : articleResult.articleData.article_metadata?.actual_label || 'Unknown'}<br>
+                                <strong>Analysis Source:</strong> ${articleResult.articleData.clickable_elements || (articleResult.articleData.batchAnalysis && Object.keys(articleResult.articleData.batchAnalysis).length > 0) ? 'Batch Analysis' : 'No Analysis'}<br>
                                 <strong>Key Indicators:</strong> ${this.getKeyIndicators(articleResult.articleData)}
                             </div>
                         </div>
@@ -687,6 +695,13 @@ export class InteractiveLabeling {
     getKeyIndicators(articleData) {
         if (!articleData) return "No article data available";
         
+        // Check direct structure first (batch-1.json)
+        if (articleData.clickable_elements) {
+            const indicators = articleData.clickable_elements.map(element => element.reasoning).slice(0, 2);
+            return indicators.join(', ') || 'Batch analysis data';
+        }
+        
+        // Check nested structure (legacy)
         const batchAnalysis = articleData.batchAnalysis;
         if (batchAnalysis && batchAnalysis.clickable_elements) {
             const indicators = batchAnalysis.clickable_elements.map(element => element.reasoning).slice(0, 2);
