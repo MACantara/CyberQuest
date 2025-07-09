@@ -38,6 +38,7 @@ export class InteractiveLabeling {
             this.batchAnalysis = articleData.batchAnalysis;
             this.analysisSource = 'batch-json';
             console.log('Using batch JSON analysis for article:', articleData.title?.substring(0, 50) || 'Unknown');
+            console.log('Batch title (original):', articleData.batchAnalysis.article_metadata?.title || 'Unknown');
             console.log('Clickable elements found:', articleData.batchAnalysis.clickable_elements.length);
         } else {
             console.error('No batch analysis data available for article:', articleData?.title?.substring(0, 50) || 'Unknown');
@@ -352,7 +353,8 @@ export class InteractiveLabeling {
                     id: elementId,
                     expectedFake: expectedLabel === 'fake',
                     label: element.element_name || elementId,
-                    reasoning: element.reasoning || 'No reasoning provided'
+                    reasoning: element.reasoning || 'No reasoning provided',
+                    elementText: element.element_text || '' // Store original text for matching
                 };
             });
             console.log('Using batch JSON clickable elements:', interactiveElements.length);
@@ -366,6 +368,15 @@ export class InteractiveLabeling {
                     element.setAttribute('data-reasoning', elementDef.reasoning || 'No reasoning provided');
                     element.setAttribute('title', `Click to label "${elementDef.label}" as fake or real`);
                     
+                    // Log text matching for debugging
+                    const elementText = element.textContent?.trim().toLowerCase() || '';
+                    const batchText = elementDef.elementText.toLowerCase();
+                    console.log(`Element ${elementDef.id}:`, {
+                        displayed: elementText.substring(0, 50),
+                        batch: batchText.substring(0, 50),
+                        matches: elementText === batchText || elementText.includes(batchText) || batchText.includes(elementText)
+                    });
+                    
                     // Initialize in labeledElements
                     this.labeledElements.set(elementDef.id, {
                         labeled: false,
@@ -373,7 +384,8 @@ export class InteractiveLabeling {
                         expectedFake: elementDef.expectedFake,
                         label: elementDef.label,
                         reasoning: elementDef.reasoning,
-                        element: element
+                        element: element,
+                        elementText: elementDef.elementText
                     });
                     
                     element.addEventListener('click', (e) => {
@@ -581,7 +593,8 @@ export class InteractiveLabeling {
                 
                 <div style="margin-top: 20px; padding: 15px; background: #f0f9ff; border-radius: 8px; border: 1px solid #0ea5e9;">
                     <p style="margin: 0; font-size: 14px; color: #0369a1;">
-                        <strong>📊 Analysis Source:</strong> This feedback is based on pre-analyzed batch training data from batch-1.json
+                        <strong>📊 Analysis Source:</strong> This feedback is based on pre-analyzed batch training data from batch-1.json<br>
+                        <small>Note: Text matching handles case differences between displayed and batch data</small>
                     </p>
                 </div>
                 
@@ -624,8 +637,8 @@ export class InteractiveLabeling {
         );
         
         const overallClass = overallScore >= 75 ? 'good' : overallScore >= 50 ? 'medium' : 'poor';
-        const aiAnalysisCount = this.articleResults.filter(result => 
-            result.articleData.ai_analysis && Object.keys(result.articleData.ai_analysis).length > 0
+        const batchAnalysisCount = this.articleResults.filter(result => 
+            result.articleData.batchAnalysis && Object.keys(result.articleData.batchAnalysis).length > 0
         ).length;
         
         modal.innerHTML = `
@@ -635,20 +648,20 @@ export class InteractiveLabeling {
                     <div class="overall-score ${overallClass}">${overallScore}%</div>
                     <p>Overall Performance Across All Articles</p>
                     <p style="font-size: 14px; color: #6b7280;">
-                        ${aiAnalysisCount} articles used AI-generated analysis
+                        ${batchAnalysisCount} articles used batch analysis data
                     </p>
                 </div>
                 
                 <div class="article-summaries">
                     ${this.articleResults.map((articleResult, index) => `
                         <div class="article-summary">
-                            <div class="article-title">Article ${index + 1}: ${articleResult.articleData.title.substring(0, 60)}...</div>
+                            <div class="article-title">Article ${index + 1}: ${articleResult.articleData.title?.substring(0, 60) || 'Unknown Article'}...</div>
                             <div class="article-score ${articleResult.results.percentage >= 75 ? 'good' : articleResult.results.percentage >= 50 ? 'medium' : 'poor'}">
                                 ${articleResult.results.percentage}%
                             </div>
                             <div class="article-explanation">
                                 <strong>Article Type:</strong> ${articleResult.articleData.is_real ? 'Real News' : 'Misinformation'}<br>
-                                <strong>Analysis Source:</strong> ${articleResult.articleData.ai_analysis && Object.keys(articleResult.articleData.ai_analysis).length > 0 ? 'AI-Generated' : 'Training Fallback'}<br>
+                                <strong>Analysis Source:</strong> ${articleResult.articleData.batchAnalysis && Object.keys(articleResult.articleData.batchAnalysis).length > 0 ? 'Batch Analysis' : 'No Analysis'}<br>
                                 <strong>Key Indicators:</strong> ${this.getKeyIndicators(articleResult.articleData)}
                             </div>
                         </div>
