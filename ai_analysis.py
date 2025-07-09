@@ -329,7 +329,7 @@ def analyze_single_article(article: Dict) -> Dict:
 def batch_analyze_articles_dataset():
     """
     Analyze the entire english_news_articles.csv dataset and generate taggable elements
-    Save results to JSON file in the same directory
+    Save results to JSON file in the same directory - updates file after each batch
     """
     project_root = Path(__file__).parent
     input_file = project_root / 'data' / 'processed' / 'english_news_articles.csv'
@@ -369,6 +369,24 @@ def batch_analyze_articles_dataset():
             
             print(f"✓ Batch {batch_num} completed successfully")
             
+            # Save results after each batch completion
+            output_data = {
+                'metadata': {
+                    'total_articles': len(articles),
+                    'processed_articles': len(analysis_results),
+                    'analysis_timestamp': time.strftime('%Y-%m-%d %H:%M:%S'),
+                    'model_used': 'gemini-2.5-flash',
+                    'batch_size': batch_size,
+                    'batches_completed': batch_num,
+                    'total_batches': total_batches,
+                    'completion_status': 'in_progress' if batch_num < total_batches else 'completed'
+                },
+                'analyses': analysis_results
+            }
+            
+            # Save immediately after each batch
+            save_batch_results(output_data, output_file)
+            
             # Rate limiting between batches
             if i + batch_size < len(articles):
                 print("Waiting 3 seconds before next batch...")
@@ -388,26 +406,45 @@ def batch_analyze_articles_dataset():
                     'analysis_method': 'fallback',
                     'error': str(e)
                 })
+            
+            # Save results even after failed batch
+            output_data = {
+                'metadata': {
+                    'total_articles': len(articles),
+                    'processed_articles': len(analysis_results),
+                    'analysis_timestamp': time.strftime('%Y-%m-%d %H:%M:%S'),
+                    'model_used': 'gemini-2.5-flash',
+                    'batch_size': batch_size,
+                    'batches_completed': batch_num,
+                    'total_batches': total_batches,
+                    'completion_status': 'in_progress' if batch_num < total_batches else 'completed_with_errors'
+                },
+                'analyses': analysis_results
+            }
+            save_batch_results(output_data, output_file)
             continue
     
-    # Save results
-    output_data = {
+    # Final save with completion status
+    final_output_data = {
         'metadata': {
             'total_articles': len(articles),
+            'processed_articles': len(analysis_results),
             'analysis_timestamp': time.strftime('%Y-%m-%d %H:%M:%S'),
             'model_used': 'gemini-2.5-flash',
-            'batch_size': batch_size
+            'batch_size': batch_size,
+            'batches_completed': total_batches,
+            'total_batches': total_batches,
+            'completion_status': 'completed'
         },
         'analyses': analysis_results
     }
     
-    with open(output_file, 'w', encoding='utf-8') as file:
-        json.dump(output_data, file, indent=2, ensure_ascii=False)
+    save_batch_results(final_output_data, output_file)
     
     print(f"\n✅ Analysis complete! Results saved to: {output_file}")
     print(f"📊 Successfully analyzed {len(analysis_results)} articles")
     
-    return output_data
+    return final_output_data
 
 def analyze_article_batch(client, batch):
     """
@@ -554,74 +591,6 @@ def validate_analysis_structure(analysis, article):
     
     return validated
 
-def create_fallback_analysis_for_dataset(article):
-    """
-    Create fallback analysis when AI fails
-    """
-    is_real = article.get('label', '').lower() == 'real'
-    
-    clickable_elements = [
-        {
-            "element_id": "title",
-            "element_name": "Article Title",
-            "css_selector": "h2",
-            "expected_label": "fake" if not is_real else "real",
-            "reasoning": "Fake news often uses sensational headlines" if not is_real else "Real news uses factual headlines",
-            "difficulty": "easy",
-            "red_flags": ["Sensational language", "All caps", "Emotional manipulation"] if not is_real else [],
-            "credibility_indicators": ["Professional tone", "Factual language", "Proper grammar"] if is_real else []
-        },
-        {
-            "element_id": "author",
-            "element_name": "Author Information",
-            "css_selector": "main > div:nth-child(2)",
-            "expected_label": "fake" if not is_real else "real",
-            "reasoning": "Check author credibility and attribution" if is_real else "Fake news often lacks proper author info",
-            "difficulty": "medium",
-            "red_flags": ["Anonymous author", "No credentials", "Suspicious name"] if not is_real else [],
-            "credibility_indicators": ["Named author", "Clear attribution", "Verifiable credentials"] if is_real else []
-        },
-        {
-            "element_id": "content",
-            "element_name": "Article Content",
-            "css_selector": "main > div:nth-child(4)",
-            "expected_label": "fake" if not is_real else "real",
-            "reasoning": "Analyze content for accuracy and bias" if is_real else "Look for unsubstantiated claims",
-            "difficulty": "hard",
-            "red_flags": ["Unsupported claims", "Emotional language", "No sources"] if not is_real else [],
-            "credibility_indicators": ["Cited sources", "Balanced reporting", "Factual claims"] if is_real else []
-        }
-    ]
-    
-    return {
-        "clickable_elements": clickable_elements,
-        "article_analysis": {
-            "overall_credibility": "high" if is_real else "low",
-            "primary_red_flags": [
-                "Sensational headlines",
-                "Emotional manipulation", 
-                "Lack of credible sources"
-            ] if not is_real else [],
-            "credibility_factors": [
-                "Professional sourcing",
-                "Factual reporting",
-                "Proper attribution"
-            ] if is_real else [],
-            "educational_focus": f"This article demonstrates {'professional journalism standards' if is_real else 'common misinformation tactics'}",
-            "misinformation_tactics": [
-                "Emotional manipulation",
-                "False urgency",
-                "Unverified claims"
-            ] if not is_real else [],
-            "verification_tips": [
-                "Check multiple sources",
-                "Verify author credentials", 
-                "Look for official sources",
-                "Check publication date"
-            ]
-        }
-    }
-
 @ai_analysis_bp.route('/batch-analyze-dataset', methods=['POST'])
 def batch_analyze_dataset():
     """
@@ -706,3 +675,84 @@ def health_check():
             'status': 'unhealthy',
             'error': str(e)
         }), 500
+
+def create_fallback_analysis_for_dataset(article):
+    """
+    Create fallback analysis when AI fails
+    """
+    is_real = article.get('label', '').lower() == 'real'
+    
+    clickable_elements = [
+        {
+            "element_id": "title",
+            "element_name": "Article Title",
+            "css_selector": "h2",
+            "expected_label": "fake" if not is_real else "real",
+            "reasoning": "Fake news often uses sensational headlines" if not is_real else "Real news uses factual headlines",
+            "difficulty": "easy",
+            "red_flags": ["Sensational language", "All caps", "Emotional manipulation"] if not is_real else [],
+            "credibility_indicators": ["Professional tone", "Factual language", "Proper grammar"] if is_real else []
+        },
+        {
+            "element_id": "author",
+            "element_name": "Author Information",
+            "css_selector": "main > div:nth-child(2)",
+            "expected_label": "fake" if not is_real else "real",
+            "reasoning": "Check author credibility and attribution" if is_real else "Fake news often lacks proper author info",
+            "difficulty": "medium",
+            "red_flags": ["Anonymous author", "No credentials", "Suspicious name"] if not is_real else [],
+            "credibility_indicators": ["Named author", "Clear attribution", "Verifiable credentials"] if is_real else []
+        },
+        {
+            "element_id": "content",
+            "element_name": "Article Content",
+            "css_selector": "main > div:nth-child(4)",
+            "expected_label": "fake" if not is_real else "real",
+            "reasoning": "Analyze content for accuracy and bias" if is_real else "Look for unsubstantiated claims",
+            "difficulty": "hard",
+            "red_flags": ["Unsupported claims", "Emotional language", "No sources"] if not is_real else [],
+            "credibility_indicators": ["Cited sources", "Balanced reporting", "Factual claims"] if is_real else []
+        }
+    ]
+    
+    return {
+        "clickable_elements": clickable_elements,
+        "article_analysis": {
+            "overall_credibility": "high" if is_real else "low",
+            "primary_red_flags": [
+                "Sensational headlines",
+                "Emotional manipulation", 
+                "Lack of credible sources"
+            ] if not is_real else [],
+            "credibility_factors": [
+                "Professional sourcing",
+                "Factual reporting",
+                "Proper attribution"
+            ] if is_real else [],
+            "educational_focus": f"This article demonstrates {'professional journalism standards' if is_real else 'common misinformation tactics'}",
+            "misinformation_tactics": [
+                "Emotional manipulation",
+                "False urgency",
+                "Unverified claims"
+            ] if not is_real else [],
+            "verification_tips": [
+                "Check multiple sources",
+                "Verify author credentials", 
+                "Look for official sources",
+                "Check publication date"
+            ]
+        }
+    }
+
+def save_batch_results(output_data, output_file):
+    """
+    Save batch results immediately after each batch completion
+    """
+    try:
+        with open(output_file, 'w', encoding='utf-8') as file:
+            json.dump(output_data, file, indent=2, ensure_ascii=False)
+        print(f"📁 Batch results saved to: {output_file}")
+        return True
+    except Exception as e:
+        print(f"❌ Error saving batch results: {e}")
+        return False
