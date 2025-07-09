@@ -93,13 +93,43 @@ export class BrowserApp extends WindowBase {
         // Bind additional events
         this.bindBrowserEvents();
         
-        // Load initial page
-        setTimeout(() => {
-            this.loadInitialPage();
-        }, 500);
+        // Show initial loading screen instead of loading suspicious site
+        this.showInitialLoadingScreen();
 
         // Setup dynamic security monitoring
         this.setupSecurityMonitoring();
+    }
+
+    showInitialLoadingScreen() {
+        const contentElement = this.windowElement?.querySelector('#browser-content');
+        if (contentElement) {
+            contentElement.innerHTML = `
+                <div class="h-full bg-white flex items-center justify-center">
+                    <div class="text-center">
+                        <div class="text-6xl mb-4">🌐</div>
+                        <h2 class="text-xl font-semibold text-gray-800 mb-2">Welcome to CyberQuest Browser</h2>
+                        <p class="text-gray-600 mb-4">Enter a URL in the address bar to start browsing</p>
+                        <div class="text-sm text-gray-500">
+                            <p>🔒 Security monitoring is active</p>
+                            <p>📊 Training mode enabled</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Clear the URL bar
+        const urlBar = this.windowElement?.querySelector('#browser-url-bar');
+        if (urlBar) {
+            urlBar.value = '';
+            urlBar.placeholder = 'Enter URL or search term...';
+        }
+    }
+
+    loadInitialPage() {
+        // This method is now replaced by showInitialLoadingScreen
+        // Keep it for compatibility but make it show the loading screen
+        this.showInitialLoadingScreen();
     }
 
     setupSecurityMonitoring() {
@@ -136,28 +166,6 @@ export class BrowserApp extends WindowBase {
             
             return securityCheck;
         }
-    }
-
-    loadInitialPage() {
-        const initialUrl = 'https://suspicious-site.com';
-        
-        // Set the URL in the input field
-        const urlBar = this.windowElement?.querySelector('#browser-url-bar');
-        if (urlBar) {
-            urlBar.value = initialUrl;
-        }
-        
-        this.pageRenderer.renderPage(initialUrl);
-        
-        // Emit navigation event for network monitoring
-        document.dispatchEvent(new CustomEvent('browser-navigate', {
-            detail: { url: initialUrl }
-        }));
-        
-        // Ensure security check runs after page render
-        setTimeout(() => {
-            this.updateSecurityStatus(initialUrl);
-        }, 100);
     }
 
     toggleBookmarksBar() {
