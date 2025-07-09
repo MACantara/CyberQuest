@@ -42,17 +42,6 @@ export class EmailSecurityManager {
         this.saveToLocalStorage();
     }
 
-    moveToInbox(emailId) {
-        this.spamEmails.delete(emailId);
-        this.reportedPhishing.delete(emailId); // Also remove phishing report
-        this.saveToLocalStorage();
-        
-        // Emit event for network monitoring
-        document.dispatchEvent(new CustomEvent('email-moved-to-inbox', {
-            detail: { emailId, timestamp: new Date().toISOString() }
-        }));
-    }
-
     // Email action methods - refactored from email-app.js
     confirmPhishingReport(emailId, emailApp) {
         const email = ALL_EMAILS.find(e => e.id === emailId);
@@ -315,12 +304,8 @@ export class EmailSecurityManager {
         }
         
         if (currentFolder === 'spam') {
-            // In spam folder, show move to inbox button only if not already categorized
-            buttons += `
-                <button class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-500 transition-colors text-xs cursor-pointer" 
-                        id="move-to-inbox-btn" data-email-id="${emailId}">
-                    <i class="bi bi-inbox mr-1"></i>Move to Inbox
-                </button>`;
+            // No action buttons in spam folder
+            return '';
         } else {
             // In inbox, show classification buttons only if not already categorized
             buttons += `
