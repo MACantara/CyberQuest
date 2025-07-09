@@ -33,86 +33,17 @@ export class InteractiveLabeling {
     }
 
     loadAnalysisFromBatch(articleData) {
-        // Check if article has batch analysis data
+        // Only use batch analysis data
         if (articleData && articleData.batchAnalysis && articleData.batchAnalysis.clickable_elements) {
             this.batchAnalysis = articleData.batchAnalysis;
             this.analysisSource = 'batch-json';
             console.log('Using batch JSON analysis for article:', articleData.title?.substring(0, 50) || 'Unknown');
             console.log('Clickable elements found:', articleData.batchAnalysis.clickable_elements.length);
         } else {
-            // Fall back to manual analysis if batch data is incomplete
-            this.batchAnalysis = this.createFallbackAnalysis(articleData);
-            this.analysisSource = 'fallback';
-            console.log('Using fallback analysis for article:', articleData?.title?.substring(0, 50) || 'Unknown');
+            console.error('No batch analysis data available for article:', articleData?.title?.substring(0, 50) || 'Unknown');
+            this.batchAnalysis = null;
+            this.analysisSource = 'none';
         }
-    }
-
-    createFallbackAnalysis(articleData) {
-        if (!articleData) {
-            return this.getDefaultAnalysis();
-        }
-        
-        const is_real = articleData.is_real;
-        
-        return {
-            "clickable_elements": [
-                {
-                    "element_id": "title_analysis",
-                    "element_name": "Article Title",
-                    "expected_label": is_real ? "real" : "fake",
-                    "reasoning": is_real ? "Real news uses factual headlines" : "Fake news often uses sensational headlines"
-                },
-                {
-                    "element_id": "author_analysis",
-                    "element_name": "Author Information",
-                    "expected_label": is_real ? "real" : "fake",
-                    "reasoning": is_real ? "Check author credibility and attribution" : "Fake news often lacks proper author info"
-                },
-                {
-                    "element_id": "date_analysis",
-                    "element_name": "Publication Date",
-                    "expected_label": is_real ? "real" : "fake",
-                    "reasoning": is_real ? "Check publication timing and context" : "Fake news may have suspicious timing"
-                },
-                {
-                    "element_id": "content_analysis",
-                    "element_name": "Article Content",
-                    "expected_label": is_real ? "real" : "fake",
-                    "reasoning": is_real ? "Analyze content for accuracy and bias" : "Look for unsubstantiated claims"
-                }
-            ]
-        };
-    }
-
-    getDefaultAnalysis() {
-        return {
-            "clickable_elements": [
-                {
-                    "element_id": "title_analysis",
-                    "element_name": "Article Title",
-                    "expected_label": "real",
-                    "reasoning": "Practice identifying headline characteristics"
-                },
-                {
-                    "element_id": "author_analysis",
-                    "element_name": "Author Information",
-                    "expected_label": "real",
-                    "reasoning": "Check for author attribution"
-                },
-                {
-                    "element_id": "date_analysis",
-                    "element_name": "Publication Date",
-                    "expected_label": "real",
-                    "reasoning": "Check publication timing"
-                },
-                {
-                    "element_id": "content_analysis",
-                    "element_name": "Article Content",
-                    "expected_label": "real",
-                    "reasoning": "Analyze content quality"
-                }
-            ]
-        };
     }
 
     addInteractiveStyles() {
@@ -404,39 +335,27 @@ export class InteractiveLabeling {
     makeElementsInteractive() {
         // Wait for DOM to be ready
         setTimeout(() => {
-            const article = this.currentPageConfig?.articleData;
-            if (!article && !this.batchAnalysis) {
-                console.warn('No article data available for interactive labeling');
+            if (!this.batchAnalysis || !this.batchAnalysis.clickable_elements) {
+                console.warn('No batch analysis data available for interactive labeling');
                 return;
             }
             
             let interactiveElements = [];
             
-            // Use batch JSON clickable elements if available
-            if (this.batchAnalysis && this.batchAnalysis.clickable_elements && this.batchAnalysis.clickable_elements.length > 0) {
-                interactiveElements = this.batchAnalysis.clickable_elements.map(element => {
-                    const elementId = element.element_id;
-                    const expectedLabel = element.expected_label;
-                    
-                    return {
-                        selector: `[data-element-id="${elementId}"]`,
-                        id: elementId,
-                        expectedFake: expectedLabel === 'fake',
-                        label: element.element_name || elementId,
-                        reasoning: element.reasoning || 'No reasoning provided'
-                    };
-                });
-                console.log('Using batch JSON clickable elements:', interactiveElements.length);
-            } else {
-                // Fallback to default elements
-                const isReal = article?.is_real ?? true;
-                interactiveElements = [
-                    { selector: '[data-element-id="title_analysis"]', id: 'title_analysis', expectedFake: !isReal, label: 'Title', reasoning: 'Check headline for sensationalism' },
-                    { selector: '[data-element-id="author_analysis"]', id: 'author_analysis', expectedFake: !isReal, label: 'Author Info', reasoning: 'Verify author credentials' },
-                    { selector: '[data-element-id="content_analysis"]', id: 'content_analysis', expectedFake: !isReal, label: 'Article Content', reasoning: 'Analyze content for accuracy' }
-                ];
-                console.log('Using fallback clickable elements');
-            }
+            // Use batch JSON clickable elements
+            interactiveElements = this.batchAnalysis.clickable_elements.map(element => {
+                const elementId = element.element_id;
+                const expectedLabel = element.expected_label;
+                
+                return {
+                    selector: `[data-element-id="${elementId}"]`,
+                    id: elementId,
+                    expectedFake: expectedLabel === 'fake',
+                    label: element.element_name || elementId,
+                    reasoning: element.reasoning || 'No reasoning provided'
+                };
+            });
+            console.log('Using batch JSON clickable elements:', interactiveElements.length);
             
             interactiveElements.forEach(elementDef => {
                 const element = document.querySelector(elementDef.selector);
@@ -508,7 +427,7 @@ export class InteractiveLabeling {
                                'Click on different parts of the article to label them as fake or real. This data comes from pre-analyzed batch training data.';
         
         const analysisSourceText = this.analysisSource === 'batch-json' ? 
-            '📊 Batch Analysis Data' : '🔄 Fallback Analysis';
+            '📊 Batch Analysis Data' : '❌ No Analysis Data';
         
         const instructions = document.createElement('div');
         instructions.className = 'labeling-instructions';
@@ -755,14 +674,13 @@ export class InteractiveLabeling {
     getKeyIndicators(articleData) {
         if (!articleData) return "No article data available";
         
-        const aiAnalysis = articleData.ai_analysis;
-        if (aiAnalysis && aiAnalysis.article_analysis) {
-            const indicators = aiAnalysis.article_analysis.credibility_factors || 
-                             aiAnalysis.article_analysis.primary_red_flags || [];
-            return indicators.slice(0, 2).join(', ') || 'Batch analysis data';
+        const batchAnalysis = articleData.batchAnalysis;
+        if (batchAnalysis && batchAnalysis.clickable_elements) {
+            const indicators = batchAnalysis.clickable_elements.map(element => element.reasoning).slice(0, 2);
+            return indicators.join(', ') || 'Batch analysis data';
         }
         
-        return articleData.is_real ? 'Professional journalism' : 'Misinformation patterns';
+        return 'No analysis data available';
     }
 
     cleanup() {
