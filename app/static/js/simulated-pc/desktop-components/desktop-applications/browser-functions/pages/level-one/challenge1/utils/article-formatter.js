@@ -26,6 +26,12 @@ export class ArticleFormatter {
         return truncated.substring(0, lastSpace) + '...';
     }
 
+    static toTitleCase(str) {
+        return str.replace(/\w\S*/g, (txt) => {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        });
+    }
+
     static formatArticleText(text, isFakeNews) {
         // Split text into paragraphs
         const paragraphs = text.split('\n\n').filter(p => p.trim().length > 0);
@@ -33,8 +39,12 @@ export class ArticleFormatter {
         return paragraphs.map(paragraph => {
             let formattedParagraph = paragraph.trim();
             
+            // Capitalize the first letter
+            if (formattedParagraph.length > 0) {
+                formattedParagraph = formattedParagraph.charAt(0).toUpperCase() + formattedParagraph.slice(1);
+            }
             
-            return `<p style="margin: 0 0 16px 0;">${formattedParagraph}</p>`;
+            return `<p style="margin: 0 0 16px 0; text-align: justify;">${formattedParagraph}</p>`;
         }).join('');
     }
 }

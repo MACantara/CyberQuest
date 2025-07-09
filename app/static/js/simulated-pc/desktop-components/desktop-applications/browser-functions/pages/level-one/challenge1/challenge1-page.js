@@ -87,7 +87,7 @@ class Challenge1PageClass extends BasePage {
                 <!-- Main Content -->
                 <main style="padding: 30px; max-width: 800px; margin: 0 auto;">
                     <h2 style="color: #374151; font-size: 32px; margin-bottom: 10px;">
-                        ${currentArticle.title}
+                        ${ArticleFormatter.toTitleCase(currentArticle.title)}
                     </h2>
                     
                     <div style="color: #6b7280; margin-bottom: 20px; font-size: 14px;">
