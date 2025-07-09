@@ -38,8 +38,3 @@ Focus on these taggable elements:
 5. **Social Elements** - sharing pressure, urgency tactics
 
 Make the analysis educational for cybersecurity awareness training.
-
-Configuration used:
-- Model: gemini-2.5-flash
-- Temperature: 0.1
-- Thinking Budget: 0 (disabled for faster responses)
