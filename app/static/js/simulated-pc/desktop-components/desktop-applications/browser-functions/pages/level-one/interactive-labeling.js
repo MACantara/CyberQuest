@@ -33,6 +33,32 @@ export class InteractiveLabeling {
     }
 
     loadAnalysisFromBatch(articleData) {
+        console.log('Loading analysis from batch, articleData:', articleData);
+        
+        // Check if article data has batchAnalysis property (loaded from batch-1.json)
+        if (articleData && articleData.batchAnalysis) {
+            const batchContent = articleData.batchAnalysis;
+            console.log('Found batchAnalysis property:', batchContent);
+            
+            if (batchContent.clickable_elements && Array.isArray(batchContent.clickable_elements)) {
+                this.batchAnalysis = batchContent;
+                this.analysisSource = 'batch-json';
+                console.log(`Using batch-1.json analysis for article:`, batchContent.article_metadata?.title?.substring(0, 50) || 'Unknown');
+                console.log('Clickable elements found:', batchContent.clickable_elements.length);
+                
+                // Log the clickable elements for debugging
+                batchContent.clickable_elements.forEach((element, index) => {
+                    console.log(`Element ${index}:`, {
+                        id: element.element_id,
+                        name: element.element_name,
+                        expected: element.expected_label,
+                        text_sample: element.element_text?.substring(0, 30) || 'No text'
+                    });
+                });
+                return;
+            }
+        }
+        
         // Check if article data has the new nested structure with numeric ID
         if (articleData && typeof articleData === 'object') {
             // Look for numeric keys (article IDs) in the data
@@ -77,7 +103,9 @@ export class InteractiveLabeling {
             keys: Object.keys(articleData || {}),
             numericKeys: Object.keys(articleData || {}).filter(key => !isNaN(key)),
             hasClickableElements: !!(articleData?.clickable_elements),
-            isArray: Array.isArray(articleData?.clickable_elements)
+            isArray: Array.isArray(articleData?.clickable_elements),
+            hasBatchAnalysis: !!(articleData?.batchAnalysis),
+            batchAnalysisKeys: articleData?.batchAnalysis ? Object.keys(articleData.batchAnalysis) : []
         });
         this.batchAnalysis = null;
         this.analysisSource = 'none';
