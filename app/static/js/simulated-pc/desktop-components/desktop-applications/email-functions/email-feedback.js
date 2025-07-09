@@ -4,7 +4,6 @@ export class EmailFeedback {
         this.feedbackHistory = [];
         this.sessionScore = 0;
         this.totalActions = 0;
-        this.hasShownCompletionSuggestion = false;
     }
 
     /**
@@ -194,94 +193,6 @@ export class EmailFeedback {
         localStorage.setItem('cyberquest_email_feedback_history', JSON.stringify(this.feedbackHistory));
         localStorage.setItem('cyberquest_email_session_score', this.sessionScore.toString());
         localStorage.setItem('cyberquest_email_total_actions', this.totalActions.toString());
-        
-        // Check if we should show completion notice
-        this.checkForTrainingCompletion();
-    }
-
-    /**
-     * Check if enough emails have been processed to suggest completion
-     */
-    checkForTrainingCompletion() {
-        const totalEmails = 8; // Approximate number of emails in the training
-        const completionThreshold = Math.ceil(totalEmails * 0.6); // 60% threshold for suggestion
-        
-        if (this.totalActions >= completionThreshold && !this.hasShownCompletionSuggestion) {
-            this.hasShownCompletionSuggestion = true;
-            
-            // Show a subtle completion suggestion
-            setTimeout(() => {
-                this.showCompletionSuggestion();
-            }, 2000);
-        }
-    }
-
-    /**
-     * Show suggestion to complete training
-     */
-    showCompletionSuggestion() {
-        if (this.totalActions < 5) return; // Minimum actions before suggesting completion
-        
-        const modal = document.createElement('div');
-        modal.className = 'fixed inset-0 bg-black/85 flex items-center justify-center z-50';
-        
-        modal.innerHTML = `
-            <div class="bg-gray-800 rounded-lg border border-gray-600 shadow-2xl p-6 max-w-md mx-4">
-                <div class="text-center">
-                    <div class="text-4xl mb-4">📧</div>
-                    <h2 class="text-xl font-bold text-white mb-4">Great Progress!</h2>
-                    <p class="text-gray-300 mb-4">
-                        You've processed <span class="text-yellow-400 font-semibold">${this.totalActions}</span> emails with 
-                        <span class="text-green-400 font-semibold">${this.sessionScore}</span> correct decisions 
-                        (<span class="text-blue-400 font-semibold">${Math.round((this.sessionScore / this.totalActions) * 100)}%</span> accuracy).
-                    </p>
-                    <p class="text-gray-400 text-sm mb-6">
-                        Feel free to continue practicing or complete your training session now.
-                    </p>
-                    
-                    <!-- Progress Indicator -->
-                    <div class="mb-6">
-                        <div class="w-full bg-gray-600 rounded-full h-3">
-                            <div class="bg-gradient-to-r from-green-500 to-emerald-500 h-3 rounded-full transition-all duration-1000" 
-                                 style="width: ${(this.sessionScore / this.totalActions) * 100}%"></div>
-                        </div>
-                        <div class="text-xs text-gray-400 mt-1">Training Progress</div>
-                    </div>
-                    
-                    <div class="flex space-x-3 justify-center">
-                        <button onclick="this.closest('.fixed').remove()" 
-                                class="bg-gray-600 text-gray-200 px-4 py-2 rounded hover:bg-gray-500 transition-colors">
-                            Continue Training
-                        </button>
-                        <button onclick="window.emailFeedback?.completeTrainingSession?.(); this.closest('.fixed').remove()" 
-                                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors font-semibold">
-                            Complete Session
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(modal);
-        
-        // Store global reference for button handlers
-        window.emailFeedback = this;
-        
-        // Auto-remove after 10 seconds if user doesn't interact
-        setTimeout(() => {
-            if (modal.parentNode) {
-                modal.remove();
-            }
-        }, 10000);
-    }
-
-    /**
-     * Complete training session manually
-     */
-    completeTrainingSession() {
-        if (this.emailApp && this.emailApp.actionHandler) {
-            this.emailApp.actionHandler.completeEmailTraining();
-        }
     }
 
     /**
