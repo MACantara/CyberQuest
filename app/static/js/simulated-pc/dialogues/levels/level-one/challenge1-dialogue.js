@@ -5,7 +5,7 @@ export class Challenge1Dialogue extends BaseDialogue {
         super(desktop, character);
         this.messages = [
             {
-                text: "Excellent! Now for your first real challenge."
+                text: "Welcome to your first cybersecurity challenge! You'll be analyzing real news articles to develop critical thinking skills for identifying misinformation."
             },
             {
                 text: "You'll analyze multiple news articles using our Interactive Analysis system to identify misinformation and credible sources."
