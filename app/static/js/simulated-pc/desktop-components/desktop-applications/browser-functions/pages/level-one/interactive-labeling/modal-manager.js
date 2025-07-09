@@ -73,7 +73,7 @@ export class ModalManager {
         ).length;
         
         modal.innerHTML = `
-            <div class="bg-gray-800 text-white rounded-lg p-8 max-w-4xl mx-4 max-h-screen overflow-y-auto border border-gray-600">
+            <div class="bg-gray-800 text-white rounded-lg p-8 max-w-4xl mx-4 max-h-150 overflow-y-auto border border-gray-600">
                 <div class="text-center mb-8">
                     <h1 class="text-3xl font-bold mb-4">🎯 Level 1 Complete!</h1>
                     <div class="text-6xl font-bold mb-4 ${overallClass}">${overallScore}%</div>
