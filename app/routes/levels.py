@@ -70,11 +70,11 @@ CYBERSECURITY_LEVELS = [
 
 def check_level_completion_status():
     """Check which levels are completed/unlocked based on localStorage simulation"""
-    # In a real app, this would query the database
-    # For demo purposes, we simulate checking localStorage data
+    # This function is now mainly for documentation
+    # The actual logic is handled client-side in the HTML template
     return {
-        'level_1_completed': False,  # Level 1 available but not completed yet
-        'level_2_unlocked': False,   # Unlocked when level 1 is completed
+        'level_1_completed': False,  # Will be checked client-side
+        'level_2_unlocked': False,   # Will be determined client-side
         'level_3_unlocked': False,
         'level_4_unlocked': False,
         'level_5_unlocked': False
@@ -84,33 +84,8 @@ def check_level_completion_status():
 @login_required
 def levels_overview():
     """Display all cybersecurity levels."""
-    if current_app.config.get('DISABLE_DATABASE', False):
-        # In demo mode, determine unlocked levels based on completion
-        demo_levels = CYBERSECURITY_LEVELS.copy()
-        completion_status = check_level_completion_status()
-        
-        # Level 1 is always unlocked
-        demo_levels[0]['unlocked'] = True
-        
-        # Level 2 unlocked if Level 1 completed
-        if completion_status.get('level_1_completed'):
-            demo_levels[1]['unlocked'] = True
-            
-        # Additional levels unlocked based on completion
-        if completion_status.get('level_2_unlocked'):
-            demo_levels[2]['unlocked'] = True
-            
-        return render_template('levels/levels.html', levels=demo_levels)
-    
-    # TODO: In future, determine unlocked levels based on user progress from database
-    user_levels = CYBERSECURITY_LEVELS.copy()
-    
-    # For now, unlock Level 2 if Level 1 is completed
-    completion_status = check_level_completion_status()
-    if completion_status.get('level_1_completed'):
-        user_levels[1]['unlocked'] = True
-    
-    return render_template('levels/levels.html', levels=user_levels)
+    # Simplified - unlock logic now handled client-side
+    return render_template('levels/levels.html', levels=CYBERSECURITY_LEVELS)
 
 @levels_bp.route('/<int:level_id>')
 @login_required  
@@ -120,28 +95,7 @@ def level_detail(level_id):
     
     if not level:
         return render_template('404.html'), 404
-    
-    # Check level unlock status
-    if not current_app.config.get('DISABLE_DATABASE', False):
-        completion_status = check_level_completion_status()
-        
-        # Level 1 is always unlocked
-        if level_id == 1:
-            level['unlocked'] = True
-        # Level 2 unlocked only if Level 1 completed
-        elif level_id == 2:
-            level['unlocked'] = completion_status.get('level_1_completed', False)
-        # Other levels locked for now
-        else:
-            level['unlocked'] = False
-    else:
-        # Demo mode - only Level 1 unlocked initially
-        level['unlocked'] = level_id == 1
-    
-    # Check if level is unlocked
-    if not level['unlocked']:
-        return render_template('levels/level-locked.html', level=level)
-    
+
     return render_template('levels/level-detail.html', level=level)
 
 @levels_bp.route('/<int:level_id>/start')
@@ -153,28 +107,7 @@ def start_level(level_id):
     if not level:
         flash('Level not found.', 'error')
         return redirect(url_for('levels.levels_overview'))
-    
-    # Check level unlock status
-    if not current_app.config.get('DISABLE_DATABASE', False):
-        completion_status = check_level_completion_status()
-        
-        # Level 1 is always unlocked
-        if level_id == 1:
-            level['unlocked'] = True
-        # Level 2 unlocked only if Level 1 completed
-        elif level_id == 2:
-            level['unlocked'] = completion_status.get('level_1_completed', False)
-        # Other levels locked for now
-        else:
-            level['unlocked'] = False
-    else:
-        # Demo mode - only Level 1 unlocked initially
-        level['unlocked'] = level_id == 1
-    
-    # Check if level is unlocked
-    if not level['unlocked']:
-        flash('This level is locked. Complete previous levels to unlock it.', 'warning')
-        return redirect(url_for('levels.levels_overview'))
+
     
     # Prepare level data for simulation
     level_data = {
