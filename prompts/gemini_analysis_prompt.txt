@@ -1,6 +1,7 @@
 Analyze these 15 news article from a .csv for cybersecurity training. Identify specific parts that users should be able to label as "fake" or "real" elements.
 
 Article Details:
+- Article ID: {article_id}
 - Title: {title}
 - Author: {author}
 - Published: {published}
@@ -12,6 +13,7 @@ Article Details:
 Generate a JSON response with clickable elements for training purposes:
 {
     "article_metadata": {
+        "article_id": "{article_id}",
         "title": "{title}",
         "author": "{author}",
         "source": "{site_url}",
