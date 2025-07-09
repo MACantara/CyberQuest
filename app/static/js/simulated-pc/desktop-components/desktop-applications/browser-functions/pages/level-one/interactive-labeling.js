@@ -33,22 +33,30 @@ export class InteractiveLabeling {
     }
 
     loadAnalysisFromBatch(articleData) {
-        // Check if article has batch analysis data directly (batch-1.json structure)
-        if (articleData && articleData.clickable_elements) {
-            // Data is at root level - this is the actual batch-1.json structure
+        // Check if article has clickable_elements directly from batch-1.json structure
+        if (articleData && articleData.clickable_elements && Array.isArray(articleData.clickable_elements)) {
             this.batchAnalysis = articleData;
             this.analysisSource = 'batch-json';
-            console.log('Using batch JSON analysis for article:', articleData.article_metadata?.title?.substring(0, 50) || 'Unknown');
+            console.log('Using batch-1.json analysis for article:', articleData.article_metadata?.title?.substring(0, 50) || 'Unknown');
             console.log('Clickable elements found:', articleData.clickable_elements.length);
-        } else if (articleData && articleData.batchAnalysis && articleData.batchAnalysis.clickable_elements) {
-            // Legacy nested structure
-            this.batchAnalysis = articleData.batchAnalysis;
-            this.analysisSource = 'batch-json';
-            console.log('Using nested batch JSON analysis for article:', articleData.title?.substring(0, 50) || 'Unknown');
-            console.log('Clickable elements found:', articleData.batchAnalysis.clickable_elements.length);
+            
+            // Log the clickable elements for debugging
+            articleData.clickable_elements.forEach((element, index) => {
+                console.log(`Element ${index}:`, {
+                    id: element.element_id,
+                    name: element.element_name,
+                    expected: element.expected_label,
+                    text_sample: element.element_text?.substring(0, 30) || 'No text'
+                });
+            });
         } else {
-            console.error('No batch analysis data available for article:', articleData?.title?.substring(0, 50) || articleData?.article_metadata?.title?.substring(0, 50) || 'Unknown');
-            console.log('Available articleData properties:', Object.keys(articleData || {}));
+            console.error('No clickable_elements found in article data');
+            console.log('Available articleData structure:', {
+                keys: Object.keys(articleData || {}),
+                hasClickableElements: !!(articleData?.clickable_elements),
+                isArray: Array.isArray(articleData?.clickable_elements),
+                clickableElementsLength: articleData?.clickable_elements?.length || 0
+            });
             this.batchAnalysis = null;
             this.analysisSource = 'none';
         }
@@ -343,28 +351,30 @@ export class InteractiveLabeling {
     makeElementsInteractive() {
         // Wait for DOM to be ready
         setTimeout(() => {
-            if (!this.batchAnalysis || !this.batchAnalysis.clickable_elements) {
-                console.warn('No batch analysis data available for interactive labeling');
+            if (!this.batchAnalysis || !this.batchAnalysis.clickable_elements || !Array.isArray(this.batchAnalysis.clickable_elements)) {
+                console.warn('No valid clickable_elements array found in batch analysis data');
                 return;
             }
             
-            let interactiveElements = [];
+            console.log('Processing clickable elements from batch-1.json:', this.batchAnalysis.clickable_elements.length);
             
-            // Use batch JSON clickable elements
-            interactiveElements = this.batchAnalysis.clickable_elements.map(element => {
-                const elementId = element.element_id;
-                const expectedLabel = element.expected_label;
-                
+            // Map batch-1.json clickable_elements to interactive elements
+            const interactiveElements = this.batchAnalysis.clickable_elements.map(element => {
                 return {
-                    selector: `[data-element-id="${elementId}"]`,
-                    id: elementId,
-                    expectedFake: expectedLabel === 'fake',
-                    label: element.element_name || elementId,
+                    selector: `[data-element-id="${element.element_id}"]`,
+                    id: element.element_id,
+                    expectedFake: element.expected_label === 'fake',
+                    label: element.element_name,
                     reasoning: element.reasoning || 'No reasoning provided',
-                    elementText: element.element_text || '' // Store original text for matching
+                    elementText: element.element_text || ''
                 };
             });
-            console.log('Using batch JSON clickable elements:', interactiveElements.length);
+            
+            console.log('Mapped interactive elements:', interactiveElements.map(el => ({
+                id: el.id,
+                label: el.label,
+                expectedFake: el.expectedFake
+            })));
             
             interactiveElements.forEach(elementDef => {
                 const element = document.querySelector(elementDef.selector);
@@ -372,16 +382,19 @@ export class InteractiveLabeling {
                     element.classList.add('interactive-element');
                     element.setAttribute('data-element-id', elementDef.id);
                     element.setAttribute('data-label', elementDef.label);
-                    element.setAttribute('data-reasoning', elementDef.reasoning || 'No reasoning provided');
+                    element.setAttribute('data-reasoning', elementDef.reasoning);
                     element.setAttribute('title', `Click to label "${elementDef.label}" as fake or real`);
                     
                     // Log text matching for debugging
                     const elementText = element.textContent?.trim().toLowerCase() || '';
                     const batchText = elementDef.elementText.toLowerCase();
-                    console.log(`Element ${elementDef.id}:`, {
-                        displayed: elementText.substring(0, 50),
-                        batch: batchText.substring(0, 50),
-                        matches: elementText === batchText || elementText.includes(batchText) || batchText.includes(elementText)
+                    console.log(`Element ${elementDef.id} text matching:`, {
+                        displayed_sample: elementText.substring(0, 50),
+                        batch_sample: batchText.substring(0, 50),
+                        lengths: { displayed: elementText.length, batch: batchText.length },
+                        exact_match: elementText === batchText,
+                        contains_batch: elementText.includes(batchText),
+                        batch_contains: batchText.includes(elementText)
                     });
                     
                     // Initialize in labeledElements
@@ -399,10 +412,14 @@ export class InteractiveLabeling {
                         e.preventDefault();
                         this.handleElementClick(elementDef.id);
                     });
+                    
+                    console.log(`✅ Successfully made element ${elementDef.id} interactive`);
                 } else {
-                    console.warn(`Element not found for selector: ${elementDef.selector} (element_id: ${elementDef.id})`);
+                    console.warn(`❌ Element not found for selector: ${elementDef.selector} (element_id: ${elementDef.id})`);
                 }
             });
+            
+            console.log(`Interactive labeling initialized with ${this.labeledElements.size} elements`);
         }, 100);
     }
 
@@ -695,20 +712,16 @@ export class InteractiveLabeling {
     getKeyIndicators(articleData) {
         if (!articleData) return "No article data available";
         
-        // Check direct structure first (batch-1.json)
-        if (articleData.clickable_elements) {
-            const indicators = articleData.clickable_elements.map(element => element.reasoning).slice(0, 2);
-            return indicators.join(', ') || 'Batch analysis data';
+        // Use clickable_elements directly from batch-1.json structure
+        if (articleData.clickable_elements && Array.isArray(articleData.clickable_elements)) {
+            const indicators = articleData.clickable_elements
+                .map(element => element.reasoning)
+                .filter(reasoning => reasoning && reasoning.length > 0)
+                .slice(0, 2);
+            return indicators.join(', ') || 'Batch analysis available';
         }
         
-        // Check nested structure (legacy)
-        const batchAnalysis = articleData.batchAnalysis;
-        if (batchAnalysis && batchAnalysis.clickable_elements) {
-            const indicators = batchAnalysis.clickable_elements.map(element => element.reasoning).slice(0, 2);
-            return indicators.join(', ') || 'Batch analysis data';
-        }
-        
-        return 'No analysis data available';
+        return 'No clickable elements available';
     }
 
     cleanup() {
