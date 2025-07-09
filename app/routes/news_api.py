@@ -1,183 +1,146 @@
 from flask import Blueprint, jsonify, current_app
-import csv
+import json
 import random
 import os
-import json
 from pathlib import Path
 
 news_api_bp = Blueprint('news_api', __name__, url_prefix='/api/news')
 
-# Cache for CSV data to avoid reading file multiple times
-_csv_cache = None
+# Cache for JSON data to avoid reading file multiple times
+_batch_cache = None
 
-def load_fake_news_data():
-    """Load and cache the english_news_articles.csv data"""
-    global _csv_cache
-    if _csv_cache is not None:
-        return _csv_cache
+def load_batch_data():
+    """Load and cache the batch-1.json data"""
+    global _batch_cache
+    if _batch_cache is not None:
+        return _batch_cache
     
     try:
-        # Use the processed English articles dataset
-        csv_path = os.path.join(
+        # Load the processed batch data
+        batch_path = os.path.join(
             os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 
-            'data', 'processed', 'english_news_articles.csv'
+            'data', 'processed_batches', 'batch-1.json'
         )
         
-        _csv_cache = []
-        with open(csv_path, 'r', encoding='utf-8') as file:
-            reader = csv.DictReader(file)
-            for row in reader:
-                # The processed CSV already contains only English articles with valid image URLs
-                # Just need to format the data for the frontend
-                if (row.get('title') and row.get('text') and row.get('author')):
-                    _csv_cache.append({
-                        'author': row.get('author', '').strip(),
-                        'published': row.get('published', '').strip(),
-                        'title': row.get('title', '').strip(),
-                        'text': row.get('text', '').strip(),
-                        'main_img_url': row.get('main_img_url', '').strip(),
-                        'is_real': row.get('label', '').lower() == 'real',  # Use 'label' column to determine authenticity
-                        'source': 'english_news_articles.csv'
-                    })
+        with open(batch_path, 'r', encoding='utf-8') as file:
+            _batch_cache = json.load(file)
         
-        print(f"Loaded {len(_csv_cache)} English news articles from processed dataset")
-        print(f"Real news articles: {len([a for a in _csv_cache if a['is_real']])}")
-        print(f"Fake news articles: {len([a for a in _csv_cache if not a['is_real']])}")
+        print(f"Loaded {len(_batch_cache)} articles from batch-1.json")
         
-        return _csv_cache
+        return _batch_cache
         
     except Exception as e:
-        print(f"Error loading english_news_articles.csv: {e}")
-        # Fallback to original dataset if processed one is not available
-        return load_fallback_data()
-
-def load_fallback_data():
-    """Fallback to original dataset if processed one is not available"""
-    try:
-        csv_path = os.path.join(
-            os.path.dirname(os.path.dirname(__file__)), 
-            'static', 'js', 'simulated-pc', 'levels', 'level-one', 'data', 'news_articles.csv'
-        )
-        
-        fallback_cache = []
-        with open(csv_path, 'r', encoding='utf-8') as file:
-            reader = csv.DictReader(file)
-            for row in reader:
-                # Apply same filtering as preprocessing script
-                main_img_url = row.get('main_img_url', '').strip()
-                language = row.get('language', '').strip().lower()
-                title = row.get('title', '').strip()
-                
-                if (title and 
-                    title.lower() not in ['no title', 'untitled', ''] and
-                    main_img_url and 
-                    main_img_url.lower() not in ['no image url', 'no image', ''] and
-                    main_img_url.startswith(('http://', 'https://')) and
-                    row.get('text') and row.get('author') and 
-                    language == 'english'):
-                    
-                    fallback_cache.append({
-                        'author': row.get('author', '').strip(),
-                        'published': row.get('published', '').strip(),
-                        'title': title,
-                        'text': row.get('text', '').strip(),
-                        'main_img_url': main_img_url,
-                        'is_real': row.get('label', '').lower() == 'real',
-                        'source': 'news_articles.csv (fallback)'
-                    })
-        
-        print(f"Loaded {len(fallback_cache)} articles from fallback dataset")
-        return fallback_cache
-        
-    except Exception as e:
-        print(f"Error loading fallback dataset: {e}")
+        print(f"Error loading batch-1.json: {e}")
         return []
 
-def load_ai_analysis_data():
-    """Load and cache the AI analysis data"""
-    try:
-        analysis_path = os.path.join(
-            os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 
-            'data', 'processed', 'english_news_articles_analysis.json'
-        )
-        
-        if not os.path.exists(analysis_path):
-            print(f"AI analysis file not found: {analysis_path}")
-            return {}
-        
-        with open(analysis_path, 'r', encoding='utf-8') as file:
-            analysis_data = json.load(file)
+def convert_batch_to_article_format(batch_data):
+    """Convert batch JSON format to article format expected by frontend"""
+    articles = []
+    
+    for item in batch_data:
+        if not item.get('article_metadata'):
+            continue
             
-        print(f"Loaded AI analysis for {len(analysis_data.get('analyses', []))} articles")
-        return analysis_data
+        metadata = item['article_metadata']
         
-    except Exception as e:
-        print(f"Error loading AI analysis data: {e}")
-        return {}
+        # Extract article data
+        article = {
+            'id': f'article_{len(articles)}',
+            'author': metadata.get('author', 'Unknown'),
+            'published': metadata.get('published_date', ''),
+            'title': metadata.get('title', ''),
+            'text': 'Sample article text for training purposes. This is a placeholder for the actual article content.',
+            'main_img_url': 'https://via.placeholder.com/400x200/10b981/ffffff?text=News+Article',
+            'is_real': metadata.get('actual_label', '').lower() == 'real',
+            'source': metadata.get('source', 'unknown'),
+            'article_type': metadata.get('article_type', 'unknown'),
+            'ai_analysis': {
+                'clickable_elements': item.get('clickable_elements', []),
+                'article_analysis': {
+                    'overall_credibility': 'medium',
+                    'primary_red_flags': [],
+                    'credibility_factors': [],
+                    'educational_focus': f'This article demonstrates how to analyze {metadata.get("article_type", "news")} content for credibility.',
+                    'misinformation_tactics': [],
+                    'verification_tips': [
+                        'Check the source reputation',
+                        'Verify author credentials',
+                        'Cross-reference with other sources',
+                        'Look for emotional manipulation'
+                    ]
+                }
+            }
+        }
+        
+        # Extract insights from clickable elements for article analysis
+        if item.get('clickable_elements'):
+            red_flags = []
+            credibility_factors = []
+            
+            for element in item['clickable_elements']:
+                if element.get('expected_label') == 'fake':
+                    red_flags.extend(element.get('red_flags', []))
+                else:
+                    credibility_factors.extend(element.get('credibility_indicators', []))
+            
+            article['ai_analysis']['article_analysis']['primary_red_flags'] = list(set(red_flags))
+            article['ai_analysis']['article_analysis']['credibility_factors'] = list(set(credibility_factors))
+            
+            # Determine overall credibility
+            fake_count = sum(1 for el in item['clickable_elements'] if el.get('expected_label') == 'fake')
+            total_count = len(item['clickable_elements'])
+            
+            if fake_count > total_count / 2:
+                article['ai_analysis']['article_analysis']['overall_credibility'] = 'low'
+            elif fake_count > 0:
+                article['ai_analysis']['article_analysis']['overall_credibility'] = 'medium'
+            else:
+                article['ai_analysis']['article_analysis']['overall_credibility'] = 'high'
+        
+        articles.append(article)
+    
+    return articles
 
 @news_api_bp.route('/mixed-articles', methods=['GET'])
 def get_mixed_news_articles():
-    """Get a balanced mix of 15 news articles (50% fake, 50% real) with AI analysis"""
+    """Get a balanced mix of news articles from batch-1.json with AI analysis"""
     try:
-        news_data = load_fake_news_data()
-        ai_analysis = load_ai_analysis_data()
+        batch_data = load_batch_data()
         
-        if not news_data:
+        if not batch_data:
             return jsonify({
                 'success': False,
-                'error': 'No news data available'
+                'error': 'No batch data available'
             }), 500
         
-        # Create lookup for AI analysis by title
-        analysis_lookup = {}
-        for analysis in ai_analysis.get('analyses', []):
-            analysis_lookup[analysis.get('title', '')] = analysis.get('analysis', {})
+        # Convert to article format
+        articles = convert_batch_to_article_format(batch_data)
         
-        # Separate real and fake news
-        real_news = [article for article in news_data if article['is_real']]
-        fake_news = [article for article in news_data if not article['is_real']]
-        
-        # Ensure we have enough articles of each type
-        if len(real_news) < 7 or len(fake_news) < 8:
+        if not articles:
             return jsonify({
                 'success': False,
-                'error': f'Insufficient articles: {len(real_news)} real, {len(fake_news)} fake'
+                'error': 'No articles could be processed from batch data'
             }), 500
         
-        # Select 7 real and 8 fake articles (totaling 15, with slight favor to fake for training)
-        selected_real = random.sample(real_news, 7)
-        selected_fake = random.sample(fake_news, 8)
+        # Shuffle articles for variety
+        random.shuffle(articles)
         
-        # Combine and shuffle the articles
-        mixed_articles = selected_real + selected_fake
-        random.shuffle(mixed_articles)
+        # Take up to 15 articles (or all if less than 15)
+        selected_articles = articles[:15]
         
-        # Format articles for frontend with unique IDs and AI analysis
-        formatted_articles = []
-        for i, article in enumerate(mixed_articles):
-            # Get AI analysis for this article
-            ai_data = analysis_lookup.get(article['title'], {})
-            
-            formatted_articles.append({
-                'id': f'article_{i}',
-                'author': article['author'],
-                'published': article['published'],
-                'title': article['title'],
-                'text': article['text'],
-                'main_img_url': article['main_img_url'],
-                'is_real': article['is_real'],
-                'source': article['source'],
-                'ai_analysis': ai_data  # Include AI analysis data
-            })
+        # Calculate summary stats
+        real_count = sum(1 for article in selected_articles if article['is_real'])
+        fake_count = len(selected_articles) - real_count
+        ai_analysis_count = sum(1 for article in selected_articles if article.get('ai_analysis'))
         
         return jsonify({
             'success': True,
-            'articles': formatted_articles,
+            'articles': selected_articles,
             'summary': {
-                'total': len(formatted_articles),
-                'real_count': len(selected_real),
-                'fake_count': len(selected_fake),
-                'ai_analysis_available': len([a for a in formatted_articles if a.get('ai_analysis')])
+                'total': len(selected_articles),
+                'real_count': real_count,
+                'fake_count': fake_count,
+                'ai_analysis_available': ai_analysis_count
             }
         })
         
@@ -190,21 +153,22 @@ def get_mixed_news_articles():
 
 @news_api_bp.route('/stats', methods=['GET'])
 def get_news_stats():
-    """Get statistics about the news dataset"""
+    """Get statistics about the batch dataset"""
     try:
-        news_data = load_fake_news_data()
+        batch_data = load_batch_data()
+        articles = convert_batch_to_article_format(batch_data)
         
-        real_count = len([article for article in news_data if article['is_real']])
-        fake_count = len([article for article in news_data if not article['is_real']])
+        real_count = sum(1 for article in articles if article['is_real'])
+        fake_count = len(articles) - real_count
         
         return jsonify({
             'success': True,
             'stats': {
-                'total_articles': len(news_data),
+                'total_articles': len(articles),
                 'real_articles': real_count,
                 'fake_articles': fake_count,
-                'real_percentage': round((real_count / len(news_data)) * 100, 2) if news_data else 0,
-                'fake_percentage': round((fake_count / len(news_data)) * 100, 2) if news_data else 0
+                'real_percentage': round((real_count / len(articles)) * 100, 2) if articles else 0,
+                'fake_percentage': round((fake_count / len(articles)) * 100, 2) if articles else 0
             }
         })
         
