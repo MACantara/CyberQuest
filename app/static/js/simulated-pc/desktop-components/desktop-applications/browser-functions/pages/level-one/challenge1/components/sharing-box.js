@@ -18,21 +18,4 @@ export class SharingBox {
             </div>
         `;
     }
-
-    static createFakeTestimonials() {
-        return `
-            <div style="background: #f9fafb; padding: 20px; margin: 20px 0; border-radius: 8px;">
-                <h3 style="color: #374151; margin-bottom: 15px;">Reader Comments:</h3>
-                <blockquote style="margin: 15px 0; padding: 10px; border-left: 3px solid #10b981; background: white;">
-                    "This really opened my eyes. Thanks for the information!" - NewsReader2024
-                </blockquote>
-                <blockquote style="margin: 15px 0; padding: 10px; border-left: 3px solid #10b981; background: white;">
-                    "Finally, someone reporting on this topic!" - TruthSeeker99
-                </blockquote>
-                <blockquote style="margin: 15px 0; padding: 10px; border-left: 3px solid #10b981; background: white;">
-                    "Shared this with everyone I know." - ConcernedCitizen
-                </blockquote>
-            </div>
-        `;
-    }
 }

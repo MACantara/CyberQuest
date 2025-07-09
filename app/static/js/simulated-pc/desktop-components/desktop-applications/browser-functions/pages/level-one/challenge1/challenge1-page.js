@@ -68,7 +68,6 @@ class Challenge1PageClass extends BasePage {
         
         // Add suspicious elements only subtly for fake news
         const isFakeNews = !currentArticle.is_real;
-        const testimonials = isFakeNews ? SharingBox.createFakeTestimonials() : '';
         
         return `
             <div style="font-family: Arial, sans-serif; background: #ffffff; min-height: 100vh;">
@@ -105,7 +104,6 @@ class Challenge1PageClass extends BasePage {
                     
                     <!-- Social Media Sharing Box -->
                     ${SharingBox.create(isFakeNews)}
-                    ${testimonials}
                     
                     <!-- Analysis Section -->
                     ${AnalysisSection.create()}
