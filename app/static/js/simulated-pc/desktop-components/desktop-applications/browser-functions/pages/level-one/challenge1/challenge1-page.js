@@ -68,13 +68,10 @@ class Challenge1PageClass extends BasePage {
         
         // Add suspicious elements if this is fake news
         const isFakeNews = !currentArticle.is_real;
-        const urgentBanner = isFakeNews ? SharingBox.createUrgentBanner() : '';
         const testimonials = isFakeNews ? SharingBox.createFakeTestimonials() : '';
         
         return `
             <div style="font-family: Arial, sans-serif; background: #ffffff; min-height: 100vh;">
-                ${urgentBanner}
-                
                 <!-- Header -->
                 <header style="background: #1f2937; color: white; padding: 20px;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">

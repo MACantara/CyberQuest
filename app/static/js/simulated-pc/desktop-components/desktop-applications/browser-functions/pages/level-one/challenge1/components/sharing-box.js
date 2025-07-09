@@ -19,14 +19,6 @@ export class SharingBox {
         `;
     }
 
-    static createUrgentBanner() {
-        return `
-            <div style="background: linear-gradient(90deg, #dc2626, #ea580c); color: white; padding: 15px; text-align: center; font-weight: bold; animation: pulse 2s infinite;">
-                🚨 BREAKING: EXCLUSIVE STORY! SHARE BEFORE IT'S CENSORED! 🚨
-            </div>
-        `;
-    }
-
     static createFakeTestimonials() {
         return `
             <div style="background: #f9fafb; padding: 20px; margin: 20px 0; border-radius: 8px;">
