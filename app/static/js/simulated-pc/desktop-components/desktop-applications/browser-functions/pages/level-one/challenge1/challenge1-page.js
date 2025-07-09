@@ -162,8 +162,10 @@ class Challenge1PageClass extends BasePage {
             // Re-bind navigation events
             window.challenge1Page = this;
             
-            // Update the interactive labeling system with current article data including AI analysis
-            this.updateInteractiveLabeling();
+            // Wait for DOM to be ready, then update the interactive labeling system
+            setTimeout(() => {
+                this.updateInteractiveLabeling();
+            }, 200); // Increased timeout to ensure DOM is ready
         }
     }
 
@@ -171,6 +173,9 @@ class Challenge1PageClass extends BasePage {
         // Check if we have an interactive labeling system and update it
         const pageRenderer = this.getPageRenderer();
         if (pageRenderer && pageRenderer.interactiveLabeling) {
+            // First cleanup any existing interactive elements
+            pageRenderer.interactiveLabeling.cleanup();
+            
             // Ensure current article data includes batch analysis
             this.articleData = this.articlesData[this.currentArticleIndex];
             
@@ -181,11 +186,14 @@ class Challenge1PageClass extends BasePage {
                 clickableElements: this.articleData.batchAnalysis?.clickable_elements?.length || 0
             });
             
-            pageRenderer.interactiveLabeling.initializeForArticle(
-                this.toPageObject(), 
-                this.currentArticleIndex, 
-                this.articlesData.length
-            );
+            // Re-initialize with current article
+            setTimeout(() => {
+                pageRenderer.interactiveLabeling.initializeForArticle(
+                    this.toPageObject(), 
+                    this.currentArticleIndex, 
+                    this.articlesData.length
+                );
+            }, 100); // Small delay to ensure cleanup is complete
         }
     }
 

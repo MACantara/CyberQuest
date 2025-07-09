@@ -12,7 +12,30 @@ export class InteractiveLabeling {
         this.analysisSource = 'batch-json'; // Track that we're using batch JSON data
     }
 
+    cleanupCurrentElements() {
+        // Clear interactive elements more thoroughly
+        document.querySelectorAll('.interactive-element').forEach(el => {
+            el.classList.remove('interactive-element', 'labeled-fake', 'labeled-real', 'correct', 'incorrect');
+            el.removeAttribute('data-element-id');
+            el.removeAttribute('data-label');
+            el.removeAttribute('data-reasoning');
+            el.removeAttribute('title');
+            
+            // Remove all click event listeners by cloning and replacing the element
+            const newEl = el.cloneNode(true);
+            el.parentNode.replaceChild(newEl, el);
+        });
+        
+        // Clear the labeled elements map
+        this.labeledElements.clear();
+    }
+
     async initializeForArticle(pageConfig, articleIndex, totalArticles) {
+        // Cleanup any existing state first
+        if (this.isActive) {
+            this.cleanupCurrentElements();
+        }
+        
         this.currentPageConfig = pageConfig;
         this.currentArticleIndex = articleIndex;
         this.totalArticles = totalArticles;
@@ -25,11 +48,15 @@ export class InteractiveLabeling {
         // Load analysis from batch JSON data
         this.loadAnalysisFromBatch(pageConfig.articleData);
         
-        // Make article elements interactive
-        this.makeElementsInteractive();
+        // Make article elements interactive with a delay to ensure DOM is ready
+        setTimeout(() => {
+            this.makeElementsInteractive();
+        }, 150);
         
-        // Show instructions
-        this.showInstructions();
+        // Show instructions with a delay
+        setTimeout(() => {
+            this.showInstructions();
+        }, 200);
     }
 
     loadAnalysisFromBatch(articleData) {
@@ -425,6 +452,7 @@ export class InteractiveLabeling {
                 expectedFake: el.expectedFake
             })));
             
+            let successCount = 0;
             interactiveElements.forEach(elementDef => {
                 const element = document.querySelector(elementDef.selector);
                 if (element) {
@@ -457,18 +485,26 @@ export class InteractiveLabeling {
                         elementText: elementDef.elementText
                     });
                     
-                    element.addEventListener('click', (e) => {
+                    // Add click event listener
+                    const clickHandler = (e) => {
                         e.preventDefault();
+                        e.stopPropagation();
                         this.handleElementClick(elementDef.id);
-                    });
+                    };
                     
+                    element.addEventListener('click', clickHandler);
+                    
+                    // Store the handler reference for cleanup
+                    element._interactiveClickHandler = clickHandler;
+                    
+                    successCount++;
                     console.log(`✅ Successfully made element ${elementDef.id} interactive`);
                 } else {
                     console.warn(`❌ Element not found for selector: ${elementDef.selector} (element_id: ${elementDef.id})`);
                 }
             });
             
-            console.log(`Interactive labeling initialized with ${this.labeledElements.size} elements`);
+            console.log(`Interactive labeling initialized with ${successCount}/${interactiveElements.length} elements`);
         }, 100);
     }
 
@@ -682,17 +718,12 @@ export class InteractiveLabeling {
     }
 
     nextArticle() {
+        // Cleanup current interactive elements first
+        this.cleanupCurrentElements();
+        
         // Remove instructions
         const instructions = document.querySelector('.labeling-instructions');
         if (instructions) instructions.remove();
-        
-        // Clear interactive elements
-        document.querySelectorAll('.interactive-element').forEach(el => {
-            el.classList.remove('interactive-element', 'labeled-fake', 'labeled-real', 'correct', 'incorrect');
-            el.removeAttribute('data-element-id');
-            el.removeAttribute('data-label');
-            el.removeAttribute('title');
-        });
         
         // Navigate to next article
         if (window.challenge1Page && this.currentArticleIndex < this.totalArticles - 1) {
@@ -795,20 +826,22 @@ export class InteractiveLabeling {
         const instructions = document.querySelector('.labeling-instructions');
         if (instructions) instructions.remove();
         
-        // Clear interactive elements
-        document.querySelectorAll('.interactive-element').forEach(el => {
-            el.classList.remove('interactive-element', 'labeled-fake', 'labeled-real', 'correct', 'incorrect');
-            el.removeAttribute('data-element-id');
-            el.removeAttribute('data-label');
-            el.removeAttribute('title');
-        });
+        // More thorough cleanup of interactive elements
+        this.cleanupCurrentElements();
         
-        // Remove styles
+        // Remove styles (but only if no other instances are active)
         const styles = document.getElementById('interactive-labeling-styles');
-        if (styles) styles.remove();
+        if (styles && !document.querySelector('.labeling-instructions')) {
+            styles.remove();
+        }
         
         this.isActive = false;
-        this.labeledElements.clear();
-        window.interactiveLabeling = null;
+        this.batchAnalysis = null;
+        this.analysisSource = 'none';
+        
+        // Only clear global reference if this is the active instance
+        if (window.interactiveLabeling === this) {
+            window.interactiveLabeling = null;
+        }
     }
 }
