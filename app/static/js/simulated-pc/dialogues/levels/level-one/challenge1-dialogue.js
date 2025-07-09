@@ -5,22 +5,43 @@ export class Challenge1Dialogue extends BaseDialogue {
         super(desktop, character);
         this.messages = [
             {
-                text: "Excellent! Now for your first real challenge. You'll analyze multiple news articles using our Interactive Analysis system to identify misinformation and credible sources."
+                text: "Excellent! Now for your first real challenge."
             },
             {
-                text: "You'll work through several articles where different elements can be labeled as 'fake' or 'real'. Click on titles, author names, content sections, and other parts to classify them based on credibility indicators."
+                text: "You'll analyze multiple news articles using our Interactive Analysis system to identify misinformation and credible sources."
             },
             {
-                text: "Look for red flags like sensational headlines, questionable sources, missing author credentials, emotional manipulation, and biased language. Pay attention to factual accuracy and source verification."
+                text: "Each article contains different elements that you can label as 'fake' or 'real' by clicking on them."
             },
             {
-                text: "The Interactive Analysis panel on the right will guide you through the process. It shows your progress and provides feedback as you work. Each article is powered by AI-analyzed training data."
+                text: "Look for titles, author names, content sections, and other parts that can be classified based on credibility indicators."
             },
             {
-                text: "Remember: Click elements once to mark as 'fake/suspicious', twice to mark as 'real/legitimate', and three times to remove the label. Take your time to analyze each article thoroughly."
+                text: "Watch for red flags like sensational headlines, questionable sources, and missing author credentials."
             },
             {
-                text: "After labeling elements in each article, submit your analysis to get feedback. You'll see detailed results and learn from any mistakes before moving to the next article."
+                text: "Pay attention to emotional manipulation, biased language, and factual accuracy."
+            },
+            {
+                text: "The Interactive Analysis panel on the right will guide you through the process."
+            },
+            {
+                text: "It shows your progress and provides feedback as you work. Each article is powered by AI-analyzed training data."
+            },
+            {
+                text: "Remember: Click elements once to mark as 'fake/suspicious', twice to mark as 'real/legitimate'."
+            },
+            {
+                text: "Click three times to remove the label if you change your mind."
+            },
+            {
+                text: "Take your time to analyze each article thoroughly before submitting."
+            },
+            {
+                text: "After labeling elements in each article, submit your analysis to get detailed feedback."
+            },
+            {
+                text: "You'll see results and learn from any mistakes before moving to the next article."
             }
         ];
     }
