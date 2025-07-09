@@ -9,45 +9,86 @@ news_api_bp = Blueprint('news_api', __name__, url_prefix='/api/news')
 _csv_cache = None
 
 def load_fake_news_data():
-    """Load and cache the news_articles.csv data"""
+    """Load and cache the english_news_articles.csv data"""
     global _csv_cache
     if _csv_cache is not None:
         return _csv_cache
     
     try:
+        # Use the processed English articles dataset
         csv_path = os.path.join(
-            os.path.dirname(os.path.dirname(__file__)), 
-            'static', 'js', 'simulated-pc', 'levels', 'level-one', 'data', 'news_articles.csv'
+            os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 
+            'data', 'processed', 'english_news_articles.csv'
         )
         
         _csv_cache = []
         with open(csv_path, 'r', encoding='utf-8') as file:
             reader = csv.DictReader(file)
             for row in reader:
-                # Only include rows with required fields including valid main_img_url and English language
-                main_img_url = row.get('main_img_url', '').strip()
-                language = row.get('language', '').strip().lower()
-                if (row.get('title') and row.get('text') and row.get('author') and 
-                    main_img_url and (main_img_url.startswith('http://') or main_img_url.startswith('https://')) and
-                    language == 'english'):
+                # The processed CSV already contains only English articles with valid image URLs
+                # Just need to format the data for the frontend
+                if (row.get('title') and row.get('text') and row.get('author')):
                     _csv_cache.append({
                         'author': row.get('author', '').strip(),
                         'published': row.get('published', '').strip(),
                         'title': row.get('title', '').strip(),
                         'text': row.get('text', '').strip(),
-                        'main_img_url': main_img_url,
+                        'main_img_url': row.get('main_img_url', '').strip(),
                         'is_real': row.get('label', '').lower() == 'real',  # Use 'label' column to determine authenticity
-                        'source': 'news_articles.csv'
+                        'source': 'english_news_articles.csv'
                     })
         
-        print(f"Loaded {len(_csv_cache)} English news articles from news_articles.csv (with valid HTTP/HTTPS images only)")
+        print(f"Loaded {len(_csv_cache)} English news articles from processed dataset")
         print(f"Real news articles: {len([a for a in _csv_cache if a['is_real']])}")
         print(f"Fake news articles: {len([a for a in _csv_cache if not a['is_real']])}")
         
         return _csv_cache
         
     except Exception as e:
-        print(f"Error loading news_articles.csv: {e}")
+        print(f"Error loading english_news_articles.csv: {e}")
+        # Fallback to original dataset if processed one is not available
+        return load_fallback_data()
+
+def load_fallback_data():
+    """Fallback to original dataset if processed one is not available"""
+    try:
+        csv_path = os.path.join(
+            os.path.dirname(os.path.dirname(__file__)), 
+            'static', 'js', 'simulated-pc', 'levels', 'level-one', 'data', 'news_articles.csv'
+        )
+        
+        fallback_cache = []
+        with open(csv_path, 'r', encoding='utf-8') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                # Apply same filtering as preprocessing script
+                main_img_url = row.get('main_img_url', '').strip()
+                language = row.get('language', '').strip().lower()
+                title = row.get('title', '').strip()
+                
+                if (title and 
+                    title.lower() not in ['no title', 'untitled', ''] and
+                    main_img_url and 
+                    main_img_url.lower() not in ['no image url', 'no image', ''] and
+                    main_img_url.startswith(('http://', 'https://')) and
+                    row.get('text') and row.get('author') and 
+                    language == 'english'):
+                    
+                    fallback_cache.append({
+                        'author': row.get('author', '').strip(),
+                        'published': row.get('published', '').strip(),
+                        'title': title,
+                        'text': row.get('text', '').strip(),
+                        'main_img_url': main_img_url,
+                        'is_real': row.get('label', '').lower() == 'real',
+                        'source': 'news_articles.csv (fallback)'
+                    })
+        
+        print(f"Loaded {len(fallback_cache)} articles from fallback dataset")
+        return fallback_cache
+        
+    except Exception as e:
+        print(f"Error loading fallback dataset: {e}")
         return []
 
 @news_api_bp.route('/mixed-articles', methods=['GET'])
