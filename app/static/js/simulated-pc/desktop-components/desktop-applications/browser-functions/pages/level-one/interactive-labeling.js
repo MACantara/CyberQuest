@@ -59,7 +59,6 @@ export class InteractiveLabeling {
                 {
                     "element_id": "title_analysis",
                     "element_name": "Article Title",
-                    "css_selector": '[data-element-id="title_analysis"]',
                     "expected_label": is_real ? "real" : "fake",
                     "reasoning": is_real ? "Real news uses factual headlines" : "Fake news often uses sensational headlines",
                     "difficulty": "easy",
@@ -69,7 +68,6 @@ export class InteractiveLabeling {
                 {
                     "element_id": "author_analysis",
                     "element_name": "Author Information",
-                    "css_selector": '[data-element-id="author_analysis"]',
                     "expected_label": is_real ? "real" : "fake",
                     "reasoning": is_real ? "Check author credibility and attribution" : "Fake news often lacks proper author info",
                     "difficulty": "medium",
@@ -79,7 +77,6 @@ export class InteractiveLabeling {
                 {
                     "element_id": "date_analysis",
                     "element_name": "Publication Date",
-                    "css_selector": '[data-element-id="date_analysis"]',
                     "expected_label": is_real ? "real" : "fake",
                     "reasoning": is_real ? "Check publication timing and context" : "Fake news may have suspicious timing",
                     "difficulty": "medium",
@@ -89,7 +86,6 @@ export class InteractiveLabeling {
                 {
                     "element_id": "content_analysis",
                     "element_name": "Article Content",
-                    "css_selector": '[data-element-id="content_analysis"]',
                     "expected_label": is_real ? "real" : "fake",
                     "reasoning": is_real ? "Analyze content for accuracy and bias" : "Look for unsubstantiated claims",
                     "difficulty": "hard",
@@ -131,7 +127,6 @@ export class InteractiveLabeling {
                 {
                     "element_id": "title_analysis",
                     "element_name": "Article Title",
-                    "css_selector": '[data-element-id="title_analysis"]',
                     "expected_label": "real",
                     "reasoning": "Practice identifying headline characteristics",
                     "difficulty": "easy",
@@ -141,7 +136,6 @@ export class InteractiveLabeling {
                 {
                     "element_id": "author_analysis",
                     "element_name": "Author Information",
-                    "css_selector": '[data-element-id="author_analysis"]',
                     "expected_label": "real",
                     "reasoning": "Check for author attribution",
                     "difficulty": "medium",
@@ -151,7 +145,6 @@ export class InteractiveLabeling {
                 {
                     "element_id": "date_analysis",
                     "element_name": "Publication Date",
-                    "css_selector": '[data-element-id="date_analysis"]',
                     "expected_label": "real",
                     "reasoning": "Check publication timing",
                     "difficulty": "medium",
@@ -161,7 +154,6 @@ export class InteractiveLabeling {
                 {
                     "element_id": "content_analysis",
                     "element_name": "Article Content",
-                    "css_selector": '[data-element-id="content_analysis"]',
                     "expected_label": "real",
                     "reasoning": "Analyze content quality",
                     "difficulty": "hard",
@@ -484,15 +476,15 @@ export class InteractiveLabeling {
             // Use batch JSON clickable elements if available
             if (this.aiAnalysis && this.aiAnalysis.clickable_elements && this.aiAnalysis.clickable_elements.length > 0) {
                 interactiveElements = this.aiAnalysis.clickable_elements.map(element => {
-                    // Handle different possible property names from batch JSON
-                    const elementId = element.element_id || element.id;
+                    // Use element_id directly from batch JSON
+                    const elementId = element.element_id;
                     const expectedLabel = element.expected_label || (element.expected_fake ? 'fake' : 'real');
                     
                     return {
-                        selector: this.mapElementIdToSelector(elementId),
+                        selector: `[data-element-id="${elementId}"]`,
                         id: elementId,
                         expectedFake: expectedLabel === 'fake',
-                        label: element.element_name || element.label,
+                        label: element.element_name || element.label || elementId,
                         reasoning: element.reasoning || 'No reasoning provided',
                         difficulty: element.difficulty || 'medium',
                         redFlags: element.red_flags || [],
@@ -504,9 +496,9 @@ export class InteractiveLabeling {
                 // Fallback to default elements
                 const isReal = article?.is_real ?? true;
                 interactiveElements = [
-                    { selector: 'h2', id: 'title', expectedFake: !isReal, label: 'Title', reasoning: 'Check headline for sensationalism', difficulty: 'easy' },
-                    { selector: 'main > div:nth-child(2)', id: 'author', expectedFake: !isReal, label: 'Author Info', reasoning: 'Verify author credentials', difficulty: 'medium' },
-                    { selector: 'main > div:nth-child(4)', id: 'content', expectedFake: !isReal, label: 'Article Content', reasoning: 'Analyze content for accuracy', difficulty: 'hard' }
+                    { selector: '[data-element-id="title_analysis"]', id: 'title_analysis', expectedFake: !isReal, label: 'Title', reasoning: 'Check headline for sensationalism', difficulty: 'easy' },
+                    { selector: '[data-element-id="author_analysis"]', id: 'author_analysis', expectedFake: !isReal, label: 'Author Info', reasoning: 'Verify author credentials', difficulty: 'medium' },
+                    { selector: '[data-element-id="content_analysis"]', id: 'content_analysis', expectedFake: !isReal, label: 'Article Content', reasoning: 'Analyze content for accuracy', difficulty: 'hard' }
                 ];
                 console.log('Using fallback clickable elements');
             }
@@ -539,28 +531,15 @@ export class InteractiveLabeling {
                         this.handleElementClick(elementDef.id);
                     });
                 } else {
-                    console.warn(`Element not found for selector: ${elementDef.selector}`);
+                    console.warn(`Element not found for selector: ${elementDef.selector} (element_id: ${elementDef.id})`);
                 }
             });
         }, 100);
     }
 
     mapElementIdToSelector(elementId) {
-        // Map batch JSON element IDs to CSS selectors
-        const selectorMap = {
-            'title_analysis': '[data-element-id="title_analysis"]',
-            'title': '[data-element-id="title_analysis"]',
-            'author_analysis': '[data-element-id="author_analysis"]',
-            'author': '[data-element-id="author_analysis"]',
-            'source_analysis': '[data-element-id="source_analysis"]',
-            'source': '[data-element-id="source_analysis"]',
-            'content_analysis': '[data-element-id="content_analysis"]',
-            'content': '[data-element-id="content_analysis"]',
-            'date_analysis': '[data-element-id="date_analysis"]',
-            'date': '[data-element-id="date_analysis"]'
-        };
-        
-        return selectorMap[elementId] || `[data-element-id="${elementId}"]`;
+        // Simply use element_id directly as data attribute selector
+        return `[data-element-id="${elementId}"]`;
     }
 
     handleElementClick(elementId) {
