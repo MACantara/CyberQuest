@@ -73,35 +73,11 @@ CYBERSECURITY_LEVELS = [
     }
 ]
 
-def check_level_completion_status():
-    """Check which levels are completed/unlocked based on localStorage simulation"""
-    # This function is now mainly for documentation
-    # The actual logic is handled client-side in the HTML template
-    return {
-        'level_1_completed': False,  # Will be checked client-side
-        'level_2_unlocked': False,   # Will be determined client-side
-        'level_3_unlocked': False,
-        'level_4_unlocked': False,
-        'level_5_unlocked': False
-    }
-
 @levels_bp.route('/')
 @login_required
 def levels_overview():
     """Display all cybersecurity levels."""
-    # Simplified - unlock logic now handled client-side
     return render_template('levels/levels.html', levels=CYBERSECURITY_LEVELS)
-
-@levels_bp.route('/<int:level_id>')
-@login_required  
-def level_detail(level_id):
-    """Display specific level details and start the level."""
-    level = next((l for l in CYBERSECURITY_LEVELS if l['id'] == level_id), None)
-    
-    if not level:
-        return render_template('404.html'), 404
-
-    return render_template('levels/level-detail.html', level=level)
 
 @levels_bp.route('/<int:level_id>/start')
 @login_required
@@ -113,7 +89,6 @@ def start_level(level_id):
         flash('Level not found.', 'error')
         return redirect(url_for('levels.levels_overview'))
 
-    
     # Prepare level data for simulation
     level_data = {
         'id': level['id'],
@@ -137,9 +112,6 @@ def start_level(level_id):
 def complete_level(level_id):
     """API endpoint to mark a level as completed."""
     try:
-        # In a real app, this would update the database
-        # For demo purposes, we just return success
-        
         level = next((l for l in CYBERSECURITY_LEVELS if l['id'] == level_id), None)
         if not level:
             return {'success': False, 'error': 'Level not found'}, 404
