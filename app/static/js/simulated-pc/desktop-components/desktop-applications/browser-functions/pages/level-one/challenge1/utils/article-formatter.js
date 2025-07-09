@@ -33,12 +33,6 @@ export class ArticleFormatter {
         return paragraphs.map(paragraph => {
             let formattedParagraph = paragraph.trim();
             
-            if (isFakeNews) {
-                // Add sensational formatting to fake news
-                formattedParagraph = formattedParagraph
-                    .replace(/\b(BREAKING|EXCLUSIVE|URGENT|SHOCKING|SCANDAL|LEAKED)\b/gi, '<strong style="color: #dc2626;">$1</strong>')
-                    .replace(/\b(millions?|billions?|thousands?)\b/gi, '<strong style="color: #ea580c;">$1</strong>');
-            }
             
             return `<p style="margin: 0 0 16px 0;">${formattedParagraph}</p>`;
         }).join('');

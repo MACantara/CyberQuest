@@ -8,8 +8,8 @@ export class ArticleImage {
                      alt="News article image" 
                      style="width: 100%; height: 100%; object-fit: cover;"
                      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div style="display: none; width: 100%; height: 100%; background: ${isFakeNews ? 'linear-gradient(135deg, #dc2626, #ea580c)' : '#f3f4f6'}; align-items: center; justify-content: center; color: ${isFakeNews ? 'white' : '#6b7280'}; font-size: 18px;">
-                    ${isFakeNews ? '📸 SHOCKING EXCLUSIVE FOOTAGE' : '📸 News Image'}
+                <div style="display: none; width: 100%; height: 100%; background: #f3f4f6; align-items: center; justify-content: center; color: #6b7280; font-size: 18px;">
+                    📸 News Image
                 </div>
             </div>
         `;

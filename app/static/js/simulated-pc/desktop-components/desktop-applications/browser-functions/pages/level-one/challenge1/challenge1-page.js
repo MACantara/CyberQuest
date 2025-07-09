@@ -66,7 +66,7 @@ class Challenge1PageClass extends BasePage {
         // Truncate text if too long for better display
         const displayText = ArticleFormatter.truncateText(currentArticle.text, 1200);
         
-        // Add suspicious elements if this is fake news
+        // Add suspicious elements only subtly for fake news
         const isFakeNews = !currentArticle.is_real;
         const testimonials = isFakeNews ? SharingBox.createFakeTestimonials() : '';
         
@@ -77,7 +77,7 @@ class Challenge1PageClass extends BasePage {
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <h1 style="margin: 0; font-size: 28px;">Daily Politico News</h1>
-                            <p style="margin: 5px 0 0 0; color: #9ca3af;">Your Source for ${isFakeNews ? 'REAL' : 'Reliable'} News</p>
+                            <p style="margin: 5px 0 0 0; color: #9ca3af;">Your Source for News and Analysis</p>
                         </div>
                         
                         <!-- Article Navigation -->
@@ -87,12 +87,12 @@ class Challenge1PageClass extends BasePage {
                 
                 <!-- Main Content -->
                 <main style="padding: 30px; max-width: 800px; margin: 0 auto;">
-                    <h2 style="color: ${isFakeNews ? '#dc2626' : '#374151'}; font-size: 32px; margin-bottom: 10px; ${isFakeNews ? 'text-transform: uppercase;' : ''}">
-                        ${isFakeNews ? '🚨 ' : ''}${currentArticle.title}${isFakeNews ? ' 🚨' : ''}
+                    <h2 style="color: #374151; font-size: 32px; margin-bottom: 10px;">
+                        ${currentArticle.title}
                     </h2>
                     
                     <div style="color: #6b7280; margin-bottom: 20px; font-size: 14px;">
-                        <span>Published: ${formattedDate} | By: ${currentArticle.author || (isFakeNews ? 'Anonymous Source' : 'Staff Reporter')}</span>
+                        <span>Published: ${formattedDate} | By: ${currentArticle.author || 'Staff Reporter'}</span>
                     </div>
                     
                     <!-- Article Image -->

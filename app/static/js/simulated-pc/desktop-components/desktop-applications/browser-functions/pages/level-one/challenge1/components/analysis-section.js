@@ -8,18 +8,18 @@ export class AnalysisSection {
                 </h3>
                 <div style="font-size: 14px; color: #6b7280; margin-bottom: 15px;">
                     Use the CyberQuest Analysis Tools (top-right panel) to evaluate this article's credibility.
-                    Look for signs of emotional manipulation, urgent language, lack of sources, and pressure to share.
+                    Look for signs of bias, sensationalism, lack of sources, and unusual language patterns.
                 </div>
                 
                 <!-- Quick Analysis Questions -->
                 <div style="background: white; padding: 15px; border-radius: 6px; border-left: 4px solid #10b981;">
-                    <h4 style="color: #374151; margin: 0 0 10px 0; font-size: 14px;">Quick Analysis Questions:</h4>
+                    <h4 style="color: #374151; margin: 0 0 10px 0; font-size: 14px;">Critical Analysis Questions:</h4>
                     <ul style="color: #6b7280; font-size: 13px; margin: 0; padding-left: 20px; line-height: 1.5;">
-                        <li>Does the headline seem sensational or emotionally charged?</li>
-                        <li>Is there clear author attribution and publication date?</li>
-                        <li>Are sources and evidence properly cited?</li>
-                        <li>Does the language pressure you to act quickly or share immediately?</li>
-                        <li>Does the story seem too good/bad to be true?</li>
+                        <li>Is the headline factual or emotionally charged?</li>
+                        <li>Are there clear author credentials and publication details?</li>
+                        <li>Are claims supported by verifiable sources and evidence?</li>
+                        <li>Does the article present multiple perspectives?</li>
+                        <li>Are there any logical inconsistencies in the story?</li>
                     </ul>
                 </div>
             </div>

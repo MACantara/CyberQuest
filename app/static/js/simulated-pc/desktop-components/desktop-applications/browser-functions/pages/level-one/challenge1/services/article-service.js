@@ -1,7 +1,7 @@
 export class ArticleService {
     static async fetchMixedNewsArticles() {
         try {
-            console.log('Fetching mixed news articles (15 total: 50% fake, 50% real)...');
+            console.log('Fetching news articles for analysis...');
             
             const response = await fetch('/levels/get-mixed-news-articles');
             
@@ -12,13 +12,10 @@ export class ArticleService {
             const data = await response.json();
             
             if (data.success && data.articles) {
-                console.log('Mixed news articles loaded:', {
+                console.log('News articles loaded:', {
                     total: data.articles.length,
-                    fakeCount: data.articles.filter(a => !a.is_real).length,
-                    realCount: data.articles.filter(a => a.is_real).length,
                     firstArticle: {
                         title: data.articles[0].title.substring(0, 50) + '...',
-                        isReal: data.articles[0].is_real,
                         source: data.articles[0].source,
                         author: data.articles[0].author
                     }
@@ -26,10 +23,10 @@ export class ArticleService {
                 
                 return data.articles;
             } else {
-                throw new Error(data.error || 'Failed to get mixed news articles');
+                throw new Error(data.error || 'Failed to get news articles');
             }
         } catch (error) {
-            console.error('Error fetching mixed news articles:', error);
+            console.error('Error fetching news articles:', error);
             throw error;
         }
     }
@@ -40,7 +37,7 @@ export class ArticleService {
                 <div style="text-align: center; max-width: 500px; padding: 20px;">
                     <h1 style="color: #dc2626; font-size: 24px; margin-bottom: 16px;">⚠️ Error Loading Articles</h1>
                     <p style="color: #6b7280; margin-bottom: 20px;">
-                        Unable to load news articles. This could be due to missing CSV data files or a server error.
+                        Unable to load news articles. This could be due to missing data files or a server error.
                     </p>
                     <button onclick="location.reload()" style="background: #10b981; color: white; padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer;">
                         Try Again
