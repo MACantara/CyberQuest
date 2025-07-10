@@ -43,7 +43,7 @@ CYBERSECURITY_LEVELS = [
         'estimated_time': '25 minutes',
         'skills': ['Malware Recognition', 'System Security', 'Threat Analysis'],
         'unlocked': False,
-        'coming_soon': True
+        'coming_soon': False
     },
     {
         'id': 4,
