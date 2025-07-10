@@ -85,17 +85,7 @@ export class DialogueIntegration {
     async initializeDialogueFlow() {
         console.log('[DialogueIntegration] initializeDialogueFlow called');
         
-        // Check for welcome dialogue first
-        const shouldStartWelcome = await this.dialogueManager.shouldAutoStartWelcome();
-        console.log('[DialogueIntegration] shouldAutoStartWelcome:', shouldStartWelcome);
-        
-        if (shouldStartWelcome) {
-            console.log('[DialogueIntegration] Starting welcome dialogue');
-            await this.dialogueManager.startWelcomeDialogue();
-            return;
-        }
-
-        // Check for level dialogues from backend
+        // Check for level dialogues from backend directly
         console.log('[DialogueIntegration] Desktop level:', this.desktop.level);
         if (this.desktop.level) {
             const levelNum = typeof this.desktop.level === 'object' ? this.desktop.level.id : this.desktop.level;
@@ -138,22 +128,19 @@ export class DialogueIntegration {
             }));
     }
 
-    // Trigger welcome dialogue
-    async triggerWelcomeBack() {
-        await this.dialogueManager.startDialogueByName('welcome', 'agent');
+    // Trigger dialogue (removed welcome back functionality)
+    async triggerDialogue(dialogueName, character = 'instructor') {
+        await this.dialogueManager.startDialogueByName(dialogueName, character);
     }
 
     // Reset dialogue completion flags in localStorage
     restartDialogues() {
-        // Clear welcome dialogue flag
-        localStorage.removeItem('cyberquest_welcome_dialogue_completed');
-        
         // Clear all level-related flags
         for (const levelNum of this.levelDialogues.keys()) {
             localStorage.removeItem(`cyberquest_level_${levelNum}_started`);
             localStorage.removeItem(`cyberquest_level_${levelNum}_completed`);
         }
         
-        return 'Dialogues have been reset. Refresh the page to see the welcome dialogue again.';
+        return 'Dialogues have been reset. Refresh the page to see dialogues again.';
     }
 }
