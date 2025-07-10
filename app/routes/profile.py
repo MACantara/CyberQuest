@@ -107,8 +107,8 @@ def dashboard():
     # TODO: Replace with actual user progress from database
     total_levels = len(CYBERSECURITY_LEVELS)
     completed_levels = 0  # Mock: user has completed no levels
-    total_xp = 100  # Mock: XP from completed levels
-    learning_streak = 3  # Mock: days of consecutive learning
+    total_xp = 0  # Mock: XP from completed levels
+    learning_streak = 0  # Mock: days of consecutive learning
     progress_percentage = (completed_levels / total_levels) * 100
     
     # Determine user rank based on XP
@@ -137,23 +137,6 @@ def dashboard():
         if level['unlocked'] and not level['completed']:
             next_level = level
             break
-    
-    # Mock recent activity
-    # from datetime import datetime, timedelta
-    # recent_activity = [
-    #     {
-    #         'icon': 'bi-trophy',
-    #         'title': 'Level Completed',
-    #         'description': 'Completed "The Misinformation Maze"',
-    #         'timestamp': datetime.now() - timedelta(days=1)
-    #     },
-    #     {
-    #         'icon': 'bi-star',
-    #         'title': 'XP Earned',
-    #         'description': 'Earned 100 XP points',
-    #         'timestamp': datetime.now() - timedelta(days=1)
-    #     }
-    # ]
     
     return render_template('profile/dashboard.html',
                          total_xp=total_xp,
