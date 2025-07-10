@@ -11,12 +11,13 @@ export class NavigationHandler {
     continueToNextLevel() {
         this.labelingSystem.modalManager.removeModal();
         this.labelingSystem.cleanup();
-        this.navigateToLevelsOverview();
+        this.showShutdownSequenceAndNavigate();
     }
 
-    navigateToLevelsOverview() {
-        console.log('Navigating to levels overview...');
+    async showShutdownSequenceAndNavigate() {
+        console.log('Starting shutdown sequence before navigation...');
         
+        // Save completion data first
         const completionData = {
             levelId: 1,
             completed: true,
@@ -33,30 +34,56 @@ export class NavigationHandler {
             completion_data: localStorage.getItem('cyberquest_level_1_completion')
         });
         
-        // Navigate to levels overview instead of specific level
-        if (this.labelingSystem.desktop?.windowManager) {
-            try {
-                const browserApp = this.labelingSystem.desktop.windowManager.applications.get('browser');
-                if (browserApp) {
-                    browserApp.navigation.navigateToUrl('/levels');
-                }
-            } catch (error) {
-                console.error('Failed to navigate to levels overview:', error);
-                window.location.href = '/levels';
+        // Create shutdown overlay
+        const shutdownOverlay = document.createElement('div');
+        shutdownOverlay.className = 'fixed inset-0 bg-black z-50';
+        shutdownOverlay.style.zIndex = '9999';
+        document.body.appendChild(shutdownOverlay);
+        
+        try {
+            // Import and run shutdown sequence
+            const { ShutdownSequence } = await import('../../../../../../shutdown-sequence.js');
+            
+            // Run shutdown sequence
+            await ShutdownSequence.runShutdown(shutdownOverlay);
+            
+            // After shutdown completes, navigate to levels overview
+            this.navigateToLevelsOverview();
+            
+        } catch (error) {
+            console.error('Failed to run shutdown sequence:', error);
+            // Fallback to direct navigation if shutdown fails
+            setTimeout(() => {
+                this.navigateToLevelsOverview();
+            }, 1000);
+        } finally {
+            // Clean up shutdown overlay
+            if (shutdownOverlay.parentNode) {
+                shutdownOverlay.remove();
             }
-        } else {
-            window.location.href = '/levels';
         }
     }
 
+    navigateToLevelsOverview() {
+        console.log('Navigating to levels overview...');
+        
+        // Navigate to levels overview in the actual browser (not simulated browser)
+        window.location.href = '/levels';
+    }
+
     markLevelCompleted() {
-        const overallScore = this.labelingSystem.analysisCalculator.getOverallPerformance()?.averageScore || 0;
+        // Store interactive labeling results
+        localStorage.setItem('cyberquest_challenge1_interactive_results', 'true');
         
-        localStorage.setItem('cyberquest_challenge1_completed', 'true');
-        localStorage.setItem('cyberquest_challenge1_interactive_results', JSON.stringify(this.labelingSystem.articleResults));
+        const overallScore = Math.round(
+            this.labelingSystem.articleResults.reduce((sum, result) => sum + result.results.percentage, 0) / 
+            this.labelingSystem.articleResults.length
+        );
+        
         localStorage.setItem('cyberquest_level1_score', overallScore.toString());
+        localStorage.setItem('cyberquest_level_1_completed', 'true');
         
-        console.log('Challenge 1 marked as completed with score:', overallScore);
+        console.log('Level 1 marked as completed with score:', overallScore);
     }
 
     canProceedToNextLevel() {
