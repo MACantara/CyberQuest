@@ -13,85 +13,89 @@ export class EmailSessionSummary {
         modal.className = 'fixed inset-0 bg-black/75 flex items-center justify-center z-50';
         
         const accuracyClass = this.getAccuracyClass(sessionStats.accuracy);
-        const emoji = this.getAccuracyEmoji(sessionStats.accuracy);
         const levelCompleted = sessionStats.accuracy >= 70; // 70% threshold for completion
         
         modal.innerHTML = `
-            <div class="bg-gray-800 text-white rounded-lg p-8 max-w-4xl mx-4 max-h-128 overflow-y-auto border border-gray-600 shadow-2xl">
+            <div class="bg-gray-800 text-white rounded p-8 max-w-4xl mx-4 max-h-150 overflow-y-auto border border-gray-600">
                 <div class="text-center mb-8">
-                    <div class="text-6xl mb-4">${emoji}</div>
-                    <h2 class="text-3xl font-bold text-white mb-4">
-                        ${levelCompleted ? '🎉 Level 2 Complete!' : 'Training Session Complete'}
-                    </h2>
-                    
-                    <div class="mb-6">
-                        <div class="text-5xl font-bold ${accuracyClass} mb-2">${sessionStats.accuracy}%</div>
-                        <div class="text-lg text-gray-300">Email Security Accuracy</div>
-                        <div class="text-sm text-gray-400">
-                            ${sessionStats.correctActions} correct out of ${sessionStats.totalActions} total actions
+                    <div class="flex items-center justify-center gap-2 mb-4">
+                        <i class="bi bi-shield-check text-3xl text-blue-400"></i>
+                        <h1 class="text-3xl font-bold">Level 2 Complete!</h1>
+                    </div>
+                    <div class="text-6xl font-bold mb-4 ${accuracyClass}">${sessionStats.accuracy}%</div>
+                    <p class="text-lg">Email Security Training Performance</p>
+                    <p class="text-sm text-gray-400 mt-2 flex items-center justify-center gap-1">
+                        <i class="bi bi-envelope-check-fill text-blue-400"></i>
+                        ${this.countUniqueEmails(feedbackHistory)} emails analyzed with AI-powered threat detection training
+                    </p>
+                </div>
+                
+                <!-- Performance Summary -->
+                <div class="bg-gray-700 border border-gray-600 rounded p-6 mb-6">
+                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                        <i class="bi bi-trophy text-yellow-400 mr-2"></i>
+                        Performance Summary
+                    </h3>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="text-center">
+                            <div class="text-3xl font-bold ${accuracyClass} mb-2 flex items-center justify-center gap-2">
+                                <i class="bi bi-percent"></i>
+                                ${sessionStats.accuracy}
+                            </div>
+                            <div class="text-gray-400 text-sm">Overall Accuracy</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-blue-400 mb-2 flex items-center justify-center gap-2">
+                                <i class="bi bi-envelope-fill"></i>
+                                ${this.countUniqueEmails(feedbackHistory)}
+                            </div>
+                            <div class="text-gray-400 text-sm">Emails Analyzed</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-green-400 mb-2 flex items-center justify-center gap-2">
+                                <i class="bi bi-check-circle-fill"></i>
+                                ${sessionStats.correctActions}
+                            </div>
+                            <div class="text-gray-400 text-sm">Correct Actions</div>
                         </div>
                     </div>
-                    
-                    ${this.generatePerformanceMessage(sessionStats.accuracy)}
                 </div>
-
-                <!-- Detailed Statistics -->
-                <div class="grid md:grid-cols-2 gap-6 mb-8">
-                    <!-- Performance Breakdown -->
-                    <div class="bg-gray-700 border border-gray-600 rounded-lg p-6">
-                        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
-                            <i class="bi bi-bar-chart text-blue-400 mr-2"></i>
-                            Performance Breakdown
-                        </h3>
-                        ${this.generatePerformanceChart(sessionStats, feedbackHistory)}
-                    </div>
+                
+                <!-- Detailed Email Analysis -->
+                <div class="space-y-4 mb-8">
+                    <h2 class="text-xl font-semibold text-white mb-4 flex items-center">
+                        <i class="bi bi-clipboard-data text-blue-400 mr-2"></i>
+                        Detailed Email Analysis
+                    </h2>
                     
-                    <!-- Key Insights -->
-                    <div class="bg-gray-700 border border-gray-600 rounded-lg p-6">
-                        <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
-                            <i class="bi bi-lightbulb text-yellow-400 mr-2"></i>
-                            Key Insights
-                        </h3>
-                        ${this.generateKeyInsights(feedbackHistory)}
-                    </div>
+                    ${this.generateDetailedEmailAnalysis(feedbackHistory)}
                 </div>
-
+                
                 <!-- Email Categories Performance -->
-                ${this.generateEmailCategoriesSection(feedbackHistory)}
-
+                <div class="bg-gray-700 border border-gray-600 rounded p-6 mb-6">
+                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                        <i class="bi bi-envelope-check text-purple-400 mr-2"></i>
+                        Email Category Performance
+                    </h3>
+                    
+                    ${this.generateEmailCategoriesChart(feedbackHistory)}
+                </div>
+                
                 <!-- Areas for Improvement -->
                 ${this.generateImprovementSection(feedbackHistory, sessionStats.accuracy)}
-
-                <!-- Action Buttons -->
-                <div class="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+                
+                <div class="text-center">
                     ${levelCompleted ? `
-                        <button onclick="window.emailSessionSummary?.completeLevel2?.()" 
-                                class="bg-gradient-to-r from-green-600 to-emerald-600 text-white px-8 py-3 rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-300 font-semibold text-lg shadow-lg cursor-pointer">
-                            <i class="bi bi-trophy mr-2"></i>
-                            Continue to Next Level
-                        </button>
-                        <button onclick="window.emailSessionSummary?.reviewMistakes?.()" 
-                                class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold border border-blue-500 cursor-pointer">
-                            <i class="bi bi-eye mr-2"></i>
-                            Review Mistakes
+                        <button onclick="window.emailSessionSummary?.completeLevel2()" class="bg-green-600 text-white px-8 py-3 rounded hover:bg-green-700 transition-colors font-semibold text-lg cursor-pointer flex items-center justify-center gap-2 mx-auto">
+                            <i class="bi bi-rocket-takeoff-fill"></i>
+                            Continue to Level 3
                         </button>
                     ` : `
-                        <button onclick="window.emailSessionSummary?.retryTraining?.()" 
-                                class="bg-orange-600 text-white px-8 py-3 rounded-lg hover:bg-orange-700 transition-colors font-semibold text-lg border border-orange-500 cursor-pointer">
-                            <i class="bi bi-arrow-clockwise mr-2"></i>
+                        <button onclick="window.emailSessionSummary?.retryTraining()" class="bg-orange-600 text-white px-8 py-3 rounded hover:bg-orange-700 transition-colors font-semibold text-lg cursor-pointer flex items-center justify-center gap-2 mx-auto">
+                            <i class="bi bi-arrow-clockwise"></i>
                             Retry Training
                         </button>
-                        <button onclick="window.emailSessionSummary?.reviewMistakes?.()" 
-                                class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold border border-blue-500 cursor-pointer">
-                            <i class="bi bi-eye mr-2"></i>
-                            Review Mistakes
-                        </button>
                     `}
-                    
-                    <button onclick="this.closest('.fixed').remove()" 
-                            class="bg-gray-600 text-gray-200 px-6 py-3 rounded-lg hover:bg-gray-500 transition-colors font-semibold border border-gray-500 cursor-pointer">
-                        Close Summary
-                    </button>
                 </div>
             </div>
         `;
@@ -107,163 +111,103 @@ export class EmailSessionSummary {
     }
 
     /**
-     * Generate performance message based on accuracy
+     * Generate detailed email analysis similar to article analysis
      */
-    generatePerformanceMessage(accuracy) {
-        if (accuracy >= 90) {
+    generateDetailedEmailAnalysis(feedbackHistory) {
+        const emailGroups = this.groupEmailsByType(feedbackHistory);
+        
+        return Object.entries(emailGroups).map(([type, emails]) => {
+            const typeAccuracy = Math.round((emails.filter(e => e.isCorrect).length / emails.length) * 100);
+            const typeAccuracyClass = this.getAccuracyClass(typeAccuracy);
+            
             return `
-                <div class="bg-green-900/50 border border-green-700 rounded-lg p-4 mb-6">
-                    <div class="text-green-300 font-semibold">Outstanding Performance!</div>
-                    <div class="text-green-400 text-sm">You demonstrated exceptional email security awareness. You're ready for advanced challenges!</div>
+                <div class="bg-gray-700 border border-gray-600 rounded p-4">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex-1">
+                            <div class="font-semibold text-white mb-1 flex items-center gap-2">
+                                <i class="bi bi-envelope-fill text-gray-400"></i>
+                                ${type} Emails
+                            </div>
+                            <div class="text-gray-400 text-sm flex items-center gap-2">
+                                <i class="bi bi-collection-fill text-gray-500"></i>
+                                <strong>Count:</strong> ${emails.length} emails • 
+                                <i class="bi bi-target text-gray-500"></i>
+                                <strong>Accuracy:</strong> ${emails.filter(e => e.isCorrect).length}/${emails.length} correct
+                            </div>
+                        </div>
+                        <div class="text-2xl font-bold ${typeAccuracyClass} ml-4">
+                            ${typeAccuracy}%
+                        </div>
+                    </div>
+                    
+                    <!-- Action Breakdown -->
+                    <div class="grid grid-cols-2 gap-4 text-sm mb-3">
+                        <div class="bg-green-900/30 border border-green-600/30 rounded p-2 text-center">
+                            <div class="text-green-400 font-bold flex items-center justify-center gap-1">
+                                <i class="bi bi-check-circle-fill"></i>
+                                ${emails.filter(e => e.isCorrect).length}
+                            </div>
+                            <div class="text-green-300 text-xs">Correct</div>
+                        </div>
+                        <div class="bg-red-900/30 border border-red-600/30 rounded p-2 text-center">
+                            <div class="text-red-400 font-bold flex items-center justify-center gap-1">
+                                <i class="bi bi-x-circle-fill"></i>
+                                ${emails.filter(e => !e.isCorrect).length}
+                            </div>
+                            <div class="text-red-300 text-xs">Incorrect</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Key Learning Points -->
+                    <div class="bg-gray-800 rounded p-3">
+                        <div class="text-xs text-gray-400 mb-2 flex items-start gap-1">
+                            <i class="bi bi-key-fill text-yellow-400 mt-0.5"></i>
+                            <div>
+                                <strong>Key Indicators:</strong> ${this.getEmailTypeIndicators(type)}
+                            </div>
+                        </div>
+                        ${typeAccuracy < 75 ? `
+                            <div class="text-xs text-blue-300 flex items-start gap-1">
+                                <i class="bi bi-lightbulb-fill text-blue-400 mt-0.5"></i>
+                                <div>
+                                    <strong>Learning Tip:</strong> ${this.generateEmailTypeTip(type, typeAccuracy)}
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
                 </div>
             `;
-        } else if (accuracy >= 80) {
-            return `
-                <div class="bg-blue-900/50 border border-blue-700 rounded-lg p-4 mb-6">
-                    <div class="text-blue-300 font-semibold">Excellent Work!</div>
-                    <div class="text-blue-400 text-sm">Strong email security skills. You've successfully completed this level!</div>
-                </div>
-            `;
-        } else if (accuracy >= 70) {
-            return `
-                <div class="bg-yellow-900/50 border border-yellow-700 rounded-lg p-4 mb-6">
-                    <div class="text-yellow-300 font-semibold">Good Progress!</div>
-                    <div class="text-yellow-400 text-sm">You've passed the minimum threshold. Review the feedback to strengthen your skills.</div>
-                </div>
-            `;
-        } else {
-            return `
-                <div class="bg-red-900/50 border border-red-700 rounded-lg p-4 mb-6">
-                    <div class="text-red-300 font-semibold">Keep Learning!</div>
-                    <div class="text-red-400 text-sm">Email security requires more practice. Review the feedback and try again to improve your skills.</div>
-                </div>
-            `;
-        }
+        }).join('');
     }
 
     /**
-     * Generate visual performance chart
+     * Generate email categories chart similar to the modal manager format
      */
-    generatePerformanceChart(sessionStats, feedbackHistory) {
-        const correctPercentage = sessionStats.accuracy;
-        const incorrectPercentage = 100 - correctPercentage;
-        
-        return `
-            <div class="space-y-4">
-                <div class="flex justify-between text-sm">
-                    <span class="text-green-400 font-medium">Correct Actions</span>
-                    <span class="font-semibold text-gray-300">${sessionStats.correctActions}</span>
-                </div>
-                <div class="w-full bg-gray-600 rounded-full h-3">
-                    <div class="bg-green-500 h-3 rounded-full transition-all duration-1000" 
-                         style="width: ${correctPercentage}%"></div>
-                </div>
-                
-                <div class="flex justify-between text-sm">
-                    <span class="text-red-400 font-medium">Incorrect Actions</span>
-                    <span class="font-semibold text-gray-300">${sessionStats.totalActions - sessionStats.correctActions}</span>
-                </div>
-                <div class="w-full bg-gray-600 rounded-full h-3">
-                    <div class="bg-red-500 h-3 rounded-full transition-all duration-1000" 
-                         style="width: ${incorrectPercentage}%"></div>
-                </div>
-                
-                <div class="pt-3 border-t border-gray-600">
-                    <div class="text-xs text-gray-400">
-                        <div>Total Emails Processed: ${this.countUniqueEmails(feedbackHistory)}</div>
-                        <div>Session Duration: ${this.calculateSessionDuration(feedbackHistory)}</div>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    /**
-     * Generate key insights from feedback history
-     */
-    generateKeyInsights(feedbackHistory) {
-        const insights = [];
-        
-        // Analyze suspicious email detection
-        const suspiciousEmails = feedbackHistory.filter(f => f.isSuspicious);
-        const correctSuspicious = suspiciousEmails.filter(f => f.isCorrect).length;
-        const suspiciousAccuracy = suspiciousEmails.length > 0 ? Math.round((correctSuspicious / suspiciousEmails.length) * 100) : 0;
-        
-        if (suspiciousAccuracy >= 80) {
-            insights.push("✅ Strong phishing detection skills");
-        } else {
-            insights.push("⚠️ Need improvement in phishing detection");
-        }
-        
-        // Analyze legitimate email handling
-        const legitimateEmails = feedbackHistory.filter(f => !f.isSuspicious);
-        const correctLegitimate = legitimateEmails.filter(f => f.isCorrect).length;
-        const legitimateAccuracy = legitimateEmails.length > 0 ? Math.round((correctLegitimate / legitimateEmails.length) * 100) : 0;
-        
-        if (legitimateAccuracy >= 80) {
-            insights.push("✅ Good legitimate email recognition");
-        } else {
-            insights.push("⚠️ Sometimes too cautious with legitimate emails");
-        }
-        
-        // Analyze response time patterns
-        const avgResponseTime = this.calculateAverageResponseTime(feedbackHistory);
-        if (avgResponseTime < 30) {
-            insights.push("⚡ Quick decision making");
-        } else if (avgResponseTime > 120) {
-            insights.push("🤔 Thoughtful, deliberate analysis");
-        }
-        
-        return `
-            <div class="space-y-2">
-                ${insights.map(insight => `
-                    <div class="text-sm text-gray-300 flex items-center">
-                        <span class="mr-2">${insight}</span>
-                    </div>
-                `).join('')}
-                
-                <div class="mt-4 pt-3 border-t border-gray-600">
-                    <div class="text-xs text-gray-400">
-                        <div>Phishing Detection: ${suspiciousAccuracy}%</div>
-                        <div>Legitimate Recognition: ${legitimateAccuracy}%</div>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    /**
-     * Generate email categories performance section
-     */
-    generateEmailCategoriesSection(feedbackHistory) {
+    generateEmailCategoriesChart(feedbackHistory) {
         const categories = this.categorizeEmailPerformance(feedbackHistory);
         
         return `
-            <div class="bg-gray-700 border border-gray-600 rounded-lg p-6 mb-6">
-                <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
-                    <i class="bi bi-envelope-check text-purple-400 mr-2"></i>
-                    Email Category Performance
-                </h3>
-                
-                <div class="grid md:grid-cols-2 gap-4">
-                    ${Object.entries(categories).map(([category, data]) => `
-                        <div class="bg-gray-800 border border-gray-600 rounded-lg p-4">
-                            <div class="flex justify-between items-center mb-2">
-                                <span class="font-medium text-white">${category}</span>
-                                <span class="text-sm font-semibold ${data.accuracy >= 70 ? 'text-green-400' : 'text-red-400'}">
-                                    ${data.accuracy}%
-                                </span>
-                            </div>
-                            <div class="w-full bg-gray-600 rounded-full h-2">
-                                <div class="h-2 rounded-full transition-all duration-1000 ${data.accuracy >= 70 ? 'bg-green-500' : 'bg-red-500'}" 
-                                     style="width: ${data.accuracy}%"></div>
-                            </div>
-                            <div class="text-xs text-gray-400 mt-1">
-                                ${data.correct}/${data.total} correct
-                            </div>
+            <div class="grid md:grid-cols-2 gap-4">
+                ${Object.entries(categories).map(([category, data]) => `
+                    <div class="bg-gray-800 border border-gray-600 rounded p-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="font-medium text-white flex items-center gap-2">
+                                <i class="bi ${category.includes('Phishing') ? 'bi-exclamation-triangle-fill text-red-400' : 'bi-check-circle-fill text-green-400'}"></i>
+                                ${category}
+                            </span>
+                            <span class="text-sm font-semibold ${data.accuracy >= 70 ? 'text-green-400' : 'text-red-400'}">
+                                ${data.accuracy}%
+                            </span>
                         </div>
-                    `).join('')}
-                </div>
+                        <div class="w-full bg-gray-600 rounded-full h-2">
+                            <div class="h-2 rounded-full transition-all duration-1000 ${data.accuracy >= 70 ? 'bg-green-500' : 'bg-red-500'}" 
+                                 style="width: ${data.accuracy}%"></div>
+                        </div>
+                        <div class="text-xs text-gray-400 mt-1">
+                            ${data.correct}/${data.total} correct
+                        </div>
+                    </div>
+                `).join('')}
             </div>
         `;
     }
@@ -293,6 +237,42 @@ export class EmailSessionSummary {
                 </div>
             </div>
         `;
+    }
+
+    /**
+     * Helper methods for email analysis
+     */
+    groupEmailsByType(feedbackHistory) {
+        const groups = {
+            'Phishing': [],
+            'Legitimate': []
+        };
+        
+        feedbackHistory.forEach(feedback => {
+            if (feedback.isSuspicious) {
+                groups['Phishing'].push(feedback);
+            } else {
+                groups['Legitimate'].push(feedback);
+            }
+        });
+        
+        return groups;
+    }
+
+    getEmailTypeIndicators(type) {
+        if (type === 'Phishing') {
+            return 'Suspicious sender domains, urgent language, suspicious links, requests for personal information';
+        } else {
+            return 'Professional formatting, legitimate sender domains, business-appropriate language, proper signatures';
+        }
+    }
+
+    generateEmailTypeTip(type, accuracy) {
+        if (type === 'Phishing') {
+            return "Focus on examining sender domains, looking for spelling errors, and identifying urgent/threatening language patterns.";
+        } else {
+            return "Learn to recognize legitimate business communications and professional email formatting standards.";
+        }
     }
 
     /**
