@@ -13,17 +13,6 @@ export class LevelThreeCompletionDialogue extends BaseDialogue {
         ];
     }
 
-    getCharacterName() {
-        // Force return the instructor name if dialogue manager isn't working
-        if (this.desktop?.dialogueManager) {
-            const name = this.desktop.dialogueManager.getCharacterName(this.character);
-            return name;
-        }
-        
-        // Fallback to hardcoded instructor name
-        return 'Dr. Cipher';
-    }
-
     async onComplete() {
         // Mark Level 3 as completed and update progress
         localStorage.setItem('cyberquest_level_3_completed', 'true');
@@ -42,26 +31,64 @@ export class LevelThreeCompletionDialogue extends BaseDialogue {
         }
         localStorage.setItem('cyberquest_badges', JSON.stringify(badges));
         
-        // Navigate back to main dashboard
-        if (this.desktop?.windowManager) {
-            try {
-                const browserApp = this.desktop.windowManager.applications.get('browser');
-                if (browserApp) {
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                    browserApp.navigation.navigateToUrl('https://cyberquest.com');
-                }
-            } catch (error) {
-                console.error('Failed to navigate to dashboard:', error);
+        // Show shutdown sequence before navigation
+        await this.showShutdownSequenceAndNavigate();
+    }
+
+    async showShutdownSequenceAndNavigate() {
+        // Create shutdown overlay
+        const shutdownOverlay = document.createElement('div');
+        shutdownOverlay.className = 'fixed inset-0 bg-black z-50';
+        shutdownOverlay.style.zIndex = '9999';
+        document.body.appendChild(shutdownOverlay);
+        
+        try {
+            // Import and run shutdown sequence
+            const { ShutdownSequence } = await import('../../../shutdown-sequence.js');
+            
+            // Run shutdown sequence
+            await ShutdownSequence.runShutdown(shutdownOverlay);
+            
+            // After shutdown completes, navigate to levels overview
+            this.navigateToLevelsOverview();
+            
+        } catch (error) {
+            console.error('Failed to run shutdown sequence:', error);
+            // Fallback to direct navigation if shutdown fails
+            setTimeout(() => {
+                this.navigateToLevelsOverview();
+            }, 1000);
+        } finally {
+            // Clean up shutdown overlay
+            if (shutdownOverlay.parentNode) {
+                shutdownOverlay.remove();
             }
         }
     }
 
+    navigateToLevelsOverview() {
+        // Navigate to levels overview in the actual browser (not simulated browser)
+        window.location.href = '/levels';
+    }
+
     getFinalButtonText() {
-        return 'Complete Advanced Training';
+        return 'Continue to Advanced Training';
+    }
+
+    getCharacterName() {
+        // Force return the instructor name if dialogue manager isn't working
+        if (this.desktop?.dialogueManager) {
+            const name = this.desktop.dialogueManager.getCharacterName(this.character);
+            return name;
+        }
+        
+        // Fallback to hardcoded instructor name
+        return 'Dr. Cipher';
     }
 
     static shouldAutoStart() {
-        // Don't auto-start; only invoked manually after successful decryption
-        return false;
+        const levelCompleted = localStorage.getItem('cyberquest_level_3_completed');
+        const decryptionCompleted = localStorage.getItem('cyberquest_level_3_decryption_completed');
+        return decryptionCompleted && !levelCompleted;
     }
 }
