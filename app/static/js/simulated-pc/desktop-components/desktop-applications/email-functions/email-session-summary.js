@@ -12,8 +12,22 @@ export class EmailSessionSummary {
         const modal = document.createElement('div');
         modal.className = 'fixed inset-0 bg-black/75 flex items-center justify-center z-50';
         
-        const accuracyClass = this.getAccuracyClass(sessionStats.accuracy);
-        const levelCompleted = sessionStats.accuracy >= 70; // 70% threshold for completion
+        // Calculate accuracy from feedback history if sessionStats.accuracy is 0 or undefined
+        let calculatedAccuracy = sessionStats.accuracy || 0;
+        if (calculatedAccuracy === 0 && feedbackHistory.length > 0) {
+            const correctActions = feedbackHistory.filter(f => f.isCorrect).length;
+            calculatedAccuracy = Math.round((correctActions / feedbackHistory.length) * 100);
+        }
+        
+        // If still 0, try to calculate from session stats properties
+        if (calculatedAccuracy === 0 && sessionStats.totalActions > 0) {
+            calculatedAccuracy = Math.round((sessionStats.correctActions / sessionStats.totalActions) * 100);
+        }
+        
+        const accuracyClass = this.getAccuracyClass(calculatedAccuracy);
+        const levelCompleted = calculatedAccuracy >= 70; // 70% threshold for completion
+        
+        console.log('Email Session Summary - Calculated accuracy:', calculatedAccuracy, 'from stats:', sessionStats, 'and history:', feedbackHistory.length);
         
         modal.innerHTML = `
             <div class="bg-gray-800 text-white rounded p-8 max-w-4xl mx-4 max-h-150 overflow-y-auto border border-gray-600">
@@ -22,7 +36,7 @@ export class EmailSessionSummary {
                         <i class="bi bi-shield-check text-3xl text-blue-400"></i>
                         <h1 class="text-3xl font-bold">Level 2 Complete!</h1>
                     </div>
-                    <div class="text-6xl font-bold mb-4 ${accuracyClass}">${sessionStats.accuracy}%</div>
+                    <div class="text-6xl font-bold mb-4 ${accuracyClass}">${calculatedAccuracy}%</div>
                     <p class="text-lg">Email Security Training Performance</p>
                     <p class="text-sm text-gray-400 mt-2 flex items-center justify-center gap-1">
                         <i class="bi bi-envelope-check-fill text-blue-400"></i>
@@ -40,7 +54,7 @@ export class EmailSessionSummary {
                         <div class="text-center">
                             <div class="text-3xl font-bold ${accuracyClass} mb-2 flex items-center justify-center gap-2">
                                 <i class="bi bi-percent"></i>
-                                ${sessionStats.accuracy}
+                                ${calculatedAccuracy}
                             </div>
                             <div class="text-gray-400 text-sm">Overall Accuracy</div>
                         </div>
@@ -54,7 +68,7 @@ export class EmailSessionSummary {
                         <div class="text-center">
                             <div class="text-3xl font-bold text-green-400 mb-2 flex items-center justify-center gap-2">
                                 <i class="bi bi-check-circle-fill"></i>
-                                ${sessionStats.correctActions}
+                                ${sessionStats.correctActions || feedbackHistory.filter(f => f.isCorrect).length}
                             </div>
                             <div class="text-gray-400 text-sm">Correct Actions</div>
                         </div>
@@ -82,7 +96,7 @@ export class EmailSessionSummary {
                 </div>
                 
                 <!-- Areas for Improvement -->
-                ${this.generateImprovementSection(feedbackHistory, sessionStats.accuracy)}
+                ${this.generateImprovementSection(feedbackHistory, calculatedAccuracy)}
                 
                 <div class="text-center">
                     ${levelCompleted ? `
@@ -106,7 +120,7 @@ export class EmailSessionSummary {
         window.emailSessionSummary = this;
         
         // Store session data for future reference
-        this.lastSessionStats = sessionStats;
+        this.lastSessionStats = { ...sessionStats, accuracy: calculatedAccuracy };
         this.lastFeedbackHistory = feedbackHistory;
     }
 
@@ -114,10 +128,18 @@ export class EmailSessionSummary {
      * Generate detailed email analysis similar to article analysis
      */
     generateDetailedEmailAnalysis(feedbackHistory) {
+        if (feedbackHistory.length === 0) {
+            return `
+                <div class="bg-gray-700 border border-gray-600 rounded p-4 text-center">
+                    <p class="text-gray-400">No email analysis data available</p>
+                </div>
+            `;
+        }
+        
         const emailGroups = this.groupEmailsByType(feedbackHistory);
         
         return Object.entries(emailGroups).map(([type, emails]) => {
-            const typeAccuracy = Math.round((emails.filter(e => e.isCorrect).length / emails.length) * 100);
+            const typeAccuracy = emails.length > 0 ? Math.round((emails.filter(e => e.isCorrect).length / emails.length) * 100) : 0;
             const typeAccuracyClass = this.getAccuracyClass(typeAccuracy);
             
             return `
@@ -292,7 +314,8 @@ export class EmailSessionSummary {
     }
 
     countUniqueEmails(feedbackHistory) {
-        const uniqueEmails = new Set(feedbackHistory.map(f => f.emailId));
+        if (!feedbackHistory || feedbackHistory.length === 0) return 0;
+        const uniqueEmails = new Set(feedbackHistory.map(f => f.emailId || f.emailSender));
         return uniqueEmails.size;
     }
 
@@ -319,12 +342,14 @@ export class EmailSessionSummary {
         };
         
         feedbackHistory.forEach(feedback => {
-            if (feedback.isSuspicious) {
-                categories['Phishing Emails'].total++;
-                if (feedback.isCorrect) categories['Phishing Emails'].correct++;
-            } else {
-                categories['Legitimate Emails'].total++;
-                if (feedback.isCorrect) categories['Legitimate Emails'].correct++;
+            if (feedback.isSuspicious !== undefined) {
+                if (feedback.isSuspicious) {
+                    categories['Phishing Emails'].total++;
+                    if (feedback.isCorrect) categories['Phishing Emails'].correct++;
+                } else {
+                    categories['Legitimate Emails'].total++;
+                    if (feedback.isCorrect) categories['Legitimate Emails'].correct++;
+                }
             }
         });
         
