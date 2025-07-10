@@ -387,7 +387,7 @@ export class EmailSessionSummary {
     /**
      * Action handlers for buttons
      */
-    completeLevel2() {
+    async completeLevel2() {
         // Mark Level 2 as completed
         localStorage.setItem('cyberquest_level_2_completed', 'true');
         localStorage.setItem('cyberquest_email_training_completed', 'true');
@@ -399,23 +399,47 @@ export class EmailSessionSummary {
             score: localStorage.getItem('cyberquest_email_training_score')
         });
         
-        // Close modal and navigate to next level or dashboard
+        // Close modal first
         document.querySelector('.fixed')?.remove();
         
-        // Navigate to levels overview or next level
-        if (window.desktop?.windowManager) {
-            try {
-                const browserApp = window.desktop.windowManager.applications.get('browser');
-                if (browserApp) {
-                    browserApp.navigation.navigateToUrl('/levels');
-                }
-            } catch (error) {
-                console.error('Failed to navigate to levels:', error);
-                window.location.href = '/levels';
+        // Show shutdown sequence before navigation
+        await this.showShutdownSequenceAndNavigate();
+    }
+
+    async showShutdownSequenceAndNavigate() {
+        // Create shutdown overlay
+        const shutdownOverlay = document.createElement('div');
+        shutdownOverlay.className = 'fixed inset-0 bg-black z-50';
+        shutdownOverlay.style.zIndex = '9999';
+        document.body.appendChild(shutdownOverlay);
+        
+        try {
+            // Import and run shutdown sequence
+            const { ShutdownSequence } = await import('../../../shutdown-sequence.js');
+            
+            // Run shutdown sequence
+            await ShutdownSequence.runShutdown(shutdownOverlay);
+            
+            // After shutdown completes, navigate to levels overview in actual browser
+            this.navigateToLevelsOverview();
+            
+        } catch (error) {
+            console.error('Failed to run shutdown sequence:', error);
+            // Fallback to direct navigation if shutdown fails
+            setTimeout(() => {
+                this.navigateToLevelsOverview();
+            }, 1000);
+        } finally {
+            // Clean up shutdown overlay
+            if (shutdownOverlay.parentNode) {
+                shutdownOverlay.remove();
             }
-        } else {
-            window.location.href = '/levels';
         }
+    }
+
+    navigateToLevelsOverview() {
+        // Navigate to levels overview in the actual browser (not simulated browser)
+        window.location.href = '/levels';
     }
 
     retryTraining() {
