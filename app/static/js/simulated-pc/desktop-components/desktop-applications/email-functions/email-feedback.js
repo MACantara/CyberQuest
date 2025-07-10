@@ -209,7 +209,7 @@ export class EmailFeedback {
         const bgColor = feedback.result === 'correct' ? '#064e3b' : '#7f1d1d';
         
         modal.innerHTML = `
-            <div class="bg-gray-800 rounded-lg border border-gray-600 shadow-2xl p-6 max-w-lg mx-4 max-h-96 overflow-y-auto">
+            <div class="bg-gray-800 rounded-lg border border-gray-600 shadow-2xl p-6 max-w-lg mx-4 overflow-y-auto">
                 <div class="text-center mb-6">
                     <div class="text-6xl mb-3">${feedback.result === 'correct' ? '✅' : '❌'}</div>
                     <h2 class="text-xl font-bold mb-2 text-white" style="color: ${resultColor}">${feedback.title}</h2>
