@@ -76,14 +76,25 @@ export class LevelThreeCompletionDialogue extends BaseDialogue {
     }
 
     getCharacterName() {
-        // Force return the instructor name if dialogue manager isn't working
+        // Force return the instructor name with proper fallback
         if (this.desktop?.dialogueManager) {
             const name = this.desktop.dialogueManager.getCharacterName(this.character);
-            return name;
+            return name && name !== 'System' ? name : 'Dr. Cipher';
         }
         
-        // Fallback to hardcoded instructor name
+        // Fallback to instructor name
         return 'Dr. Cipher';
+    }
+
+    getCharacterAvatar() {
+        // Force return the instructor avatar with proper fallback
+        if (this.desktop?.dialogueManager) {
+            const avatar = this.desktop.dialogueManager.getCharacterAvatar(this.character);
+            return avatar && !avatar.includes('default.png') ? avatar : '/static/images/avatars/Cipher_Neutral_Talking.gif';
+        }
+        
+        // Fallback to instructor avatar
+        return '/static/images/avatars/Cipher_Neutral_Talking.gif';
     }
 
     static shouldAutoStart() {

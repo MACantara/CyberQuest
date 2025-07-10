@@ -31,4 +31,28 @@ export class RansomwareDecryptionIntroDialogue extends BaseDialogue {
         // Don't auto-start; only invoked manually after malware cleanup
         return false;
     }
+
+    getCharacterName() {
+        // Force return the instructor name with proper fallback
+        if (this.desktop?.dialogueManager) {
+            const name = this.desktop.dialogueManager.getCharacterName(this.character);
+            console.log(`[RansomwareDecryptionIntro] Character: ${this.character}, Name: ${name}`);
+            return name && name !== 'System' ? name : 'Dr. Cipher';
+        }
+        
+        // Fallback to instructor name
+        console.warn('[RansomwareDecryptionIntro] Dialogue manager not available, using fallback');
+        return 'Dr. Cipher';
+    }
+
+    getCharacterAvatar() {
+        // Force return the instructor avatar with proper fallback
+        if (this.desktop?.dialogueManager) {
+            const avatar = this.desktop.dialogueManager.getCharacterAvatar(this.character);
+            return avatar && !avatar.includes('default.png') ? avatar : '/static/images/avatars/Cipher_Neutral_Talking.gif';
+        }
+        
+        // Fallback to instructor avatar
+        return '/static/images/avatars/Cipher_Neutral_Talking.gif';
+    }
 }
