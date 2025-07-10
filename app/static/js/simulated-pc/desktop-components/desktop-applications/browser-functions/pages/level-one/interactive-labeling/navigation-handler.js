@@ -11,11 +11,11 @@ export class NavigationHandler {
     continueToNextLevel() {
         this.labelingSystem.modalManager.removeModal();
         this.labelingSystem.cleanup();
-        this.navigateToLevel(2);
+        this.navigateToLevelsOverview();
     }
 
-    navigateToLevel(levelId) {
-        console.log(`Navigating to Level ${levelId}...`);
+    navigateToLevelsOverview() {
+        console.log('Navigating to levels overview...');
         
         const completionData = {
             levelId: 1,
@@ -33,15 +33,19 @@ export class NavigationHandler {
             completion_data: localStorage.getItem('cyberquest_level_1_completion')
         });
         
-        if (window.location.pathname.includes('/levels/1/start')) {
-            window.location.href = `/levels/${levelId}`;
-        } else {
-            if (window.history && window.history.pushState) {
-                window.history.pushState({}, '', `/levels/${levelId}`);
-                window.location.reload();
-            } else {
-                window.location.href = `/levels/${levelId}`;
+        // Navigate to levels overview instead of specific level
+        if (this.labelingSystem.desktop?.windowManager) {
+            try {
+                const browserApp = this.labelingSystem.desktop.windowManager.applications.get('browser');
+                if (browserApp) {
+                    browserApp.navigation.navigateToUrl('/levels');
+                }
+            } catch (error) {
+                console.error('Failed to navigate to levels overview:', error);
+                window.location.href = '/levels';
             }
+        } else {
+            window.location.href = '/levels';
         }
     }
 
