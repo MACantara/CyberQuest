@@ -139,21 +139,21 @@ def dashboard():
             break
     
     # Mock recent activity
-    from datetime import datetime, timedelta
-    recent_activity = [
-        {
-            'icon': 'bi-trophy',
-            'title': 'Level Completed',
-            'description': 'Completed "The Misinformation Maze"',
-            'timestamp': datetime.now() - timedelta(days=1)
-        },
-        {
-            'icon': 'bi-star',
-            'title': 'XP Earned',
-            'description': 'Earned 100 XP points',
-            'timestamp': datetime.now() - timedelta(days=1)
-        }
-    ]
+    # from datetime import datetime, timedelta
+    # recent_activity = [
+    #     {
+    #         'icon': 'bi-trophy',
+    #         'title': 'Level Completed',
+    #         'description': 'Completed "The Misinformation Maze"',
+    #         'timestamp': datetime.now() - timedelta(days=1)
+    #     },
+    #     {
+    #         'icon': 'bi-star',
+    #         'title': 'XP Earned',
+    #         'description': 'Earned 100 XP points',
+    #         'timestamp': datetime.now() - timedelta(days=1)
+    #     }
+    # ]
     
     return render_template('profile/dashboard.html',
                          total_xp=total_xp,
@@ -163,5 +163,4 @@ def dashboard():
                          user_rank=user_rank,
                          progress_percentage=int(progress_percentage),
                          levels=levels_progress,
-                         next_level=next_level,
-                         recent_activity=recent_activity)
+                         next_level=next_level)
