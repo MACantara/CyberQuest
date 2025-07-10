@@ -106,7 +106,7 @@ def dashboard():
     # Calculate user progress (mock data for now)
     # TODO: Replace with actual user progress from database
     total_levels = len(CYBERSECURITY_LEVELS)
-    completed_levels = 1  # Mock: user has completed first level
+    completed_levels = 0  # Mock: user has completed no levels
     total_xp = 100  # Mock: XP from completed levels
     learning_streak = 3  # Mock: days of consecutive learning
     progress_percentage = (completed_levels / total_levels) * 100
