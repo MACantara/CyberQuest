@@ -88,12 +88,6 @@ class ExampleBankPageClass extends BasePage {
                     </section>
                 </main>
 
-                <div class="mt-8 bg-green-50 border border-green-200 rounded p-4">
-                    <p class="text-green-700 text-sm">
-                        <i class="bi bi-shield-check mr-1"></i>
-                        <strong>Training Note:</strong> This is a legitimate banking website. Notice the Extended Validation certificate, professional security notices, and absence of urgent/threatening language.
-                    </p>
-                </div>
             </div>
         `;
     }

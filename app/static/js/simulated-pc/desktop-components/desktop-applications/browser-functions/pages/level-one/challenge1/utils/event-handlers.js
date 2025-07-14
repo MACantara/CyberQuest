@@ -69,7 +69,7 @@ export class EventHandlers {
             challenge_completed: localStorage.getItem('cyberquest_challenge1_completed')
         });
         
-        // Navigate back to main dashboard or levels overview
+        // Navigate back to levels overview
         if (window.desktop?.windowManager) {
             try {
                 const browserApp = window.desktop.windowManager.applications.get('browser');

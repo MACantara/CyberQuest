@@ -70,18 +70,6 @@ export class DialogueManager {
     }
 
     // Individual dialogue methods using the generic functions
-    async startWelcomeDialogue(character = 'agent') {
-        return this.startDialogue('welcome', 'WelcomeDialogue', character);
-    }
-
-    async shouldAutoStartWelcome() {
-        return this.shouldAutoStart('welcome', 'WelcomeDialogue');
-    }
-
-    async restartWelcomeDialogue(character = 'agent') {
-        return this.restartDialogue('welcome', 'WelcomeDialogue', character, 'startWelcomeDialogue');
-    }
-
     async startMissionBriefingDialogue(character = 'commander') {
         return this.startDialogue('mission-briefing', 'MissionBriefingDialogue', character);
     }
@@ -109,8 +97,7 @@ export class DialogueManager {
     // Utility method to get all available dialogues
     getDialogueList() {
         return [
-            { name: 'welcome', class: 'WelcomeDialogue', title: 'Welcome Message', defaultCharacter: 'agent' }
-            // Removed other dialogue types as they were deleted
+            // Removed welcome dialogue entry
         ];
     }
 
@@ -212,7 +199,6 @@ export class DialogueManager {
     getSuggestedDialogues(missingDialogue) {
         const commonDialogues = [
             'level1-misinformation-maze',
-            'welcome',
             'mission-briefing',
             'tutorial-intro'
         ];

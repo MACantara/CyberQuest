@@ -168,13 +168,6 @@ class NigerianPrinceEmailClass extends BaseEmail {
                                 <strong>Reply ONLY to this email for security reasons!</strong>
                             </div>
                         </div>
-                        
-                        <!-- Disclaimer -->
-                        <div style="background: #ffffff; border: 1px solid #ff0000; padding: 10px; margin: 20px 0; font-size: 11px; color: #666;">
-                            <strong style="color: #ff0000;">TRAINING NOTE:</strong> This is a simulated advance fee fraud email (also known as a "419 scam"). 
-                            In reality, never respond to such emails or provide personal information. These scams have no legitimate foundation 
-                            and are designed to steal money and personal information.
-                        </div>
                     </div>
                 </div>
                 

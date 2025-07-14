@@ -46,22 +46,25 @@ export class LevelCompletionDialogue extends BaseDialogue {
             localStorage.setItem('cyberquest_badges', JSON.stringify(badges));
         }
         
-        // Navigate back to main dashboard or level selection
+        // Navigate back to levels overview instead of dashboard
         if (this.desktop?.windowManager) {
             try {
                 const browserApp = this.desktop.windowManager.applications.get('browser');
                 if (browserApp) {
                     await new Promise(resolve => setTimeout(resolve, 500));
-                    browserApp.navigation.navigateToUrl('https://cyberquest.com');
+                    browserApp.navigation.navigateToUrl('/levels');
                 }
             } catch (error) {
-                console.error('Failed to navigate to dashboard:', error);
+                console.error('Failed to navigate to levels overview:', error);
+                window.location.href = '/levels';
             }
+        } else {
+            window.location.href = '/levels';
         }
     }
 
     getFinalButtonText() {
-        return 'Continue to Level 2';
+        return 'View Levels Overview';
     }
 
     static shouldAutoStart() {

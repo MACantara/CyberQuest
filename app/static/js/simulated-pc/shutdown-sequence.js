@@ -42,19 +42,30 @@ export class ShutdownSequence {
 
     displayNextLine(onComplete) {
         if (this.currentLine >= this.shutdownLines.length) {
-            // Add blinking cursor briefly, then fade out
+            // Add blinking cursor briefly, then fade out only the text content
             const cursor = document.createElement('span');
             cursor.className = 'inline-block w-2 h-3.5 bg-green-400 boot-cursor';
             this.container.appendChild(cursor);
             
             setTimeout(() => {
-                // Fade out the entire container
-                this.container.style.transition = 'opacity 1s ease-out';
-                this.container.style.opacity = '0';
+                // Create a wrapper for all text content to fade out
+                const textContent = document.createElement('div');
+                textContent.className = 'transition-opacity duration-1000 ease-out';
                 
+                // Move all existing content into the wrapper
+                while (this.container.firstChild) {
+                    textContent.appendChild(this.container.firstChild);
+                }
+                this.container.appendChild(textContent);
+                
+                // Fade out only the text content, keep background
                 setTimeout(() => {
-                    onComplete();
-                }, 1000);
+                    textContent.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        onComplete();
+                    }, 1000);
+                }, 100);
             }, 200);
             return;
         }

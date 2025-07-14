@@ -2,42 +2,44 @@
 
 ## Dialogue Flow Throughout CyberQuest Interface
 
-### 1. **Welcome Dialogue** (`welcome-dialogue.js`)
+### 1. **Level Dialogues** (Level-specific introduction dialogues)
 
 #### **When Triggered:**
-- **First Launch**: Automatically when user opens CyberQuest for the first time
-- **Condition**: `!localStorage.getItem('cyberquest_welcome_dialogue_completed')`
-- **Location**: Desktop initialization / Main app startup
+- **Level Start**: Automatically when user enters a specific level
+- **Condition**: Level is specified in desktop initialization
+- **Location**: Desktop initialization based on backend level data
 
 #### **Trigger Points:**
 ```javascript
-// In desktop initialization
-if (await dialogueManager.shouldAutoStartWelcome()) {
-    await dialogueManager.startWelcomeDialogue();
+// In dialogue integration
+if (this.desktop.level) {
+    const levelNum = typeof this.desktop.level === 'object' ? this.desktop.level.id : this.desktop.level;
+    if (this.levelDialogues.has(levelNum)) {
+        await this.startLevelDialogue(levelNum);
+    }
 }
 ```
 
-#### **What Happens After:**
-- Sets: `cyberquest_welcome_dialogue_completed = 'true'`
-- **Auto-triggers**: Initial Tutorial (`startInitialTutorial()`)
-- **Character**: Agent Phoenix
-- **Purpose**: Welcome new users, set context for cybersecurity training
+#### **Available Level Dialogues:**
+- **Level 1**: `level1-misinformation-maze` - The Misinformation Maze
+- **Level 2**: `level2-shadow-inbox` - Shadow in the Inbox  
+- **Level 3**: `level3-malware-mayhem` - Malware Mayhem
+- **Level 4**: `level4-white-hat-test` - The White Hat Test
+- **Level 5**: `level5-hunt-for-the-null` - The Hunt for The Null
 
 ---
 
 ### 2. **Tutorial Intro Dialogue** (`tutorial-intro-dialogue.js`)
 
 #### **When Triggered:**
-- **After Welcome**: When welcome is completed but tutorial intro hasn't been shown
-- **Condition**: `welcomeDone && !tutorialIntroDone`
-- **Location**: Between welcome completion and tutorial start
+- **Tutorial Start**: When tutorial system needs introduction
+- **Condition**: Tutorial intro completion flag not set
+- **Location**: Between tutorial initialization and hands-on tutorials
 
 #### **Trigger Logic:**
 ```javascript
 static shouldAutoStart() {
-    const welcomeDone = localStorage.getItem('cyberquest_welcome_dialogue_completed');
-    const tutorialIntroDone = localStorage.getItem('cyberquest_tutorial_intro_completed');
-    return welcomeDone && !tutorialIntroDone;
+    return !localStorage.getItem('cyberquest_tutorial_intro_completed');
 }
 ```
 
@@ -45,7 +47,7 @@ static shouldAutoStart() {
 - Sets: `cyberquest_tutorial_intro_completed = 'true'`
 - **Auto-triggers**: Initial Tutorial (`startInitialTutorial()`)
 - **Character**: Dr. Cipher (Instructor)
-- **Purpose**: Bridge between welcome and hands-on tutorials
+- **Purpose**: Bridge between level start and hands-on tutorials
 
 ---
 
@@ -81,9 +83,9 @@ const allTutorialsCompleted = [
 ## **Integration Flow Summary:**
 
 ### **First Time User Journey:**
-1. **Desktop Loads** → Check dialogue flow
-2. **Welcome Dialogue** → Introduction and context setting
-3. **Tutorial Intro** → Educational bridge
+1. **Desktop Loads** → Check for level-specific dialogue
+2. **Level Dialogue** → Level introduction and context setting
+3. **Tutorial Intro** → Educational bridge (if needed)
 4. **Initial Tutorial** → Desktop navigation training
 5. **App Tutorials** → Individual application training (8 tutorials)
 6. **Mission Briefing** → Ready for real scenarios
@@ -92,18 +94,19 @@ const allTutorialsCompleted = [
 ### **Returning User Scenarios:**
 - **Partial Progress**: Continues from where they left off
 - **All Complete**: No auto-dialogues, ready for missions
-- **Reset Training**: Manual restart triggers welcome again
+- **Reset Training**: Manual restart triggers level dialogues again
 
 ### **Manual Triggers Available:**
 - Emergency briefing for urgent scenarios
-- Welcome back messages for returning users  
 - Training reminders for skill refreshers
 - Application-specific introductions
+- Level-specific guidance
 
 ### **Event-Based Triggers:**
+- Level entry (triggers level-specific dialogue)
 - Application opening (could trigger app-specific dialogues)
 - Tutorial completion (progress acknowledgment)
 - Error scenarios (help and guidance)
 - Achievement milestones (celebration and next steps)
 
-This creates a **guided, narrative-driven learning experience** that seamlessly integrates story elements with hands-on cybersecurity training!
+This creates a **guided, narrative-driven learning experience** that seamlessly integrates story elements with hands-on cybersecurity training, starting directly with level-specific content!
