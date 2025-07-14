@@ -1,9 +1,6 @@
 import { BaseDialogue } from '../base-dialogue.js';
 import { 
     Challenge1Dialogue, 
-    Challenge2Dialogue, 
-    Challenge3Dialogue, 
-    Challenge4Dialogue, 
     LevelCompletionDialogue 
 } from './level-one/index.js';
 
@@ -44,16 +41,33 @@ export class Level1MisinformationMazeDialogue extends BaseDialogue {
                     // Wait a moment for the browser to initialize
                     await new Promise(resolve => setTimeout(resolve, 500));
                     
-                    // Navigate to the tutorial page using the navigation component
-                    browserApp.navigation.navigateToUrl('https://cyberquest.academy/level/1/tutorial');
+                    // Navigate directly to the challenge1 page
+                    browserApp.navigation.navigateToUrl('https://daily-politico-news.com/breaking-news');
+                    
+                    // Wait for page to load, then trigger challenge1 dialogue
+                    setTimeout(() => {
+                        this.triggerChallenge1Dialogue();
+                    }, 1000);
                 }
                 
-                // Mark the tutorial as started
-                localStorage.setItem('cyberquest_level_1_tutorial_started', 'true');
+                // Mark the challenge as started
+                localStorage.setItem('cyberquest_challenge1_started', 'true');
             } catch (error) {
                 console.error('Failed to open browser:', error);
             }
         }
+    }
+
+    triggerChallenge1Dialogue() {
+        // Ensure no other dialogue is active
+        if (window.currentDialogue) {
+            window.currentDialogue.cleanup();
+        }
+        
+        // Start the challenge1 dialogue
+        const challenge1Dialogue = new Challenge1Dialogue(this.desktop);
+        window.currentDialogue = challenge1Dialogue;
+        challenge1Dialogue.start();
     }
 
     getFinalButtonText() {
@@ -98,46 +112,6 @@ export class Level1MisinformationMazeDialogue extends BaseDialogue {
             }
             
             const dialogue = new Challenge1Dialogue(desktop);
-            window.currentDialogue = dialogue;
-            dialogue.start();
-        }
-    }
-
-    static async startChallenge2Dialogue(desktop) {
-        if (Challenge2Dialogue.shouldAutoStart()) {
-            // Ensure no other dialogue is active
-            if (window.currentDialogue) {
-                window.currentDialogue.cleanup();
-            }
-            
-            const dialogue = new Challenge2Dialogue(desktop);
-            window.currentDialogue = dialogue;
-            dialogue.start();
-        }
-    }
-
-    static async startChallenge3Dialogue(desktop) {
-        if (Challenge3Dialogue.shouldAutoStart()) {
-            // Ensure no other dialogue is active
-            if (window.currentDialogue) {
-                window.currentDialogue.cleanup();
-            }
-            
-            const dialogue = new Challenge3Dialogue(desktop);
-            window.currentDialogue = dialogue;
-            dialogue.start();
-        }
-    }
-
-    static async startChallenge4Dialogue(desktop) {
-        if (Challenge4Dialogue.shouldAutoStart()) {
-            // Ensure no other dialogue is active
-            if (window.currentDialogue) {
-                console.log('Cleaning up existing dialogue before starting Challenge 4...');
-                window.currentDialogue.cleanup();
-            }
-            
-            const dialogue = new Challenge4Dialogue(desktop);
             window.currentDialogue = dialogue;
             dialogue.start();
         }

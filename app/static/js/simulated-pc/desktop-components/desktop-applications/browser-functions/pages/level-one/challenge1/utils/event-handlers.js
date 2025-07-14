@@ -44,11 +44,11 @@ export class EventHandlers {
                     <h2 class="text-xl font-bold text-green-600 mb-4">✅ Challenge 1 Complete!</h2>
                     <p class="text-gray-700 mb-4">
                         Great work! You've successfully identified this as misinformation. 
-                        You're ready for the next challenge involving source comparison.
+                        You've completed Level 1: The Misinformation Maze!
                     </p>
-                    <button onclick="this.closest('.fixed').remove(); window.challenge1EventHandlers?.navigateToChallenge2?.()" 
+                    <button onclick="this.closest('.fixed').remove(); window.challenge1EventHandlers?.completeLevelOne?.()" 
                             class="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition-colors">
-                        Continue to Challenge 2
+                        Complete Level
                     </button>
                 </div>
             </div>
@@ -59,34 +59,32 @@ export class EventHandlers {
         window.challenge1EventHandlers = this;
     }
 
-    navigateToChallenge2() {
-        // First navigate to challenge 2 page
+    completeLevelOne() {
+        // Mark Level 1 as completed with the specific key the server checks
+        localStorage.setItem('cyberquest_level_1_completed', 'true');
+        localStorage.setItem('cyberquest_challenge1_completed', 'true');
+        
+        console.log('Level 1 marked as completed:', {
+            level_completed: localStorage.getItem('cyberquest_level_1_completed'),
+            challenge_completed: localStorage.getItem('cyberquest_challenge1_completed')
+        });
+        
+        // Navigate back to levels overview
         if (window.desktop?.windowManager) {
             try {
                 const browserApp = window.desktop.windowManager.applications.get('browser');
                 if (browserApp) {
-                    // Navigate to challenge 2 page
-                    browserApp.navigation.navigateToUrl('https://cyberquest.academy/level/1/challenge2');
-                    
-                    // Wait for page to load, then trigger challenge 2 dialogue
-                    setTimeout(() => {
-                        this.triggerChallenge2Dialogue();
-                    }, 1500);
+                    // Navigate to levels overview to see Level 2 unlocked
+                    browserApp.navigation.navigateToUrl('/levels');
                 }
             } catch (error) {
-                console.error('Failed to navigate to challenge 2:', error);
+                console.error('Failed to navigate to levels:', error);
+                // Fallback navigation
+                window.location.href = '/levels';
             }
+        } else {
+            // Direct navigation fallback
+            window.location.href = '/levels';
         }
-    }
-
-    triggerChallenge2Dialogue() {
-        import('../../../../../../../dialogues/levels/level1-misinformation-maze.js').then(module => {
-            const Level1Dialogue = module.Level1MisinformationMazeDialogue;
-            if (Level1Dialogue.startChallenge2Dialogue && window.desktop) {
-                Level1Dialogue.startChallenge2Dialogue(window.desktop);
-            }
-        }).catch(error => {
-            console.error('Failed to load challenge 2 dialogue:', error);
-        });
     }
 }

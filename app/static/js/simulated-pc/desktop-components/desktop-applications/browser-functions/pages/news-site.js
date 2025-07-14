@@ -60,13 +60,6 @@ class NewsSitePageClass extends BasePage {
                         <a href="#" class="text-blue-600 hover:underline">Read more</a>
                     </article>
                 </main>
-
-                <div class="mt-8 bg-green-50 border border-green-200 rounded p-4">
-                    <p class="text-green-700 text-sm">
-                        <i class="bi bi-info-circle mr-1"></i>
-                        <strong>Training Note:</strong> This is a legitimate news website. Notice the professional design, valid HTTPS certificate, and credible content focused on cybersecurity awareness.
-                    </p>
-                </div>
             </div>
         `;
     }

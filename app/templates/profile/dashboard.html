@@ -128,9 +128,8 @@
                 <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Quick Actions</h2>
                 <div class="space-y-4">
                     {% if next_level %}
-                    <a href="{{ url_for('levels.level_detail', level_id=next_level.id) }}" 
-                       class="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-3 rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-300 flex items-center justify-center">
-                        <i class="bi bi-play-circle mr-2"></i>
+                    <a href="{{ url_for('levels.start_level', level_id=next_level.id) }}" 
+                       class="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-3 px-6 rounded-lg font-medium transition-colors duration-200">
                         Start {{ next_level.name }}
                     </a>
                     {% endif %}

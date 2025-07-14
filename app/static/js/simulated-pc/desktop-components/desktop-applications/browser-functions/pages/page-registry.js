@@ -5,18 +5,11 @@ import { PhishingBankPage } from './bank.js';
 import { NewsSitePage } from './news-site.js';
 
 // Import Level 1 Challenge Pages
-import { TutorialPage } from './level-one/tutorial.js';
 import { Challenge1Page } from './level-one/challenge1/challenge1-page.js';
-import { Challenge2Page } from './level-one/challenge2/challenge2-page.js';
-import { Challenge3Page } from './level-one/challenge3/challenge3-page.js';
-import { Challenge4Page } from './level-one/challenge4/challenge4-page.js';
 
 // Import Level 1 Tool Pages
 import { CrossReferenceToolPage } from './level-one/cross-reference-tool.js';
 import { ReverseImageSearchPage } from './level-one/reverse-image-search.js';
-import { MetadataAnalyzerPage } from './level-one/metadata-analyzer.js';
-import { WeatherVerifyPage } from './level-one/weather-verify.js';
-import { LocationVerifyPage } from './level-one/location-verify.js';
 
 // Import Level 2 Pages
 import { CyberQuestPasswordResetPage } from './level-two/cyberquest-password-reset.js';
@@ -40,18 +33,11 @@ export class PageRegistry {
         this.registerPage(NewsSitePage);
         
         // Register Level 1 Challenge Pages
-        this.registerPage(TutorialPage);
         this.registerPage(Challenge1Page);
-        this.registerPage(Challenge2Page);
-        this.registerPage(Challenge3Page);
-        this.registerPage(Challenge4Page);
         
         // Register Level 1 Tool Pages
         this.registerPage(CrossReferenceToolPage);
         this.registerPage(ReverseImageSearchPage);
-        this.registerPage(MetadataAnalyzerPage);
-        this.registerPage(WeatherVerifyPage);
-        this.registerPage(LocationVerifyPage);
         
         // Register Level 2 Pages
         this.registerPage(CyberQuestPasswordResetPage);

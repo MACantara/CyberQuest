@@ -1,7 +1,10 @@
+import { ALL_EMAILS } from './emails/email-registry.js';
+
 export class EmailSecurityManager {
-    constructor() {
+    constructor(emailApp) {
+        this.emailApp = emailApp;
         this.reportedPhishing = new Set();
-        this.markedLegitimate = new Set();
+        this.legitimateEmails = new Set();
         this.spamEmails = new Set();
         this.loadFromLocalStorage();
     }
@@ -11,7 +14,7 @@ export class EmailSecurityManager {
         this.reportedPhishing.add(emailId);
         this.spamEmails.add(emailId); // Move to spam when reported as phishing
         // Remove from legitimate if previously marked
-        this.markedLegitimate.delete(emailId);
+        this.legitimateEmails.delete(emailId);
         this.saveToLocalStorage();
         
         // Emit event for network monitoring
@@ -21,7 +24,7 @@ export class EmailSecurityManager {
     }
 
     markAsLegitimate(emailId) {
-        this.markedLegitimate.add(emailId);
+        this.legitimateEmails.add(emailId);
         this.spamEmails.delete(emailId); // Remove from spam if marked as legitimate
         // Remove from phishing reports if previously reported
         this.reportedPhishing.delete(emailId);
@@ -39,19 +42,16 @@ export class EmailSecurityManager {
         this.saveToLocalStorage();
     }
 
-    moveToInbox(emailId) {
-        this.spamEmails.delete(emailId);
-        this.reportedPhishing.delete(emailId); // Also remove phishing report
-        this.saveToLocalStorage();
-        
-        // Emit event for network monitoring
-        document.dispatchEvent(new CustomEvent('email-moved-to-inbox', {
-            detail: { emailId, timestamp: new Date().toISOString() }
-        }));
-    }
-
     // Email action methods - refactored from email-app.js
     confirmPhishingReport(emailId, emailApp) {
+        const email = ALL_EMAILS.find(e => e.id === emailId);
+        if (!email) return;
+
+        // Trigger feedback evaluation for "report" action
+        if (emailApp && emailApp.actionHandler && emailApp.actionHandler.feedback) {
+            emailApp.actionHandler.feedback.evaluateAction(email, 'report', 'User reported email as phishing');
+        }
+
         this.reportAsPhishing(emailId);
         
         // Emit event for network monitoring
@@ -70,6 +70,14 @@ export class EmailSecurityManager {
     }
 
     markEmailAsLegitimate(emailId, emailApp) {
+        const email = ALL_EMAILS.find(e => e.id === emailId);
+        if (!email) return;
+
+        // Trigger feedback evaluation for "trust" action
+        if (emailApp && emailApp.actionHandler && emailApp.actionHandler.feedback) {
+            emailApp.actionHandler.feedback.evaluateAction(email, 'trust', 'User marked email as legitimate');
+        }
+
         this.markAsLegitimate(emailId);
         
         // Emit event for network monitoring
@@ -79,22 +87,109 @@ export class EmailSecurityManager {
         
         if (emailApp && emailApp.actionHandler) {
             emailApp.actionHandler.showActionFeedback('Email marked as legitimate!', 'success');
+            
+            // Stay on current email but update its status
             emailApp.updateContent();
         }
     }
 
-    moveEmailToInbox(emailId, emailApp) {
-        this.moveToInbox(emailId);
+    // New method to handle email deletion with feedback
+    deleteEmail(emailId, emailApp) {
+        const email = ALL_EMAILS.find(e => e.id === emailId);
+        if (!email) return;
+
+        // Trigger feedback evaluation for "delete" action
+        if (emailApp && emailApp.actionHandler && emailApp.actionHandler.feedback) {
+            emailApp.actionHandler.feedback.evaluateAction(email, 'delete', 'User deleted email');
+        }
+
+        // Move to spam/trash folder
+        this.spamEmails.add(emailId);
+        this.saveToLocalStorage();
         
         // Emit event for network monitoring
-        document.dispatchEvent(new CustomEvent('email-moved-to-inbox', {
+        document.dispatchEvent(new CustomEvent('email-deleted', {
             detail: { emailId, timestamp: new Date().toISOString() }
         }));
         
         if (emailApp && emailApp.actionHandler) {
-            emailApp.actionHandler.showActionFeedback('Email moved back to inbox!', 'success');
+            emailApp.actionHandler.showActionFeedback('Email deleted!', 'success');
+            
+            // Redirect to inbox and clear selected email
+            emailApp.state.setFolder('inbox');
+            emailApp.state.selectEmail(null);
             emailApp.updateContent();
         }
+    }
+
+    // New method to handle ignoring/normal processing with feedback
+    ignoreEmail(emailId, emailApp) {
+        const email = ALL_EMAILS.find(e => e.id === emailId);
+        if (!email) return;
+
+        // Trigger feedback evaluation for "ignore" action
+        if (emailApp && emailApp.actionHandler && emailApp.actionHandler.feedback) {
+            emailApp.actionHandler.feedback.evaluateAction(email, 'ignore', 'User processed email normally');
+        }
+
+        // Just mark as read, no other action needed for ignore
+        if (emailApp && emailApp.readTracker) {
+            emailApp.readTracker.markAsRead(emailId);
+        }
+        
+        // Emit event for network monitoring
+        document.dispatchEvent(new CustomEvent('email-processed-normally', {
+            detail: { emailId, timestamp: new Date().toISOString() }
+        }));
+        
+        if (emailApp && emailApp.actionHandler) {
+            emailApp.actionHandler.showActionFeedback('Email processed normally', 'success');
+        }
+    }
+
+    // Check if enough emails have been processed to complete training
+    checkTrainingCompletion(emailApp) {
+        if (!emailApp || !emailApp.actionHandler || !emailApp.actionHandler.feedback) return;
+
+        const totalEmails = ALL_EMAILS.length;
+        const processedEmails = this.reportedPhishing.size + this.legitimateEmails.size;
+        const completionThreshold = Math.ceil(totalEmails * 0.6); // 60% of emails
+
+        if (processedEmails >= completionThreshold) {
+            // Get current session stats
+            const sessionStats = emailApp.actionHandler.feedback.getSessionStats();
+            const feedbackHistory = emailApp.actionHandler.feedback.feedbackHistory;
+            
+            // Use completion tracker to handle the completion flow
+            setTimeout(() => {
+                if (emailApp.actionHandler.completionTracker) {
+                    emailApp.actionHandler.completionTracker.checkAndTriggerCompletion(sessionStats, feedbackHistory);
+                } else {
+                    // Fallback to direct completion
+                    emailApp.actionHandler.completeEmailTraining();
+                }
+            }, 1000);
+        }
+    }
+
+    // Enhanced method to prevent re-categorization
+    canEmailBeRecategorized(emailId) {
+        const currentStatus = this.getEmailStatus(emailId);
+        return currentStatus === 'unverified';
+    }
+
+    // Method to get classification progress for UI display
+    getClassificationProgress() {
+        const totalEmails = ALL_EMAILS.length;
+        const classifiedEmails = this.reportedPhishing.size + this.legitimateEmails.size;
+        const percentage = Math.round((classifiedEmails / totalEmails) * 100);
+        
+        return {
+            total: totalEmails,
+            classified: classifiedEmails,
+            remaining: totalEmails - classifiedEmails,
+            percentage: percentage
+        };
     }
 
     // Status checking methods
@@ -103,7 +198,7 @@ export class EmailSecurityManager {
     }
 
     isMarkedAsLegitimate(emailId) {
-        return this.markedLegitimate.has(emailId);
+        return this.legitimateEmails.has(emailId);
     }
 
     isInSpam(emailId) {
@@ -131,7 +226,7 @@ export class EmailSecurityManager {
     // Persistence methods
     saveToLocalStorage() {
         localStorage.setItem('cyberquest_email_phishing_reports', JSON.stringify([...this.reportedPhishing]));
-        localStorage.setItem('cyberquest_email_legitimate_marks', JSON.stringify([...this.markedLegitimate]));
+        localStorage.setItem('cyberquest_email_legitimate_marks', JSON.stringify([...this.legitimateEmails]));
         localStorage.setItem('cyberquest_email_spam', JSON.stringify([...this.spamEmails]));
     }
 
@@ -144,7 +239,7 @@ export class EmailSecurityManager {
             this.reportedPhishing = new Set(JSON.parse(phishingReports));
         }
         if (legitimateMarks) {
-            this.markedLegitimate = new Set(JSON.parse(legitimateMarks));
+            this.legitimateEmails = new Set(JSON.parse(legitimateMarks));
         }
         if (spamEmails) {
             this.spamEmails = new Set(JSON.parse(spamEmails));
@@ -155,10 +250,10 @@ export class EmailSecurityManager {
     getSecurityStats() {
         return {
             totalReported: this.reportedPhishing.size,
-            totalLegitimate: this.markedLegitimate.size,
+            totalLegitimate: this.legitimateEmails.size,
             totalSpam: this.spamEmails.size,
             reportedEmails: [...this.reportedPhishing],
-            legitimateEmails: [...this.markedLegitimate],
+            legitimateEmails: [...this.legitimateEmails],
             spamEmails: [...this.spamEmails]
         };
     }
@@ -179,7 +274,9 @@ export class EmailSecurityManager {
                 statusClass = 'bg-green-500';
                 break;
             default:
-                statusClass = isRead ? 'bg-gray-400' : 'bg-blue-500';
+                // Show different indicator for unclassified emails
+                statusIndicator = '<i class="bi bi-question-circle text-yellow-500 text-xs ml-1" title="Awaiting Classification"></i>';
+                statusClass = isRead ? 'bg-yellow-400' : 'bg-blue-500';
         }
 
         return { statusIndicator, statusClass };
@@ -188,52 +285,38 @@ export class EmailSecurityManager {
     createStatusBadge(emailId) {
         const emailStatus = this.getEmailStatus(emailId);
         
-        switch(emailStatus) {
-            case 'phishing':
-                return '<span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded flex items-center"><i class="bi bi-shield-exclamation mr-1"></i>Reported as Phishing</span>';
-            case 'legitimate':
-                return '<span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded flex items-center"><i class="bi bi-shield-check mr-1"></i>Marked as Legitimate</span>';
-            default:
-                return '';
+        // Only show badge for unverified emails to encourage action
+        if (emailStatus === 'unverified') {
+            return '<span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded flex items-center"><i class="bi bi-clock mr-1"></i>Awaiting Classification</span>';
         }
+        
+        // No badge for classified emails - status is shown in action buttons
+        return '';
     }
 
     createActionButtons(emailId, currentFolder) {
         const currentStatus = this.getEmailStatus(emailId);
         let buttons = '';
         
+        // If email has already been categorized, don't show action buttons
+        if (currentStatus === 'phishing' || currentStatus === 'legitimate') {
+            return '';
+        }
+        
         if (currentFolder === 'spam') {
-            // In spam folder, show move to inbox button
-            buttons += `
-                <button class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-500 transition-colors text-xs cursor-pointer" 
-                        id="move-to-inbox-btn" data-email-id="${emailId}">
-                    <i class="bi bi-inbox mr-1"></i>Move to Inbox
-                </button>`;
+            // No action buttons in spam folder
+            return '';
         } else {
-            // In inbox, show spam/legitimate buttons based on current status
-            if (currentStatus === 'phishing') {
-                buttons += `
-                    <button class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-500 transition-colors text-xs cursor-pointer" 
-                            id="mark-legitimate-btn" data-email-id="${emailId}">
-                        <i class="bi bi-shield-check mr-1"></i>Mark Legitimate
-                    </button>`;
-            } else if (currentStatus === 'legitimate') {
-                buttons += `
-                    <button class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition-colors text-xs cursor-pointer" 
-                            id="report-phishing-btn" data-email-id="${emailId}">
-                        <i class="bi bi-shield-exclamation mr-1"></i>Report Phishing
-                    </button>`;
-            } else {
-                buttons += `
-                    <button class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition-colors text-xs cursor-pointer" 
-                            id="report-phishing-btn" data-email-id="${emailId}">
-                        <i class="bi bi-shield-exclamation mr-1"></i>Report Phishing
-                    </button>
-                    <button class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-500 transition-colors text-xs cursor-pointer" 
-                            id="mark-legitimate-btn" data-email-id="${emailId}">
-                        <i class="bi bi-shield-check mr-1"></i>Mark Legitimate
-                    </button>`;
-            }
+            // In inbox, show classification buttons only if not already categorized
+            buttons += `
+                <button class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500 transition-colors text-xs cursor-pointer" 
+                        id="report-phishing-btn" data-email-id="${emailId}">
+                    <i class="bi bi-shield-exclamation mr-1"></i>Report Phishing
+                </button>
+                <button class="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-500 transition-colors text-xs cursor-pointer" 
+                        id="mark-legitimate-btn" data-email-id="${emailId}">
+                    <i class="bi bi-shield-check mr-1"></i>Mark Legitimate
+                </button>`;
         }
         
         return buttons;
@@ -272,7 +355,7 @@ export class EmailSecurityManager {
     // Bulk operations
     clearAllSecurityData() {
         this.reportedPhishing.clear();
-        this.markedLegitimate.clear();
+        this.legitimateEmails.clear();
         this.spamEmails.clear();
         this.saveToLocalStorage();
     }
@@ -280,7 +363,7 @@ export class EmailSecurityManager {
     exportSecurityData() {
         return {
             reportedPhishing: [...this.reportedPhishing],
-            markedLegitimate: [...this.markedLegitimate],
+            markedLegitimate: [...this.legitimateEmails],
             spamEmails: [...this.spamEmails],
             exportDate: new Date().toISOString()
         };
@@ -291,7 +374,7 @@ export class EmailSecurityManager {
             this.reportedPhishing = new Set(data.reportedPhishing);
         }
         if (data.markedLegitimate) {
-            this.markedLegitimate = new Set(data.markedLegitimate);
+            this.legitimateEmails = new Set(data.markedLegitimate);
         }
         if (data.spamEmails) {
             this.spamEmails = new Set(data.spamEmails);

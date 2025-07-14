@@ -1,8 +1,8 @@
 export class BrowserNavigation {
     constructor(browserApp) {
         this.browserApp = browserApp;
-        this.history = ['https://suspicious-site.com'];
-        this.currentIndex = 0;
+        this.history = []; // Start with empty history
+        this.currentIndex = -1; // No current page initially
         this.isLoading = false;
     }
 
@@ -60,9 +60,9 @@ export class BrowserNavigation {
         }
     }
 
-    refresh() {
+    async refresh() {
         const currentUrl = this.getCurrentUrl();
-        this.loadPage(currentUrl, true);
+        await this.loadPage(currentUrl, true);
         
         // Emit refresh event for network monitoring
         document.dispatchEvent(new CustomEvent('browser-navigate', {
@@ -70,7 +70,7 @@ export class BrowserNavigation {
         }));
     }
 
-    navigateToUrl(url) {
+    async navigateToUrl(url) {
         // Clean up URL
         url = this.sanitizeUrl(url);
         
@@ -83,29 +83,47 @@ export class BrowserNavigation {
             this.currentIndex = this.history.length - 1;
         }
 
-        this.loadPage(url);
+        await this.loadPage(url);
         this.updateNavigationButtons();
     }
 
-    loadPage(url, isRefresh = false) {
+    async loadPage(url, isRefresh = false) {
         if (this.isLoading && !isRefresh) return;
 
         this.isLoading = true;
         this.updateUrlBar(url);
         this.showLoadingState();
 
-        // Simulate loading delay
-        setTimeout(() => {
-            this.browserApp.pageRenderer.renderPage(url);
+        // Simulate loading delay for realism
+        const loadingDelay = Math.random() * 1000 + 500;
+        
+        try {
+            await new Promise(resolve => setTimeout(resolve, loadingDelay));
+            
+            // Render page (now async with iframe support)
+            await this.browserApp.pageRenderer.renderPage(url);
             
             // Run security check after page loads
             if (this.browserApp.securityChecker) {
                 this.browserApp.securityChecker.runSecurityScan(url);
             }
             
+            // Emit navigation event for network monitoring
+            document.dispatchEvent(new CustomEvent('browser-navigate', {
+                detail: { 
+                    url: url, 
+                    action: isRefresh ? 'refresh' : 'navigate',
+                    timestamp: new Date().toISOString()
+                }
+            }));
+            
+        } catch (error) {
+            console.error('Error loading page:', error);
+            // The pageRenderer will handle showing error content
+        } finally {
             this.isLoading = false;
             this.hideLoadingState();
-        }, Math.random() * 1000 + 500); // 0.5-1.5 second delay
+        }
     }
 
     updateNavigationButtons() {
@@ -164,7 +182,7 @@ export class BrowserNavigation {
     }
 
     getCurrentUrl() {
-        return this.history[this.currentIndex] || '';
+        return this.currentIndex >= 0 ? this.history[this.currentIndex] : '';
     }
 
     getHistory() {

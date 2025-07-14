@@ -5,46 +5,58 @@ export class Challenge1Dialogue extends BaseDialogue {
         super(desktop, character);
         this.messages = [
             {
-                text: "Excellent! Now for your first real challenge. You've discovered a viral news story about a senator's email hack that's spreading rapidly across social media."
+                text: "Welcome to your first cybersecurity challenge! You'll be analyzing real news articles to develop critical thinking skills for identifying misinformation."
             },
             {
-                text: "This is a perfect example of how misinformation can influence public opinion, especially during election periods. Your job is to determine if this story is legitimate or fabricated."
+                text: "You'll analyze multiple news articles using our Interactive Analysis system to identify misinformation and credible sources."
             },
             {
-                text: "Pay close attention to the website design, the language used, and most importantly - check if other credible news sources are reporting the same story."
+                text: "Each article contains different elements that you can label as 'fake' or 'real' by clicking on them."
             },
             {
-                text: "Use the verification tools you learned about in the tutorial. Look for red flags like emotional language, missing author information, and suspicious website details."
+                text: "Look for titles, author names, content sections, and other parts that can be classified based on credibility indicators."
             },
             {
-                text: "Remember: Real news stories are typically reported by multiple credible sources. If only one questionable website is covering a major story, that's a huge red flag!"
+                text: "Watch for red flags like sensational headlines, questionable sources, and missing author credentials."
+            },
+            {
+                text: "Pay attention to emotional manipulation, biased language, and factual accuracy."
+            },
+            {
+                text: "The Interactive Analysis panel on the right will guide you through the process."
+            },
+            {
+                text: "It shows your progress and provides feedback as you work. Each article is powered by AI-analyzed training data."
+            },
+            {
+                text: "Remember: Click elements once to mark as 'fake/suspicious', twice to mark as 'real/legitimate'."
+            },
+            {
+                text: "Click three times to remove the label if you change your mind."
+            },
+            {
+                text: "Take your time to analyze each article thoroughly before submitting."
+            },
+            {
+                text: "After labeling elements in each article, submit your analysis to get detailed feedback."
+            },
+            {
+                text: "You'll see results and learn from any mistakes before moving to the next article."
             }
         ];
     }
 
     async onComplete() {
-        // Navigate to challenge 1
-        if (this.desktop?.windowManager) {
-            try {
-                const browserApp = this.desktop.windowManager.applications.get('browser');
-                if (browserApp) {
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                    browserApp.navigation.navigateToUrl('https://daily-politico-news.com/breaking-news');
-                }
-                localStorage.setItem('cyberquest_challenge1_started', 'true');
-            } catch (error) {
-                console.error('Failed to navigate to challenge 1:', error);
-            }
-        }
+        // Just mark the challenge as started - navigation is handled elsewhere
+        localStorage.setItem('cyberquest_challenge1_started', 'true');
     }
 
     getFinalButtonText() {
-        return 'Investigate Story';
+        return 'Begin Interactive Analysis';
     }
 
     static shouldAutoStart() {
         const challenge1Started = localStorage.getItem('cyberquest_challenge1_started');
-        const tutorialCompleted = localStorage.getItem('cyberquest_tutorial_completed');
-        return tutorialCompleted && !challenge1Started;
+        return !challenge1Started;
     }
 }

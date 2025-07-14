@@ -37,10 +37,6 @@ export class EmailState {
         return this.securityManager.moveToSpam(emailId);
     }
 
-    moveToInbox(emailId) {
-        return this.securityManager.moveToInbox(emailId);
-    }
-
     isInSpam(emailId) {
         return this.securityManager.isInSpam(emailId);
     }

@@ -58,6 +58,8 @@ def create_app(config_name=None):
     from app.routes import register_blueprints
     register_blueprints(app)
 
+    # Remove the duplicate registrations - they're now handled in routes/__init__.py
+    
     # Create database tables only in non-Vercel environments
     with app.app_context():
         if not app.config.get('DISABLE_DATABASE', False):
@@ -123,10 +125,6 @@ def create_app(config_name=None):
             }
 
     # Make hCaptcha available in templates
-    from app.utils.hcaptcha_utils import hcaptcha, is_hcaptcha_enabled
-    app.jinja_env.globals.update(hcaptcha=hcaptcha, hcaptcha_enabled=is_hcaptcha_enabled)
-    
-    return app
     from app.utils.hcaptcha_utils import hcaptcha, is_hcaptcha_enabled
     app.jinja_env.globals.update(hcaptcha=hcaptcha, hcaptcha_enabled=is_hcaptcha_enabled)
     

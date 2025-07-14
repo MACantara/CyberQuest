@@ -1,0 +1,288 @@
+import { InteractiveUI } from './interactive-labeling/interactive-ui.js';
+import { ModalManager } from './interactive-labeling/modal-manager.js';
+import { AnalysisCalculator } from './interactive-labeling/analysis-calculator.js';
+import { NavigationHandler } from './interactive-labeling/navigation-handler.js';
+
+export class InteractiveLabeling {
+    constructor(browserApp, pageRegistry) {
+        this.browserApp = browserApp;
+        this.pageRegistry = pageRegistry;
+        this.currentPageConfig = null;
+        this.labeledElements = new Map();
+        this.articleResults = [];
+        this.isActive = false;
+        this.currentArticleIndex = 0;
+        this.totalArticles = 0;
+        this.batchAnalysis = null;
+        this.analysisSource = 'batch-json';
+        this.articlesData = []; // Store all articles data centrally
+        this.initialized = false;
+        
+        // Initialize modular components
+        this.ui = new InteractiveUI(this);
+        this.modalManager = new ModalManager(this);
+        this.analysisCalculator = new AnalysisCalculator(this);
+        this.navigationHandler = new NavigationHandler(this);
+        
+        // Bind methods to preserve context
+        this.handleElementClick = this.handleElementClick.bind(this);
+        this.submitAnalysis = this.submitAnalysis.bind(this);
+        this.nextArticle = this.nextArticle.bind(this);
+    }
+
+    async initializeWithArticles(articlesData) {
+        if (this.initialized) return;
+        
+        this.articlesData = articlesData;
+        this.totalArticles = articlesData.length;
+        this.currentArticleIndex = 0;
+        this.initialized = true;
+        
+        console.log('Interactive labeling initialized with', this.totalArticles, 'articles');
+        
+        // Start with first article
+        await this.loadArticle(0);
+    }
+
+    async loadArticle(articleIndex) {
+        if (articleIndex < 0 || articleIndex >= this.articlesData.length) {
+            console.warn('Invalid article index:', articleIndex);
+            return;
+        }
+
+        this.cleanupCurrentElements();
+        
+        this.currentArticleIndex = articleIndex;
+        const articleData = this.articlesData[articleIndex];
+        
+        console.log(`Loading article ${articleIndex + 1} of ${this.totalArticles}:`, 
+                    articleData.title?.substring(0, 50) || 'Unknown');
+
+        // No need to add custom styles anymore
+        this.loadAnalysisFromBatch(articleData);
+        
+        setTimeout(() => {
+            this.makeElementsInteractive();
+            this.ui.showInstructions();
+        }, 200);
+        
+        this.isActive = true;
+    }
+
+    async nextArticleHandler() {
+        if (this.currentArticleIndex < this.totalArticles - 1) {
+            const nextIndex = this.currentArticleIndex + 1;
+            
+            // Navigate to next article in challenge1Page
+            if (window.challenge1Page) {
+                window.challenge1Page.currentArticleIndex = nextIndex;
+                window.challenge1Page.articleData = this.articlesData[nextIndex];
+                window.challenge1Page.updatePageContent();
+            }
+            
+            // Load the new article data
+            await this.loadArticle(nextIndex);
+        }
+    }
+
+    cleanupCurrentElements() {
+        // Clear interactive elements and remove Tailwind classes
+        document.querySelectorAll('.interactive-element').forEach(el => {
+            el.classList.remove(
+                'interactive-element', 'cursor-pointer', 'transition-all', 'duration-300', 
+                'relative', 'rounded', 'p-1', 'm-1',
+                'bg-red-600/20', 'border-2', 'border-red-500',
+                'bg-green-600/20', 'border-green-500',
+                'bg-green-600/30', 'border-green-500',
+                'bg-red-600/30', 'border-red-500',
+                'hover:bg-blue-600/10', 'hover:shadow-lg'
+            );
+            el.removeAttribute('data-element-id');
+            el.removeAttribute('data-label');
+            el.removeAttribute('data-reasoning');
+            el.removeAttribute('title');
+            
+            if (el._interactiveClickHandler) {
+                el.removeEventListener('click', el._interactiveClickHandler);
+                delete el._interactiveClickHandler;
+            }
+        });
+        
+        this.labeledElements.clear();
+    }
+
+    loadAnalysisFromBatch(articleData) {
+        console.log('Loading analysis from batch, articleData keys:', Object.keys(articleData || {}));
+        
+        // Check if article data has batchAnalysis property (loaded from batch-1.json)
+        if (articleData && articleData.batchAnalysis) {
+            const batchContent = articleData.batchAnalysis;
+            console.log('Found batchAnalysis property with clickable_elements:', batchContent.clickable_elements?.length || 0);
+            
+            if (batchContent.clickable_elements && Array.isArray(batchContent.clickable_elements)) {
+                this.batchAnalysis = batchContent;
+                this.analysisSource = 'batch-json';
+                console.log(`Using batch-1.json analysis for article:`, batchContent.article_metadata?.title?.substring(0, 50) || 'Unknown');
+                console.log('Clickable elements found:', batchContent.clickable_elements.length);
+                return;
+            }
+        }
+        
+        console.error('No valid batchAnalysis found in article data');
+        console.log('Available articleData structure:', {
+            keys: Object.keys(articleData || {}),
+            hasBatchAnalysis: !!(articleData?.batchAnalysis),
+            batchAnalysisKeys: articleData?.batchAnalysis ? Object.keys(articleData.batchAnalysis) : []
+        });
+        this.batchAnalysis = null;
+        this.analysisSource = 'none';
+    }
+
+    makeElementsInteractive() {
+        if (!this.batchAnalysis || !this.batchAnalysis.clickable_elements || !Array.isArray(this.batchAnalysis.clickable_elements)) {
+            console.warn('No valid clickable_elements array found in batch analysis data');
+            return;
+        }
+        
+        console.log('Processing clickable elements from batch-1.json:', this.batchAnalysis.clickable_elements.length);
+        
+        // Map batch-1.json clickable_elements to interactive elements
+        const interactiveElements = this.batchAnalysis.clickable_elements.map(element => {
+            return {
+                selector: `[data-element-id="${element.element_id}"]`,
+                id: element.element_id,
+                expectedFake: element.expected_label === 'fake',
+                label: element.element_name,
+                reasoning: element.reasoning || 'No reasoning provided',
+                elementText: element.element_text || ''
+            };
+        });
+        
+        console.log('Mapped interactive elements:', interactiveElements.map(el => ({
+            id: el.id,
+            label: el.label,
+            expectedFake: el.expectedFake
+        })));
+        
+        let successCount = 0;
+        interactiveElements.forEach(elementDef => {
+            const element = document.querySelector(elementDef.selector);
+            if (element) {
+                // Add Tailwind classes for interactive styling
+                element.classList.add(
+                    'interactive-element', 'cursor-pointer', 'transition-all', 'duration-300', 
+                    'relative', 'rounded', 'p-1', 'm-1',
+                    'hover:bg-blue-600/10', 'hover:shadow-lg'
+                );
+                element.setAttribute('data-element-id', elementDef.id);
+                element.setAttribute('data-label', elementDef.label);
+                element.setAttribute('data-reasoning', elementDef.reasoning);
+                element.setAttribute('title', `Click to label "${elementDef.label}" as fake or real`);
+                
+                // Initialize in labeledElements
+                this.labeledElements.set(elementDef.id, {
+                    labeled: false,
+                    labeledAsFake: false,
+                    expectedFake: elementDef.expectedFake,
+                    label: elementDef.label,
+                    reasoning: elementDef.reasoning,
+                    element: element,
+                    elementText: elementDef.elementText
+                });
+                
+                // Add click event listener
+                const clickHandler = (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.handleElementClick(elementDef.id);
+                };
+                
+                element.addEventListener('click', clickHandler);
+                element._interactiveClickHandler = clickHandler;
+                
+                successCount++;
+                console.log(`✅ Successfully made element ${elementDef.id} interactive`);
+            } else {
+                console.warn(`❌ Element not found for selector: ${elementDef.selector} (element_id: ${elementDef.id})`);
+            }
+        });
+        
+        console.log(`Interactive labeling initialized with ${successCount}/${interactiveElements.length} elements`);
+    }
+
+    handleElementClick(elementId) {
+        const elementData = this.labeledElements.get(elementId);
+        if (!elementData) return;
+        
+        // Remove previous styling
+        elementData.element.classList.remove(
+            'bg-red-600/20', 'border-2', 'border-red-500',
+            'bg-green-600/20', 'border-green-500'
+        );
+        
+        // Toggle between fake/real/unlabeled
+        if (!elementData.labeled) {
+            // First click - mark as fake with Tailwind classes
+            elementData.labeled = true;
+            elementData.labeledAsFake = true;
+            elementData.element.classList.add('bg-red-600/20', 'border-2', 'border-red-500');
+        } else if (elementData.labeledAsFake) {
+            // Second click - mark as real with Tailwind classes
+            elementData.labeledAsFake = false;
+            elementData.element.classList.add('bg-green-600/20', 'border-2', 'border-green-500');
+        } else {
+            // Third click - remove label
+            elementData.labeled = false;
+        }
+        
+        this.ui.updateInstructions();
+    }
+
+    submitAnalysis() {
+        const results = this.analysisCalculator.calculateResults();
+        this.modalManager.showFeedback(results);
+        
+        // Store results for final summary
+        this.articleResults.push({
+            articleIndex: this.currentArticleIndex,
+            articleData: this.articlesData[this.currentArticleIndex],
+            results: results,
+            timestamp: new Date().toISOString()
+        });
+        
+        // Check if this is the last article
+        if (this.currentArticleIndex >= this.totalArticles - 1) {
+            setTimeout(() => {
+                this.modalManager.showFinalSummary();
+                this.navigationHandler.markLevelCompleted();
+            }, 3000);
+        }
+    }
+
+    async nextArticle() {
+        // Remove the feedback modal using modalManager
+        this.modalManager.removeModal();
+        
+        // Navigate to next article
+        await this.nextArticleHandler();
+    }
+
+    continueToNextLevel() {
+        this.navigationHandler.continueToNextLevel();
+    }
+
+    cleanup() {
+        this.ui.cleanup();
+        this.cleanupCurrentElements();
+        
+        this.isActive = false;
+        this.batchAnalysis = null;
+        this.analysisSource = 'none';
+        this.initialized = false;
+        
+        // Only clear global reference if this is the active instance
+        if (window.interactiveLabeling === this) {
+            window.interactiveLabeling = null;
+        }
+    }
+}

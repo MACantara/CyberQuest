@@ -1,8 +1,19 @@
 import { ALL_EMAILS } from './emails/email-registry.js';
+import { EmailFeedback } from './email-feedback.js';
+import { EmailSessionSummary } from './email-session-summary.js';
+import { EmailCompletionTracker } from './email-completion-tracker.js';
 
 export class EmailActionHandler {
     constructor(emailApp) {
         this.emailApp = emailApp;
+        this.feedback = new EmailFeedback(emailApp);
+        this.sessionSummary = new EmailSessionSummary(emailApp);
+        this.completionTracker = new EmailCompletionTracker(emailApp);
+        this.sessionStartTime = new Date().toISOString();
+        
+        // Load previous session data
+        this.feedback.loadSessionData();
+        this.completionTracker.initialize();
     }
 
     // Handle reporting an email as phishing
@@ -60,12 +71,6 @@ export class EmailActionHandler {
     markEmailAsLegitimate(emailId) {
         // Use security manager to handle the action
         this.emailApp.state.securityManager.markEmailAsLegitimate(emailId, this.emailApp);
-    }
-
-    // Handle moving an email from spam back to inbox
-    moveEmailToInbox(emailId) {
-        // Use security manager to handle the action
-        this.emailApp.state.securityManager.moveEmailToInbox(emailId, this.emailApp);
     }
 
     // Show toast notification for user feedback within the email client
@@ -168,34 +173,49 @@ export class EmailActionHandler {
 
     // Get email statistics for progress tracking
     getEmailStatistics() {
-        const allEmailIds = ALL_EMAILS.map(email => email.id);
-        const readingStats = this.emailApp.readTracker.getReadingStats(ALL_EMAILS);
-        const securityStats = this.emailApp.state.securityManager.getSecurityStats();
-        
+        const stats = this.feedback.getSessionStats();
         return {
-            ...readingStats,
-            categorized: securityStats.totalReported + securityStats.totalLegitimate,
-            phishingDetected: securityStats.totalReported,
-            legitimateConfirmed: securityStats.totalLegitimate,
-            categorizedPercentage: Math.round(((securityStats.totalReported + securityStats.totalLegitimate) / allEmailIds.length) * 100)
+            categorized: stats.totalReported + stats.totalLegitimate,
+            phishingDetected: stats.totalReported,
+            legitimateConfirmed: stats.totalLegitimate,
+            categorizedPercentage: Math.round(((stats.totalReported + stats.totalLegitimate) / ALL_EMAILS.length) * 100),
+            emailSecurityAccuracy: stats.accuracy
         };
     }
 
     // Export user actions for analysis
     exportUserActions() {
         const stats = this.getEmailStatistics();
-        const securityStats = this.emailApp.state.securityManager.getSecurityStats();
         
         return {
             timestamp: new Date().toISOString(),
             userStats: stats,
-            securityActions: securityStats,
-            readEmails: Array.from(this.emailApp.readEmails),
+            feedbackHistory: this.feedback.feedbackHistory,
             sessionData: {
-                startTime: this.sessionStartTime || new Date().toISOString(),
+                startTime: this.sessionStartTime,
                 endTime: new Date().toISOString()
             }
         };
+    }
+
+    /**
+     * Complete email security training session
+     */
+    completeEmailTraining() {
+        const sessionStats = this.feedback.getSessionStats();
+        const feedbackHistory = this.feedback.feedbackHistory;
+        
+        // Use completion tracker to handle the full completion flow
+        const completionTriggered = this.completionTracker.checkAndTriggerCompletion(sessionStats, feedbackHistory);
+        
+        if (!completionTriggered) {
+            // If level completion criteria not met, just show training completion
+            this.completionTracker.showTrainingCompletionOnly(sessionStats, feedbackHistory);
+        }
+        
+        // Mark email training as completed regardless of level completion
+        localStorage.setItem('cyberquest_email_training_completed', 'true');
+        localStorage.setItem('cyberquest_email_training_score', sessionStats.accuracy.toString());
     }
 
     // Initialize action handler
@@ -226,5 +246,9 @@ export class EmailActionHandler {
             const modals = this.emailApp.windowElement.querySelectorAll('.email-modal');
             modals.forEach(modal => modal.remove());
         }
+
+        // Clean up completion tracker
+        this.completionTracker.cleanup();
     }
+
 }
