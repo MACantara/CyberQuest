@@ -240,6 +240,9 @@ export class TerminalApp extends WindowBase {
         }
         
         output.appendChild(line);
+        
+        // Auto-scroll to bottom when new output is added
+        this.scrollToBottom();
     }
 
     addPromptLine() {
