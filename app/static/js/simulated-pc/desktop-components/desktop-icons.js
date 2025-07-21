@@ -12,7 +12,8 @@ export class DesktopIcons {
             { id: 'logs', name: 'System Logs', icon: 'bi-journal-text', action: 'openSystemLogs' },
             { id: 'process-monitor', name: 'Process Monitor', icon: 'bi-cpu', action: 'openProcessMonitor' },
             { id: 'malware-scanner', name: 'Malware Scanner', icon: 'bi-shield-exclamation', action: 'openMalwareScanner' },
-            { id: 'ransomware-decryptor', name: 'Ransomware Decryptor', icon: 'bi-unlock', action: 'openRansomwareDecryptor' }
+            { id: 'ransomware-decryptor', name: 'Ransomware Decryptor', icon: 'bi-unlock', action: 'openRansomwareDecryptor' },
+            { id: 'vulnerability-scanner', name: 'Vulnerability Scanner', icon: 'bi-bug', action: 'openVulnerabilityScanner' }
         ];
         this.init();
     }

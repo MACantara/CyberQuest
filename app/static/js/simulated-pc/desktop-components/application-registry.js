@@ -7,6 +7,7 @@ import { SystemLogsApp } from './desktop-applications/system-logs-app.js';
 import { ProcessMonitorApp } from './desktop-applications/process-monitor-app.js';
 import { MalwareScannerApp } from './desktop-applications/malware-scanner-app.js';
 import { RansomwareDecryptorApp } from './desktop-applications/ransomware-decryptor-app.js';
+import { VulnerabilityScannerApp } from './desktop-applications/vulnerability-scanner-app.js';
 
 export class ApplicationRegistry {
     constructor() {
@@ -82,6 +83,14 @@ export class ApplicationRegistry {
                 startMethod: 'startRansomwareDecryptorTutorial',
                 iconClass: 'bi-unlock',
                 title: 'Ransomware Decryptor'
+            },
+            'vulnerability-scanner': {
+                class: VulnerabilityScannerApp,
+                storageKey: 'cyberquest_vulnerabilityscanner_opened',
+                tutorialMethod: 'shouldAutoStartVulnerabilityScanner',
+                startMethod: 'startVulnerabilityScannerTutorial',
+                iconClass: 'bi-bug',
+                title: 'Vulnerability Scanner'
             }
         };
     }

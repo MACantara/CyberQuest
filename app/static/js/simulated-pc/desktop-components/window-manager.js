@@ -352,6 +352,10 @@ export class WindowManager {
         return await this.applicationLauncher.launchRansomwareDecryptor();
     }
 
+    async openVulnerabilityScanner() {
+        return await this.applicationLauncher.launchVulnerabilityScanner();
+    }
+
     // Utility methods for batch operations
     closeAllWindows() {
         const windowIds = Array.from(this.windows.keys());
