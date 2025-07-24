@@ -70,8 +70,10 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Include Footer -->
-    {% include 'partials/footer.html' %}
+    {% block footer %}
+        <!-- Include Footer -->
+        {% include 'partials/footer.html' %}
+    {% endblock %}
 
     <!-- Main JavaScript as ES6 module -->
     <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
