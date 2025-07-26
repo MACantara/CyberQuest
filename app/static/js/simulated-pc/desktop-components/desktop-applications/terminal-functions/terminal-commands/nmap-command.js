@@ -5,6 +5,8 @@ export class NmapCommand extends BaseCommand {
     constructor(processor) {
         super(processor);
         this.targetRegistry = targetHostRegistry;
+        this.lastScanResults = null;
+        this.lastScanTarget = null;
     }
 
     execute(args) {
@@ -23,6 +25,11 @@ export class NmapCommand extends BaseCommand {
 
         if (options.version) {
             this.showVersion();
+            return;
+        }
+
+        if (options.integrate) {
+            this.handleIntegration();
             return;
         }
 
@@ -47,7 +54,8 @@ export class NmapCommand extends BaseCommand {
             osScan: false,
             serviceScan: false,
             help: false,
-            version: false
+            version: false,
+            integrate: false
         };
 
         for (let i = 0; i < args.length; i++) {
@@ -74,6 +82,9 @@ export class NmapCommand extends BaseCommand {
                     break;
                 case '--script=vuln':
                     options.vulnScan = true;
+                    break;
+                case '--integrate':
+                    options.integrate = true;
                     break;
                 case '-v':
                     options.verbose = true;
@@ -141,6 +152,111 @@ export class NmapCommand extends BaseCommand {
         // Show scan completion
         this.addOutput('');
         this.addOutput(`Nmap done: 1 IP address (1 host up) scanned in 2.15 seconds`, 'text-green-400');
+        
+        // Store scan results for integration
+        this.lastScanResults = this.captureOutputAsString();
+        this.lastScanTarget = options.target;
+        
+        // Offer integration with vulnerability scanner
+        this.offerVulnerabilityScannerIntegration(options);
+    }
+
+    /**
+     * Capture the current output as a string for integration
+     */
+    captureOutputAsString() {
+        // Get all output lines from this scan
+        const outputContainer = this.processor.outputContainer;
+        const outputLines = Array.from(outputContainer.querySelectorAll('.terminal-output-line'));
+        
+        // Extract text content from recent lines (this scan)
+        const recentLines = outputLines.slice(-50); // Get last 50 lines
+        return recentLines.map(line => line.textContent).join('\n');
+    }
+
+    /**
+     * Offer integration with vulnerability scanner
+     */
+    offerVulnerabilityScannerIntegration(options) {
+        this.addOutput('');
+        this.addOutput('VULNERABILITY SCANNER INTEGRATION:', 'text-cyan-400');
+        
+        // Check if vulnerability scanner contains any vulnerability results
+        const hasVulnResults = this.hasVulnerabilityScriptResults();
+        
+        if (hasVulnResults) {
+            this.addOutput('• Vulnerabilities detected in scan results!', 'text-yellow-400');
+            this.addOutput('• Use "nmap --integrate" to send results to vulnerability scanner', 'text-blue-400');
+        } else {
+            this.addOutput('• No vulnerabilities detected in this scan', 'text-green-400');
+            this.addOutput('• Use "nmap --integrate" to send port/service data to vulnerability scanner', 'text-blue-400');
+        }
+        
+        this.addOutput('• Open Vulnerability Scanner app to receive integration', 'text-gray-400');
+    }
+
+    /**
+     * Check if scan results contain vulnerability information
+     */
+    hasVulnerabilityScriptResults() {
+        if (!this.lastScanResults) return false;
+        
+        const vulnIndicators = [
+            'CVE-', 'CRITICAL', 'HIGH', 'VULNERABLE', 
+            'EXPLOIT', 'Buffer Overflow', 'SQL Injection'
+        ];
+        
+        return vulnIndicators.some(indicator => 
+            this.lastScanResults.toUpperCase().includes(indicator)
+        );
+    }
+
+    /**
+     * Handle integration command
+     */
+    handleIntegration() {
+        if (!this.lastScanResults || !this.lastScanTarget) {
+            this.addOutput('No recent scan results to integrate', 'text-red-400');
+            this.addOutput('Run an nmap scan first, then use --integrate');
+            return;
+        }
+
+        this.addOutput('Attempting to integrate with Vulnerability Scanner...', 'text-blue-400');
+        
+        // Try to integrate with vulnerability scanner
+        const success = this.attemptIntegration();
+        
+        if (success) {
+            this.addOutput('✓ Integration successful!', 'text-green-400');
+            this.addOutput('Check Vulnerability Scanner for updated results');
+        } else {
+            this.addOutput('✗ Integration failed', 'text-red-400');
+            this.addOutput('Ensure Vulnerability Scanner app is open and try again');
+            this.addOutput('Or manually copy the scan results to the scanner');
+        }
+    }
+
+    /**
+     * Attempt to integrate with vulnerability scanner
+     */
+    attemptIntegration() {
+        try {
+            // Try to find vulnerability scanner app
+            const vulnContainer = document.querySelector('#vulnerability-scanner-container');
+            if (!vulnContainer || !vulnContainer._vulnerabilityApp) {
+                return false;
+            }
+
+            const vulnApp = vulnContainer._vulnerabilityApp;
+            
+            // Integrate the results
+            vulnApp.integrateNmapResults(this.lastScanResults);
+            
+            return true;
+        } catch (error) {
+            console.error('Nmap integration failed:', error);
+            return false;
+        }
     }
 
     performPortScan(target, options) {
@@ -311,6 +427,7 @@ export class NmapCommand extends BaseCommand {
                 { flag: '-A', description: 'Enable aggressive scan (OS detection, version detection, script scanning)' },
                 { flag: '-sC', description: 'Equivalent to --script=default' },
                 { flag: '--script=vuln', description: 'Run vulnerability detection scripts' },
+                { flag: '--integrate', description: 'Integrate last scan results with Vulnerability Scanner' },
                 { flag: '-p <ports>', description: 'Only scan specified ports' },
                 { flag: '-v', description: 'Increase verbosity level' },
                 { flag: '--help', description: 'Show this help message' },
@@ -349,6 +466,10 @@ export class NmapCommand extends BaseCommand {
         this.addOutput('  -v     Increase verbosity level');
         this.addOutput('  -h     Show this help summary');
         this.addOutput('  -V     Show version number');
+        this.addOutput('');
+        this.addOutput('INTEGRATION:', 'text-blue-400');
+        this.addOutput('  --integrate       Send last scan results to Vulnerability Scanner app');
+        this.addOutput('                   (Requires Vulnerability Scanner to be open)');
         this.addOutput('');
         this.addOutput('EXAMPLES:', 'text-blue-400');
         this.addOutput('  nmap vote.municipality.gov');
