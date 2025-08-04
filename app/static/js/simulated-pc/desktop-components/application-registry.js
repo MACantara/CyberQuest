@@ -87,8 +87,8 @@ export class ApplicationRegistry {
             'vulnerability-scanner': {
                 class: VulnerabilityScannerApp,
                 storageKey: 'cyberquest_vulnerabilityscanner_opened',
-                tutorialMethod: 'shouldAutoStartVulnerabilityScanner',
-                startMethod: 'startVulnerabilityScannerTutorial',
+                tutorialMethod: null,
+                startMethod: null,
                 iconClass: 'bi-bug',
                 title: 'Vulnerability Scanner'
             }
