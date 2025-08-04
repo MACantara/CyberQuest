@@ -58,6 +58,19 @@ export class TutorialRegistry {
             restartMethod: 'restartFileManagerTutorial'
         });
 
+        this.registerTutorial('vulnerability-scanner', {
+            className: 'VulnerabilityScannerTutorial',
+            globalVarName: 'vulnerabilityScannerTutorial',
+            title: 'Vulnerability Scanner',
+            description: 'Learn professional web application security testing techniques',
+            category: 'Advanced Security',
+            estimatedTime: '15 minutes',
+            storageKey: 'cyberquest_vulnerability_scanner_tutorial_completed',
+            tutorialMethod: 'shouldAutoStartVulnerabilityScanner',
+            startMethod: 'startVulnerabilityScannerTutorial',
+            restartMethod: 'restartVulnerabilityScannerTutorial'
+        });
+
         this.registerTutorial('process-monitor', {
             className: 'ProcessMonitorTutorial',
             globalVarName: 'processMonitorTutorial',
