@@ -7,6 +7,7 @@ export class NmapCommand extends BaseCommand {
         this.targetRegistry = targetHostRegistry;
         this.lastScanResults = null;
         this.lastScanTarget = null;
+        this.wasVulnerabilityScan = false;
     }
 
     execute(args) {
@@ -124,6 +125,10 @@ export class NmapCommand extends BaseCommand {
             return;
         }
 
+        // Store scan details for integration
+        this.lastScanTarget = options.target;
+        this.wasVulnerabilityScan = options.vulnScan || options.scriptScan;
+
         // Show scan initialization
         this.addOutput(`Starting Nmap 7.80 ( https://nmap.org ) at ${new Date().toLocaleString()}`, 'text-green-400');
         this.addOutput(`Nmap scan report for ${target.hostname || options.target} (${target.ip || options.target})`);
@@ -165,13 +170,42 @@ export class NmapCommand extends BaseCommand {
      * Capture the current output as a string for integration
      */
     captureOutputAsString() {
-        // Get all output lines from this scan
-        const outputContainer = this.processor.outputContainer;
-        const outputLines = Array.from(outputContainer.querySelectorAll('.terminal-output-line'));
+        // Instead of trying to parse DOM, build the output from the scan results
+        let output = `Starting Nmap 7.80 ( https://nmap.org ) at ${new Date().toLocaleString()}\n`;
         
-        // Extract text content from recent lines (this scan)
-        const recentLines = outputLines.slice(-50); // Get last 50 lines
-        return recentLines.map(line => line.textContent).join('\n');
+        // Add the recent scan output by reconstructing it from the target data
+        const target = this.targetRegistry.resolveTarget(this.lastScanTarget);
+        if (target) {
+            output += `Nmap scan report for ${target.hostname || this.lastScanTarget} (${target.ip || this.lastScanTarget})\n`;
+            output += `Host is up (0.00015s latency).\n`;
+            output += `PORT     STATE SERVICE\n`;
+            
+            // Add port information
+            if (target.ports) {
+                Object.entries(target.ports).forEach(([port, portData]) => {
+                    const portStr = `${port}/tcp`.padEnd(9);
+                    const stateStr = portData.state.padEnd(6);
+                    output += `${portStr} ${stateStr} ${portData.service}\n`;
+                });
+            }
+            
+            // Add vulnerability script results if this was a vulnerability scan
+            if (this.wasVulnerabilityScan && target.vulnerabilities) {
+                output += `\nSCRIPT SCAN RESULTS:\n`;
+                target.vulnerabilities.forEach(vuln => {
+                    if (vuln.source === 'nmap' || vuln.severity === 'critical' || vuln.severity === 'high') {
+                        output += `| ${vuln.title || vuln.name}: ${vuln.severity.toUpperCase()}\n`;
+                        output += `|   ${vuln.description}\n`;
+                        if (vuln.cve) {
+                            output += `|   CVE: ${vuln.cve}\n`;
+                        }
+                    }
+                });
+            }
+        }
+        
+        output += `\nNmap done: 1 IP address (1 host up) scanned in 2.15 seconds\n`;
+        return output;
     }
 
     /**
@@ -243,7 +277,15 @@ export class NmapCommand extends BaseCommand {
         try {
             // Try to find vulnerability scanner app
             const vulnContainer = document.querySelector('#vulnerability-scanner-container');
-            if (!vulnContainer || !vulnContainer._vulnerabilityApp) {
+            if (!vulnContainer) {
+                this.addOutput('Vulnerability Scanner app not found', 'text-yellow-400');
+                this.addOutput('Please open the Vulnerability Scanner from the desktop');
+                return false;
+            }
+
+            if (!vulnContainer._vulnerabilityApp) {
+                this.addOutput('Vulnerability Scanner not initialized', 'text-yellow-400');
+                this.addOutput('Please wait for the app to fully load');
                 return false;
             }
 
@@ -255,6 +297,7 @@ export class NmapCommand extends BaseCommand {
             return true;
         } catch (error) {
             console.error('Nmap integration failed:', error);
+            this.addOutput(`Integration error: ${error.message}`, 'text-red-400');
             return false;
         }
     }
