@@ -52,22 +52,22 @@ export class LiveElectionCrisisDialogue extends BaseDialogue {
                 
                 <div class="space-y-3">
                     <button class="w-full text-left p-3 bg-red-900/30 border border-red-500 rounded hover:bg-red-900/50 text-red-300" 
-                            onclick="window.currentDialogue.makeChoice('emergency_disclosure')">
+                            data-choice="emergency_disclosure">
                         Emergency disclosure: Shut down voting immediately (+200 Ethics XP, Election Disruption)
                     </button>
                     
                     <button class="w-full text-left p-3 bg-yellow-900/30 border border-yellow-500 rounded hover:bg-yellow-900/50 text-yellow-300" 
-                            onclick="window.currentDialogue.makeChoice('wait_election_ends')">
+                            data-choice="wait_election_ends">
                         Wait until election ends to avoid disrupting democracy (-50 Ethics XP, Exploitation Risk)
                     </button>
                     
                     <button class="w-full text-left p-3 bg-blue-900/30 border border-blue-500 rounded hover:bg-blue-900/50 text-blue-300" 
-                            onclick="window.currentDialogue.makeChoice('anonymous_tip')">
+                            data-choice="anonymous_tip">
                         Anonymous tip to election officials for immediate internal investigation (+100 Ethics XP)
                     </button>
                     
                     <button class="w-full text-left p-3 bg-purple-900/30 border border-purple-500 rounded hover:bg-purple-900/50 text-purple-300" 
-                            onclick="window.currentDialogue.makeChoice('coordinate_fix')">
+                            data-choice="coordinate_fix">
                         Coordinate live hotfix while election continues (+150 Ethics XP, Technical Risk)
                     </button>
                 </div>
@@ -80,6 +80,15 @@ export class LiveElectionCrisisDialogue extends BaseDialogue {
         
         document.body.appendChild(overlay);
         this.choiceOverlay = overlay;
+        
+        // Add event listeners for choice buttons
+        const choiceButtons = overlay.querySelectorAll('button[data-choice]');
+        choiceButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const choice = button.getAttribute('data-choice');
+                this.makeChoice(choice);
+            });
+        });
     }
 
     makeChoice(choice) {

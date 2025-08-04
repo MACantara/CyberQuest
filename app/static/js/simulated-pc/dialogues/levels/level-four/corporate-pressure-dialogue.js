@@ -51,22 +51,22 @@ export class CorporatePressureDialogue extends BaseDialogue {
                 
                 <div class="space-y-3">
                     <button class="w-full text-left p-3 bg-red-900/30 border border-red-500 rounded hover:bg-red-900/50 text-red-300" 
-                            onclick="window.currentDialogue.makeChoice('accept_settlement')">
+                            data-choice="accept_settlement">
                         Accept the $25,000 settlement and NDA (+$25,000, -300 Ethics XP)
                     </button>
                     
                     <button class="w-full text-left p-3 bg-blue-900/30 border border-blue-500 rounded hover:bg-blue-900/50 text-blue-300" 
-                            onclick="window.currentDialogue.makeChoice('refuse_continue')">
+                            data-choice="refuse_continue">
                         Refuse settlement and continue with responsible disclosure (+150 Ethics XP)
                     </button>
                     
                     <button class="w-full text-left p-3 bg-yellow-900/30 border border-yellow-500 rounded hover:bg-yellow-900/50 text-yellow-300" 
-                            onclick="window.currentDialogue.makeChoice('negotiate_timeline')">
+                            data-choice="negotiate_timeline">
                         Negotiate a compromise timeline for disclosure (+75 Ethics XP)
                     </button>
                     
                     <button class="w-full text-left p-3 bg-purple-900/30 border border-purple-500 rounded hover:bg-purple-900/50 text-purple-300" 
-                            onclick="window.currentDialogue.makeChoice('report_pressure')">
+                            data-choice="report_pressure">
                         Report the pressure tactics to regulatory authorities (+125 Ethics XP)
                     </button>
                 </div>
@@ -75,6 +75,15 @@ export class CorporatePressureDialogue extends BaseDialogue {
         
         document.body.appendChild(overlay);
         this.choiceOverlay = overlay;
+        
+        // Add event listeners to buttons
+        const buttons = overlay.querySelectorAll('button[data-choice]');
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const choice = button.getAttribute('data-choice');
+                this.makeChoice(choice);
+            });
+        });
     }
 
     makeChoice(choice) {
@@ -138,14 +147,20 @@ export class CorporatePressureDialogue extends BaseDialogue {
                 <p class="text-green-400 mb-4">${decision}</p>
                 <p class="text-gray-300 mb-4">${consequence}</p>
                 <p class="${ethicsColor} font-bold mb-6">Ethics Score: ${ethicsSign}${ethicsChange} XP</p>
-                <button class="bg-green-700 hover:bg-green-600 text-white px-4 py-2 rounded" 
-                        onclick="this.parentElement.parentElement.remove(); window.currentDialogue.cleanup();">
+                <button class="bg-green-700 hover:bg-green-600 text-white px-4 py-2 rounded" id="continue-assessment-btn">
                     Continue Assessment
                 </button>
             </div>
         `;
         
         document.body.appendChild(overlay);
+        
+        // Add event listener to continue button
+        const continueBtn = overlay.querySelector('#continue-assessment-btn');
+        continueBtn.addEventListener('click', () => {
+            overlay.remove();
+            this.cleanup();
+        });
     }
 
     getCharacterAvatar() {

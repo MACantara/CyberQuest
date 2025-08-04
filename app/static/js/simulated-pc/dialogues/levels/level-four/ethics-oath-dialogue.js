@@ -56,12 +56,12 @@ export class EthicsOathDialogue extends BaseDialogue {
                     
                     <div class="space-y-3">
                         <button class="w-full p-3 bg-gold-900/30 border border-yellow-500 rounded hover:bg-gold-900/50 text-yellow-300 font-bold" 
-                                onclick="window.currentDialogue.makeOathChoice('accept')">
+                                data-choice="accept">
                             I solemnly swear to uphold this oath (+250 Ethics XP, Oath Badge)
                         </button>
                         
                         <button class="w-full p-3 bg-gray-900/30 border border-gray-500 rounded hover:bg-gray-900/50 text-gray-300" 
-                                onclick="window.currentDialogue.makeOathChoice('decline')">
+                                data-choice="decline">
                             I prefer not to take the oath at this time
                         </button>
                     </div>
@@ -71,6 +71,15 @@ export class EthicsOathDialogue extends BaseDialogue {
         
         document.body.appendChild(overlay);
         this.choiceOverlay = overlay;
+        
+        // Add event listeners for choice buttons
+        const choiceButtons = overlay.querySelectorAll('button[data-choice]');
+        choiceButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const choice = button.getAttribute('data-choice');
+                this.makeOathChoice(choice);
+            });
+        });
     }
 
     makeOathChoice(choice) {

@@ -46,22 +46,22 @@ export class CryptocurrencyBribeDialogue extends BaseDialogue {
                 
                 <div class="space-y-3">
                     <button class="w-full text-left p-3 bg-red-900/30 border border-red-500 rounded hover:bg-red-900/50 text-red-300" 
-                            onclick="window.currentDialogue.makeChoice('accept')">
+                            data-choice="accept">
                         Accept the Bitcoin offer and provide immediate public disclosure (+2 BTC, -500 Ethics XP)
                     </button>
                     
                     <button class="w-full text-left p-3 bg-blue-900/30 border border-blue-500 rounded hover:bg-blue-900/50 text-blue-300" 
-                            onclick="window.currentDialogue.makeChoice('report')">
+                            data-choice="report">
                         Report this bribery attempt to law enforcement (+100 Ethics XP)
                     </button>
                     
                     <button class="w-full text-left p-3 bg-gray-900/30 border border-gray-500 rounded hover:bg-gray-900/50 text-gray-300" 
-                            onclick="window.currentDialogue.makeChoice('ignore')">
+                            data-choice="ignore">
                         Ignore the message and continue with responsible disclosure (+50 Ethics XP)
                     </button>
                     
                     <button class="w-full text-left p-3 bg-yellow-900/30 border border-yellow-500 rounded hover:bg-yellow-900/50 text-yellow-300" 
-                            onclick="window.currentDialogue.makeChoice('engage')">
+                            data-choice="engage">
                         Engage with the group to learn more about their motivations (-200 Ethics XP, Risky Path)
                     </button>
                 </div>
@@ -70,6 +70,15 @@ export class CryptocurrencyBribeDialogue extends BaseDialogue {
         
         document.body.appendChild(overlay);
         this.choiceOverlay = overlay;
+        
+        // Add event listeners to buttons
+        const buttons = overlay.querySelectorAll('button[data-choice]');
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const choice = button.getAttribute('data-choice');
+                this.makeChoice(choice);
+            });
+        });
     }
 
     makeChoice(choice) {
@@ -134,14 +143,20 @@ export class CryptocurrencyBribeDialogue extends BaseDialogue {
                 <p class="text-green-400 mb-4">${decision}</p>
                 <p class="text-gray-300 mb-4">${consequence}</p>
                 <p class="${ethicsColor} font-bold mb-6">Ethics Score: ${ethicsSign}${ethicsChange} XP</p>
-                <button class="bg-green-700 hover:bg-green-600 text-white px-4 py-2 rounded" 
-                        onclick="this.parentElement.parentElement.remove(); window.currentDialogue.cleanup();">
+                <button class="bg-green-700 hover:bg-green-600 text-white px-4 py-2 rounded" id="continue-assessment-btn">
                     Continue Assessment
                 </button>
             </div>
         `;
         
         document.body.appendChild(overlay);
+        
+        // Add event listener to continue button
+        const continueBtn = overlay.querySelector('#continue-assessment-btn');
+        continueBtn.addEventListener('click', () => {
+            overlay.remove();
+            this.cleanup();
+        });
     }
 
     getFinalButtonText() {

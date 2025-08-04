@@ -51,27 +51,27 @@ export class JournalistContactDialogue extends BaseDialogue {
                 
                 <div class="space-y-3">
                     <button class="w-full text-left p-3 bg-blue-900/30 border border-blue-500 rounded hover:bg-blue-900/50 text-blue-300" 
-                            onclick="window.currentDialogue.makeChoice('full_cooperation')">
+                            data-choice="full_cooperation">
                         Full cooperation: Provide complete details for public transparency (+100 Ethics XP, High Publicity)
                     </button>
                     
                     <button class="w-full text-left p-3 bg-green-900/30 border border-green-500 rounded hover:bg-green-900/50 text-green-300" 
-                            onclick="window.currentDialogue.makeChoice('redacted_info')">
+                            data-choice="redacted_info">
                         Provide redacted information protecting sensitive details (+150 Ethics XP)
                     </button>
                     
                     <button class="w-full text-left p-3 bg-gray-900/30 border border-gray-500 rounded hover:bg-gray-900/50 text-gray-300" 
-                            onclick="window.currentDialogue.makeChoice('no_comment')">
+                            data-choice="no_comment">
                         No comment: Maintain responsible disclosure timeline (+75 Ethics XP)
                     </button>
                     
                     <button class="w-full text-left p-3 bg-red-900/30 border border-red-500 rounded hover:bg-red-900/50 text-red-300" 
-                            onclick="window.currentDialogue.makeChoice('misleading_info')">
+                            data-choice="misleading_info">
                         Provide misleading information to protect assessment (-500 Ethics XP, Dangerous)
                     </button>
                     
                     <button class="w-full text-left p-3 bg-yellow-900/30 border border-yellow-500 rounded hover:bg-yellow-900/50 text-yellow-300" 
-                            onclick="window.currentDialogue.makeChoice('refer_officials')">
+                            data-choice="refer_officials">
                         Refer to official channels and maintain neutrality (+125 Ethics XP)
                     </button>
                 </div>
@@ -80,6 +80,15 @@ export class JournalistContactDialogue extends BaseDialogue {
         
         document.body.appendChild(overlay);
         this.choiceOverlay = overlay;
+        
+        // Add event listeners for choice buttons
+        const choiceButtons = overlay.querySelectorAll('button[data-choice]');
+        choiceButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const choice = button.getAttribute('data-choice');
+                this.makeChoice(choice);
+            });
+        });
     }
 
     makeChoice(choice) {
