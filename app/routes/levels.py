@@ -56,7 +56,7 @@ CYBERSECURITY_LEVELS = [
         'estimated_time': '30 minutes',
         'skills': ['Penetration Testing', 'Vulnerability Assessment', 'Ethical Hacking'],
         'unlocked': False,
-        'coming_soon': True
+        'coming_soon': False
     },
     {
         'id': 5,
