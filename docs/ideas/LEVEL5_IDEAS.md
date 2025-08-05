@@ -39,23 +39,21 @@
 - **File Analysis**: Examine file properties (creation date, size, type)
 - **Directory Patterns**: Notice The Null organizes files in specific folder structures
 
-**Key Evidence Files**:
+**Key Evidence Files (Only 5 Files)**:
 ```
-/evidence/level1_bot_logs.txt        (IP: 192.168.1.100 - recurring)
-/evidence/level2_email_headers.txt   (X-Mailer: NullSender v1.0)
-/evidence/level3_malware_sample.exe  (Code comment: "// N4LL was here")
-/evidence/level4_exploit_code.py     (Function name: null_exploit())
-/evidence/hidden_message.txt         (Base64: VGhlTnVsbElzSGVyZQ==)
+/evidence/bot_logs.txt           (Contains: IP 192.168.1.100)
+/evidence/email_headers.txt      (Contains: X-Mailer: NullSender)
+/evidence/malware_code.txt       (Contains: // N4LL was here)
+/evidence/login_logs.txt         (Contains: Failed login from 192.168.1.100)
+/evidence/hidden_message.txt     (Contains: Base64 message)
 ```
 
-### Terminal Forensics Commands (Simplified)
+### Terminal Forensics Commands (3 Basic Commands)
 ```bash
-# Basic commands students learn
-find . -name "*null*"                    # Find files with "null" in name
-grep -r "N4LL" /var/log/                 # Search for signature in logs
-ls -la                                   # Show hidden files and timestamps
-cat suspicious_file.txt                  # Read file contents
-strings malware.exe | grep password      # Extract readable text from binary
+# Only 3 commands students need to learn
+find . -name "*null*"         # Find files with "null" in name
+grep "N4LL" *.txt             # Search for signature in text files
+cat evidence_file.txt         # Read file contents
 ```
 
 ### System Logs Analysis
@@ -77,52 +75,43 @@ strings malware.exe | grep password      # Extract readable text from binary
 
 ## 🧩 Evidence Correlation (MVP)
 
-### Pattern Recognition Challenges
-**Students Must Identify**:
-1. **IP Address**: 192.168.1.100 appears in all incident logs
-2. **Timing Pattern**: All attacks occur Tuesday 2:00 AM EST
-3. **Signature**: "N4LL" appears in code comments and log entries
-4. **Tool Preference**: Always uses "NullSender" for email attacks
-5. **Cleanup Behavior**: Attempts to delete evidence after each attack
+### Pattern Recognition Challenges (3 Simple Patterns)
+**Students Must Find**:
+1. **Same IP Address**: 192.168.1.100 appears in multiple files
+2. **Signature**: "N4LL" appears in code and logs
+3. **Email Tool**: "NullSender" used for phishing attacks
 
 ### Simple Timeline Building
-**Interactive Timeline Exercise**:
+**Student Task**: Put these 3 events in order
 ```
-Week 1: Level 1 Incident (Misinformation bots deployed)
-Week 2: Level 2 Incident (Phishing campaign launched)  
-Week 3: Level 3 Incident (Malware distributed)
-Week 4: Level 4 Incident (Vulnerability exploited)
-Week 5: Current Investigation (Find The Null)
+1. Bot network deployed (find in bot_logs.txt)
+2. Phishing emails sent (find in email_headers.txt)  
+3. Malware installed (find in malware_code.txt)
 ```
 
 ### Basic Attribution
-**Evidence Correlation Exercise**:
-- Match IP addresses across different incident reports
-- Connect timestamps to establish attack schedule
-- Link code signatures to prove same attacker
-- Identify tools used consistently across incidents
+**Simple Evidence Matching**:
+- Find the same IP address in 3 different files
+- Find "N4LL" signature in 2 different files
+- Connect "NullSender" to phishing attack
 
 ---
 
 ## 🎯 Multi-Application Workflow (MVP)
 
-### File Manager Tasks
-- **Search Function**: Find files containing "null", "N4LL", or specific IP addresses
-- **Property Analysis**: Check file creation dates and modification times
-- **Hidden Files**: Reveal files with names starting with "." (Unix) or hidden attribute (Windows)
-- **File Recovery**: Restore deleted files from trash/recycle bin
+### File Manager (Main Activity)
+- **Search for Files**: Look for files with "null" or "N4LL" in name
+- **Open Files**: Double-click to read file contents
+- **Check Properties**: Right-click to see file details
 
-### Terminal Activities  
-- **Basic Commands**: Learn 5-6 essential forensics commands
-- **Log Analysis**: Use grep to search for patterns in log files
-- **File Examination**: Use strings, cat, and ls commands
-- **Evidence Documentation**: Create investigation notes using echo and redirection
+### Terminal (3 Commands Only)  
+- **find**: Search for files by name
+- **grep**: Search inside files for text
+- **cat**: Display file contents
 
-### System Logs Review
-- **Login Analysis**: Identify unusual login patterns and failed attempts
-- **Process Monitoring**: Find suspicious processes and their execution times
-- **Network Activity**: Review basic network connection logs
-- **Event Correlation**: Connect events across different log files
+### System Logs (Simple Review)
+- **Login Logs**: Look for failed login attempts
+- **Process Logs**: Find suspicious program names
 
 ---
 
@@ -131,167 +120,112 @@ Week 5: Current Investigation (Find The Null)
 ### Investigation Outcomes
 **Based on Evidence Found (70%+ required to pass)**:
 
-**Success (70-100% evidence)**: 
-- **Identity Revealed**: The Null is actually "Alex Thompson", former IT intern
-- **Motive**: Seeking revenge after being fired for poor performance
-- **Method**: Using knowledge from internship to access systems
-- **Resolution**: Evidence forwarded to authorities for prosecution
+**Success (Find 4+ pieces of evidence)**: 
+- **Identity Revealed**: The Null is "Alex Thompson"
+- **Case Closed**: Student successfully solved the mystery
 
-**Partial Success (50-69% evidence)**:
-- **Pattern Identified**: Recognize attack signatures and timing
-- **Prevention**: Can detect future attacks by same actor  
-- **Learning**: Understand what evidence was missed
+**Partial Success (Find 2-3 pieces of evidence)**:
+- **Some Clues Found**: Student found some patterns
+- **Hint Given**: Show them what they missed
 
-**Insufficient Evidence (<50%)**:
-- **Case Review**: Detailed feedback on missed clues
-- **Second Chance**: Option to re-examine evidence with hints
-- **Learning Focus**: Emphasis on systematic investigation methodology
+**Need More Evidence (Find 0-1 pieces)**:
+- **Try Again**: Give specific hints about where to look
+- **Tutorial Mode**: Show step-by-step how to find evidence
 
 ### Simple Dialogue Options
-**Final Confrontation with The Null**:
-1. **"We have evidence linking you to all these attacks."**
-2. **"Your attack pattern made you easy to track."**  
-3. **"Why did you choose to become a cybercriminal?"**
+**Final Confrontation**:
+1. **"I found your IP address in all the logs."**
+2. **"Your signature 'N4LL' gave you away."**  
 
-**The Null's Response** (based on evidence quality):
-- **High Evidence**: "I underestimated you. How did you find me?"
-- **Medium Evidence**: "You got lucky, but you can't prove everything."
-- **Low Evidence**: "You have nothing concrete. This won't stick."
+**The Null's Response**:
+- **Found Everything**: "How did you track me down?"
+- **Found Some Things**: "You got lucky this time."
 
 ---
 
 ## 🏆 Assessment & Scoring (MVP)
 
-### Core Skills Assessment
-**Evidence Collection (40%)**:
-- Found key files across all applications
-- Identified hidden and deleted evidence
-- Documented findings properly
+### Simple Scoring
+**Evidence Found**:
+- Find 5 evidence files = 100% (Perfect!)
+- Find 4 evidence files = 80% (Great job!)
+- Find 3 evidence files = 60% (Good work!)
+- Find 2 evidence files = 40% (Try again!)
 
-**Pattern Recognition (30%)**:
-- Connected IP addresses across incidents
-- Identified timing patterns
-- Recognized attacker signatures
-
-**Tool Usage (20%)**:
-- Correct use of search functions
-- Basic terminal command execution
-- Log analysis techniques
-
-**Critical Thinking (10%)**:
-- Logical deduction from evidence
-- Proper timeline reconstruction
-- Sound attribution reasoning
-
-### Achievement Badges (Simplified)
-- **"Evidence Hunter"**: Found all hidden files
-- **"Pattern Master"**: Identified all behavioral patterns
-- **"Timeline Expert"**: Perfect chronological reconstruction  
-- **"Digital Detective"**: Successfully identified The Null
-- **"Forensics Fundamentals"**: Demonstrated proper investigation methodology
+### Achievement Badges (3 Only)
+- **"Evidence Hunter"**: Found all 5 evidence files
+- **"Pattern Detective"**: Connected the IP address pattern
+- **"Case Solver"**: Successfully identified The Null
 
 ---
 
 ## 🎓 Learning Objectives (MVP)
 
-### Digital Forensics Basics
-**Essential Skills**:
-- **File System Navigation**: Understanding directory structures and file properties
-- **Search Techniques**: Using search functions to find relevant evidence
-- **Log Analysis**: Reading and interpreting system logs for security events
-- **Timeline Construction**: Organizing events chronologically
-- **Evidence Documentation**: Proper recording of findings
-
-### Investigation Methodology
-**Core Concepts**:
-- **Systematic Approach**: Following structured investigation procedures
-- **Evidence Preservation**: Understanding chain of custody basics
-- **Pattern Recognition**: Identifying behavioral and technical signatures
-- **Critical Thinking**: Drawing logical conclusions from evidence
-- **Reporting**: Presenting findings clearly and professionally
-
-### Technical Skills
-**Practical Abilities**:
-- **Command Line Basics**: Essential terminal commands for forensics
-- **File Analysis**: Examining file properties and metadata
-- **Log Correlation**: Connecting events across multiple sources
-- **Tool Familiarity**: Using built-in system tools for investigation
-- **Documentation**: Creating clear investigation reports
+### Core Skills (Keep It Simple)
+**Students Will Learn**:
+- **Find Files**: Use search to locate evidence files
+- **Read Logs**: Understand basic log entries and timestamps
+- **Spot Patterns**: Notice when same IP/signature appears multiple times
+- **Use Terminal**: Run 3-4 basic commands (find, grep, cat, ls)
+- **Take Notes**: Document what they find
 
 ---
 
 ## 🎮 Implementation (MVP)
 
-### Simple Evidence Database
+### Evidence Files (5 Simple Text Files)
 ```javascript
-const evidenceItems = [
+const evidenceFiles = [
     {
-        id: 'level1_logs',
-        location: '/evidence/bot_network_logs.txt',
-        type: 'log_file',
-        clues: ['192.168.1.100', 'Tuesday 02:00:15'],
-        points: 20
+        name: 'bot_logs.txt',
+        content: 'Bot network from IP: 192.168.1.100',
+        location: '/evidence/'
     },
     {
-        id: 'level2_email',  
-        location: '/evidence/phishing_headers.txt',
-        type: 'email_header',
-        clues: ['X-Mailer: NullSender', '192.168.1.100'],
-        points: 20
+        name: 'email_headers.txt', 
+        content: 'X-Mailer: NullSender\nFrom IP: 192.168.1.100',
+        location: '/evidence/'
     },
-    // Additional evidence items...
+    {
+        name: 'malware_code.txt',
+        content: 'function hack() {\n  // N4LL was here\n}',
+        location: '/evidence/'
+    },
+    {
+        name: 'login_logs.txt',
+        content: 'Failed login from 192.168.1.100',
+        location: '/evidence/'
+    },
+    {
+        name: 'hidden_message.txt',
+        content: 'Base64: VGhlTnVsbElzSGVyZQ==', // "TheNullIsHere"
+        location: '/evidence/.hidden/'
+    }
 ];
 ```
 
-### Basic Investigation Interface
-- **Evidence List**: Simple checklist of items to find
-- **Timeline View**: Drag-and-drop events into chronological order
-- **Pattern Tracker**: Visual correlation of IP addresses, timestamps, signatures
-- **Progress Indicator**: Percentage of evidence collected
-- **Hint System**: Guided assistance when students get stuck
+### Simple Interface
+- **Evidence Checklist**: 5 checkboxes for found evidence
+- **Progress Bar**: Shows completion percentage
+- **Hint Button**: Gives clues when student is stuck
+- **Solution**: Reveals The Null's identity when enough evidence found
 
-### Simplified Applications Integration
-- **File Manager**: Enhanced search with evidence highlighting
-- **Terminal**: Pre-configured commands with helpful output formatting
-- **Logs**: Filtered view showing only relevant security events
-- **Documentation**: Simple note-taking interface for findings
-
-This MVP version focuses on core digital forensics concepts while maintaining an engaging investigative narrative, providing a solid foundation for future enhancements.
+This ultra-simplified MVP version focuses on the absolute core: finding 5 evidence files to solve a mystery. Perfect foundation for building upon.
 
 ---
 
-## 🎯 Success Criteria & Final Assessment
+## 🎯 Success Criteria (MVP)
 
-### Level Completion Requirements
-**Minimum Standards**:
-- Collect at least 70% of available evidence
-- Correctly identify 5+ attack techniques used by The Null
-- Successfully correlate evidence across minimum 3 different attack vectors
-- Demonstrate proper forensics methodology and documentation
-- Present coherent theory of The Null's identity and motivation
+### Level Completion (Simple)
+**To Pass Level 5**:
+- Find at least 4 out of 5 evidence files
+- Identify that "192.168.1.100" appears in multiple files
+- Recognize "N4LL" as The Null's signature
+- Successfully name the attacker as "Alex Thompson"
 
-### Mastery Indicators
-**Excellence Markers**:
-- 95%+ evidence collection rate
-- Perfect timeline reconstruction
-- Successful prediction of The Null's next move
-- Innovative investigation techniques
-- Flawless chain of custody maintenance
+### For Excellence
+- Find all 5 evidence files
+- Use all 3 terminal commands successfully
+- Complete investigation in under 10 minutes
 
-### Capstone Portfolio Project
-**Professional Documentation Package**:
-1. **Executive Summary**: High-level case overview for management
-2. **Technical Report**: Detailed forensics findings and methodology
-3. **Legal Brief**: Court-admissible evidence documentation
-4. **Threat Intelligence**: IOCs and defensive recommendations
-5. **Lessons Learned**: Process improvements and future preparation
-
-### Industry Recognition Simulation
-**Realistic Career Outcomes**:
-- **Job Offer**: Invitation to join federal cyber investigation unit
-- **Conference Speaking**: Opportunity to present case study at cybersecurity conference
-- **Media Recognition**: News interview about successful investigation
-- **Academic Publication**: Co-author research paper on digital forensics techniques
-- **Certification Credit**: CEH, GCFA, or CISSP continuing education units
-
-This comprehensive Level 5 design creates the ultimate cybersecurity education experience, combining advanced technical skills with critical thinking, legal considerations, and professional development to prepare students for real-world digital forensics and cybersecurity investigation careers.
+This is the perfect MVP foundation - simple, focused, and achievable while still teaching core digital forensics concepts.
