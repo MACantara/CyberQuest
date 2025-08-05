@@ -1,3 +1,7 @@
+// TODO: Fix the level 5 tutorial not showing up after completing the dialogue
+// TODO: Make hidden directories only discoverable by using ls -la in the terminal app
+// TODO: Update the mastermind of The Null to be Dr. Cipher instead of Alex Thompson
+
 import { BaseDialogue } from '../base-dialogue.js';
 
 export class Level5HuntForTheNullDialogue extends BaseDialogue {
