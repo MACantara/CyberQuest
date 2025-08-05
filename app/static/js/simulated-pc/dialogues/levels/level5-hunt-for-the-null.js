@@ -32,6 +32,13 @@ export class Level5HuntForTheNullDialogue extends BaseDialogue {
                 const apps = ['files', 'logs', 'terminal'];
                 await window.applicationLauncher.launchMultiple(apps);
                 console.log('Digital forensics tools opened for Level 5: Hunt for The Null');
+                
+                // Start the Level 5 forensics tutorial
+                if (window.tutorialManager && window.tutorialManager.startLevel5ForensicsTutorial) {
+                    setTimeout(() => {
+                        window.tutorialManager.startLevel5ForensicsTutorial();
+                    }, 1000);
+                }
             }, 500);
         }
     }
