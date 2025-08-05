@@ -1,494 +1,262 @@
-# Level 5: The Hunt for The Null - Design Document
+# Level 5: The Hunt for The Null - MVP Design Document
 
 ## Overview
-**Scenario**: Advanced Digital Forensics Investigation  
-**Story Event**: The culmination of all previous training - track down the elusive hacker "The Null" who has been orchestrating cyberattacks across multiple systems. Use advanced forensics techniques to piece together digital evidence and expose their true identity.  
-**Goal**: Master digital forensics, evidence correlation, timeline analysis, and advanced investigative techniques to solve the ultimate cybersecurity mystery.
+**Scenario**: Digital Forensics Investigation  
+**Story Event**: Track down the elusive hacker "The Null" using digital forensics to piece together evidence from previous cyber incidents.  
+**Goal**: Learn basic digital forensics, evidence collection, and investigation techniques to solve a cybersecurity mystery.
 
 ---
 
-## 🕵️ Investigative Narrative Arc
+## 🕵️ The Investigation Story
 
-### The Null's Criminal Timeline
-**Background**: Throughout the previous levels, subtle clues have been planted:
-- **Level 1**: Misinformation campaign traces back to automated bot network
-- **Level 2**: Phishing emails contain unique metadata signatures
-- **Level 3**: Malware samples share common code patterns
-- **Level 4**: Vulnerability exploitation shows sophisticated knowledge
+### The Null's Background
+**Previous Level Connections**:
+- **Level 1**: Bot network IP addresses found in misinformation campaign
+- **Level 2**: Phishing email headers contain unique sender signatures  
+- **Level 3**: Malware samples have identical code patterns
+- **Level 4**: Vulnerability exploitation shows consistent techniques
 
 **The Null's Profile**:
-- **Aliases**: N4LL, Zero_Point, VoidWalker, DigitalGhost
-- **Signature**: Leaves cryptographic puzzles in their wake
-- **Motivation**: Unknown - financial gain, political disruption, or intellectual challenge?
-- **Skills**: Advanced persistent threat (APT) techniques, social engineering, zero-day exploits
+- **Primary Alias**: The Null (uses "N4LL" in code comments)
+- **Signature**: Leaves Base64 encoded messages as calling cards
+- **Pattern**: Attacks every Tuesday at 2:00 AM EST
+- **Goal**: Student must connect evidence across all previous incidents
 
-### Investigation Phases
-1. **Evidence Collection** - Gather artifacts from all previous incidents
-2. **Timeline Reconstruction** - Correlate events across multiple attacks
-3. **Pattern Analysis** - Identify The Null's modus operandi
-4. **Attribution Analysis** - Connect digital fingerprints to real identity
-5. **Final Confrontation** - Present evidence and expose The Null
+### Investigation Phases (MVP)
+1. **Evidence Collection** - Find files, logs, and artifacts
+2. **Pattern Recognition** - Identify The Null's behavioral patterns  
+3. **Timeline Building** - Arrange events in chronological order
+4. **Final Analysis** - Present findings and expose The Null's identity
 
 ---
 
-## 🔬 Technical/Forensics Phase: Digital Investigation
+## 🔍 Core Forensics Activities (MVP)
 
-### Log Analysis & Timeline Correlation
-- **Multi-source Log Aggregation**: Web servers, firewalls, email systems, authentication logs
-- **Timeline Visualization**: Interactive timeline showing attack progression across months
-- **Pattern Recognition**: Identify recurring IP addresses, user agents, attack timings
-- **Correlation Engine**: Connect seemingly unrelated events across different systems
+### File Manager Investigation
+**Evidence Discovery Tasks**:
+- **Hidden Files**: Find files with "null" in the name using search
+- **Deleted Files**: Recover files from "Recycle Bin" or "Trash"
+- **File Analysis**: Examine file properties (creation date, size, type)
+- **Directory Patterns**: Notice The Null organizes files in specific folder structures
 
-**Interactive Tools**:
+**Key Evidence Files**:
+```
+/evidence/level1_bot_logs.txt        (IP: 192.168.1.100 - recurring)
+/evidence/level2_email_headers.txt   (X-Mailer: NullSender v1.0)
+/evidence/level3_malware_sample.exe  (Code comment: "// N4LL was here")
+/evidence/level4_exploit_code.py     (Function name: null_exploit())
+/evidence/hidden_message.txt         (Base64: VGhlTnVsbElzSGVyZQ==)
+```
+
+### Terminal Forensics Commands (Simplified)
 ```bash
-# Advanced log analysis commands
-grep -r "suspicious_pattern" /var/log/
-awk '{print $1,$4,$7}' access.log | sort | uniq -c | sort -nr
-timeline_analyzer --input multiple_logs.json --output attack_timeline.html
-volatility -f memory_dump.raw --profile=Linux imageinfo
+# Basic commands students learn
+find . -name "*null*"                    # Find files with "null" in name
+grep -r "N4LL" /var/log/                 # Search for signature in logs
+ls -la                                   # Show hidden files and timestamps
+cat suspicious_file.txt                  # Read file contents
+strings malware.exe | grep password      # Extract readable text from binary
 ```
 
-### Memory Forensics & Artifact Recovery
-- **RAM Analysis**: Extract running processes, network connections, encryption keys
-- **Deleted File Recovery**: Uncover files The Null attempted to permanently delete
-- **Browser Forensics**: Reconstruct browsing history, cached files, stored passwords
-- **Registry Analysis**: Windows registry artifacts showing system changes
+### System Logs Analysis
+**Log Investigation Tasks**:
+- **Login Patterns**: Find repeated login attempts from same IP
+- **Timestamp Correlation**: Notice all attacks happen at 2:00 AM Tuesday
+- **Failed Attempts**: Identify unsuccessful login attempts before successful ones
+- **Process Analysis**: Find processes with suspicious names
 
-**Forensics Challenges**:
-1. **Encrypted Communications**: Crack The Null's custom encryption scheme
-2. **Steganography**: Hidden messages in seemingly innocent image files
-3. **Anti-Forensics**: Counter techniques The Null used to hide tracks
-4. **Live Memory Analysis**: Extract encryption keys from RAM dumps
-
-### Network Traffic Analysis
-- **PCAP File Investigation**: Deep packet inspection of captured network traffic
-- **Covert Channel Detection**: Identify hidden communication methods
-- **Tor/VPN Analysis**: Track connections through anonymization networks
-- **Botnet Command & Control**: Identify C&C server communications
-
-**Advanced Analysis Techniques**:
-```python
-# Network analysis simulation
-def analyze_packet_patterns(pcap_file):
-    suspicious_ips = []
-    for packet in pcap_file:
-        if detect_tor_bridge(packet) or unusual_timing(packet):
-            suspicious_ips.append(packet.src_ip)
-    return correlate_with_threat_intel(suspicious_ips)
+**Sample Log Entries**:
 ```
-
-### Cryptocurrency & Financial Forensics
-- **Blockchain Analysis**: Trace cryptocurrency transactions used for payments
-- **Wallet Clustering**: Connect multiple Bitcoin addresses to single entity
-- **Exchange Investigation**: Track where cryptocurrency was converted to fiat
-- **Financial Pattern Analysis**: Identify payment schedules and amounts
+2024-08-05 02:00:15 - Failed login: user "admin" from 192.168.1.100
+2024-08-05 02:00:32 - Successful login: user "admin" from 192.168.1.100  
+2024-08-05 02:15:45 - Process started: "definitely_not_malware.exe"
+2024-08-05 02:30:12 - File deleted: "/tmp/evidence_cleanup.sh"
+```
 
 ---
 
-## 🧩 Puzzle & Code-Breaking Elements
+## 🧩 Evidence Correlation (MVP)
 
-### Cryptographic Challenges
-**The Null's Signature Puzzles**: Each attack contains encoded messages
+### Pattern Recognition Challenges
+**Students Must Identify**:
+1. **IP Address**: 192.168.1.100 appears in all incident logs
+2. **Timing Pattern**: All attacks occur Tuesday 2:00 AM EST
+3. **Signature**: "N4LL" appears in code comments and log entries
+4. **Tool Preference**: Always uses "NullSender" for email attacks
+5. **Cleanup Behavior**: Attempts to delete evidence after each attack
 
-1. **Base64 + Caesar Cipher**: Entry-level encoding in early attacks
-   ```
-   SGVsbG8gV29ybGQ= → Hello World (shifted by 13)
-   ```
-
-2. **Custom Polyalphabetic Cipher**: Mid-level sophistication
-   ```
-   Key: CYBERSECURITY
-   Message: "Find me if you can, detective"
-   ```
-
-3. **RSA Public Key Challenge**: The Null's calling card
-   ```
-   -----BEGIN PUBLIC KEY-----
-   [Encoded message containing next clue location]
-   -----END PUBLIC KEY-----
-   ```
-
-4. **Steganographic Images**: Final clue hidden in pixel data
-   ```python
-   def extract_lsb_message(image_path):
-       # Extract least significant bits to reveal hidden message
-       return hidden_coordinates_to_server_location
-   ```
-
-### Logic Puzzles & Pattern Recognition
-**The Null's Behavioral Patterns**:
-- **Attack Timing**: Always strikes during specific time windows
-- **Target Selection**: Follows mathematical sequence (Fibonacci, primes)
-- **Tool Signatures**: Consistent code patterns across different exploits
-- **Communication Protocol**: Unique packet size sequences
-
-### Digital Archaeology
-**Reconstructing Deleted Evidence**:
-1. **File Carving**: Recover deleted files from unallocated disk space
-2. **Metadata Analysis**: Extract EXIF data from images, document properties
-3. **Version Control**: Git repository analysis showing code evolution
-4. **Database Forensics**: Recover deleted database records and transaction logs
-
----
-
-## 🎯 Multi-Application Investigation Workflow
-
-### File Manager Deep Dive
-- **Hidden File Discovery**: Use advanced search to find concealed evidence
-- **File Signature Analysis**: Identify file types by magic numbers, not extensions
-- **Directory Structure Mapping**: Reconstruct The Null's organizational patterns
-- **Timestamp Analysis**: Correlate file creation/modification times
-
-### Terminal Forensics Commands
-```bash
-# Advanced forensics command simulation
-find / -name "*.null" -type f 2>/dev/null
-strings suspicious_binary | grep -E "(password|key|secret)"
-hexdump -C malware_sample.exe | grep -A 5 -B 5 "MZ"
-netstat -anp | grep ESTABLISHED | grep -v "known_good_processes"
-ps aux --forest | grep -E "(null|anonymous|hidden)"
-lsof -i :443 | grep -v browser
-tcpdump -i any -w capture.pcap host 192.168.1.100
-volatility -f memory.raw --profile=Win10x64 pslist
-autopsy # Open forensics suite for disk analysis
+### Simple Timeline Building
+**Interactive Timeline Exercise**:
+```
+Week 1: Level 1 Incident (Misinformation bots deployed)
+Week 2: Level 2 Incident (Phishing campaign launched)  
+Week 3: Level 3 Incident (Malware distributed)
+Week 4: Level 4 Incident (Vulnerability exploited)
+Week 5: Current Investigation (Find The Null)
 ```
 
-### System Logs Investigation
-- **Event Correlation**: Connect Windows Event Logs, Syslog, application logs
-- **Anomaly Detection**: Identify unusual login patterns, failed authentication attempts
-- **Process Analysis**: Track malicious process creation and execution chains
-- **Network Log Analysis**: Firewall logs, DNS queries, proxy server records
-
-### Browser Evidence Collection
-- **Cache Analysis**: Recover The Null's visited websites and downloaded files
-- **Session Storage**: Extract stored data from browser sessions
-- **Extension Analysis**: Identify malicious browser extensions used as backdoors
-- **Password Manager**: Crack stored passwords for additional system access
-
-### Email Forensics
-- **Header Analysis**: Trace email routing through multiple servers
-- **Attachment Forensics**: Analyze malicious attachments for signatures
-- **Metadata Extraction**: Extract hidden information from email properties
-- **Communication Pattern Analysis**: Map The Null's contact network
+### Basic Attribution
+**Evidence Correlation Exercise**:
+- Match IP addresses across different incident reports
+- Connect timestamps to establish attack schedule
+- Link code signatures to prove same attacker
+- Identify tools used consistently across incidents
 
 ---
 
-## 🕵️ Evidence Correlation & Case Building
+## 🎯 Multi-Application Workflow (MVP)
 
-### Digital Evidence Chain of Custody
-**Forensics Documentation Requirements**:
-- **Hash Verification**: SHA-256 checksums for all evidence files
-- **Timestamp Correlation**: UTC standardization across all evidence
-- **Chain of Custody Forms**: Who accessed what evidence when
-- **Court-Admissible Reports**: Professional forensics documentation
+### File Manager Tasks
+- **Search Function**: Find files containing "null", "N4LL", or specific IP addresses
+- **Property Analysis**: Check file creation dates and modification times
+- **Hidden Files**: Reveal files with names starting with "." (Unix) or hidden attribute (Windows)
+- **File Recovery**: Restore deleted files from trash/recycle bin
 
-### Attribution Methodology
-**Technical Attribution Factors**:
-1. **Code Similarities**: Compare malware samples across incidents
-2. **Infrastructure Overlaps**: Shared command & control servers
-3. **Timing Correlations**: Attack patterns matching single actor's schedule
-4. **Language Artifacts**: Spelling, grammar patterns in text artifacts
-5. **Tool Preferences**: Consistent use of specific hacking tools
+### Terminal Activities  
+- **Basic Commands**: Learn 5-6 essential forensics commands
+- **Log Analysis**: Use grep to search for patterns in log files
+- **File Examination**: Use strings, cat, and ls commands
+- **Evidence Documentation**: Create investigation notes using echo and redirection
 
-**Behavioral Attribution**:
-- **Social Engineering Techniques**: Consistent persuasion methods
-- **Target Selection Logic**: Mathematical or thematic patterns
-- **Operational Security**: How The Null maintains anonymity
-- **Communication Style**: Unique phrases or references in messages
+### System Logs Review
+- **Login Analysis**: Identify unusual login patterns and failed attempts
+- **Process Monitoring**: Find suspicious processes and their execution times
+- **Network Activity**: Review basic network connection logs
+- **Event Correlation**: Connect events across different log files
 
-### Advanced Analytics Dashboard
-**Real-time Investigation Interface**:
+---
+
+## 🎯 The Final Revelation (Simplified)
+
+### Investigation Outcomes
+**Based on Evidence Found (70%+ required to pass)**:
+
+**Success (70-100% evidence)**: 
+- **Identity Revealed**: The Null is actually "Alex Thompson", former IT intern
+- **Motive**: Seeking revenge after being fired for poor performance
+- **Method**: Using knowledge from internship to access systems
+- **Resolution**: Evidence forwarded to authorities for prosecution
+
+**Partial Success (50-69% evidence)**:
+- **Pattern Identified**: Recognize attack signatures and timing
+- **Prevention**: Can detect future attacks by same actor  
+- **Learning**: Understand what evidence was missed
+
+**Insufficient Evidence (<50%)**:
+- **Case Review**: Detailed feedback on missed clues
+- **Second Chance**: Option to re-examine evidence with hints
+- **Learning Focus**: Emphasis on systematic investigation methodology
+
+### Simple Dialogue Options
+**Final Confrontation with The Null**:
+1. **"We have evidence linking you to all these attacks."**
+2. **"Your attack pattern made you easy to track."**  
+3. **"Why did you choose to become a cybercriminal?"**
+
+**The Null's Response** (based on evidence quality):
+- **High Evidence**: "I underestimated you. How did you find me?"
+- **Medium Evidence**: "You got lucky, but you can't prove everything."
+- **Low Evidence**: "You have nothing concrete. This won't stick."
+
+---
+
+## 🏆 Assessment & Scoring (MVP)
+
+### Core Skills Assessment
+**Evidence Collection (40%)**:
+- Found key files across all applications
+- Identified hidden and deleted evidence
+- Documented findings properly
+
+**Pattern Recognition (30%)**:
+- Connected IP addresses across incidents
+- Identified timing patterns
+- Recognized attacker signatures
+
+**Tool Usage (20%)**:
+- Correct use of search functions
+- Basic terminal command execution
+- Log analysis techniques
+
+**Critical Thinking (10%)**:
+- Logical deduction from evidence
+- Proper timeline reconstruction
+- Sound attribution reasoning
+
+### Achievement Badges (Simplified)
+- **"Evidence Hunter"**: Found all hidden files
+- **"Pattern Master"**: Identified all behavioral patterns
+- **"Timeline Expert"**: Perfect chronological reconstruction  
+- **"Digital Detective"**: Successfully identified The Null
+- **"Forensics Fundamentals"**: Demonstrated proper investigation methodology
+
+---
+
+## 🎓 Learning Objectives (MVP)
+
+### Digital Forensics Basics
+**Essential Skills**:
+- **File System Navigation**: Understanding directory structures and file properties
+- **Search Techniques**: Using search functions to find relevant evidence
+- **Log Analysis**: Reading and interpreting system logs for security events
+- **Timeline Construction**: Organizing events chronologically
+- **Evidence Documentation**: Proper recording of findings
+
+### Investigation Methodology
+**Core Concepts**:
+- **Systematic Approach**: Following structured investigation procedures
+- **Evidence Preservation**: Understanding chain of custody basics
+- **Pattern Recognition**: Identifying behavioral and technical signatures
+- **Critical Thinking**: Drawing logical conclusions from evidence
+- **Reporting**: Presenting findings clearly and professionally
+
+### Technical Skills
+**Practical Abilities**:
+- **Command Line Basics**: Essential terminal commands for forensics
+- **File Analysis**: Examining file properties and metadata
+- **Log Correlation**: Connecting events across multiple sources
+- **Tool Familiarity**: Using built-in system tools for investigation
+- **Documentation**: Creating clear investigation reports
+
+---
+
+## 🎮 Implementation (MVP)
+
+### Simple Evidence Database
 ```javascript
-// Interactive evidence correlation dashboard
-const evidenceMap = {
-    timestamps: correlateEventTimestamps(),
-    ipAddresses: trackIPGeolocation(),
-    malwareSignatures: compareMalwareSamples(),
-    cryptocurrencyTransactions: traceBitcoinFlow(),
-    socialMediaActivity: analyzeSocialFootprint()
-};
-
-function buildAttackerProfile(evidenceMap) {
-    return {
-        confidence: calculateAttributionConfidence(),
-        timeline: reconstructAttackTimeline(),
-        motivation: assessAttackerMotivation(),
-        capability: evaluateTechnicalSkills(),
-        nextTarget: predictFutureTargets()
-    };
-}
+const evidenceItems = [
+    {
+        id: 'level1_logs',
+        location: '/evidence/bot_network_logs.txt',
+        type: 'log_file',
+        clues: ['192.168.1.100', 'Tuesday 02:00:15'],
+        points: 20
+    },
+    {
+        id: 'level2_email',  
+        location: '/evidence/phishing_headers.txt',
+        type: 'email_header',
+        clues: ['X-Mailer: NullSender', '192.168.1.100'],
+        points: 20
+    },
+    // Additional evidence items...
+];
 ```
 
----
+### Basic Investigation Interface
+- **Evidence List**: Simple checklist of items to find
+- **Timeline View**: Drag-and-drop events into chronological order
+- **Pattern Tracker**: Visual correlation of IP addresses, timestamps, signatures
+- **Progress Indicator**: Percentage of evidence collected
+- **Hint System**: Guided assistance when students get stuck
 
-## 🎭 Psychological Profiling & Social Engineering Analysis
+### Simplified Applications Integration
+- **File Manager**: Enhanced search with evidence highlighting
+- **Terminal**: Pre-configured commands with helpful output formatting
+- **Logs**: Filtered view showing only relevant security events
+- **Documentation**: Simple note-taking interface for findings
 
-### The Null's Digital Persona
-**Behavioral Analysis**:
-- **Risk Tolerance**: Escalating boldness suggests overconfidence
-- **Technical Sophistication**: Progression from script kiddie to APT-level
-- **Communication Patterns**: Narcissistic tendencies in puzzle-leaving behavior
-- **Motivation Indicators**: Financial gain vs. ideological vs. thrill-seeking
-
-### Social Media Intelligence (SOCMINT)
-- **Identity Verification**: Cross-reference social media accounts
-- **Location Intelligence**: Geotagged posts revealing physical locations
-- **Network Analysis**: Map relationships and potential accomplices
-- **Timeline Correlation**: Social media activity during known attack times
-
-### Language Analysis & Linguistics
-- **Writing Style Analysis**: Identify unique language patterns
-- **Cultural Markers**: Regional expressions, cultural references
-- **Education Level**: Technical vocabulary and grammatical complexity
-- **Native Language**: Syntactic patterns suggesting non-English native speaker
-
----
-
-## 🚨 Real-Time Pursuit Phase
-
-### Active Investigation Simulation
-**Live Incident Response**:
-- **The Null Strikes Again**: Mid-investigation, new attack occurs in real-time
-- **Hot Pursuit**: Track active intrusion as it happens
-- **Digital Surveillance**: Monitor The Null's movements across networks
-- **Trap Setting**: Deploy honeypots to catch The Null in action
-
-### Time-Sensitive Challenges
-1. **30-Minute Window**: The Null typically maintains access for limited time
-2. **Evidence Destruction**: Counter The Null's active log deletion attempts
-3. **Evasion Techniques**: Adapt as The Null changes tactics during pursuit
-4. **Communication Intercept**: Capture real-time command & control traffic
-
-### Multi-Vector Investigation
-**Simultaneous Analysis Streams**:
-- **Team Alpha**: Financial transaction tracing
-- **Team Bravo**: Technical forensics and malware analysis
-- **Team Charlie**: Social engineering and HUMINT
-- **Team Delta**: Legal preparation and evidence documentation
-
----
-
-## 🎯 The Final Revelation
-
-### Identity Disclosure Scenarios
-**Multiple Possible Endings Based on Investigation Quality**:
-
-**Perfect Investigation (90-100% Evidence Collected)**:
-- **Complete Profile**: Real name, address, criminal history revealed
-- **Motive Clarity**: Understanding of why The Null began cybercrime
-- **Network Exposure**: Accomplices and criminal organization structure
-- **Legal Victory**: Evidence sufficient for prosecution
-
-**Good Investigation (70-89% Evidence)**:
-- **Partial Identity**: Some personal details, general location
-- **Motivation Theory**: Educated guess about criminal drivers
-- **Prevention Success**: Enough intelligence to prevent future attacks
-- **Ongoing Investigation**: Case continues with law enforcement
-
-**Adequate Investigation (50-69% Evidence)**:
-- **Alias Identification**: Online personas and attack patterns documented
-- **Technical Signature**: Ability to detect future attacks by same actor
-- **Limited Prevention**: Some protective measures possible
-- **The Null Escapes**: But with damaged operational security
-
-**Poor Investigation (<50% Evidence)**:
-- **Case Goes Cold**: Insufficient evidence for prosecution
-- **The Null Vanishes**: Successful evasion and identity protection
-- **Learning Opportunity**: Detailed feedback on missed evidence
-- **Second Chance**: Option to restart with additional guidance
-
-### Confrontation Dialogue Options
-**Final Encounter with The Null** (via secure chat or video call):
-
-1. **Professional Approach**: "Your operational security had flaws. Let me show you."
-2. **Empathetic Understanding**: "I understand your motivations, but there are legal ways to achieve your goals."
-3. **Intimidation Tactic**: "We have enough evidence to put you away for decades."
-4. **Curiosity-Driven**: "I'm impressed by your skills. Why turn to crime?"
-5. **Negotiation Attempt**: "Cooperate with us, and we can work out a deal."
-
-**The Null's Possible Responses**:
-- **Arrogant Denial**: Claims evidence is circumstantial
-- **Respect for Skills**: Acknowledges player's investigative abilities
-- **Confession with Conditions**: Willing to talk in exchange for considerations
-- **Challenge Escalation**: "You found me, but can you stop what I've already set in motion?"
-- **Philosophical Debate**: Discussion about cybersecurity ethics and societal vulnerabilities
-
----
-
-## 🏆 Advanced Scoring & Assessment
-
-### Investigation Quality Metrics
-**Technical Proficiency (40%)**:
-- Evidence collection completeness
-- Correct use of forensics tools
-- Timeline accuracy and correlation
-- Advanced technique application
-
-**Analytical Skills (30%)**:
-- Pattern recognition accuracy
-- Logical deduction quality
-- Hypothesis formation and testing
-- Attribution confidence calculations
-
-**Methodology (20%)**:
-- Proper forensics procedures
-- Chain of custody maintenance
-- Documentation quality
-- Legal admissibility standards
-
-**Innovation & Creativity (10%)**:
-- Novel investigation approaches
-- Creative problem solving
-- Unconventional evidence sources
-- Adaptive thinking under pressure
-
-### Difficulty Scaling Options
-**Easy Mode**: "Security Analyst"
-- More obvious clues and patterns
-- Built-in guidance and hints
-- Simplified forensics tools
-- Clear evidence connections
-
-**Normal Mode**: "Digital Detective"
-- Standard difficulty with moderate guidance
-- Professional-level tool complexity
-- Some red herrings and false leads
-- Realistic investigation timeline
-
-**Hard Mode**: "Forensics Expert"
-- Minimal guidance and hints
-- Complex multi-layer evidence
-- Significant false leads and misdirection
-- Time pressure and resource constraints
-
-**Expert Mode**: "Cyber Sleuth Master"
-- No hints or guidance provided
-- Advanced anti-forensics techniques
-- Multiple valid interpretation paths
-- The Null actively counters investigation
-
-### Achievement Badges
-- **"Digital Sherlock"**: Perfect evidence correlation across all cases
-- **"Code Breaker"**: Solve all cryptographic puzzles without assistance
-- **"Timeline Master"**: Reconstruct attack timeline with 100% accuracy
-- **"The Profiler"**: Correctly identify The Null's psychological profile
-- **"Justice Served"**: Gather sufficient evidence for legal prosecution
-- **"Speed Investigator"**: Complete investigation in under 30 minutes
-- **"Forensics Perfectionist"**: Maintain flawless chain of custody
-- **"Pattern Sage"**: Identify all attack patterns and signatures
-
----
-
-## 🎓 Educational Learning Objectives
-
-### Digital Forensics Mastery
-**Core Skills Demonstrated**:
-- **Disk Forensics**: File system analysis, deleted file recovery
-- **Memory Forensics**: RAM analysis, process examination
-- **Network Forensics**: Packet analysis, traffic correlation
-- **Mobile Forensics**: Smartphone evidence extraction
-- **Cloud Forensics**: SaaS platform investigation techniques
-
-### Legal and Ethical Considerations
-**Professional Standards**:
-- **Chain of Custody**: Proper evidence handling procedures
-- **Legal Admissibility**: Court-ready documentation standards
-- **Privacy Rights**: Balancing investigation needs with civil liberties
-- **International Law**: Cross-border cybercrime investigation challenges
-- **Ethical Guidelines**: Professional investigator conduct standards
-
-### Advanced Technical Skills
-**Specialized Capabilities**:
-- **Malware Reverse Engineering**: Dissecting sophisticated threats
-- **Cryptographic Analysis**: Breaking encryption and steganography
-- **Social Engineering Detection**: Identifying manipulation techniques
-- **Attribution Techniques**: Connecting digital evidence to real actors
-- **Threat Intelligence**: Using external data sources for context
-
-### Critical Thinking Development
-**Analytical Mindset**:
-- **Hypothesis Testing**: Forming and validating theories
-- **Bias Recognition**: Avoiding confirmation bias in investigations
-- **Evidence Evaluation**: Distinguishing reliable from unreliable sources
-- **Risk Assessment**: Evaluating threat levels and response priorities
-- **Decision Making**: Choosing optimal investigation strategies
-
----
-
-## 🎮 Implementation Technical Details
-
-### Advanced Simulation Engine
-```javascript
-// Forensics investigation state management
-class DigitalForensicsEngine {
-    constructor() {
-        this.evidenceDatabase = new EvidenceCorrelator();
-        this.timelineAnalyzer = new AttackTimelineBuilder();
-        this.attributionEngine = new ThreatAttributionAI();
-        this.investigationProgress = new ProgressTracker();
-    }
-
-    analyzeEvidence(evidenceFile) {
-        const hashSignature = this.calculateFileHash(evidenceFile);
-        const metadata = this.extractMetadata(evidenceFile);
-        const patterns = this.identifyPatterns(evidenceFile);
-        
-        return this.evidenceDatabase.correlate({
-            hash: hashSignature,
-            metadata: metadata,
-            patterns: patterns,
-            timestamp: Date.now()
-        });
-    }
-
-    buildAttackerProfile() {
-        const evidence = this.evidenceDatabase.getAllEvidence();
-        const timeline = this.timelineAnalyzer.reconstructEvents(evidence);
-        const attribution = this.attributionEngine.calculateConfidence(evidence);
-        
-        return {
-            confidence: attribution.confidence,
-            profile: attribution.profile,
-            timeline: timeline,
-            nextSteps: this.recommendNextActions()
-        };
-    }
-}
-```
-
-### Interactive Evidence Collection
-- **Drag-and-Drop Interface**: Intuitive evidence management
-- **Zoom and Enhance**: Detailed examination of digital artifacts
-- **Timeline Visualization**: Interactive attack progression display
-- **Correlation Matrix**: Visual evidence relationship mapping
-- **Confidence Scoring**: Real-time attribution probability updates
-
-### Realistic Tool Simulation
-**Professional Forensics Software**:
-- **Autopsy Digital Forensics Platform**: Open-source investigation suite
-- **Volatility Framework**: Memory analysis and malware detection
-- **Wireshark**: Network protocol analyzer and packet inspector
-- **YARA Rules**: Malware identification and classification
-- **Timeline Explorer**: Evidence timeline correlation and analysis
-
-### Dynamic Difficulty Adjustment
-```python
-# Adaptive challenge system
-def adjust_difficulty(player_performance):
-    if player_performance.accuracy > 0.85:
-        return increase_evidence_complexity()
-    elif player_performance.accuracy < 0.60:
-        return provide_additional_hints()
-    else:
-        return maintain_current_difficulty()
-
-def generate_false_leads(difficulty_level):
-    """Generate realistic but incorrect evidence paths"""
-    false_leads = []
-    for i in range(difficulty_level):
-        false_leads.append(create_convincing_misdirection())
-    return false_leads
-```
+This MVP version focuses on core digital forensics concepts while maintaining an engaging investigative narrative, providing a solid foundation for future enhancements.
 
 ---
 
