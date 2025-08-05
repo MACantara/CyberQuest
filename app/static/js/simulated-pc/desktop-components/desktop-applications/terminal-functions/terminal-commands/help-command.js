@@ -48,6 +48,8 @@ export class HelpCommand extends BaseCommand {
             '  echo <text>  - Display text',
             '  date         - Show current date and time',
             '  uname [-a]   - Show system information',
+            '  nmap [opts]  - Network mapper and security scanner',
+            '  ping [opts]  - Test network connectivity to hosts',
             '  help [cmd]   - Show this help or help for specific command',
             '',
             'Tips:',

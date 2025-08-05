@@ -4,11 +4,6 @@
 
 {% block extra_css %}
 <style>
-    /* Hide navbar and footer for fullscreen simulation */
-    nav, footer {
-        display: none !important;
-    }
-    
     /* Make body fullscreen */
     body {
         margin: 0;
@@ -84,6 +79,10 @@
 </style>
 {% endblock %}
 
+{% block navbar %}
+
+{% endblock %}
+
 {% block content %}
 <!-- Loading Screen -->
 <div id="loading-screen" class="fixed inset-0 bg-black flex items-center justify-center z-50">
@@ -95,6 +94,10 @@
 
 <!-- Simulation Container -->
 <div id="simulation-container" class="w-full h-full"></div>
+{% endblock %}
+
+{% block footer %}
+
 {% endblock %}
 
 {% block extra_js %}

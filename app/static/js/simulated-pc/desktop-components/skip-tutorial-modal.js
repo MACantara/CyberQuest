@@ -1,3 +1,5 @@
+// TODO: Increase the z-index to 8000
+
 import { tutorialInteractionManager } from '../tutorials/tutorial-interaction-manager.js';
 
 export class SkipTutorialModal {

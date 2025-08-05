@@ -122,6 +122,19 @@ export class TutorialRegistry {
             startMethod: 'startMalwareScannerTutorial',
             restartMethod: 'restartMalwareScannerTutorial'
         });
+
+        this.registerTutorial('vulnerability-scanner', {
+            className: 'VulnerabilityScannerTutorial',
+            globalVarName: 'vulnerabilityScannerTutorial',
+            title: 'Vulnerability Scanning',
+            description: 'Learn to identify security weaknesses in web applications and generate professional reports',
+            category: 'Security Tools',
+            estimatedTime: '15 minutes',
+            storageKey: 'cyberquest_vulnerabilityscanner_tutorial_completed',
+            tutorialMethod: 'shouldAutoStartVulnerabilityScanner',
+            startMethod: 'startVulnerabilityScannerTutorial',
+            restartMethod: 'restartVulnerabilityScannerTutorial'
+        });
     }
 
     // Register a new tutorial

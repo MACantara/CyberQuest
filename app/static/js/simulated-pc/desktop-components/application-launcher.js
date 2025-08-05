@@ -99,6 +99,10 @@ export class ApplicationLauncher {
         return await this.launchApplication('ransomware-decryptor');
     }
 
+    async launchVulnerabilityScanner() {
+        return await this.launchApplication('vulnerability-scanner');
+    }
+
     // Level-specific app launching with logging
     async launchForLevel(levelId, appId, appName = null) {
         const success = await this.launchApplication(appId, appName);
