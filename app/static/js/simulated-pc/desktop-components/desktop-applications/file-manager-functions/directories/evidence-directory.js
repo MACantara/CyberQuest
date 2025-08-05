@@ -55,18 +55,6 @@ class EvidenceDirectoryClass extends BaseDirectory {
             created: '2024-08-04 02:00:15'
         });
 
-        // Add hidden directory with nested structure
-        this.addDirectory({
-            name: '.hidden',
-            icon: 'bi-eye-slash',
-            size: '--',
-            modified: '2024-08-05 08:12:44',
-            hidden: true,
-            suspicious: true,
-            description: 'Hidden directory (use ls -la to reveal)',
-            permissions: 'drwxr-xr-x',
-            created: '2024-08-05 02:30:12'
-        });
 
         // Add additional case files for context
         this.addFile({
