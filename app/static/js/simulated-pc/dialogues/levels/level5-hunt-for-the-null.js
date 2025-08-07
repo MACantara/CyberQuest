@@ -1,5 +1,3 @@
-// TODO: Update the mastermind of The Null to be Dr. Cipher instead of Alex Thompson
-
 import { BaseDialogue } from '../base-dialogue.js';
 
 export class Level5HuntForTheNullDialogue extends BaseDialogue {

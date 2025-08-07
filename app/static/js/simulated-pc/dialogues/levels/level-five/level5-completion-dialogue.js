@@ -26,7 +26,7 @@ export class Level5CompletionDialogue extends BaseDialogue {
                     speaker: "The Null"
                 },
                 {
-                    text: "My name is Alex Thompson. I was a security intern here until they fired me for 'poor performance.' Poor performance! I was the best they had.",
+                    text: "My name is Dr. Marcus Cipher. I was a security consultant here until they terminated my contract for 'security concerns.' Security concerns! I was the best they had.",
                     speaker: "The Null"
                 },
                 {
@@ -163,8 +163,8 @@ export class Level5CompletionDialogue extends BaseDialogue {
                         <li>✓ Final Score: ${scoreData ? scoreData.totalScore : 'N/A'} XP</li>
                         <li>✓ Grade: ${scoreData ? scoreData.grade : 'A'}</li>
                         <li>✓ Badge Earned: ${scoreData ? scoreData.badge.name : 'Digital Detective'}</li>
-                        <li>✓ Perpetrator Identity: Alex Thompson (former intern)</li>
-                        <li>✓ Motive: Revenge for job termination</li>
+                        <li>✓ Perpetrator Identity: Dr. Marcus Cipher (former consultant)</li>
+                        <li>✓ Motive: Revenge for contract termination</li>
                     </ul>
                 </div>
             `;

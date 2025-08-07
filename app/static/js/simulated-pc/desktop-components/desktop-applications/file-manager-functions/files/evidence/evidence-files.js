@@ -207,9 +207,9 @@ You've traced my signature across four different attack vectors:
 ✓ Malware distribution (Level 3)
 ✓ Vulnerability exploitation (Level 4)
 
-My Identity: Alex Thompson
-Former Role: IT Security Intern (fired for poor performance)
-Motivation: Revenge against the company that underestimated me
+My Identity: Dr. Marcus Cipher
+Former Role: IT Security Consultant (contract terminated)
+Motivation: Revenge against the company that betrayed me
 
 I left clues because I wanted to be caught by someone worthy.
 My attacks followed a pattern because patterns create predictability,
@@ -222,8 +222,8 @@ Tools: Custom-built NullSender, NullBrowser, and Null protocol
 
 You found me. Game over.
 
-- The Null (Alex Thompson)
-  Former IT Intern, Current Digital Ghost"
+- The Null (Dr. Marcus Cipher)
+  Former Security Consultant, Current Digital Ghost"
 
 File Properties:
 - Created: 2024-08-05 02:30:12 (final attack)  
@@ -232,14 +232,14 @@ File Properties:
 - Digital Signature: Verified authentic message from attacker
 
 Evidence Analysis:
-- Confirms attacker identity: Alex Thompson
-- Reveals motive: Revenge for job termination
+- Confirms attacker identity: Dr. Marcus Cipher
+- Reveals motive: Revenge for contract termination
 - Shows methodical planning and intentional discovery
 - Demonstrates advanced cybersecurity knowledge
 - Provides complete case closure evidence
 
 Final Case Status: SOLVED
-Perpetrator: Alex Thompson (The Null)
+Perpetrator: Dr. Marcus Cipher (The Null)
 Evidence Quality: Complete digital forensics chain established`,
 
     'case_summary.txt': `=== Level 5 Investigation Case Summary ===
@@ -275,7 +275,7 @@ SUCCESS CRITERIA:
 - Find 4+ evidence files (80% minimum)
 - Identify IP address pattern (192.168.1.100)
 - Recognize attacker signature (N4LL)
-- Determine identity: Alex Thompson
+- Determine identity: Dr. Marcus Cipher
 
 This case tests fundamental digital forensics skills including evidence collection, pattern recognition, timeline reconstruction, and critical analysis.`,
 
@@ -322,7 +322,7 @@ Event: Final message discovered
 Source: 192.168.1.100
 Method: Hidden confession file
 Evidence: hidden_message.txt
-Result: Identity revealed - Alex Thompson
+Result: Identity revealed - Dr. Marcus Cipher
 
 PATTERN ANALYSIS:
 - Attack window: Tuesday 2:00 AM (minimal monitoring)

@@ -121,7 +121,7 @@ cat evidence_file.txt         # Read file contents
 **Based on Evidence Found (70%+ required to pass)**:
 
 **Success (Find 4+ pieces of evidence)**: 
-- **Identity Revealed**: The Null is "Alex Thompson"
+- **Identity Revealed**: The Null is "Dr. Marcus Cipher"
 - **Case Closed**: Student successfully solved the mystery
 
 **Partial Success (Find 2-3 pieces of evidence)**:
@@ -221,7 +221,7 @@ This ultra-simplified MVP version focuses on the absolute core: finding 5 eviden
 - Find at least 4 out of 5 evidence files
 - Identify that "192.168.1.100" appears in multiple files
 - Recognize "N4LL" as The Null's signature
-- Successfully name the attacker as "Alex Thompson"
+- Successfully name the attacker as "Dr. Marcus Cipher"
 
 ### For Excellence
 - Find all 5 evidence files
