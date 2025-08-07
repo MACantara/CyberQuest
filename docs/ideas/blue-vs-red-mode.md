@@ -150,6 +150,38 @@ class RedTeamAI:
 ```
 
 ---
+
+## MVP (Minimum Viable Product) Outline
+
+The MVP for the Blue Team vs Red Team mode will focus on delivering a functional, replayable, and educational experience with the following core features:
+
+### 1. Core Gameplay Loop
+- One player (Blue Team) defends a small simulated network (2–3 hosts, 1–2 services per host) against an AI Red Team attacker.
+- The AI Red Team uses a rule-based, state-driven algorithm to perform basic attack chains (recon, initial access, lateral movement, simple exfiltration/disruption).
+- The Blue Team can monitor logs, receive alerts, patch vulnerabilities, and quarantine hosts.
+
+### 2. Interface
+- New interface inspired by the simulated PC, but with a dashboard for network/asset overview, alert feed, and incident response actions.
+- Simple navigation between hosts and incident details.
+
+### 3. Scoring & Feedback
+- Points awarded for detection speed, response effectiveness, and system uptime.
+- End-of-session summary with feedback on strengths and areas for improvement.
+
+### 4. Replayability
+- Randomized attack chains and vulnerabilities each session.
+- At least two different Red Team "personalities" (e.g., aggressive vs. stealthy).
+
+### 5. Educational Value
+- In-game tips and post-game analysis to reinforce learning.
+
+### 6. Technical Scope
+- No multiplayer or advanced AI (RL/NLP) in MVP; focus on deterministic/probabilistic logic.
+- No scenario editor or campaign integration in MVP.
+
+This MVP will provide a solid foundation for future expansion, while ensuring the core gameplay and learning objectives are met.
+
+---
 ## Notes
 - This mode is not a single level, but a replayable, evolving simulation.
 - Focus is on skill-building, adaptability, and real-world relevance.
