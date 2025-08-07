@@ -207,23 +207,24 @@ You've traced my signature across four different attack vectors:
 ✓ Malware distribution (Level 3)
 ✓ Vulnerability exploitation (Level 4)
 
-My Identity: Dr. Marcus Cipher
+My Identity: Dr. Clarice "Cipher" Kim
 Current Role: Cybersecurity Instructor at CyberQuest Academy
-Motivation: Testing the academy's security awareness and training effectiveness
+Alias: "O2ymandi4s" - Leader of The Null
+Motivation: Revenge against the academy for its misguided direction
 
-I left clues because I wanted to see if our students could apply what they've learned.
-My attacks followed a pattern because patterns create predictability,
-and predictability leads to capture by a skilled investigator.
+I created this elaborate test to expose the academy's flawed approach to cybersecurity.
+My attacks followed a pattern because I wanted skilled investigators to uncover the truth.
+The academy has lost its way, and cyberspace needs a clean slate.
 
 IP Address: 192.168.1.100 (my instructor workstation)
-Signature: N4LL (NULL in l33t speak - representing nothing, void)
+Signature: N4LL (NULL in l33t speak - representing the void I seek)
 Attack Schedule: Every Tuesday 2:00 AM (when monitoring is minimal)
 Tools: Custom-built NullSender, NullBrowser, and Null protocol
 
-You found me. Excellent work, student.
+You found me. But do you understand why?
 
-- The Null (Dr. Marcus Cipher)
-  Cybersecurity Instructor, CyberQuest Academy"
+- O2ymandi4s / Dr. Clarice "Cipher" Kim
+  The Null Leader, CyberQuest Academy Instructor"
 
 File Properties:
 - Created: 2024-08-05 02:30:12 (final attack)  
@@ -232,14 +233,15 @@ File Properties:
 - Digital Signature: Verified authentic message from attacker
 
 Evidence Analysis:
-- Confirms attacker identity: Dr. Marcus Cipher
-- Reveals motive: Educational testing of security awareness
-- Shows methodical planning and intentional discovery
+- Confirms attacker identity: Dr. Clarice "Cipher" Kim
+- Reveals alias: "O2ymandi4s" - Leader of The Null
+- Reveals motive: Revenge against academy's direction
+- Shows methodical planning and ideological motivation
 - Demonstrates advanced cybersecurity knowledge
 - Provides complete case closure evidence
 
 Final Case Status: SOLVED
-Perpetrator: Dr. Marcus Cipher (Cybersecurity Instructor)
+Perpetrator: Dr. Clarice "Cipher" Kim / O2ymandi4s (The Null Leader)
 Evidence Quality: Complete digital forensics chain established`,
 
     'case_summary.txt': `=== Level 5 Investigation Case Summary ===
@@ -275,7 +277,7 @@ SUCCESS CRITERIA:
 - Find 4+ evidence files (80% minimum)
 - Identify IP address pattern (192.168.1.100)
 - Recognize attacker signature (N4LL)
-- Determine identity: Dr. Marcus Cipher (Academy Instructor)
+- Determine identity: Dr. Clarice "Cipher" Kim / O2ymandi4s
 
 This case tests fundamental digital forensics skills including evidence collection, pattern recognition, timeline reconstruction, and critical analysis.`,
 
@@ -322,7 +324,7 @@ Event: Final message discovered
 Source: 192.168.1.100
 Method: Hidden confession file
 Evidence: hidden_message.txt
-Result: Identity revealed - Dr. Marcus Cipher (Academy Instructor)
+Result: Identity revealed - Dr. Clarice "Cipher" Kim / O2ymandi4s
 
 PATTERN ANALYSIS:
 - Attack window: Tuesday 2:00 AM (minimal monitoring)
