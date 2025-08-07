@@ -135,6 +135,19 @@ export class TutorialRegistry {
             startMethod: 'startVulnerabilityScannerTutorial',
             restartMethod: 'restartVulnerabilityScannerTutorial'
         });
+
+        this.registerTutorial('level5-forensics', {
+            className: 'Level5ForensicsTutorial',
+            globalVarName: 'level5ForensicsTutorial',
+            title: 'Level 5: The Hunt for The Null',
+            description: 'Master digital forensics to identify and catch the elusive hacker known as The Null',
+            category: 'Investigation',
+            estimatedTime: '20 minutes',
+            storageKey: 'cyberquest_level5_forensics_tutorial_completed',
+            tutorialMethod: 'shouldAutoStartLevel5Forensics',
+            startMethod: 'startLevel5ForensicsTutorial',
+            restartMethod: 'restartLevel5ForensicsTutorial'
+        });
     }
 
     // Register a new tutorial

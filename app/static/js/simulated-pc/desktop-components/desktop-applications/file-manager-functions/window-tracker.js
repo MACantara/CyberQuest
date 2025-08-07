@@ -27,6 +27,11 @@ export class WindowTracker {
         return windowId;
     }
 
+    untrackWindow(windowId) {
+        this.openWindows.delete(windowId);
+        this.windowMetadata.delete(windowId);
+    }
+
     // Track window maximize/snap state
     updateMaximizedState(windowId, isMaximized, originalDimensions = null) {
         const metadata = this.windowMetadata.get(windowId);

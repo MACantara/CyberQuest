@@ -1,3 +1,6 @@
+// TODO: Fix grep terminal command not working for directories
+// TODO: Fix find terminal command not find files with partial name matches
+
 import { BaseDialogue } from '../base-dialogue.js';
 
 export class Level5HuntForTheNullDialogue extends BaseDialogue {
@@ -25,6 +28,16 @@ export class Level5HuntForTheNullDialogue extends BaseDialogue {
     onComplete() {
         localStorage.setItem('cyberquest_level_5_started', 'true');
         
+        // Initialize evidence tracker for Level 5
+        if (typeof initializeEvidenceTracker === 'function') {
+            import('../../level5/evidence-tracker.js').then(module => {
+                window.evidenceTracker = module.initializeEvidenceTracker();
+                if (window.evidenceTracker) {
+                    window.evidenceTracker.showTracker();
+                }
+            });
+        }
+        
         // Open multiple applications for digital forensics
         if (window.applicationLauncher) {
             setTimeout(async () => {
@@ -32,6 +45,15 @@ export class Level5HuntForTheNullDialogue extends BaseDialogue {
                 const apps = ['files', 'logs', 'terminal'];
                 await window.applicationLauncher.launchMultiple(apps);
                 console.log('Digital forensics tools opened for Level 5: Hunt for The Null');
+                
+                // Start the tutorial after apps are loaded
+                if (window.tutorialManager && typeof window.tutorialManager.shouldAutoStartLevel5Forensics === 'function') {
+                    setTimeout(() => {
+                        if (window.tutorialManager.shouldAutoStartLevel5Forensics()) {
+                            window.tutorialManager.startLevel5ForensicsTutorial();
+                        }
+                    }, 1500);
+                }
             }, 500);
         }
     }

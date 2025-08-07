@@ -4,11 +4,13 @@ import { DownloadsDirectory } from './downloads-directory.js';
 import { DesktopDirectory } from './desktop-directory.js';
 import { PicturesDirectory } from './pictures-directory.js';
 import { LogsDirectory } from './logs-directory.js';
+import { EvidenceDirectory } from './evidence-directory.js';
 
 import { HomeFileContents } from '../files/home/home-files.js';
 import { DocumentsFileContents } from '../files/documents/documents-files.js';
 import { DownloadsFileContents } from '../files/downloads-files/downloads-files.js';
 import { LogsFileContents } from '../files/logs/logs-files.js';
+import { EvidenceFileContents } from '../files/evidence/evidence-files.js';
 
 export class DirectoryRegistry {
     constructor() {
@@ -27,6 +29,7 @@ export class DirectoryRegistry {
         this.directories.set('/home/trainee/Desktop', DesktopDirectory);
         this.directories.set('/home/trainee/Pictures', PicturesDirectory);
         this.directories.set('/home/trainee/Logs', LogsDirectory);
+        this.directories.set('/home/trainee/Evidence', EvidenceDirectory);
     }
 
     initializeFileContents() {
@@ -35,6 +38,7 @@ export class DirectoryRegistry {
         this.fileContents.set('/home/trainee/Documents', DocumentsFileContents);
         this.fileContents.set('/home/trainee/Downloads', DownloadsFileContents);
         this.fileContents.set('/home/trainee/Logs', LogsFileContents);
+        this.fileContents.set('/home/trainee/Evidence', EvidenceFileContents);
     }
 
     getDirectory(path) {

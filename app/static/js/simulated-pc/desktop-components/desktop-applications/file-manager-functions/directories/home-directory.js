@@ -20,6 +20,7 @@ class HomeDirectoryClass extends BaseDirectory {
         this.addDirectory({ name: 'Desktop' });
         this.addDirectory({ name: 'Pictures' });
         this.addDirectory({ name: 'Logs', color: 'text-yellow-400' });
+        this.addDirectory({ name: 'Evidence', color: 'text-red-400', suspicious: true });
 
         // Register individual files
         this.registerFile(new SuspiciousFile());

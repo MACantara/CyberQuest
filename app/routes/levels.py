@@ -1,3 +1,5 @@
+# TODO: Add server-side tracking of level completion and XP
+
 from flask import Blueprint, render_template, current_app, flash, redirect, url_for, request, session
 from flask_login import login_required
 import json
@@ -56,7 +58,7 @@ CYBERSECURITY_LEVELS = [
         'estimated_time': '30 minutes',
         'skills': ['Penetration Testing', 'Vulnerability Assessment', 'Ethical Hacking'],
         'unlocked': False,
-        'coming_soon': True
+        'coming_soon': False
     },
     {
         'id': 5,
@@ -69,7 +71,7 @@ CYBERSECURITY_LEVELS = [
         'estimated_time': '40 minutes',
         'skills': ['Digital Forensics', 'Evidence Analysis', 'Advanced Investigation'],
         'unlocked': False,
-        'coming_soon': True
+        'coming_soon': False
     }
 ]
 
