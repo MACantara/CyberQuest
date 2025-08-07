@@ -144,7 +144,7 @@ export class TutorialRegistry {
             category: 'Investigation',
             estimatedTime: '20 minutes',
             storageKey: 'cyberquest_level5_forensics_tutorial_completed',
-            tutorialMethod: 'shouldAutoStart',
+            tutorialMethod: 'shouldAutoStartLevel5Forensics',
             startMethod: 'startLevel5ForensicsTutorial',
             restartMethod: 'restartLevel5ForensicsTutorial'
         });

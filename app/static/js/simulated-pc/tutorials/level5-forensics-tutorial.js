@@ -347,7 +347,7 @@ You've mastered digital forensics and solved the ultimate cybersecurity mystery!
     }
 
     // Static method for tutorial auto-start
-    static shouldAutoStart() {
+    static shouldAutoStartLevel5Forensics() {
         const currentLevel = localStorage.getItem('cyberquest_current_level');
         const levelStarted = localStorage.getItem('cyberquest_level_5_started');
         const tutorialCompleted = localStorage.getItem('cyberquest_level5_forensics_tutorial_completed');
