@@ -71,7 +71,7 @@ CYBERSECURITY_LEVELS = [
         'estimated_time': '40 minutes',
         'skills': ['Digital Forensics', 'Evidence Analysis', 'Advanced Investigation'],
         'unlocked': False,
-        'coming_soon': True
+        'coming_soon': False
     }
 ]
 
