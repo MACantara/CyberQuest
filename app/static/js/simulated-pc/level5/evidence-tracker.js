@@ -270,6 +270,15 @@ export function initializeEvidenceTracker() {
         window.evidenceTracker = new EvidenceTracker();
         EvidenceTracker.createTrackerButton();
         console.log('Evidence tracker initialized for Level 5');
+        
+        // Auto-start Level 5 tutorial if conditions are met
+        setTimeout(() => {
+            if (window.tutorialManager && typeof window.tutorialManager.shouldAutoStartLevel5Forensics === 'function') {
+                if (window.tutorialManager.shouldAutoStartLevel5Forensics()) {
+                    window.tutorialManager.startLevel5ForensicsTutorial();
+                }
+            }
+        }, 2000); // Delay to ensure everything is loaded
     }
     return window.evidenceTracker;
 }
