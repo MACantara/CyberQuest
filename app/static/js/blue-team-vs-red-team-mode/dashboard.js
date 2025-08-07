@@ -9,6 +9,7 @@ class BlueTeamDashboard {
         this.timer = null;
         this.autoRefresh = null;
         this.csrfToken = null;
+        this.gameEngine = null;
         
         this.init();
     }
@@ -16,6 +17,7 @@ class BlueTeamDashboard {
     init() {
         this.getCsrfToken();
         this.updateTimestamp();
+        this.initializeGameEngine();
         this.checkExistingSession();
         this.startAutoRefresh();
         
@@ -27,6 +29,76 @@ class BlueTeamDashboard {
         } else {
             // DOM is already loaded
             this.setupEventListeners();
+        }
+    }
+    
+    initializeGameEngine() {
+        // Initialize game engine if available
+        if (typeof BlueRedGameEngine !== 'undefined') {
+            this.gameEngine = new BlueRedGameEngine();
+            
+            // Listen for game events
+            this.gameEngine.addEventListener('gameEnded', (endData) => {
+                console.log('Game ended:', endData);
+                showGameOverModal(endData);
+            });
+            
+            this.gameEngine.addEventListener('stateChanged', (gameState) => {
+                // Update UI based on game state changes
+                this.updateUIFromGameState(gameState);
+            });
+            
+            this.gameEngine.addEventListener('alertGenerated', (alert) => {
+                // Handle new alerts from game engine
+                this.handleGameAlert(alert);
+            });
+        }
+    }
+    
+    updateUIFromGameState(gameState) {
+        if (gameState.score !== undefined) {
+            this.score = gameState.score;
+            const scoreElement = document.getElementById('current-score');
+            if (scoreElement) {
+                scoreElement.textContent = gameState.score;
+            }
+        }
+        
+        if (gameState.hosts) {
+            this.updateHostsDisplay(gameState.hosts);
+        }
+        
+        if (gameState.alerts) {
+            this.updateAlertsDisplay(gameState.alerts);
+        }
+    }
+    
+    handleGameAlert(alert) {
+        // Add the alert to the UI immediately
+        const alertsContainer = document.getElementById('alerts-container');
+        if (alertsContainer) {
+            const alertElement = document.createElement('div');
+            
+            let severityClasses = 'bg-orange-900 bg-opacity-50 border border-orange-500';
+            if (alert.severity === 'high' || alert.severity === 'critical') {
+                severityClasses = 'bg-red-900 bg-opacity-50 border border-red-500';
+            } else if (alert.severity === 'low') {
+                severityClasses = 'bg-green-900 bg-opacity-50 border border-green-500';
+            }
+            
+            alertElement.className = `${severityClasses} p-2 my-0.5 rounded text-xs cursor-pointer hover:bg-opacity-70`;
+            alertElement.dataset.alertId = alert.id;
+            alertElement.innerHTML = `
+                <div><strong>[${alert.severity.toUpperCase()}]</strong> ${alert.message}</div>
+                <div>Source: ${alert.source} | Time: ${this.formatTimestamp(alert.timestamp)}</div>
+            `;
+            
+            alertElement.addEventListener('click', () => {
+                selectAlert(alert.id);
+            });
+            
+            alertsContainer.appendChild(alertElement);
+            alertsContainer.scrollTop = alertsContainer.scrollHeight;
         }
     }
     
@@ -123,6 +195,15 @@ class BlueTeamDashboard {
             }
         });
         
+        // Play Again button
+        const playAgainBtn = document.getElementById('play-again-btn');
+        if (playAgainBtn) {
+            playAgainBtn.addEventListener('click', () => {
+                closeModal('game-over-modal');
+                newSession();
+            });
+        }
+        
         // Close modal when clicking outside
         window.addEventListener('click', (e) => {
             if (e.target.classList.contains('fixed') && e.target.classList.contains('bg-black')) {
@@ -162,12 +243,55 @@ class BlueTeamDashboard {
                 this.startTime = new Date();
                 this.updateSessionId();
                 this.startTimer();
+                
+                // Initialize game engine with session data
+                if (this.gameEngine) {
+                    this.gameEngine.startGame({
+                        session_id: data.session_id,
+                        hosts: data.hosts || this.getDefaultHosts(),
+                        score: 0,
+                        ai_personality: data.ai_personality || 'aggressive'
+                    });
+                }
+                
                 this.showAlert('success', 'New Blue vs Red session started!');
             }
         } catch (error) {
             console.error('Error starting session:', error);
             this.showAlert('error', 'Failed to start new session');
         }
+    }
+    
+    getDefaultHosts() {
+        return {
+            'web-server': {
+                id: 'web-server',
+                name: 'Web Server',
+                ip: '192.168.1.10',
+                services: ['HTTP', 'HTTPS'],
+                status: 'online',
+                compromised: false,
+                vulnerabilities: ['CVE-2023-1234', 'CVE-2023-5678']
+            },
+            'database': {
+                id: 'database',
+                name: 'Database Server',
+                ip: '192.168.1.20',
+                services: ['MySQL'],
+                status: 'online',
+                compromised: false,
+                vulnerabilities: ['CVE-2023-9999']
+            },
+            'workstation': {
+                id: 'workstation',
+                name: 'User Workstation',
+                ip: '192.168.1.100',
+                services: ['RDP', 'SMB'],
+                status: 'online',
+                compromised: false,
+                vulnerabilities: ['CVE-2023-1111', 'CVE-2023-2222']
+            }
+        };
     }
     
     startTimer() {
@@ -418,6 +542,11 @@ async function scanNetwork() {
             dashboard.showAlert('success', data.message);
             dashboard.score = data.score;
             document.getElementById('current-score').textContent = data.score;
+            
+            // Notify game engine
+            if (dashboard.gameEngine) {
+                dashboard.gameEngine.handleBlueTeamAction('scan', {});
+            }
         }
     } catch (error) {
         console.error('Error scanning network:', error);
@@ -435,6 +564,14 @@ async function patchVulnerabilities() {
             dashboard.showAlert('success', data.message);
             dashboard.score = data.score;
             document.getElementById('current-score').textContent = data.score;
+            
+            // Notify game engine
+            if (dashboard.gameEngine) {
+                dashboard.gameEngine.handleBlueTeamAction('patch', { 
+                    host: target,
+                    patchedCount: data.patchedCount || 1
+                });
+            }
         }
     } catch (error) {
         console.error('Error patching vulnerabilities:', error);
@@ -456,6 +593,13 @@ async function quarantineHost() {
             dashboard.showAlert('success', data.message);
             dashboard.score = data.score;
             document.getElementById('current-score').textContent = data.score;
+            
+            // Notify game engine
+            if (dashboard.gameEngine) {
+                dashboard.gameEngine.handleBlueTeamAction('quarantine', { 
+                    host: dashboard.selectedHost
+                });
+            }
         } else {
             const error = await response.json();
             dashboard.showAlert('error', error.error);
@@ -484,6 +628,21 @@ async function investigateAlert() {
             showInvestigationResults(data.investigation_results);
             dashboard.score = data.score;
             document.getElementById('current-score').textContent = data.score;
+            
+            // Mark alert as handled in game engine
+            if (dashboard.gameEngine && dashboard.selectedAlert) {
+                const alertIndex = dashboard.gameEngine.gameState.alerts.findIndex(
+                    alert => alert.id == dashboard.selectedAlert
+                );
+                if (alertIndex !== -1) {
+                    dashboard.gameEngine.gameState.alerts[alertIndex].handled = true;
+                }
+                
+                dashboard.gameEngine.handleBlueTeamAction('investigation', { 
+                    alertId: dashboard.selectedAlert,
+                    host: dashboard.selectedHost
+                });
+            }
         }
     } catch (error) {
         console.error('Error investigating:', error);
@@ -564,6 +723,112 @@ async function newSession() {
 
 function closeModal(modalId) {
     document.getElementById(modalId).classList.add('hidden');
+}
+
+// Game Over Modal Functions
+function showGameOverModal(gameData) {
+    const modal = document.getElementById('game-over-modal');
+    const container = modal.querySelector('.game-over-container');
+    
+    // Set result-specific styling and content
+    updateGameOverTitle(gameData.result, gameData.reason);
+    updateGameOverBadge(gameData.result, gameData.finalScore, gameData.bonusScore);
+    updateGameOverStats(gameData);
+    updateGameOverRecommendations(gameData.recommendedActions);
+    
+    // Show the modal
+    modal.classList.remove('hidden');
+}
+
+function updateGameOverTitle(result, reason) {
+    const title = document.getElementById('game-result-title');
+    const reasonEl = document.getElementById('game-result-reason');
+    
+    switch (result) {
+        case 'perfect_victory':
+            title.textContent = '🏆 PERFECT VICTORY!';
+            title.className = 'text-3xl font-bold mb-2 text-yellow-400';
+            break;
+        case 'victory':
+            title.textContent = '✅ VICTORY!';
+            title.className = 'text-3xl font-bold mb-2 text-green-400';
+            break;
+        case 'partial_victory':
+            title.textContent = '⚡ PARTIAL SUCCESS';
+            title.className = 'text-3xl font-bold mb-2 text-blue-400';
+            break;
+        case 'defeat':
+            title.textContent = '❌ MISSION FAILED';
+            title.className = 'text-3xl font-bold mb-2 text-red-400';
+            break;
+        default:
+            title.textContent = 'GAME OVER';
+            title.className = 'text-3xl font-bold mb-2 text-gray-400';
+    }
+    
+    reasonEl.textContent = reason;
+}
+
+function updateGameOverBadge(result, finalScore, bonusScore) {
+    const badge = document.getElementById('game-result-badge');
+    const scoreEl = document.getElementById('game-result-score');
+    
+    let badgeClass = 'mt-4 p-4 rounded-lg ';
+    
+    switch (result) {
+        case 'perfect_victory':
+            badgeClass += 'bg-gradient-to-r from-yellow-600 to-yellow-500 border-2 border-yellow-400';
+            break;
+        case 'victory':
+            badgeClass += 'bg-gradient-to-r from-green-600 to-green-500 border-2 border-green-400';
+            break;
+        case 'partial_victory':
+            badgeClass += 'bg-gradient-to-r from-blue-600 to-blue-500 border-2 border-blue-400';
+            break;
+        case 'defeat':
+            badgeClass += 'bg-gradient-to-r from-red-600 to-red-500 border-2 border-red-400';
+            break;
+        default:
+            badgeClass += 'bg-gradient-to-r from-gray-600 to-gray-500 border-2 border-gray-400';
+    }
+    
+    badge.className = badgeClass;
+    
+    if (bonusScore !== 0) {
+        scoreEl.innerHTML = `${finalScore} Points <span class="text-sm">(${bonusScore > 0 ? '+' : ''}${bonusScore} bonus)</span>`;
+    } else {
+        scoreEl.textContent = `${finalScore} Points`;
+    }
+}
+
+function updateGameOverStats(gameData) {
+    document.getElementById('final-duration').textContent = 
+        `${gameData.durationMinutes}:${gameData.durationSeconds.toString().padStart(2, '0')}`;
+    document.getElementById('final-uptime').textContent = `${gameData.systemUptime}%`;
+    document.getElementById('final-alert-rate').textContent = `${gameData.alertHandlingRate}%`;
+    
+    document.getElementById('final-total-alerts').textContent = gameData.totalAlerts;
+    document.getElementById('final-handled-alerts').textContent = gameData.handledAlerts;
+    document.getElementById('final-compromised').textContent = gameData.compromisedHosts;
+    document.getElementById('final-total-hosts').textContent = gameData.totalHosts;
+    document.getElementById('final-response-time').textContent = gameData.avgResponseTime;
+    document.getElementById('final-detection-speed').textContent = gameData.detectionSpeed;
+}
+
+function updateGameOverRecommendations(recommendations) {
+    const container = document.getElementById('final-recommendations');
+    container.innerHTML = '';
+    
+    if (recommendations && recommendations.length > 0) {
+        recommendations.forEach(rec => {
+            const p = document.createElement('p');
+            p.textContent = `• ${rec}`;
+            p.className = 'mb-1';
+            container.appendChild(p);
+        });
+    } else {
+        container.innerHTML = '<p>• No specific recommendations at this time</p>';
+    }
 }
 
 // Initialize dashboard when page loads

@@ -6,6 +6,41 @@
 
 {% endblock %}
 
+{% block extra_css %}
+<style>
+.game-over-container {
+    animation: slideInFromTop 0.5s ease-out;
+}
+
+@keyframes slideInFromTop {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.host-card:hover {
+    transform: translateX(4px);
+}
+
+.host-card.selected {
+    box-shadow: 0 0 0 2px rgb(34 197 94), 0 0 0 4px rgb(34 197 94 / 0.3);
+}
+
+[data-alert-id]:hover {
+    opacity: 0.8 !important;
+}
+
+[data-alert-id].selected {
+    box-shadow: 0 0 0 2px rgb(249 115 22), 0 0 0 4px rgb(249 115 22 / 0.3);
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="grid grid-cols-2 grid-rows-[auto_1fr_auto] h-screen gap-2.5 p-2.5 bg-gradient-to-br from-blue-900 to-blue-800 text-white font-mono">
     <div class="col-span-2 bg-black/70 p-4 rounded-lg border-2 border-green-500 text-center">

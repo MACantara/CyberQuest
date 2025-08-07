@@ -278,20 +278,73 @@ class BlueRedGameEngine {
     checkGameEndConditions() {
         const totalHosts = Object.keys(this.gameState.hosts).length;
         const compromisedCount = this.gameState.compromisedHosts;
+        const sessionDuration = this.gameState.duration;
+        const alertsHandled = this.gameState.alerts.filter(a => a.handled).length;
+        const totalAlerts = this.gameState.alerts.length;
         
-        // Game ends if all hosts are compromised
+        // LOSS CONDITIONS
+        
+        // 1. All systems compromised - Immediate defeat
         if (compromisedCount >= totalHosts) {
-            this.endGame('defeat', 'All systems have been compromised by the Red Team');
+            this.endGame('defeat', 'CRITICAL FAILURE: All systems have been compromised by the Red Team');
+            return;
         }
         
-        // Game ends after a certain duration (optional)
-        if (this.gameState.duration > 600000) { // 10 minutes
-            const successRate = 1 - (compromisedCount / totalHosts);
-            if (successRate > 0.5) {
-                this.endGame('victory', 'Successfully defended against Red Team attacks');
+        // 2. More than 75% of systems compromised - Defeat
+        if (totalHosts > 0 && (compromisedCount / totalHosts) >= 0.75) {
+            this.endGame('defeat', 'MAJOR BREACH: Over 75% of systems compromised - mission failed');
+            return;
+        }
+        
+        // 3. Too many unhandled critical alerts (security failure)
+        const criticalAlerts = this.gameState.alerts.filter(a => a.severity === 'critical' || a.severity === 'high');
+        const unhandledCritical = criticalAlerts.filter(a => !a.handled);
+        if (unhandledCritical.length >= 5) {
+            this.endGame('defeat', 'SECURITY BREAKDOWN: Too many critical alerts left unhandled');
+            return;
+        }
+        
+        // VICTORY CONDITIONS
+        
+        // 1. Time-based victory (10 minutes survived with good defense)
+        if (sessionDuration > 600000) { // 10 minutes
+            const compromiseRate = compromisedCount / totalHosts;
+            const alertHandlingRate = totalAlerts > 0 ? alertsHandled / totalAlerts : 1;
+            
+            if (compromiseRate <= 0.25 && alertHandlingRate >= 0.7) {
+                this.endGame('victory', 'EXCELLENT DEFENSE: Successfully defended against sustained Red Team attacks');
+                return;
+            } else if (compromiseRate <= 0.5 && alertHandlingRate >= 0.5) {
+                this.endGame('partial_victory', 'GOOD DEFENSE: Maintained acceptable security posture under attack');
+                return;
             } else {
-                this.endGame('defeat', 'Too many systems were compromised');
+                this.endGame('defeat', 'INSUFFICIENT DEFENSE: Failed to maintain adequate security during the session');
+                return;
             }
+        }
+        
+        // 2. Perfect defense victory (8 minutes with no compromises)
+        if (sessionDuration > 480000 && compromisedCount === 0) { // 8 minutes, no compromises
+            this.endGame('perfect_victory', 'PERFECT DEFENSE: Zero systems compromised - outstanding performance!');
+            return;
+        }
+        
+        // 3. Score-based early victory (very high score indicates excellent response)
+        if (this.gameState.score >= 500 && sessionDuration > 300000) { // 5 minutes minimum
+            const compromiseRate = compromisedCount / totalHosts;
+            if (compromiseRate <= 0.33) {
+                this.endGame('victory', 'EXCEPTIONAL RESPONSE: High score with effective defense achieved');
+                return;
+            }
+        }
+        
+        // 4. Red Team gives up (no successful actions for extended period)
+        const recentRedTeamActions = this.gameState.redTeamActions.filter(action => 
+            action.timestamp > Date.now() - 120000 && action.success // Last 2 minutes
+        );
+        if (sessionDuration > 300000 && recentRedTeamActions.length === 0 && this.gameState.redTeamActions.length > 5) {
+            this.endGame('victory', 'RED TEAM RETREAT: Effective defenses forced the attackers to withdraw');
+            return;
         }
     }
     
@@ -299,17 +352,107 @@ class BlueRedGameEngine {
         this.gameState.isActive = false;
         this.stopGameLoop();
         
+        // Calculate final performance metrics
+        const totalHosts = Object.keys(this.gameState.hosts).length;
+        const compromisedCount = this.gameState.compromisedHosts;
+        const alertHandlingRate = this.gameState.alerts.length > 0 ? 
+            this.gameState.alerts.filter(a => a.handled).length / this.gameState.alerts.length : 1;
+        const systemUptime = totalHosts > 0 ? 
+            ((totalHosts - compromisedCount) / totalHosts) * 100 : 100;
+        
+        // Calculate bonus scores based on result
+        let bonusScore = 0;
+        switch (result) {
+            case 'perfect_victory':
+                bonusScore = 200;
+                break;
+            case 'victory':
+                bonusScore = 100;
+                break;
+            case 'partial_victory':
+                bonusScore = 50;
+                break;
+            case 'defeat':
+                bonusScore = -50;
+                break;
+        }
+        
+        const finalScore = this.gameState.score + bonusScore;
+        
         const endData = {
             result: result,
             reason: reason,
-            finalScore: this.gameState.score,
+            finalScore: finalScore,
+            bonusScore: bonusScore,
+            baseScore: this.gameState.score,
             duration: this.gameState.duration,
-            compromisedHosts: this.gameState.compromisedHosts,
+            durationMinutes: Math.floor(this.gameState.duration / 60000),
+            durationSeconds: Math.floor((this.gameState.duration % 60000) / 1000),
+            compromisedHosts: compromisedCount,
+            totalHosts: totalHosts,
+            systemUptime: systemUptime.toFixed(1),
             totalAlerts: this.gameState.alerts.length,
-            handledAlerts: this.gameState.alerts.filter(a => a.handled).length
+            handledAlerts: this.gameState.alerts.filter(a => a.handled).length,
+            alertHandlingRate: (alertHandlingRate * 100).toFixed(1),
+            avgResponseTime: this.calculateAverageResponseTime(),
+            detectionSpeed: this.calculateDetectionSpeed(),
+            recommendedActions: this.generateRecommendations(result, compromisedCount, alertHandlingRate)
         };
         
         this.emitEvent('gameEnded', endData);
+        
+        // Update the UI with game over information
+        if (typeof showGameOverModal === 'function') {
+            showGameOverModal(endData);
+        } else {
+            console.log('Game Over:', endData);
+        }
+    }
+    
+    calculateAverageResponseTime() {
+        const handledAlerts = this.gameState.alerts.filter(a => a.handled);
+        if (handledAlerts.length === 0) return 'N/A';
+        
+        // Simulate response times based on handling efficiency
+        const totalTime = handledAlerts.length * 45; // Average 45 seconds per alert
+        return `${Math.floor(totalTime / handledAlerts.length)}s`;
+    }
+    
+    calculateDetectionSpeed() {
+        const totalAlerts = this.gameState.alerts.length;
+        if (totalAlerts === 0) return 'N/A';
+        
+        // Simulate detection speed based on alert frequency
+        const detectionRate = totalAlerts / (this.gameState.duration / 60000); // alerts per minute
+        if (detectionRate > 2) return 'Fast';
+        if (detectionRate > 1) return 'Good';
+        return 'Slow';
+    }
+    
+    generateRecommendations(result, compromisedCount, alertHandlingRate) {
+        const recommendations = [];
+        
+        if (result.includes('defeat')) {
+            if (compromisedCount > 2) {
+                recommendations.push('Focus on faster incident response and containment');
+                recommendations.push('Implement better network segmentation');
+            }
+            if (alertHandlingRate < 0.5) {
+                recommendations.push('Improve alert triage and investigation processes');
+                recommendations.push('Prioritize high-severity alerts first');
+            }
+            recommendations.push('Consider more proactive patching schedules');
+        } else {
+            if (alertHandlingRate === 1) {
+                recommendations.push('Excellent alert handling - maintain this performance');
+            }
+            if (compromisedCount === 0) {
+                recommendations.push('Perfect defense execution - outstanding work');
+            }
+            recommendations.push('Continue monitoring for emerging threats');
+        }
+        
+        return recommendations;
     }
     
     // Blue Team action handlers
