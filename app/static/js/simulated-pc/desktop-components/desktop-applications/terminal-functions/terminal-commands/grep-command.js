@@ -76,14 +76,14 @@ export class GrepCommand extends BaseCommand {
         files.forEach(filename => {
             const filePath = this.fileSystem.resolvePath(this.getCurrentDirectory(), filename);
             
-            if (!this.fileSystem.fileExists(filePath)) {
-                this.addOutput(`grep: ${filename}: No such file or directory`, 'text-red-500');
-                return;
-            }
-
-            const content = this.fileSystem.readFile(filePath);
+            // Check if file exists by trying to extract directory and filename
+            const pathParts = filePath.split('/');
+            const fileName = pathParts.pop();
+            const dirPath = pathParts.join('/') || '/';
+            
+            const content = this.fileSystem.readFile(dirPath, fileName);
             if (content === null) {
-                this.addOutput(`grep: ${filename}: Permission denied`, 'text-red-500');
+                this.addOutput(`grep: ${filename}: No such file or directory`, 'text-red-500');
                 return;
             }
 
