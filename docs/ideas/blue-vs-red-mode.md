@@ -82,6 +82,23 @@ A competitive and educational mode where the player (Blue Team) defends a simula
 
 ---
 
+## Interface Design Direction
+
+Based on the unique needs of the Blue Team vs Red Team mode, the interface will evolve beyond the current simulated PC. The new interface will:
+
+- **Draw inspiration from the simulated PC** for visual style and user experience, maintaining familiarity for returning players.
+- **Expand to include network-wide and strategic views**—such as dashboards, network topology maps, real-time alert feeds, and asset management panels.
+
+- **Support multi-host and incident response workflows** with intuitive navigation between systems, alerts, and response tools.
+- **Enable future scalability** for co-op/team play, scenario customization, and advanced Blue Team features.
+
+**Rationale:**
+- The new interface will better support the mode’s focus on dynamic, multi-layered defense, incident response, and strategic decision-making.
+- It will provide a modern Blue Team simulation experience while preserving the immersive, hands-on feel and conceptual strengths of the original PC interface, even if not directly embedded.
+
+This approach ensures both depth and accessibility, aligning with the educational and gameplay goals of the mode.
+
+---
 ## Notes
 - This mode is not a single level, but a replayable, evolving simulation.
 - Focus is on skill-building, adaptability, and real-world relevance.
