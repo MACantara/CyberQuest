@@ -8,8 +8,8 @@
 
 {% block content %}
 <div class="grid grid-cols-2 grid-rows-[auto_1fr_auto] h-screen gap-2.5 p-2.5 bg-gradient-to-br from-blue-900 to-blue-800 text-white font-mono">
-    <div class="col-span-2 bg-black bg-opacity-70 p-4 rounded-lg border-2 border-green-500 text-center">
-        <h1 class="text-2xl mb-2">🛡️ Blue Team Defense Command Center</h1>
+    <div class="col-span-2 bg-black/70 p-4 rounded-lg border-2 border-green-500 text-center">
+        <h1 class="text-2xl mb-2"><i class="bi bi-shield-check"></i> Blue Team Defense Command Center</h1>
         <div class="flex justify-between mt-2.5">
             <div class="text-lg font-bold text-green-500">Score: <span id="current-score">0</span></div>
             <div class="text-base text-orange-500">Time: <span id="session-timer">00:00</span></div>
@@ -17,23 +17,23 @@
         </div>
     </div>
 
-    <div class="bg-black bg-opacity-80 p-4 rounded-lg border-2 border-green-500 overflow-y-auto">
-        <h3 class="text-lg mb-3">🌐 Network Overview</h3>
+    <div class="bg-black/80 p-4 rounded-lg border-2 border-green-500 overflow-y-auto">
+        <h3 class="text-lg mb-3"><i class="bi bi-diagram-3"></i> Network Overview</h3>
         <div id="network-hosts">
-            <div class="bg-green-900 bg-opacity-50 border border-green-500 p-2.5 my-1.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-green-800 hover:bg-opacity-70 hover:translate-x-1" data-host="web-server" onclick="selectHost('web-server')">
-                <div><span class="inline-block w-2.5 h-2.5 rounded-full mr-1.5 bg-green-500"></span><strong>Web Server</strong></div>
+            <div class="bg-green-900/50 border border-green-500 p-2.5 my-1.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-green-800 hover:bg-opacity-70 hover:translate-x-1" data-host="web-server" onclick="selectHost('web-server')">
+                <div><span class="inline-block w-2.5 h-2.5 rounded-full mr-1.5 bg-green-500"></span><strong><i class="bi bi-server"></i> Web Server</strong></div>
                 <div>IP: 192.168.1.10</div>
                 <div>Services: HTTP, HTTPS</div>
                 <div>Status: <span id="web-server-status">Online</span></div>
             </div>
-            <div class="bg-green-900 bg-opacity-50 border border-green-500 p-2.5 my-1.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-green-800 hover:bg-opacity-70 hover:translate-x-1" data-host="database" onclick="selectHost('database')">
-                <div><span class="inline-block w-2.5 h-2.5 rounded-full mr-1.5 bg-green-500"></span><strong>Database Server</strong></div>
+            <div class="bg-green-900/50 border border-green-500 p-2.5 my-1.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-green-800 hover:bg-opacity-70 hover:translate-x-1" data-host="database" onclick="selectHost('database')">
+                <div><span class="inline-block w-2.5 h-2.5 rounded-full mr-1.5 bg-green-500"></span><strong><i class="bi bi-database"></i> Database Server</strong></div>
                 <div>IP: 192.168.1.20</div>
                 <div>Services: MySQL</div>
                 <div>Status: <span id="database-status">Online</span></div>
             </div>
-            <div class="bg-green-900 bg-opacity-50 border border-green-500 p-2.5 my-1.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-green-800 hover:bg-opacity-70 hover:translate-x-1" data-host="workstation" onclick="selectHost('workstation')">
-                <div><span class="inline-block w-2.5 h-2.5 rounded-full mr-1.5 bg-green-500"></span><strong>User Workstation</strong></div>
+            <div class="bg-green-900/50 border border-green-500 p-2.5 my-1.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-green-800 hover:bg-opacity-70 hover:translate-x-1" data-host="workstation" onclick="selectHost('workstation')">
+                <div><span class="inline-block w-2.5 h-2.5 rounded-full mr-1.5 bg-green-500"></span><strong><i class="bi bi-pc-display"></i> User Workstation</strong></div>
                 <div>IP: 192.168.1.100</div>
                 <div>Services: RDP, SMB</div>
                 <div>Status: <span id="workstation-status">Online</span></div>
@@ -41,45 +41,45 @@
         </div>
     </div>
 
-    <div class="bg-black bg-opacity-80 p-4 rounded-lg border-2 border-orange-500 overflow-y-auto">
-        <h3 class="text-lg mb-3">⚠️ Security Alerts</h3>
+    <div class="bg-black/80 p-4 rounded-lg border-2 border-orange-500 overflow-y-auto">
+        <h3 class="text-lg mb-3"><i class="bi bi-exclamation-triangle"></i> Security Alerts</h3>
         <div id="alerts-container">
-            <div class="bg-green-900 bg-opacity-50 border border-green-500 p-2 my-0.5 rounded text-xs">
+            <div class="bg-green-900/50 border border-green-500 p-2 my-0.5 rounded text-xs">
                 <div><strong>[INFO]</strong> System monitoring initialized</div>
                 <div>Source: Security Center | Time: <span class="timestamp"></span></div>
             </div>
         </div>
     </div>
 
-    <div class="col-span-2 bg-black bg-opacity-80 p-4 rounded-lg border-2 border-blue-500 flex justify-around items-center">
-        <button class="bg-blue-600 bg-opacity-80 text-white border-2 border-blue-500 px-5 py-2.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-blue-500 hover:bg-opacity-90 hover:-translate-y-0.5 font-mono" onclick="scanNetwork()">🔍 Scan Network</button>
-        <button class="bg-blue-600 bg-opacity-80 text-white border-2 border-blue-500 px-5 py-2.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-blue-500 hover:bg-opacity-90 hover:-translate-y-0.5 font-mono disabled:bg-gray-800 disabled:bg-opacity-50 disabled:border-gray-600 disabled:cursor-not-allowed" onclick="patchVulnerabilities()" id="patch-btn">🔧 Patch Systems</button>
-        <button class="bg-blue-600 bg-opacity-80 text-white border-2 border-blue-500 px-5 py-2.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-blue-500 hover:bg-opacity-90 hover:-translate-y-0.5 font-mono disabled:bg-gray-800 disabled:bg-opacity-50 disabled:border-gray-600 disabled:cursor-not-allowed" onclick="quarantineHost()" id="quarantine-btn" disabled>🚫 Quarantine</button>
-        <button class="bg-blue-600 bg-opacity-80 text-white border-2 border-blue-500 px-5 py-2.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-blue-500 hover:bg-opacity-90 hover:-translate-y-0.5 font-mono disabled:bg-gray-800 disabled:bg-opacity-50 disabled:border-gray-600 disabled:cursor-not-allowed" onclick="investigateAlert()" id="investigate-btn" disabled>🕵️ Investigate</button>
-        <button class="bg-blue-600 bg-opacity-80 text-white border-2 border-blue-500 px-5 py-2.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-blue-500 hover:bg-opacity-90 hover:-translate-y-0.5 font-mono" onclick="showSessionSummary()">📊 Session Summary</button>
-        <button class="bg-red-600 bg-opacity-80 text-white border-2 border-red-500 px-5 py-2.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-red-500 hover:bg-opacity-90 hover:-translate-y-0.5 font-mono" onclick="newSession()">🔄 New Session</button>
+    <div class="col-span-2 bg-black/80 p-4 rounded-lg border-2 border-blue-500 flex justify-around items-center">
+        <button class="bg-blue-600/80 text-white border-2 border-blue-500 px-5 py-2.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-blue-500 hover:bg-opacity-90 hover:-translate-y-0.5 font-mono" onclick="scanNetwork()"><i class="bi bi-search"></i> Scan Network</button>
+        <button class="bg-blue-600/80 text-white border-2 border-blue-500 px-5 py-2.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-blue-500 hover:bg-opacity-90 hover:-translate-y-0.5 font-mono disabled:bg-gray-800 disabled:bg-opacity-50 disabled:border-gray-600 disabled:cursor-not-allowed" onclick="patchVulnerabilities()" id="patch-btn"><i class="bi bi-tools"></i> Patch Systems</button>
+        <button class="bg-blue-600/80 text-white border-2 border-blue-500 px-5 py-2.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-blue-500 hover:bg-opacity-90 hover:-translate-y-0.5 font-mono disabled:bg-gray-800 disabled:bg-opacity-50 disabled:border-gray-600 disabled:cursor-not-allowed" onclick="quarantineHost()" id="quarantine-btn" disabled><i class="bi bi-shield-x"></i> Quarantine</button>
+        <button class="bg-blue-600/80 text-white border-2 border-blue-500 px-5 py-2.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-blue-500 hover:bg-opacity-90 hover:-translate-y-0.5 font-mono disabled:bg-gray-800 disabled:bg-opacity-50 disabled:border-gray-600 disabled:cursor-not-allowed" onclick="investigateAlert()" id="investigate-btn" disabled><i class="bi bi-search"></i> Investigate</button>
+        <button class="bg-blue-600/80 text-white border-2 border-blue-500 px-5 py-2.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-blue-500 hover:bg-opacity-90 hover:-translate-y-0.5 font-mono" onclick="showSessionSummary()"><i class="bi bi-graph-up"></i> Session Summary</button>
+        <button class="bg-red-600/80 text-white border-2 border-red-500 px-5 py-2.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-red-500 hover:bg-opacity-90 hover:-translate-y-0.5 font-mono" onclick="newSession()"><i class="bi bi-arrow-clockwise"></i> New Session</button>
     </div>
 </div>
 
 <!-- Investigation Modal -->
-<div id="investigation-modal" class="hidden fixed z-50 left-0 top-0 w-full h-full bg-black bg-opacity-80">
+<div id="investigation-modal" class="hidden fixed z-50 left-0 top-0 w-full h-full bg-black/80">
     <div class="bg-gradient-to-br from-blue-900 to-blue-800 my-12 mx-auto p-5 border-2 border-green-500 rounded-lg w-4/5 max-w-2xl text-white font-mono">
         <span class="float-right text-2xl font-bold cursor-pointer hover:text-red-500" onclick="closeModal('investigation-modal')">&times;</span>
-        <h2 class="text-xl mb-4">🕵️ Investigation Results</h2>
+        <h2 class="text-xl mb-4"><i class="bi bi-search"></i> Investigation Results</h2>
         <div id="investigation-content" class="mb-4">
             <p>Select an alert or host to investigate...</p>
         </div>
         <div class="text-center mt-5">
-            <button class="bg-blue-600 bg-opacity-80 text-white border-2 border-blue-500 px-5 py-2.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-blue-500 hover:bg-opacity-90 hover:-translate-y-0.5 font-mono" onclick="closeModal('investigation-modal')">Close</button>
+            <button class="bg-blue-600/80 text-white border-2 border-blue-500 px-5 py-2.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-blue-500 hover:bg-opacity-90 hover:-translate-y-0.5 font-mono" onclick="closeModal('investigation-modal')">Close</button>
         </div>
     </div>
 </div>
 
 <!-- Session Summary Modal -->
-<div id="summary-modal" class="hidden fixed z-50 left-0 top-0 w-full h-full bg-black bg-opacity-80">
+<div id="summary-modal" class="hidden fixed z-50 left-0 top-0 w-full h-full bg-black/80">
     <div class="bg-gradient-to-br from-blue-900 to-blue-800 my-12 mx-auto p-5 border-2 border-green-500 rounded-lg w-4/5 max-w-2xl text-white font-mono">
         <span class="float-right text-2xl font-bold cursor-pointer hover:text-red-500" onclick="closeModal('summary-modal')">&times;</span>
-        <h2 class="text-xl mb-4">📊 Session Summary</h2>
+        <h2 class="text-xl mb-4"><i class="bi bi-graph-up"></i> Session Summary</h2>
         <div id="summary-content">
             <div class="grid grid-cols-2 gap-5">
                 <div>
