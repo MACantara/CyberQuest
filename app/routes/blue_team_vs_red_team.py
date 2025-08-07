@@ -57,27 +57,49 @@ def dashboard():
 @blue_red_bp.route('/start-session', methods=['POST'])
 def start_session():
     """Start a new Blue vs Red session"""
-    session_id = f"session_{random.randint(1000, 9999)}_{int(datetime.now().timestamp())}"
-    game_session = GameSession(session_id)
-    active_sessions[session_id] = game_session
-    session['blue_red_session_id'] = session_id
-    
-    # Add initial system status alert
-    game_session.add_alert('system', 'Blue Team defense systems online', 'low', 'Security Center')
-    
-    return jsonify({
-        'success': True,
-        'session_id': session_id,
-        'message': 'New session started successfully'
-    })
+    try:
+        session_id = f"session_{random.randint(1000, 9999)}_{int(datetime.now().timestamp())}"
+        game_session = GameSession(session_id)
+        active_sessions[session_id] = game_session
+        session['blue_red_session_id'] = session_id
+        
+        # Add initial system status alert
+        game_session.add_alert('system', 'Blue Team defense systems online', 'low', 'Security Center')
+        
+        print(f"Started new session: {session_id}")
+        
+        return jsonify({
+            'success': True,
+            'session_id': session_id,
+            'message': 'New session started successfully'
+        })
+    except Exception as e:
+        print(f"Error starting session: {e}")
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
 
 @blue_red_bp.route('/session-status')
 def session_status():
     """Get current session status"""
     session_id = session.get('blue_red_session_id')
     
+    # Debug logging
+    print(f"Session status check - session_id: {session_id}")
+    print(f"Active sessions: {list(active_sessions.keys())}")
+    
     if not session_id or session_id not in active_sessions:
-        return jsonify({'error': 'No active session'}), 404
+        # If no session exists, try to start a new one automatically
+        session_id = f"session_{random.randint(1000, 9999)}_{int(datetime.now().timestamp())}"
+        game_session = GameSession(session_id)
+        active_sessions[session_id] = game_session
+        session['blue_red_session_id'] = session_id
+        
+        # Add initial system status alert
+        game_session.add_alert('system', 'Blue Team defense systems online', 'low', 'Security Center')
+        
+        print(f"Created new session: {session_id}")
     
     game_session = active_sessions[session_id]
     
@@ -134,7 +156,10 @@ def patch_vulnerabilities():
         return jsonify({'error': 'No active session'}), 404
     
     game_session = active_sessions[session_id]
-    host = request.json.get('host', 'all')
+    
+    # Handle JSON data safely
+    json_data = request.get_json() or {}
+    host = json_data.get('host', 'all')
     
     patched_count = 0
     if host == 'all':
@@ -169,7 +194,10 @@ def quarantine_host():
         return jsonify({'error': 'No active session'}), 404
     
     game_session = active_sessions[session_id]
-    host = request.json.get('host')
+    
+    # Handle JSON data safely
+    json_data = request.get_json() or {}
+    host = json_data.get('host')
     
     if not host or host not in game_session.hosts:
         return jsonify({'error': 'Invalid host specified'}), 400
@@ -202,8 +230,11 @@ def investigate_alert():
         return jsonify({'error': 'No active session'}), 404
     
     game_session = active_sessions[session_id]
-    alert_id = request.json.get('alert_id')
-    host = request.json.get('host')
+    
+    # Handle JSON data safely
+    json_data = request.get_json() or {}
+    alert_id = json_data.get('alert_id')
+    host = json_data.get('host')
     
     investigation_results = {
         'findings': [],
