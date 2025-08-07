@@ -19,10 +19,15 @@ class BlueTeamDashboard {
         this.checkExistingSession();
         this.startAutoRefresh();
         
-        // Set up event listeners
-        document.addEventListener('DOMContentLoaded', () => {
+        // Set up event listeners when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                this.setupEventListeners();
+            });
+        } else {
+            // DOM is already loaded
             this.setupEventListeners();
-        });
+        }
     }
     
     getCsrfToken() {
@@ -48,15 +53,73 @@ class BlueTeamDashboard {
     }
     
     setupEventListeners() {
-        // Close modal when clicking the X
-        document.querySelectorAll('.cursor-pointer').forEach(closeBtn => {
-            if (closeBtn.textContent === '×') {
-                closeBtn.addEventListener('click', (e) => {
-                    const modal = e.target.closest('.fixed');
-                    if (modal) {
-                        modal.classList.add('hidden');
-                    }
-                });
+        // Host selection event listeners
+        this.setupHostEventListeners();
+        
+        // Action button event listeners
+        this.setupActionButtonEventListeners();
+        
+        // Modal event listeners
+        this.setupModalEventListeners();
+    }
+    
+    setupHostEventListeners() {
+        // Add event listeners for host cards
+        document.addEventListener('click', (e) => {
+            const hostCard = e.target.closest('.host-card');
+            if (hostCard) {
+                const hostId = hostCard.dataset.host;
+                selectHost(hostId);
+            }
+        });
+    }
+    
+    setupActionButtonEventListeners() {
+        // Scan Network button
+        const scanNetworkBtn = document.getElementById('scan-network-btn');
+        if (scanNetworkBtn) {
+            scanNetworkBtn.addEventListener('click', scanNetwork);
+        }
+        
+        // Patch Systems button
+        const patchBtn = document.getElementById('patch-btn');
+        if (patchBtn) {
+            patchBtn.addEventListener('click', patchVulnerabilities);
+        }
+        
+        // Quarantine button
+        const quarantineBtn = document.getElementById('quarantine-btn');
+        if (quarantineBtn) {
+            quarantineBtn.addEventListener('click', quarantineHost);
+        }
+        
+        // Investigate button
+        const investigateBtn = document.getElementById('investigate-btn');
+        if (investigateBtn) {
+            investigateBtn.addEventListener('click', investigateAlert);
+        }
+        
+        // Session Summary button
+        const sessionSummaryBtn = document.getElementById('session-summary-btn');
+        if (sessionSummaryBtn) {
+            sessionSummaryBtn.addEventListener('click', showSessionSummary);
+        }
+        
+        // New Session button
+        const newSessionBtn = document.getElementById('new-session-btn');
+        if (newSessionBtn) {
+            newSessionBtn.addEventListener('click', newSession);
+        }
+    }
+    
+    setupModalEventListeners() {
+        // Modal close button event listeners
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-close')) {
+                const modalId = e.target.dataset.modal;
+                if (modalId) {
+                    closeModal(modalId);
+                }
             }
         });
         
@@ -167,7 +230,7 @@ class BlueTeamDashboard {
     
     updateHostsDisplay(hosts) {
         Object.entries(hosts).forEach(([hostId, hostData]) => {
-            const hostCard = document.querySelector(`[data-host="${hostId}"]`);
+            const hostCard = document.querySelector(`.host-card[data-host="${hostId}"]`);
             if (hostCard) {
                 const statusIndicator = hostCard.querySelector('span');
                 const statusText = document.getElementById(`${hostId}-status`);
@@ -236,7 +299,7 @@ class BlueTeamDashboard {
         
         // Enable quarantine if a host is selected and not already quarantined
         if (quarantineBtn) {
-            const selectedHostCard = document.querySelector(`[data-host="${this.selectedHost}"]`);
+            const selectedHostCard = document.querySelector(`.host-card[data-host="${this.selectedHost}"]`);
             const isQuarantined = selectedHostCard?.classList.contains('bg-yellow-900');
             quarantineBtn.disabled = !this.selectedHost || isQuarantined;
         }
@@ -304,12 +367,12 @@ class BlueTeamDashboard {
 // Global functions for button actions
 function selectHost(hostId) {
     // Remove previous selection
-    document.querySelectorAll('[data-host]').forEach(card => {
+    document.querySelectorAll('.host-card').forEach(card => {
         card.classList.remove('ring-2', 'ring-green-500', 'ring-opacity-75');
     });
     
     // Add selection to clicked host
-    const hostCard = document.querySelector(`[data-host="${hostId}"]`);
+    const hostCard = document.querySelector(`.host-card[data-host="${hostId}"]`);
     if (hostCard) {
         hostCard.classList.add('ring-2', 'ring-green-500', 'ring-opacity-75');
         dashboard.selectedHost = hostId;
@@ -338,7 +401,7 @@ function selectAlert(alertId) {
         dashboard.selectedHost = null; // Clear host selection
         
         // Clear host selection visual
-        document.querySelectorAll('[data-host]').forEach(card => {
+        document.querySelectorAll('.host-card').forEach(card => {
             card.classList.remove('ring-2', 'ring-green-500', 'ring-opacity-75');
         });
         
@@ -434,13 +497,13 @@ function showInvestigationResults(results) {
     
     let html = '<div class="grid grid-cols-2 gap-5">';
     
-    html += '<div><h4 class="text-lg mb-2">🔍 Findings</h4><ul class="list-disc list-inside">';
+    html += '<div><h4 class="text-lg mb-2"><i class="bi bi-search"></i> Findings</h4><ul class="list-disc list-inside">';
     results.findings.forEach(finding => {
         html += `<li class="mb-1">${finding}</li>`;
     });
     html += '</ul></div>';
     
-    html += '<div><h4 class="text-lg mb-2">💡 Recommendations</h4><ul class="list-disc list-inside">';
+    html += '<div><h4 class="text-lg mb-2"><i class="bi bi-lightbulb"></i> Recommendations</h4><ul class="list-disc list-inside">';
     results.recommendations.forEach(rec => {
         html += `<li class="mb-1">${rec}</li>`;
     });
