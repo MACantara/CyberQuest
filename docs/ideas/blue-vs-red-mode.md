@@ -98,6 +98,58 @@ Based on the unique needs of the Blue Team vs Red Team mode, the interface will 
 This approach ensures both depth and accessibility, aligning with the educational and gameplay goals of the mode.
 
 ---
+
+## Red Team AI Algorithm Outline
+
+The Red Team AI is designed to simulate a realistic, adaptive attacker using a multi-phase approach. The algorithm will combine rule-based logic, weighted randomness, and state-driven decision-making to create dynamic, replayable challenges.
+
+### 1. Attack Phases
+The AI operates in distinct phases, each with specific goals and available actions:
+- **Reconnaissance:** Scan network, gather OSINT, enumerate assets and vulnerabilities.
+- **Initial Access:** Attempt phishing, exploit public-facing services, or use brute force.
+- **Establish Foothold:** Deploy persistence mechanisms (backdoors, scheduled tasks).
+- **Lateral Movement:** Identify and exploit trust relationships, move to other hosts.
+- **Privilege Escalation:** Seek higher privileges via exploits or credential theft.
+- **Action on Objectives:** Exfiltrate data, disrupt services, or achieve scenario-specific goals.
+- **Cover Tracks:** Clear logs, remove tools, and evade detection.
+
+### 2. Decision-Making Logic
+- **State Machine:** The AI maintains an internal state (e.g., current access, discovered assets, detected defenses) and transitions between phases based on success, failure, or Blue Team actions.
+- **Weighted Randomness:** Within each phase, the AI selects actions based on weighted probabilities, which can be influenced by scenario difficulty and Blue Team behavior.
+- **Adaptive Response:** The AI monitors Blue Team actions (e.g., patching, quarantining, alerting) and adapts tactics—switching attack vectors, increasing stealth, or accelerating attacks if detection is likely.
+- **Goal-Oriented Planning:** The AI prioritizes actions that bring it closer to its objectives, using a simple planning algorithm (e.g., A* or rule-based prioritization).
+
+### 3. Learning, Replayability, and Advanced AI
+- **Scenario Randomization:** Each session, the AI randomizes its initial knowledge, available exploits, and attack chains.
+- **Behavioral Variation:** The AI can select from different attacker "personalities" (e.g., stealthy, aggressive, opportunistic) to keep gameplay fresh.
+- **Reinforcement Learning (Q-learning, DQN):** For advanced versions, the AI can leverage reinforcement learning algorithms such as Q-learning or Deep Q-Networks (DQN) to learn optimal attack strategies over many simulated playthroughs, adapting to Blue Team defenses and maximizing its objectives.
+- **NLP Integration:** Natural Language Processing can be used to generate or interpret phishing emails, social engineering messages, or to analyze Blue Team communications/logs for more realistic and adaptive attacks.
+- **Initial Implementation:** The first version will focus on deterministic and probabilistic logic, with RL and NLP as future enhancements for greater realism and challenge.
+
+### 4. Example Pseudocode
+```python
+class RedTeamAI:
+    def __init__(self, scenario):
+        self.state = 'reconnaissance'
+        self.known_assets = []
+        self.access = set()
+        self.objectives = scenario.objectives
+        # ...other state variables...
+
+    def decide_next_action(self, blue_team_actions):
+        if self.state == 'reconnaissance':
+            # Weighted choice: scan, OSINT, enumerate
+            # Transition to 'initial_access' if enough info
+            pass
+        elif self.state == 'initial_access':
+            # Try phishing, exploit, brute force
+            # On success, move to 'establish_foothold'
+            pass
+        # ...other phases...
+        # Adapt based on blue_team_actions
+```
+
+---
 ## Notes
 - This mode is not a single level, but a replayable, evolving simulation.
 - Focus is on skill-building, adaptability, and real-world relevance.
