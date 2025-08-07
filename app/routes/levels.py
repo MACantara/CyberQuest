@@ -1,3 +1,5 @@
+# TODO: Add server-side tracking of level completion and XP
+
 from flask import Blueprint, render_template, current_app, flash, redirect, url_for, request, session
 from flask_login import login_required
 import json
