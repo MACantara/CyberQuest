@@ -208,22 +208,22 @@ You've traced my signature across four different attack vectors:
 ✓ Vulnerability exploitation (Level 4)
 
 My Identity: Dr. Marcus Cipher
-Former Role: IT Security Consultant (contract terminated)
-Motivation: Revenge against the company that betrayed me
+Current Role: Cybersecurity Instructor at CyberQuest Academy
+Motivation: Testing the academy's security awareness and training effectiveness
 
-I left clues because I wanted to be caught by someone worthy.
+I left clues because I wanted to see if our students could apply what they've learned.
 My attacks followed a pattern because patterns create predictability,
 and predictability leads to capture by a skilled investigator.
 
-IP Address: 192.168.1.100 (my personal workstation)
+IP Address: 192.168.1.100 (my instructor workstation)
 Signature: N4LL (NULL in l33t speak - representing nothing, void)
-Attack Schedule: Every Tuesday 2:00 AM (when security monitoring is minimal)
+Attack Schedule: Every Tuesday 2:00 AM (when monitoring is minimal)
 Tools: Custom-built NullSender, NullBrowser, and Null protocol
 
-You found me. Game over.
+You found me. Excellent work, student.
 
 - The Null (Dr. Marcus Cipher)
-  Former Security Consultant, Current Digital Ghost"
+  Cybersecurity Instructor, CyberQuest Academy"
 
 File Properties:
 - Created: 2024-08-05 02:30:12 (final attack)  
@@ -233,13 +233,13 @@ File Properties:
 
 Evidence Analysis:
 - Confirms attacker identity: Dr. Marcus Cipher
-- Reveals motive: Revenge for contract termination
+- Reveals motive: Educational testing of security awareness
 - Shows methodical planning and intentional discovery
 - Demonstrates advanced cybersecurity knowledge
 - Provides complete case closure evidence
 
 Final Case Status: SOLVED
-Perpetrator: Dr. Marcus Cipher (The Null)
+Perpetrator: Dr. Marcus Cipher (Cybersecurity Instructor)
 Evidence Quality: Complete digital forensics chain established`,
 
     'case_summary.txt': `=== Level 5 Investigation Case Summary ===
@@ -275,7 +275,7 @@ SUCCESS CRITERIA:
 - Find 4+ evidence files (80% minimum)
 - Identify IP address pattern (192.168.1.100)
 - Recognize attacker signature (N4LL)
-- Determine identity: Dr. Marcus Cipher
+- Determine identity: Dr. Marcus Cipher (Academy Instructor)
 
 This case tests fundamental digital forensics skills including evidence collection, pattern recognition, timeline reconstruction, and critical analysis.`,
 
@@ -322,7 +322,7 @@ Event: Final message discovered
 Source: 192.168.1.100
 Method: Hidden confession file
 Evidence: hidden_message.txt
-Result: Identity revealed - Dr. Marcus Cipher
+Result: Identity revealed - Dr. Marcus Cipher (Academy Instructor)
 
 PATTERN ANALYSIS:
 - Attack window: Tuesday 2:00 AM (minimal monitoring)

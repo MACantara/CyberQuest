@@ -22,61 +22,61 @@ export class Level5CompletionDialogue extends BaseDialogue {
         if (this.evidenceFound >= 4) {
             this.messages = [
                 {
-                    text: "So... you found me. I have to admit, I'm impressed. Not many investigators could have followed my digital breadcrumbs so expertly.",
+                    text: "So... you found me. I have to admit, I'm impressed. Not many students could have followed my digital breadcrumbs so expertly.",
                     speaker: "The Null"
                 },
                 {
-                    text: "My name is Dr. Marcus Cipher. I was a security consultant here until they terminated my contract for 'security concerns.' Security concerns! I was the best they had.",
+                    text: "My name is Dr. Marcus Cipher. I am your Cybersecurity Instructor here at CyberQuest Academy. This entire scenario was a comprehensive final examination.",
                     speaker: "The Null"
                 },
                 {
-                    text: "I wanted to show them what real cybersecurity threats look like. Every Tuesday at 2 AM, when monitoring is minimal, I struck.",
+                    text: "I wanted to test whether our training program truly prepares students for real-world digital forensics investigations. Every Tuesday at 2 AM, I conducted these controlled simulations.",
                     speaker: "The Null"
                 },
                 {
-                    text: "Bot networks, phishing campaigns, malware distribution, vulnerability exploitation... I orchestrated it all from my personal workstation at 192.168.1.100.",
+                    text: "Bot networks, phishing campaigns, malware distribution, vulnerability exploitation... I orchestrated it all from my instructor workstation at 192.168.1.100.",
                     speaker: "The Null"
                 },
                 {
-                    text: "But I left clues because deep down, I wanted to be caught by someone worthy. Someone who could appreciate the artistry of my work.",
+                    text: "But I left clues because this was always meant to be solved. I wanted to see if you could apply everything we've taught you in our cybersecurity program.",
                     speaker: "The Null"
                 },
                 {
-                    text: "You traced my signature 'N4LL' across every attack vector. You identified the patterns. You're the investigator I hoped would find me.",
+                    text: "You traced my signature 'N4LL' across every attack vector. You identified the patterns. You've proven yourself as a skilled digital forensics investigator.",
                     speaker: "The Null"
                 },
                 {
-                    text: "Congratulations, detective. You've mastered digital forensics and caught one of the most elusive hackers in the industry. Game over.",
+                    text: "Congratulations, student. You've mastered digital forensics and passed the ultimate test. Welcome to the ranks of elite cybersecurity professionals.",
                     speaker: "The Null"
                 }
             ];
         } else if (this.evidenceFound >= 2) {
             this.messages = [
                 {
-                    text: "You found some of my traces, but not enough to build a solid case against me. Lucky guess, detective.",
+                    text: "You found some of my traces, but not enough to complete the investigation. This was a comprehensive test, student.",
                     speaker: "The Null"
                 },
                 {
-                    text: "You'll need more evidence than that to catch someone like me. I've been doing this for years.",
+                    text: "You'll need more evidence than that to pass my final examination. I've been testing students for years.",
                     speaker: "The Null"
                 },
                 {
-                    text: "Better luck next time. The Null remains free to strike again...",
+                    text: "Better luck next time. Dr. Cipher expects better from his advanced students...",
                     speaker: "The Null"
                 }
             ];
         } else {
             this.messages = [
                 {
-                    text: "Ha! You think you can catch me with such little evidence? You have nothing concrete on me.",
+                    text: "You think you can solve my final exam with such little evidence? You have nothing concrete, student.",
                     speaker: "The Null"
                 },
                 {
-                    text: "I'm The Null - the ghost in your machines. You'll never find enough proof to convict me.",
+                    text: "I'm Dr. Cipher - your instructor. You'll need much better investigation skills to pass my course.",
                     speaker: "The Null"
                 },
                 {
-                    text: "You need to work on your investigation skills, detective. This case remains unsolved.",
+                    text: "You need to work on your forensics skills. This examination remains incomplete.",
                     speaker: "The Null"
                 }
             ];
@@ -163,8 +163,8 @@ export class Level5CompletionDialogue extends BaseDialogue {
                         <li>✓ Final Score: ${scoreData ? scoreData.totalScore : 'N/A'} XP</li>
                         <li>✓ Grade: ${scoreData ? scoreData.grade : 'A'}</li>
                         <li>✓ Badge Earned: ${scoreData ? scoreData.badge.name : 'Digital Detective'}</li>
-                        <li>✓ Perpetrator Identity: Dr. Marcus Cipher (former consultant)</li>
-                        <li>✓ Motive: Revenge for contract termination</li>
+                        <li>✓ Perpetrator Identity: Dr. Marcus Cipher (Academy Instructor)</li>
+                        <li>✓ Motive: Educational testing and examination</li>
                     </ul>
                 </div>
             `;
