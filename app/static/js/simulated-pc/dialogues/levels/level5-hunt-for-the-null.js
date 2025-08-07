@@ -1,4 +1,3 @@
-// TODO: Fix the level 5 tutorial not showing up after completing the dialogue
 // TODO: Make hidden directories only discoverable by using ls -la in the terminal app
 // TODO: Update the mastermind of The Null to be Dr. Cipher instead of Alex Thompson
 
@@ -36,13 +35,6 @@ export class Level5HuntForTheNullDialogue extends BaseDialogue {
                 const apps = ['files', 'logs', 'terminal'];
                 await window.applicationLauncher.launchMultiple(apps);
                 console.log('Digital forensics tools opened for Level 5: Hunt for The Null');
-                
-                // Start the Level 5 forensics tutorial
-                if (window.tutorialManager && window.tutorialManager.startLevel5ForensicsTutorial) {
-                    setTimeout(() => {
-                        window.tutorialManager.startLevel5ForensicsTutorial();
-                    }, 1000);
-                }
             }, 500);
         }
     }
