@@ -8,11 +8,13 @@ class BlueTeamDashboard {
         this.selectedAlert = null;
         this.timer = null;
         this.autoRefresh = null;
+        this.csrfToken = null;
         
         this.init();
     }
     
     init() {
+        this.getCsrfToken();
         this.updateTimestamp();
         this.checkExistingSession();
         this.startAutoRefresh();
@@ -20,6 +22,28 @@ class BlueTeamDashboard {
         // Set up event listeners
         document.addEventListener('DOMContentLoaded', () => {
             this.setupEventListeners();
+        });
+    }
+    
+    getCsrfToken() {
+        const metaTag = document.querySelector('meta[name="csrf-token"]');
+        this.csrfToken = metaTag ? metaTag.getAttribute('content') : null;
+    }
+    
+    // Helper method for making POST requests with CSRF token
+    async postRequest(url, data = {}) {
+        const headers = {
+            'Content-Type': 'application/json',
+        };
+        
+        if (this.csrfToken) {
+            headers['X-CSRFToken'] = this.csrfToken;
+        }
+        
+        return fetch(url, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(data)
         });
     }
     
@@ -64,12 +88,7 @@ class BlueTeamDashboard {
     
     async startNewSession() {
         try {
-            const response = await fetch('/blue-vs-red/start-session', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+            const response = await this.postRequest('/blue-vs-red/start-session');
             
             if (response.ok) {
                 const data = await response.json();
@@ -258,12 +277,7 @@ class BlueTeamDashboard {
     
     async triggerAIAction() {
         try {
-            const response = await fetch('/blue-vs-red/ai-action', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+            const response = await this.postRequest('/blue-vs-red/ai-action');
             
             if (response.ok) {
                 const data = await response.json();
@@ -310,12 +324,7 @@ function selectAlert(alertId) {
 
 async function scanNetwork() {
     try {
-        const response = await fetch('/blue-vs-red/scan-network', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
+        const response = await dashboard.postRequest('/blue-vs-red/scan-network');
         
         if (response.ok) {
             const data = await response.json();
@@ -332,13 +341,7 @@ async function scanNetwork() {
 async function patchVulnerabilities() {
     try {
         const target = dashboard.selectedHost || 'all';
-        const response = await fetch('/blue-vs-red/patch-vulnerabilities', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ host: target })
-        });
+        const response = await dashboard.postRequest('/blue-vs-red/patch-vulnerabilities', { host: target });
         
         if (response.ok) {
             const data = await response.json();
@@ -359,13 +362,7 @@ async function quarantineHost() {
     }
     
     try {
-        const response = await fetch('/blue-vs-red/quarantine-host', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ host: dashboard.selectedHost })
-        });
+        const response = await dashboard.postRequest('/blue-vs-red/quarantine-host', { host: dashboard.selectedHost });
         
         if (response.ok) {
             const data = await response.json();
@@ -393,13 +390,7 @@ async function investigateAlert() {
         if (dashboard.selectedAlert) body.alert_id = dashboard.selectedAlert;
         if (dashboard.selectedHost) body.host = dashboard.selectedHost;
         
-        const response = await fetch('/blue-vs-red/investigate-alert', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-        });
+        const response = await dashboard.postRequest('/blue-vs-red/investigate-alert', body);
         
         if (response.ok) {
             const data = await response.json();
@@ -475,7 +466,7 @@ function displaySessionSummary(summary) {
 async function newSession() {
     if (confirm('Are you sure you want to start a new session? Current progress will be lost.')) {
         try {
-            await fetch('/blue-vs-red/end-session', { method: 'POST' });
+            await dashboard.postRequest('/blue-vs-red/end-session');
             location.reload();
         } catch (error) {
             console.error('Error starting new session:', error);
