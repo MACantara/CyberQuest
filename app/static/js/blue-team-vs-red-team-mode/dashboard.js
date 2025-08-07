@@ -49,19 +49,21 @@ class BlueTeamDashboard {
     
     setupEventListeners() {
         // Close modal when clicking the X
-        document.querySelectorAll('.close').forEach(closeBtn => {
-            closeBtn.addEventListener('click', (e) => {
-                const modal = e.target.closest('.modal');
-                if (modal) {
-                    modal.style.display = 'none';
-                }
-            });
+        document.querySelectorAll('.cursor-pointer').forEach(closeBtn => {
+            if (closeBtn.textContent === '×') {
+                closeBtn.addEventListener('click', (e) => {
+                    const modal = e.target.closest('.fixed');
+                    if (modal) {
+                        modal.classList.add('hidden');
+                    }
+                });
+            }
         });
         
         // Close modal when clicking outside
         window.addEventListener('click', (e) => {
-            if (e.target.classList.contains('modal')) {
-                e.target.style.display = 'none';
+            if (e.target.classList.contains('fixed') && e.target.classList.contains('bg-black')) {
+                e.target.classList.add('hidden');
             }
         });
     }
@@ -167,23 +169,23 @@ class BlueTeamDashboard {
         Object.entries(hosts).forEach(([hostId, hostData]) => {
             const hostCard = document.querySelector(`[data-host="${hostId}"]`);
             if (hostCard) {
-                const statusIndicator = hostCard.querySelector('.status-indicator');
-                const statusText = hostCard.querySelector(`#${hostId}-status`);
+                const statusIndicator = hostCard.querySelector('span');
+                const statusText = document.getElementById(`${hostId}-status`);
                 
                 // Remove existing status classes
-                hostCard.classList.remove('compromised', 'quarantined');
-                statusIndicator.classList.remove('status-green', 'status-yellow', 'status-red');
+                hostCard.classList.remove('bg-red-900', 'border-red-500', 'bg-yellow-900', 'border-yellow-500');
+                statusIndicator.classList.remove('bg-green-500', 'bg-yellow-500', 'bg-red-500');
                 
                 if (hostData.status === 'quarantined') {
-                    hostCard.classList.add('quarantined');
-                    statusIndicator.classList.add('status-yellow');
+                    hostCard.classList.add('bg-yellow-900', 'bg-opacity-50', 'border-yellow-500');
+                    statusIndicator.classList.add('bg-yellow-500');
                     if (statusText) statusText.textContent = 'Quarantined';
                 } else if (hostData.compromised) {
-                    hostCard.classList.add('compromised');
-                    statusIndicator.classList.add('status-red');
+                    hostCard.classList.add('bg-red-900', 'bg-opacity-50', 'border-red-500');
+                    statusIndicator.classList.add('bg-red-500');
                     if (statusText) statusText.textContent = 'Compromised';
                 } else {
-                    statusIndicator.classList.add('status-green');
+                    statusIndicator.classList.add('bg-green-500');
                     if (statusText) statusText.textContent = 'Online';
                 }
             }
@@ -195,12 +197,21 @@ class BlueTeamDashboard {
         if (!alertsContainer) return;
         
         // Keep the initial system alert and add new ones
-        const existingAlerts = alertsContainer.querySelectorAll('.alert-item');
-        const newAlerts = alerts.slice(existingAlerts.length - 1);
+        const existingAlerts = alertsContainer.querySelectorAll('[data-alert-id]');
+        const newAlerts = alerts.slice(existingAlerts.length);
         
         newAlerts.forEach(alert => {
             const alertElement = document.createElement('div');
-            alertElement.className = `alert-item ${alert.severity}`;
+            
+            // Set Tailwind classes based on severity
+            let severityClasses = 'bg-orange-900 bg-opacity-50 border border-orange-500';
+            if (alert.severity === 'high') {
+                severityClasses = 'bg-red-900 bg-opacity-50 border border-red-500';
+            } else if (alert.severity === 'low') {
+                severityClasses = 'bg-green-900 bg-opacity-50 border border-green-500';
+            }
+            
+            alertElement.className = `${severityClasses} p-2 my-0.5 rounded text-xs cursor-pointer hover:bg-opacity-70`;
             alertElement.dataset.alertId = alert.id;
             alertElement.innerHTML = `
                 <div><strong>[${alert.severity.toUpperCase()}]</strong> ${alert.message}</div>
@@ -225,8 +236,9 @@ class BlueTeamDashboard {
         
         // Enable quarantine if a host is selected and not already quarantined
         if (quarantineBtn) {
-            quarantineBtn.disabled = !this.selectedHost || 
-                document.querySelector(`[data-host="${this.selectedHost}"]`)?.classList.contains('quarantined');
+            const selectedHostCard = document.querySelector(`[data-host="${this.selectedHost}"]`);
+            const isQuarantined = selectedHostCard?.classList.contains('bg-yellow-900');
+            quarantineBtn.disabled = !this.selectedHost || isQuarantined;
         }
         
         // Enable investigate if host or alert is selected
@@ -292,32 +304,44 @@ class BlueTeamDashboard {
 // Global functions for button actions
 function selectHost(hostId) {
     // Remove previous selection
-    document.querySelectorAll('.host-card').forEach(card => {
-        card.style.boxShadow = '';
+    document.querySelectorAll('[data-host]').forEach(card => {
+        card.classList.remove('ring-2', 'ring-green-500', 'ring-opacity-75');
     });
     
     // Add selection to clicked host
     const hostCard = document.querySelector(`[data-host="${hostId}"]`);
     if (hostCard) {
-        hostCard.style.boxShadow = '0 0 10px #00ff00';
+        hostCard.classList.add('ring-2', 'ring-green-500', 'ring-opacity-75');
         dashboard.selectedHost = hostId;
         dashboard.selectedAlert = null; // Clear alert selection
+        
+        // Clear alert selection visual
+        document.querySelectorAll('[data-alert-id]').forEach(alert => {
+            alert.classList.remove('ring-2', 'ring-orange-500', 'ring-opacity-75');
+        });
+        
         dashboard.updateActionButtons();
     }
 }
 
 function selectAlert(alertId) {
     // Remove previous selection
-    document.querySelectorAll('.alert-item').forEach(alert => {
-        alert.style.boxShadow = '';
+    document.querySelectorAll('[data-alert-id]').forEach(alert => {
+        alert.classList.remove('ring-2', 'ring-orange-500', 'ring-opacity-75');
     });
     
     // Add selection to clicked alert
     const alertElement = document.querySelector(`[data-alert-id="${alertId}"]`);
     if (alertElement) {
-        alertElement.style.boxShadow = '0 0 10px #ff9500';
+        alertElement.classList.add('ring-2', 'ring-orange-500', 'ring-opacity-75');
         dashboard.selectedAlert = alertId;
         dashboard.selectedHost = null; // Clear host selection
+        
+        // Clear host selection visual
+        document.querySelectorAll('[data-host]').forEach(card => {
+            card.classList.remove('ring-2', 'ring-green-500', 'ring-opacity-75');
+        });
+        
         dashboard.updateActionButtons();
     }
 }
@@ -408,24 +432,24 @@ function showInvestigationResults(results) {
     const modal = document.getElementById('investigation-modal');
     const content = document.getElementById('investigation-content');
     
-    let html = '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">';
+    let html = '<div class="grid grid-cols-2 gap-5">';
     
-    html += '<div><h4>🔍 Findings</h4><ul>';
+    html += '<div><h4 class="text-lg mb-2">🔍 Findings</h4><ul class="list-disc list-inside">';
     results.findings.forEach(finding => {
-        html += `<li>${finding}</li>`;
+        html += `<li class="mb-1">${finding}</li>`;
     });
     html += '</ul></div>';
     
-    html += '<div><h4>💡 Recommendations</h4><ul>';
+    html += '<div><h4 class="text-lg mb-2">💡 Recommendations</h4><ul class="list-disc list-inside">';
     results.recommendations.forEach(rec => {
-        html += `<li>${rec}</li>`;
+        html += `<li class="mb-1">${rec}</li>`;
     });
     html += '</ul></div>';
     
     html += '</div>';
     
     content.innerHTML = html;
-    modal.style.display = 'block';
+    modal.classList.remove('hidden');
 }
 
 async function showSessionSummary() {
@@ -460,7 +484,7 @@ function displaySessionSummary(summary) {
     });
     
     // Show modal
-    document.getElementById('summary-modal').style.display = 'block';
+    document.getElementById('summary-modal').classList.remove('hidden');
 }
 
 async function newSession() {
@@ -476,7 +500,7 @@ async function newSession() {
 }
 
 function closeModal(modalId) {
-    document.getElementById(modalId).style.display = 'none';
+    document.getElementById(modalId).classList.add('hidden');
 }
 
 // Initialize dashboard when page loads

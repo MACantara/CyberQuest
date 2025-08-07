@@ -2,207 +2,40 @@
 
 {% block title %}Blue Team vs Red Team - CyberQuest{% endblock %}
 
-{% block extra_css %}
-<meta name="csrf-token" content="{{ csrf_token() }}">
-<style>
-    .blue-team-dashboard {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: auto 1fr auto;
-        height: 100vh;
-        gap: 10px;
-        padding: 10px;
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-        color: #ffffff;
-        font-family: 'Courier New', monospace;
-    }
 
-    .dashboard-header {
-        grid-column: 1 / -1;
-        background: rgba(0, 0, 0, 0.7);
-        padding: 15px;
-        border-radius: 8px;
-        border: 2px solid #00ff00;
-        text-align: center;
-    }
-
-    .network-overview {
-        background: rgba(0, 0, 0, 0.8);
-        padding: 15px;
-        border-radius: 8px;
-        border: 2px solid #00ff00;
-        overflow-y: auto;
-    }
-
-    .alert-feed {
-        background: rgba(0, 0, 0, 0.8);
-        padding: 15px;
-        border-radius: 8px;
-        border: 2px solid #ff9500;
-        overflow-y: auto;
-    }
-
-    .action-panel {
-        grid-column: 1 / -1;
-        background: rgba(0, 0, 0, 0.8);
-        padding: 15px;
-        border-radius: 8px;
-        border: 2px solid #0099ff;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-    }
-
-    .host-card {
-        background: rgba(0, 50, 0, 0.5);
-        border: 1px solid #00ff00;
-        padding: 10px;
-        margin: 5px 0;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    .host-card:hover {
-        background: rgba(0, 100, 0, 0.7);
-        transform: translateX(5px);
-    }
-
-    .host-card.compromised {
-        background: rgba(100, 0, 0, 0.5);
-        border-color: #ff0000;
-    }
-
-    .host-card.quarantined {
-        background: rgba(100, 100, 0, 0.5);
-        border-color: #ffff00;
-    }
-
-    .alert-item {
-        background: rgba(100, 50, 0, 0.5);
-        border: 1px solid #ff9500;
-        padding: 8px;
-        margin: 3px 0;
-        border-radius: 3px;
-        font-size: 12px;
-    }
-
-    .alert-item.high {
-        border-color: #ff0000;
-        background: rgba(100, 0, 0, 0.5);
-    }
-
-    .alert-item.medium {
-        border-color: #ff9500;
-    }
-
-    .alert-item.low {
-        border-color: #00ff00;
-        background: rgba(0, 50, 0, 0.5);
-    }
-
-    .action-btn {
-        background: rgba(0, 100, 200, 0.8);
-        color: white;
-        border: 2px solid #0099ff;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-family: 'Courier New', monospace;
-    }
-
-    .action-btn:hover {
-        background: rgba(0, 150, 255, 0.9);
-        transform: translateY(-2px);
-    }
-
-    .action-btn:disabled {
-        background: rgba(50, 50, 50, 0.5);
-        border-color: #666;
-        cursor: not-allowed;
-    }
-
-    .score-display {
-        font-size: 18px;
-        font-weight: bold;
-        color: #00ff00;
-    }
-
-    .timer-display {
-        font-size: 16px;
-        color: #ff9500;
-    }
-
-    .status-indicator {
-        display: inline-block;
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        margin-right: 5px;
-    }
-
-    .status-green { background-color: #00ff00; }
-    .status-yellow { background-color: #ffff00; }
-    .status-red { background-color: #ff0000; }
-
-    .modal {
-        display: none;
-        position: fixed;
-        z-index: 1000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-    }
-
-    .modal-content {
-        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-        margin: 5% auto;
-        padding: 20px;
-        border: 2px solid #00ff00;
-        border-radius: 10px;
-        width: 80%;
-        max-width: 600px;
-        color: white;
-        font-family: 'Courier New', monospace;
-    }
-</style>
-{% endblock %}
 
 {% block navbar %}
 
 {% endblock %}
 
 {% block content %}
-<div class="blue-team-dashboard">
-    <div class="dashboard-header">
-        <h1>🛡️ Blue Team Defense Command Center</h1>
-        <div style="display: flex; justify-content: space-between; margin-top: 10px;">
-            <div class="score-display">Score: <span id="current-score">0</span></div>
-            <div class="timer-display">Time: <span id="session-timer">00:00</span></div>
-            <div>Session: <span id="session-id">{{ session_data.id if session_data else 'NEW' }}</span></div>
+<div class="grid grid-cols-2 grid-rows-[auto_1fr_auto] h-screen gap-2.5 p-2.5 bg-gradient-to-br from-blue-900 to-blue-800 text-white font-mono">
+    <div class="col-span-2 bg-black bg-opacity-70 p-4 rounded-lg border-2 border-green-500 text-center">
+        <h1 class="text-2xl mb-2">🛡️ Blue Team Defense Command Center</h1>
+        <div class="flex justify-between mt-2.5">
+            <div class="text-lg font-bold text-green-500">Score: <span id="current-score">0</span></div>
+            <div class="text-base text-orange-500">Time: <span id="session-timer">00:00</span></div>
+            <div class="text-white">Session: <span id="session-id">{{ session_data.id if session_data else 'NEW' }}</span></div>
         </div>
     </div>
 
-    <div class="network-overview">
-        <h3>🌐 Network Overview</h3>
+    <div class="bg-black bg-opacity-80 p-4 rounded-lg border-2 border-green-500 overflow-y-auto">
+        <h3 class="text-lg mb-3">🌐 Network Overview</h3>
         <div id="network-hosts">
-            <div class="host-card" data-host="web-server" onclick="selectHost('web-server')">
-                <div><span class="status-indicator status-green"></span><strong>Web Server</strong></div>
+            <div class="bg-green-900 bg-opacity-50 border border-green-500 p-2.5 my-1.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-green-800 hover:bg-opacity-70 hover:translate-x-1" data-host="web-server" onclick="selectHost('web-server')">
+                <div><span class="inline-block w-2.5 h-2.5 rounded-full mr-1.5 bg-green-500"></span><strong>Web Server</strong></div>
                 <div>IP: 192.168.1.10</div>
                 <div>Services: HTTP, HTTPS</div>
                 <div>Status: <span id="web-server-status">Online</span></div>
             </div>
-            <div class="host-card" data-host="database" onclick="selectHost('database')">
-                <div><span class="status-indicator status-green"></span><strong>Database Server</strong></div>
+            <div class="bg-green-900 bg-opacity-50 border border-green-500 p-2.5 my-1.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-green-800 hover:bg-opacity-70 hover:translate-x-1" data-host="database" onclick="selectHost('database')">
+                <div><span class="inline-block w-2.5 h-2.5 rounded-full mr-1.5 bg-green-500"></span><strong>Database Server</strong></div>
                 <div>IP: 192.168.1.20</div>
                 <div>Services: MySQL</div>
                 <div>Status: <span id="database-status">Online</span></div>
             </div>
-            <div class="host-card" data-host="workstation" onclick="selectHost('workstation')">
-                <div><span class="status-indicator status-green"></span><strong>User Workstation</strong></div>
+            <div class="bg-green-900 bg-opacity-50 border border-green-500 p-2.5 my-1.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-green-800 hover:bg-opacity-70 hover:translate-x-1" data-host="workstation" onclick="selectHost('workstation')">
+                <div><span class="inline-block w-2.5 h-2.5 rounded-full mr-1.5 bg-green-500"></span><strong>User Workstation</strong></div>
                 <div>IP: 192.168.1.100</div>
                 <div>Services: RDP, SMB</div>
                 <div>Status: <span id="workstation-status">Online</span></div>
@@ -210,71 +43,71 @@
         </div>
     </div>
 
-    <div class="alert-feed">
-        <h3>⚠️ Security Alerts</h3>
+    <div class="bg-black bg-opacity-80 p-4 rounded-lg border-2 border-orange-500 overflow-y-auto">
+        <h3 class="text-lg mb-3">⚠️ Security Alerts</h3>
         <div id="alerts-container">
-            <div class="alert-item low">
+            <div class="bg-green-900 bg-opacity-50 border border-green-500 p-2 my-0.5 rounded text-xs">
                 <div><strong>[INFO]</strong> System monitoring initialized</div>
                 <div>Source: Security Center | Time: <span class="timestamp"></span></div>
             </div>
         </div>
     </div>
 
-    <div class="action-panel">
-        <button class="action-btn" onclick="scanNetwork()">🔍 Scan Network</button>
-        <button class="action-btn" onclick="patchVulnerabilities()" id="patch-btn">🔧 Patch Systems</button>
-        <button class="action-btn" onclick="quarantineHost()" id="quarantine-btn" disabled>🚫 Quarantine</button>
-        <button class="action-btn" onclick="investigateAlert()" id="investigate-btn" disabled>🕵️ Investigate</button>
-        <button class="action-btn" onclick="showSessionSummary()">📊 Session Summary</button>
-        <button class="action-btn" onclick="newSession()" style="background: rgba(200, 0, 0, 0.8); border-color: #ff0000;">🔄 New Session</button>
+    <div class="col-span-2 bg-black bg-opacity-80 p-4 rounded-lg border-2 border-blue-500 flex justify-around items-center">
+        <button class="bg-blue-600 bg-opacity-80 text-white border-2 border-blue-500 px-5 py-2.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-blue-500 hover:bg-opacity-90 hover:-translate-y-0.5 font-mono" onclick="scanNetwork()">🔍 Scan Network</button>
+        <button class="bg-blue-600 bg-opacity-80 text-white border-2 border-blue-500 px-5 py-2.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-blue-500 hover:bg-opacity-90 hover:-translate-y-0.5 font-mono disabled:bg-gray-800 disabled:bg-opacity-50 disabled:border-gray-600 disabled:cursor-not-allowed" onclick="patchVulnerabilities()" id="patch-btn">🔧 Patch Systems</button>
+        <button class="bg-blue-600 bg-opacity-80 text-white border-2 border-blue-500 px-5 py-2.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-blue-500 hover:bg-opacity-90 hover:-translate-y-0.5 font-mono disabled:bg-gray-800 disabled:bg-opacity-50 disabled:border-gray-600 disabled:cursor-not-allowed" onclick="quarantineHost()" id="quarantine-btn" disabled>🚫 Quarantine</button>
+        <button class="bg-blue-600 bg-opacity-80 text-white border-2 border-blue-500 px-5 py-2.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-blue-500 hover:bg-opacity-90 hover:-translate-y-0.5 font-mono disabled:bg-gray-800 disabled:bg-opacity-50 disabled:border-gray-600 disabled:cursor-not-allowed" onclick="investigateAlert()" id="investigate-btn" disabled>🕵️ Investigate</button>
+        <button class="bg-blue-600 bg-opacity-80 text-white border-2 border-blue-500 px-5 py-2.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-blue-500 hover:bg-opacity-90 hover:-translate-y-0.5 font-mono" onclick="showSessionSummary()">📊 Session Summary</button>
+        <button class="bg-red-600 bg-opacity-80 text-white border-2 border-red-500 px-5 py-2.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-red-500 hover:bg-opacity-90 hover:-translate-y-0.5 font-mono" onclick="newSession()">🔄 New Session</button>
     </div>
 </div>
 
 <!-- Investigation Modal -->
-<div id="investigation-modal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal('investigation-modal')">&times;</span>
-        <h2>🕵️ Investigation Results</h2>
-        <div id="investigation-content">
+<div id="investigation-modal" class="hidden fixed z-50 left-0 top-0 w-full h-full bg-black bg-opacity-80">
+    <div class="bg-gradient-to-br from-blue-900 to-blue-800 my-12 mx-auto p-5 border-2 border-green-500 rounded-lg w-4/5 max-w-2xl text-white font-mono">
+        <span class="float-right text-2xl font-bold cursor-pointer hover:text-red-500" onclick="closeModal('investigation-modal')">&times;</span>
+        <h2 class="text-xl mb-4">🕵️ Investigation Results</h2>
+        <div id="investigation-content" class="mb-4">
             <p>Select an alert or host to investigate...</p>
         </div>
-        <div style="text-align: center; margin-top: 20px;">
-            <button class="action-btn" onclick="closeModal('investigation-modal')">Close</button>
+        <div class="text-center mt-5">
+            <button class="bg-blue-600 bg-opacity-80 text-white border-2 border-blue-500 px-5 py-2.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-blue-500 hover:bg-opacity-90 hover:-translate-y-0.5 font-mono" onclick="closeModal('investigation-modal')">Close</button>
         </div>
     </div>
 </div>
 
 <!-- Session Summary Modal -->
-<div id="summary-modal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal('summary-modal')">&times;</span>
-        <h2>📊 Session Summary</h2>
+<div id="summary-modal" class="hidden fixed z-50 left-0 top-0 w-full h-full bg-black bg-opacity-80">
+    <div class="bg-gradient-to-br from-blue-900 to-blue-800 my-12 mx-auto p-5 border-2 border-green-500 rounded-lg w-4/5 max-w-2xl text-white font-mono">
+        <span class="float-right text-2xl font-bold cursor-pointer hover:text-red-500" onclick="closeModal('summary-modal')">&times;</span>
+        <h2 class="text-xl mb-4">📊 Session Summary</h2>
         <div id="summary-content">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="grid grid-cols-2 gap-5">
                 <div>
-                    <h4>Performance Metrics</h4>
-                    <p>Final Score: <span id="final-score">0</span></p>
-                    <p>Detection Speed: <span id="detection-speed">N/A</span></p>
-                    <p>Response Time: <span id="response-time">N/A</span></p>
-                    <p>System Uptime: <span id="system-uptime">100%</span></p>
+                    <h4 class="text-lg mb-2">Performance Metrics</h4>
+                    <p class="mb-1">Final Score: <span id="final-score">0</span></p>
+                    <p class="mb-1">Detection Speed: <span id="detection-speed">N/A</span></p>
+                    <p class="mb-1">Response Time: <span id="response-time">N/A</span></p>
+                    <p class="mb-1">System Uptime: <span id="system-uptime">100%</span></p>
                 </div>
                 <div>
-                    <h4>Incident Analysis</h4>
-                    <p>Attacks Detected: <span id="attacks-detected">0</span></p>
-                    <p>Alerts Handled: <span id="alerts-handled">0</span></p>
-                    <p>Compromised Hosts: <span id="compromised-hosts">0</span></p>
-                    <p>Recovery Time: <span id="recovery-time">N/A</span></p>
+                    <h4 class="text-lg mb-2">Incident Analysis</h4>
+                    <p class="mb-1">Attacks Detected: <span id="attacks-detected">0</span></p>
+                    <p class="mb-1">Alerts Handled: <span id="alerts-handled">0</span></p>
+                    <p class="mb-1">Compromised Hosts: <span id="compromised-hosts">0</span></p>
+                    <p class="mb-1">Recovery Time: <span id="recovery-time">N/A</span></p>
                 </div>
             </div>
-            <div style="margin-top: 20px;">
-                <h4>Learning Points</h4>
+            <div class="mt-5">
+                <h4 class="text-lg mb-2">Learning Points</h4>
                 <div id="learning-points">
                     <p>• Complete a session to see learning insights</p>
                 </div>
             </div>
         </div>
-        <div style="text-align: center; margin-top: 20px;">
-            <button class="action-btn" onclick="closeModal('summary-modal')">Close</button>
+        <div class="text-center mt-5">
+            <button class="bg-blue-600 bg-opacity-80 text-white border-2 border-blue-500 px-5 py-2.5 rounded cursor-pointer transition-all duration-300 ease-in-out hover:bg-blue-500 hover:bg-opacity-90 hover:-translate-y-0.5 font-mono" onclick="closeModal('summary-modal')">Close</button>
         </div>
     </div>
 </div>
