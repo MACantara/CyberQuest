@@ -220,7 +220,7 @@ class BlueTeamDashboard {
             
             // Make alert clickable
             alertElement.addEventListener('click', () => {
-                this.selectAlert(alert.id);
+                selectAlert(alert.id);
             });
             
             alertsContainer.appendChild(alertElement);
