@@ -88,7 +88,6 @@ Based on the unique needs of the Blue Team vs Red Team mode, the interface will 
 
 - **Draw inspiration from the simulated PC** for visual style and user experience, maintaining familiarity for returning players.
 - **Expand to include network-wide and strategic views**—such as dashboards, network topology maps, real-time alert feeds, and asset management panels.
-
 - **Support multi-host and incident response workflows** with intuitive navigation between systems, alerts, and response tools.
 - **Enable future scalability** for co-op/team play, scenario customization, and advanced Blue Team features.
 
