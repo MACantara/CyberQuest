@@ -3,8 +3,8 @@ import { initializeEvidenceTracker } from '../level5/evidence-tracker.js';
 import '../level5/scoring-system.js';
 
 export class Level5ForensicsTutorial extends BaseTutorial {
-    constructor() {
-        super('level5-forensics', 'Level 5: The Hunt for The Null', 'Learn digital forensics to catch The Null');
+    constructor(desktop) {
+        super(desktop);
         this.evidenceFound = new Set();
         this.patternsIdentified = new Set();
         this.evidenceTracker = null;
@@ -14,46 +14,67 @@ export class Level5ForensicsTutorial extends BaseTutorial {
     initializeSteps() {
         this.steps = [
             {
-                title: "Welcome to Digital Forensics",
-                content: "You are about to begin your final cybersecurity challenge: hunting down the elusive hacker known as 'The Null'. This investigation will test all the skills you've learned.",
-                action: "Click 'Next' to start your investigation",
-                validation: () => true,
+                target: '#desktop',
+                title: 'Welcome to Digital Forensics',
+                content: 'You are about to begin your final cybersecurity challenge: hunting down the elusive hacker known as \'The Null\'. This investigation will test all the skills you\'ve learned.',
+                position: 'center',
+                action: 'highlight',
                 onComplete: () => {
-                    // Initialize evidence tracker and start timer
-                    this.evidenceTracker = initializeEvidenceTracker();
-                    this.evidenceTracker.showTracker();
-                    
-                    // Start scoring timer
-                    if (window.level5Scoring) {
-                        window.level5Scoring.startTimer();
-                    }
-                    
                     console.log('Level 5 forensics investigation started');
                 }
             },
             {
-                title: "Understanding the Case",
-                content: "The Null has been responsible for attacks across all previous levels. Your goal is to find evidence files, identify patterns, and expose their identity. You need to find at least 4 out of 5 evidence files to solve the case.",
-                action: "Open the File Manager to begin evidence collection",
-                validation: () => this.checkApplicationOpen('files'),
+                target: '#desktop',
+                title: 'Understanding the Case',
+                content: 'The Null has been responsible for attacks across all previous levels. Your goal is to find evidence files, identify patterns, and expose their identity. You need to find at least 4 out of 5 evidence files to solve the case.',
+                position: 'center',
+                action: 'highlight',
+                interactive: true,
+                interaction: {
+                    type: 'application_open',
+                    appName: 'files',
+                    instructions: 'Open the File Manager to begin evidence collection',
+                    successMessage: 'Great! File Manager is now open.',
+                    autoAdvance: true,
+                    advanceDelay: 1000
+                },
                 onComplete: () => {
                     this.highlightEvidence();
                 }
             },
             {
-                title: "Navigate to Evidence Directory",
-                content: "Navigate to the Evidence folder in the file manager. This contains all the digital forensics evidence collected from previous incidents.",
-                action: "Click on the Evidence folder to open it",
-                validation: () => this.checkCurrentPath('/home/trainee/Evidence'),
+                target: '[data-file-name="Evidence"]',
+                title: 'Navigate to Evidence Directory',
+                content: 'Navigate to the Evidence folder in the file manager. This contains all the digital forensics evidence collected from previous incidents.',
+                position: 'right',
+                action: 'pulse',
+                interactive: true,
+                interaction: {
+                    type: 'click',
+                    instructions: 'Click on the Evidence folder to open it',
+                    successMessage: 'Evidence directory opened!',
+                    autoAdvance: true,
+                    advanceDelay: 1500
+                },
                 onComplete: () => {
                     console.log('Evidence directory opened');
                 }
             },
             {
-                title: "Find Bot Network Evidence",
-                content: "Look for evidence from Level 1 (the misinformation bot network). Search for files containing 'bot' or look for bot_logs.txt.",
-                action: "Find and open bot_logs.txt",
-                validation: () => this.checkFileOpened('bot_logs.txt'),
+                target: '.file-manager-content',
+                title: 'Find Bot Network Evidence',
+                content: 'Look for evidence from Level 1 (the misinformation bot network). Search for files containing \'bot\' or look for bot_logs.txt.',
+                position: 'top',
+                action: 'highlight',
+                interactive: true,
+                interaction: {
+                    type: 'file_open',
+                    fileName: 'bot_logs.txt',
+                    instructions: 'Find and open bot_logs.txt',
+                    successMessage: 'Bot network evidence found!',
+                    autoAdvance: true,
+                    advanceDelay: 2000
+                },
                 onComplete: () => {
                     this.evidenceFound.add('bot_logs');
                     if (this.evidenceTracker) {
@@ -63,10 +84,11 @@ export class Level5ForensicsTutorial extends BaseTutorial {
                 }
             },
             {
-                title: "Analyze Bot Network Evidence",
-                content: "Excellent! You found the bot network logs. Notice the IP address 192.168.1.100 and the timestamp pattern. Look for any signatures or unusual patterns in the logs.",
-                action: "Read the bot logs carefully and note the IP address",
-                validation: () => true,
+                target: '.file-viewer',
+                title: 'Analyze Bot Network Evidence',
+                content: 'Excellent! You found the bot network logs. Notice the IP address 192.168.1.100 and the timestamp pattern. Look for any signatures or unusual patterns in the logs.',
+                position: 'left',
+                action: 'highlight',
                 onComplete: () => {
                     this.patternsIdentified.add('ip_address');
                     if (this.evidenceTracker) {
@@ -76,10 +98,20 @@ export class Level5ForensicsTutorial extends BaseTutorial {
                 }
             },
             {
-                title: "Find Email Evidence",
-                content: "Now search for evidence from Level 2 (the phishing campaign). Look for email-related files or email_headers.txt.",
-                action: "Find and open email_headers.txt",
-                validation: () => this.checkFileOpened('email_headers.txt'),
+                target: '.file-manager-content',
+                title: 'Find Email Evidence',
+                content: 'Now search for evidence from Level 2 (the phishing campaign). Look for email-related files or email_headers.txt.',
+                position: 'top',
+                action: 'highlight',
+                interactive: true,
+                interaction: {
+                    type: 'file_open',
+                    fileName: 'email_headers.txt',
+                    instructions: 'Find and open email_headers.txt',
+                    successMessage: 'Email evidence found!',
+                    autoAdvance: true,
+                    advanceDelay: 2000
+                },
                 onComplete: () => {
                     this.evidenceFound.add('email_headers');
                     if (this.evidenceTracker) {
@@ -89,10 +121,11 @@ export class Level5ForensicsTutorial extends BaseTutorial {
                 }
             },
             {
-                title: "Analyze Email Headers",
-                content: "Perfect! Check the email headers for the same IP address and look for the X-Mailer field. Notice the custom signature in the headers.",
-                action: "Look for 'NullSender' and the attacker signature 'N4LL'",
-                validation: () => true,
+                target: '.file-viewer',
+                title: 'Analyze Email Headers',
+                content: 'Perfect! Check the email headers for the same IP address and look for the X-Mailer field. Notice the custom signature in the headers.',
+                position: 'left',
+                action: 'highlight',
                 onComplete: () => {
                     this.patternsIdentified.add('null_signature');
                     if (this.evidenceTracker) {
@@ -102,10 +135,20 @@ export class Level5ForensicsTutorial extends BaseTutorial {
                 }
             },
             {
-                title: "Find Malware Evidence",
-                content: "Search for evidence from Level 3 (malware distribution). Look for code-related files or malware_code.txt.",
-                action: "Find and open malware_code.txt",
-                validation: () => this.checkFileOpened('malware_code.txt'),
+                target: '.file-manager-content',
+                title: 'Find Malware Evidence',
+                content: 'Search for evidence from Level 3 (malware distribution). Look for code-related files or malware_code.txt.',
+                position: 'top',
+                action: 'highlight',
+                interactive: true,
+                interaction: {
+                    type: 'file_open',
+                    fileName: 'malware_code.txt',
+                    instructions: 'Find and open malware_code.txt',
+                    successMessage: 'Malware evidence found!',
+                    autoAdvance: true,
+                    advanceDelay: 2000
+                },
                 onComplete: () => {
                     this.evidenceFound.add('malware_code');
                     if (this.evidenceTracker) {
@@ -115,19 +158,30 @@ export class Level5ForensicsTutorial extends BaseTutorial {
                 }
             },
             {
-                title: "Analyze Malware Code",
-                content: "Great work! Examine the malware source code. Look for the same IP address and the 'N4LL' signature in the code comments.",
-                action: "Find the comment '// N4LL was here' in the code",
-                validation: () => true,
+                target: '.file-viewer',
+                title: 'Analyze Malware Code',
+                content: 'Great work! Examine the malware source code. Look for the same IP address and the \'N4LL\' signature in the code comments.',
+                position: 'left',
+                action: 'highlight',
                 onComplete: () => {
                     this.showTutorialHint('Code Signature', 'The attacker left their signature directly in the malware code!');
                 }
             },
             {
-                title: "Find Login Evidence",
-                content: "Now search for evidence from Level 4 (vulnerability exploitation). Look for login or access logs.",
-                action: "Find and open login_logs.txt",
-                validation: () => this.checkFileOpened('login_logs.txt'),
+                target: '.file-manager-content',
+                title: 'Find Login Evidence',
+                content: 'Now search for evidence from Level 4 (vulnerability exploitation). Look for login or access logs.',
+                position: 'top',
+                action: 'highlight',
+                interactive: true,
+                interaction: {
+                    type: 'file_open',
+                    fileName: 'login_logs.txt',
+                    instructions: 'Find and open login_logs.txt',
+                    successMessage: 'Login evidence found!',
+                    autoAdvance: true,
+                    advanceDelay: 2000
+                },
                 onComplete: () => {
                     this.evidenceFound.add('login_logs');
                     if (this.evidenceTracker) {
@@ -137,10 +191,11 @@ export class Level5ForensicsTutorial extends BaseTutorial {
                 }
             },
             {
-                title: "Analyze Login Patterns",
-                content: "Excellent! Review the failed login attempts and successful breach. Notice the consistent IP address and timing patterns.",
-                action: "Observe the Tuesday 2:00 AM attack pattern",
-                validation: () => true,
+                target: '.file-viewer',
+                title: 'Analyze Login Patterns',
+                content: 'Excellent! Review the failed login attempts and successful breach. Notice the consistent IP address and timing patterns.',
+                position: 'left',
+                action: 'highlight',
                 onComplete: () => {
                     this.patternsIdentified.add('timing_pattern');
                     if (this.evidenceTracker) {
@@ -150,61 +205,49 @@ export class Level5ForensicsTutorial extends BaseTutorial {
                 }
             },
             {
-                title: "Search for Hidden Evidence",
-                content: "There's one more piece of evidence hidden in a secret location. Look for hidden files or directories. In the terminal, you can use 'ls -la' to show hidden items.",
-                action: "Open the Terminal application",
-                validation: () => this.checkApplicationOpen('terminal'),
+                target: '#desktop',
+                title: 'Search for Hidden Evidence',
+                content: 'There\'s one more piece of evidence hidden in a secret location. Look for hidden files or directories. In the terminal, you can use \'ls -la\' to show hidden items.',
+                position: 'center',
+                action: 'highlight',
+                interactive: true,
+                interaction: {
+                    type: 'application_open',
+                    appName: 'terminal',
+                    instructions: 'Open the Terminal application',
+                    successMessage: 'Terminal opened!',
+                    autoAdvance: true,
+                    advanceDelay: 1000
+                },
                 onComplete: () => {
                     this.showTerminalCommands();
                 }
             },
             {
-                title: "Use Terminal Commands",
-                content: "Use the 'find' command to search for hidden files containing 'hidden' or 'message'. Try: find . -name '*hidden*'",
-                action: "Run the find command to locate hidden files",
-                validation: () => this.checkTerminalCommand('find'),
+                target: '.terminal-content',
+                title: 'Use Terminal Commands',
+                content: 'Use the \'find\' command to search for hidden files containing \'hidden\' or \'message\'. Try: find . -name \'*hidden*\'',
+                position: 'top',
+                action: 'highlight',
                 onComplete: () => {
                     this.showTutorialHint('Hidden Files', 'Use ls -la to see hidden directories starting with a dot (.)');
                 }
             },
             {
-                title: "Navigate to Hidden Directory",
-                content: "Go back to the file manager and navigate to the .hidden directory inside Evidence. You may need to enable 'Show Hidden Files' in the view options.",
-                action: "Find and enter the .hidden directory",
-                validation: () => this.checkCurrentPath('/home/trainee/Evidence/.hidden'),
-                onComplete: () => {
-                    console.log('Hidden directory found');
-                }
-            },
-            {
-                title: "Find the Final Message",
-                content: "Open the hidden_message.txt file to find The Null's final confession and identity reveal.",
-                action: "Open hidden_message.txt",
-                validation: () => this.checkFileOpened('hidden_message.txt'),
-                onComplete: () => {
-                    this.evidenceFound.add('hidden_message');
-                    if (this.evidenceTracker) {
-                        this.evidenceTracker.markEvidenceFound('hidden_message.txt');
-                    }
-                    this.updateProgress();
-                }
-            },
-            {
-                title: "Case Solved!",
+                target: '#desktop',
+                title: 'Case Solved!',
                 content: `Congratulations! You've successfully identified The Null as Alex Thompson, a former IT intern seeking revenge. You found ${this.evidenceFound.size}/5 evidence files and identified key patterns:
 
 ✓ IP Address: 192.168.1.100 (consistent across all attacks)
-✓ Signature: N4LL (in various forms)
+✓ Signature: N4LL (in various forms)  
 ✓ Timing: Tuesday 2:00 AM attacks
 ✓ Tools: Custom NullSender toolkit
 ✓ Motive: Revenge for job termination
 
 You've mastered digital forensics and solved the ultimate cybersecurity mystery!`,
-                action: "Complete the investigation",
-                validation: () => true,
-                onComplete: () => {
-                    this.completeLevel5();
-                }
+                position: 'center',
+                action: 'highlight',
+                final: true
             }
         ];
     }
@@ -346,12 +389,98 @@ You've mastered digital forensics and solved the ultimate cybersecurity mystery!
         return evidenceScore + patternScore;
     }
 
-    // Static method for tutorial auto-start
+    // Override base class methods
+    getSkipTutorialHandler() {
+        return 'window.level5ForensicsTutorial.showSkipModal()';
+    }
+
+    getPreviousStepHandler() {
+        return 'window.level5ForensicsTutorial.previousStep()';
+    }
+
+    getNextStepHandler() {
+        return 'window.level5ForensicsTutorial.nextStep()';
+    }
+
+    getFinalStepHandler() {
+        return 'window.level5ForensicsTutorial.complete()';
+    }
+
+    getFinalButtonText() {
+        return 'Complete Investigation';
+    }
+
+    complete() {
+        // Complete the Level 5 investigation
+        this.completeLevel5();
+        
+        // Call parent complete method
+        super.complete();
+        
+        // Mark tutorial as completed
+        localStorage.setItem('cyberquest_level5_forensics_tutorial_completed', 'true');
+    }
+
+    // Static methods for auto-start functionality
     static shouldAutoStartLevel5Forensics() {
         const currentLevel = localStorage.getItem('cyberquest_current_level');
         const levelStarted = localStorage.getItem('cyberquest_level_5_started');
         const tutorialCompleted = localStorage.getItem('cyberquest_level5_forensics_tutorial_completed');
         
+        console.log('Level5 Forensics Tutorial - shouldAutoStart check:', {
+            currentLevel,
+            levelStarted,
+            tutorialCompleted,
+            shouldStart: currentLevel === '5' && levelStarted === 'true' && !tutorialCompleted
+        });
+        
         return currentLevel === '5' && levelStarted === 'true' && !tutorialCompleted;
+    }
+
+    static startTutorial(desktop) {
+        console.log('Starting Level 5 Forensics tutorial...');
+        const tutorial = new Level5ForensicsTutorial(desktop);
+        window.level5ForensicsTutorial = tutorial;
+        tutorial.start();
+        return tutorial;
+    }
+
+    static restart() {
+        localStorage.removeItem('cyberquest_level5_forensics_tutorial_completed');
+        localStorage.removeItem('cyberquest_level_5_started');
+        localStorage.removeItem('cyberquest_level_5_completed');
+    }
+
+    // Start method override
+    async start() {
+        // Initialize evidence tracker and start timer
+        this.evidenceTracker = initializeEvidenceTracker();
+        this.evidenceTracker.showTracker();
+        
+        // Start scoring timer
+        if (window.level5Scoring) {
+            window.level5Scoring.startTimer();
+        }
+        
+        console.log('Level 5 forensics investigation started');
+
+        // Initialize CSS first
+        this.initializeCSS();
+        
+        // Enable tutorial mode
+        tutorialInteractionManager.enableTutorialMode();
+        
+        // Set tutorial state
+        this.isActive = true;
+        this.stepManager.reset();
+        
+        // Create overlay before showing any steps
+        this.createOverlay();
+        
+        // Set global reference
+        window.currentTutorial = this;
+        
+        // Start showing steps
+        this.showStep();
     }
 }
