@@ -112,19 +112,40 @@ class RedTeamAI {
             // Adjust weight based on game state
             if (gameState.blueTeamAlertness > 0.7) {
                 // Blue team is alert, reduce risky actions
-                weight *= (1 - action.detection);
+                weight *= (1 - action.detection * 0.5);
             }
             
-            if (gameState.compromisedHosts > 0 && this.state === 'initial_access') {
-                // Already have access, transition faster
+            // Encourage spreading to multiple hosts
+            const uncompromisedHosts = gameState.availableTargets ? 
+                gameState.availableTargets.filter(host => !this.access.has(host)) : [];
+            
+            if (this.state === 'initial_access' && uncompromisedHosts.length > 0) {
+                // Boost weight for initial access actions when targets are available
+                weight *= 1.3;
+            }
+            
+            if (this.state === 'lateral_movement' && uncompromisedHosts.length > 0) {
+                // Strongly encourage lateral movement when targets remain
                 weight *= 1.5;
+            }
+            
+            // Reduce weight for actions if we already have significant access and no targets remain
+            if (this.access.size >= 2 && uncompromisedHosts.length === 0) {
+                if (this.state === 'initial_access' || this.state === 'lateral_movement') {
+                    weight *= 0.3; // Reduce these actions when no more targets
+                }
             }
             
             // Personality adjustments
             if (this.personality === 'stealthy') {
-                weight *= (1 - action.detection * 0.5);
+                weight *= (1 - action.detection * 0.3);
             } else if (this.personality === 'aggressive') {
-                weight *= action.probability;
+                weight *= action.probability * 1.2;
+                // Aggressive personality prefers spreading attacks
+                if ((this.state === 'initial_access' || this.state === 'lateral_movement') 
+                    && uncompromisedHosts.length > 0) {
+                    weight *= 1.4;
+                }
             }
             
             return { ...action, weight };
@@ -179,34 +200,102 @@ class RedTeamAI {
         switch (this.state) {
             case 'reconnaissance':
                 this.knownAssets.push(...gameState.availableTargets);
-                if (this.knownAssets.length >= 2) {
+                if (this.knownAssets.length >= 1) {
                     this.state = 'initial_access';
                 }
                 break;
                 
             case 'initial_access':
-                this.access.add(gameState.targetHost);
-                this.state = 'establish_foothold';
+                if (action.name === 'exploit_vulnerability' || action.name === 'phishing' || 
+                    action.name === 'brute_force' || action.name === 'social_engineering') {
+                    this.access.add(gameState.targetHost);
+                    
+                    // Determine next state based on goals and current situation
+                    const uncompromisedHosts = gameState.availableTargets.filter(host => 
+                        !this.access.has(host) && 
+                        gameState.hosts && gameState.hosts[host] && 
+                        !gameState.hosts[host].compromised
+                    );
+                    
+                    if (this.access.size === 1) {
+                        // First compromise - establish foothold
+                        this.state = 'establish_foothold';
+                    } else if (uncompromisedHosts.length > 0 && Math.random() < 0.7) {
+                        // Still targets available - continue attacking (70% chance)
+                        this.state = 'lateral_movement';
+                    } else {
+                        // Move to establish foothold for current compromise
+                        this.state = 'establish_foothold';
+                    }
+                }
                 break;
                 
             case 'establish_foothold':
-                this.state = 'lateral_movement';
-                break;
+                // After establishing foothold, decide next action
+                const availableTargets = gameState.availableTargets.filter(host => 
+                    !this.access.has(host) && 
+                    gameState.hosts && gameState.hosts[host] && 
+                    !gameState.hosts[host].compromised
+                );
                 
-            case 'lateral_movement':
-                if (this.access.size >= 2) {
+                if (availableTargets.length > 0 && this.access.size < 3) {
+                    // More targets available and haven't compromised too many yet
+                    if (Math.random() < 0.6) {
+                        this.state = 'lateral_movement'; // Try to spread
+                    } else {
+                        this.state = 'privilege_escalation'; // Deepen current access
+                    }
+                } else {
                     this.state = 'privilege_escalation';
                 }
                 break;
                 
+            case 'lateral_movement':
+                if (action.name === 'credential_reuse' || action.name === 'network_pivoting' || 
+                    action.name === 'smb_traversal') {
+                    // Successful lateral movement - try to compromise another host
+                    this.state = 'initial_access';
+                } else {
+                    // Continue lateral movement or escalate
+                    if (this.access.size >= 2) {
+                        this.state = 'privilege_escalation';
+                    }
+                }
+                break;
+                
             case 'privilege_escalation':
-                this.state = 'action_on_objectives';
+                // After privilege escalation, either continue spreading or achieve objectives
+                const remainingTargets = gameState.availableTargets.filter(host => 
+                    !this.access.has(host) && 
+                    gameState.hosts && gameState.hosts[host] && 
+                    !gameState.hosts[host].compromised
+                );
+                
+                if (remainingTargets.length > 0 && this.access.size < gameState.availableTargets.length && Math.random() < 0.4) {
+                    // 40% chance to continue spreading if targets remain
+                    this.state = 'lateral_movement';
+                } else {
+                    this.state = 'action_on_objectives';
+                }
                 break;
                 
             case 'action_on_objectives':
-                // Mission accomplished, could cycle back or end
-                if (Math.random() < 0.3) {
-                    this.state = 'reconnaissance'; // Start new attack chain
+                // After completing objectives, decide whether to continue or start new attack chain
+                const stillAvailableTargets = gameState.availableTargets.filter(host => 
+                    !this.access.has(host) && 
+                    gameState.hosts && gameState.hosts[host] && 
+                    !gameState.hosts[host].compromised
+                );
+                
+                if (stillAvailableTargets.length > 0 && Math.random() < 0.5) {
+                    // 50% chance to continue attacking if targets remain
+                    this.state = 'lateral_movement';
+                } else if (Math.random() < 0.3) {
+                    // 30% chance to start completely fresh
+                    this.state = 'reconnaissance';
+                } else {
+                    // Otherwise continue with objectives on current compromised hosts
+                    // Stay in current state for continued data exfiltration, etc.
                 }
                 break;
         }
@@ -262,6 +351,42 @@ class RedTeamAI {
                 severity: 'critical',
                 message: 'Unusual data transfer patterns detected',
                 source: 'DLP'
+            },
+            credential_reuse: {
+                type: 'authentication',
+                severity: 'high',
+                message: 'Suspicious credential usage detected',
+                source: 'Identity Management'
+            },
+            network_pivoting: {
+                type: 'intrusion',
+                severity: 'high',
+                message: 'Unusual network traversal detected',
+                source: 'Network Monitor'
+            },
+            smb_traversal: {
+                type: 'intrusion',
+                severity: 'medium',
+                message: 'SMB traffic anomaly detected',
+                source: 'Network Monitor'
+            },
+            service_disruption: {
+                type: 'availability',
+                severity: 'critical',
+                message: 'Service disruption detected',
+                source: 'Service Monitor'
+            },
+            create_scheduled_task: {
+                type: 'persistence',
+                severity: 'high',
+                message: 'Suspicious scheduled task created',
+                source: 'System Monitor'
+            },
+            modify_registry: {
+                type: 'persistence',
+                severity: 'medium',
+                message: 'Unauthorized registry modification detected',
+                source: 'System Monitor'
             }
         };
         

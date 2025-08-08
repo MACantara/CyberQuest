@@ -127,6 +127,7 @@ class BlueRedGameEngine {
         const aiGameState = {
             availableTargets: Object.keys(this.gameState.hosts),
             targetHost: this.selectTargetHost(),
+            hosts: this.gameState.hosts, // Add hosts data for AI logic
             blueTeamAlertness: this.gameState.blueTeamAlertness,
             compromisedHosts: this.gameState.compromisedHosts,
             patchedSystems: this.countPatchedSystems(),
@@ -167,6 +168,8 @@ class BlueRedGameEngine {
     applyRedTeamSuccess(action) {
         switch (action.action) {
             case 'exploit_vulnerability':
+            case 'brute_force':
+            case 'social_engineering':
                 const targetHost = this.selectTargetHost();
                 if (targetHost && this.gameState.hosts[targetHost]) {
                     this.gameState.hosts[targetHost].compromised = true;
@@ -182,6 +185,32 @@ class BlueRedGameEngine {
                 }
                 break;
                 
+            case 'credential_reuse':
+            case 'network_pivoting':
+            case 'smb_traversal':
+                // Lateral movement can compromise additional hosts
+                const availableHosts = Object.keys(this.gameState.hosts).filter(hostId => 
+                    !this.gameState.hosts[hostId].compromised &&
+                    this.gameState.hosts[hostId].status !== 'quarantined'
+                );
+                
+                if (availableHosts.length > 0) {
+                    const newTarget = availableHosts[Math.floor(Math.random() * availableHosts.length)];
+                    this.gameState.hosts[newTarget].compromised = true;
+                    this.emitEvent('hostCompromised', { host: newTarget });
+                }
+                break;
+                
+            case 'install_backdoor':
+            case 'create_scheduled_task':
+            case 'modify_registry':
+                // Persistence actions - already compromised host becomes more entrenched
+                const compromisedHost = this.selectCompromisedHost();
+                if (compromisedHost && this.gameState.hosts[compromisedHost]) {
+                    this.gameState.hosts[compromisedHost].persistence = true;
+                }
+                break;
+                
             case 'data_exfiltration':
                 // Data exfiltration reduces score
                 this.gameState.score = Math.max(0, this.gameState.score - 50);
@@ -193,6 +222,11 @@ class BlueRedGameEngine {
                 if (disruptHost && this.gameState.hosts[disruptHost]) {
                     this.gameState.hosts[disruptHost].status = 'offline';
                 }
+                break;
+                
+            case 'credential_harvesting':
+                // Credential harvesting makes future attacks more likely
+                this.gameState.score = Math.max(0, this.gameState.score - 25);
                 break;
         }
     }
