@@ -9,7 +9,7 @@ This game mode immerses the player as the Blue Team (defender) tasked with prote
 - **Red Team (AI):** Breach defenses, exploit vulnerabilities, and achieve specific attack goals.
 
 ### 3. Core Mechanics
-- Dynamic attack/defense scenarios played over multiple rounds.
+- Dynamic attack/defense scenario played in a single round.
 - AI adapts its tactics using reinforcement learning, becoming more sophisticated as the player improves.
 - Player receives actionable feedback and analytics to refine their defense strategies.
 
@@ -37,12 +37,16 @@ In this simulation, the player is the lead defender for Project Sentinel Academy
 - Impact: Disrupt academy operations, exfiltrate confidential data, or attempt to deface public-facing websites.
 
 #### Simulation Features
-- Dynamic attack scenarios that evolve as the AI learns from the player's defenses.
+- Dynamic attack scenario that evolves as the AI learns from the player's defenses.
 - Real-time feedback and analytics on defense effectiveness.
 - Replay and analysis tools to review both successful and unsuccessful defense actions.
 - Difficulty scaling based on player performance and AI adaptation.
 
 This scenario provides a realistic, standards-based training environment for players to practice defending against sophisticated, adaptive cyber threats in a high-stakes setting.
+
+#### Victory and Loss Conditions
+- **Victory:** The player successfully prevents the AI from achieving its attack objectives (e.g., no critical assets are compromised, no data is exfiltrated, and academy operations remain uninterrupted) by the end of the round.
+- **Loss:** The AI successfully compromises critical assets, exfiltrates sensitive data, or disrupts academy operations before the round ends.
 
 ### 6. Progression & Adaptation
 - The AI learns from each round, improving its attack strategies.
