@@ -22,6 +22,17 @@ def introduction():
         return render_template('error.html', 
                              error_message="Unable to load Blue vs Red Team introduction"), 500
 
+@blue_team_vs_red_team.route('/tutorial')
+@login_required
+def tutorial():
+    """Tutorial page for Blue Team vs Red Team mode"""
+    try:
+        return render_template('blue-team-vs-red-team-mode/tutorial.html')
+    except Exception as e:
+        logger.error(f"Error rendering tutorial: {str(e)}")
+        return render_template('error.html', 
+                             error_message="Unable to load Blue vs Red Team tutorial"), 500
+
 @blue_team_vs_red_team.route('/dashboard')
 @login_required
 def dashboard():

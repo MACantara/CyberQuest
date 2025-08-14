@@ -77,168 +77,21 @@
 
 {% block content %}
 <div class="min-h-screen gradient-bg floating-orbs cyber-grid relative overflow-hidden">
-    <!-- Hero Section -->
+    <!-- Hero Section with Prominent CTA -->
     <section class="relative py-20 z-10">
-        <div class="max-w-6xl mx-auto px-4 text-center">
+        <div class="max-w-4xl mx-auto px-4 text-center">
             <h1 class="text-5xl md:text-6xl font-bold mb-6" id="main-title">
                 <span class="bg-gradient-to-r from-blue-400 via-purple-500 to-red-500 bg-clip-text text-transparent">
                     Blue Team vs Red Team
                 </span>
             </h1>
-            <p class="text-xl text-gray-300 mb-8">
+            <p class="text-xl text-gray-300 mb-12">
                 Experience the ultimate cybersecurity simulation where you defend against intelligent AI adversaries
             </p>
-        </div>
-    </section>
-
-    <!-- Team Comparison Section -->
-    <section class="py-16 relative z-10">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="grid md:grid-cols-2 gap-8">
-                <!-- Blue Team Side -->
-                <div class="bg-gradient-to-br from-blue-900/40 to-blue-800/20 rounded-2xl p-8 border border-blue-500/30 backdrop-blur-sm hover:border-blue-400/50">
-                    <div class="text-center mb-6">
-                        <i class="bi bi-shield-check text-6xl text-blue-400 mb-4"></i>
-                        <h2 class="text-3xl font-bold text-blue-400 mb-2">Blue Team</h2>
-                        <p class="text-blue-200">Cyber Defenders</p>
-                    </div>
-                    
-                    <div class="space-y-4">
-                        <div class="bg-blue-800/30 rounded-lg p-4">
-                            <h3 class="text-xl font-semibold text-blue-300 mb-2">Your Mission</h3>
-                            <ul class="text-blue-100 space-y-2">
-                                <li class="flex items-center"><i class="bi bi-check-circle text-green-400 mr-2"></i> Monitor network security</li>
-                                <li class="flex items-center"><i class="bi bi-check-circle text-green-400 mr-2"></i> Detect intrusions</li>
-                                <li class="flex items-center"><i class="bi bi-check-circle text-green-400 mr-2"></i> Respond to incidents</li>
-                                <li class="flex items-center"><i class="bi bi-check-circle text-green-400 mr-2"></i> Protect critical assets</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="bg-blue-800/30 rounded-lg p-4">
-                            <h3 class="text-xl font-semibold text-blue-300 mb-2">Your Arsenal</h3>
-                            <div class="grid grid-cols-2 gap-2 text-sm text-blue-100">
-                                <div class="flex items-center"><i class="bi bi-laptop text-blue-400 mr-2"></i> SIEM Tools</div>
-                                <div class="flex items-center"><i class="bi bi-shield-fill text-blue-400 mr-2"></i> Firewalls</div>
-                                <div class="flex items-center"><i class="bi bi-eye text-blue-400 mr-2"></i> IDS/IPS</div>
-                                <div class="flex items-center"><i class="bi bi-graph-up text-blue-400 mr-2"></i> Analytics</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Red Team Side -->
-                <div class="bg-gradient-to-br from-red-900/40 to-red-800/20 rounded-2xl p-8 border border-red-500/30 backdrop-blur-sm hover:border-red-400/50">
-                    <div class="text-center mb-6">
-                        <i class="bi bi-bug text-6xl text-red-400 mb-4"></i>
-                        <h2 class="text-3xl font-bold text-red-400 mb-2">Red Team</h2>
-                        <p class="text-red-200">AI Adversary</p>
-                    </div>
-                    
-                    <div class="space-y-4">
-                        <div class="bg-red-800/30 rounded-lg p-4">
-                            <h3 class="text-xl font-semibold text-red-300 mb-2">AI Objectives</h3>
-                            <ul class="text-red-100 space-y-2">
-                                <li class="flex items-center"><i class="bi bi-x-circle text-red-400 mr-2"></i> Infiltrate systems</li>
-                                <li class="flex items-center"><i class="bi bi-x-circle text-red-400 mr-2"></i> Escalate privileges</li>
-                                <li class="flex items-center"><i class="bi bi-x-circle text-red-400 mr-2"></i> Steal data</li>
-                                <li class="flex items-center"><i class="bi bi-x-circle text-red-400 mr-2"></i> Disrupt operations</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="bg-red-800/30 rounded-lg p-4">
-                            <h3 class="text-xl font-semibold text-red-300 mb-2">AI Capabilities</h3>
-                            <div class="grid grid-cols-2 gap-2 text-sm text-red-100">
-                                <div class="flex items-center"><i class="bi bi-cpu text-red-400 mr-2"></i> Smart Recon</div>
-                                <div class="flex items-center"><i class="bi bi-lightning text-red-400 mr-2"></i> Rapid Exploit</div>
-                                <div class="flex items-center"><i class="bi bi-shuffle text-red-400 mr-2"></i> Adaptive TTPs</div>
-                                <div class="flex items-center"><i class="bi bi-robot text-red-400 mr-2"></i> ML-Driven</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Scenario Section -->
-    <section class="py-16">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="bg-gray-800/60 backdrop-blur-lg rounded-2xl p-8 border border-gray-600/40">
-                <h2 class="text-3xl font-bold text-center text-white mb-8">
-                    <i class="bi bi-building text-blue-400 mr-3"></i>
-                    Scenario: Project Sentinel Academy
-                </h2>
-                
-                <div class="grid md:grid-cols-3 gap-6">
-                    <div class="text-center">
-                        <div class="bg-blue-600/20 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                            <i class="bi bi-mortarboard text-blue-400 text-2xl"></i>
-                        </div>
-                        <h3 class="text-xl font-semibold text-white mb-2">Educational Institution</h3>
-                        <p class="text-gray-300">A prestigious cybersecurity academy with valuable research data and student information.</p>
-                    </div>
-                    
-                    <div class="text-center">
-                        <div class="bg-green-600/20 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                            <i class="bi bi-database text-green-400 text-2xl"></i>
-                        </div>
-                        <h3 class="text-xl font-semibold text-white mb-2">Critical Assets</h3>
-                        <p class="text-gray-300">Student records, research data, learning platforms, and academy infrastructure.</p>
-                    </div>
-                    
-                    <div class="text-center">
-                        <div class="bg-red-600/20 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                            <i class="bi bi-crosshair text-red-400 text-2xl"></i>
-                        </div>
-                        <h3 class="text-xl font-semibold text-white mb-2">Threat Landscape</h3>
-                        <p class="text-gray-300">Advanced persistent threats targeting educational institutions for intellectual property.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="py-16 relative z-10">
-        <div class="max-w-6xl mx-auto px-4">
-            <h2 class="text-3xl font-bold text-center text-white mb-12">
-                <i class="bi bi-stars text-yellow-400 mr-3"></i>
-                Simulation Features
-            </h2>
             
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-600/30 hover:border-blue-500/50 transition-colors duration-300">
-                    <i class="bi bi-clock text-orange-400 text-3xl mb-4"></i>
-                    <h3 class="text-xl font-semibold text-white mb-2">Real-Time Action</h3>
-                    <p class="text-gray-300">15-minute high-intensity sessions with time pressure</p>
-                </div>
-                
-                <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-600/30 hover:border-blue-500/50 transition-colors duration-300">
-                    <i class="bi bi-cpu-fill text-purple-400 text-3xl mb-4"></i>
-                    <h3 class="text-xl font-semibold text-white mb-2">Adaptive AI</h3>
-                    <p class="text-gray-300">Smart adversary that learns and adapts to your defenses</p>
-                </div>
-                
-                <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-600/30 hover:border-blue-500/50 transition-colors duration-300">
-                    <i class="bi bi-terminal text-green-400 text-3xl mb-4"></i>
-                    <h3 class="text-xl font-semibold text-white mb-2">Interactive Console</h3>
-                    <p class="text-gray-300">Command-line interface for security operations</p>
-                </div>
-                
-                <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-600/30 hover:border-blue-500/50 transition-colors duration-300">
-                    <i class="bi bi-graph-up text-blue-400 text-3xl mb-4"></i>
-                    <h3 class="text-xl font-semibold text-white mb-2">Performance Metrics</h3>
-                    <p class="text-gray-300">Detailed scoring and improvement recommendations</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Start Simulation Section -->
-    <section class="py-16 relative z-10">
-        <div class="max-w-4xl mx-auto px-4 text-center">
-            <div class="bg-gray-800/60 rounded-2xl p-8 border border-gray-600/50">
-                <h2 class="text-3xl font-bold text-white mb-8">
+            <!-- Prominent CTA -->
+            <div class="bg-gray-800/60 rounded-2xl p-8 border border-gray-600/50 mb-8">
+                <h2 class="text-3xl font-bold text-white mb-6">
                     <i class="bi bi-rocket-takeoff text-blue-400 mr-3"></i>
                     Ready to Begin?
                 </h2>
@@ -247,84 +100,57 @@
                     Enter the cybersecurity battlefield and defend Project Sentinel Academy against adaptive AI attacks
                 </p>
                 
-                <button id="start-simulation" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-12 py-4 rounded-xl text-xl font-bold hover:from-blue-700 hover:to-purple-700 transition-colors duration-300 shadow-lg hover:shadow-xl">
-                    <i class="bi bi-play-circle mr-3"></i>
-                    Start Simulation
-                </button>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <button id="start-simulation" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-12 py-4 rounded-xl text-xl font-bold hover:from-blue-700 hover:to-purple-700 transition-colors duration-300 shadow-lg hover:shadow-xl">
+                        <i class="bi bi-play-circle mr-3"></i>
+                        Start Simulation
+                    </button>
+                    
+                    <a href="/blue-vs-red/tutorial" class="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:from-gray-700 hover:to-gray-800 transition-colors duration-300 shadow-lg hover:shadow-xl">
+                        <i class="bi bi-book mr-2"></i>
+                        View Tutorial
+                    </a>
+                </div>
                 
-                <p class="text-gray-400 mt-4">
+                <p class="text-gray-400 mt-6">
                     Your mission begins now. Good luck, defender!
                 </p>
             </div>
         </div>
     </section>
-    
-    <!-- Tips Section -->
+
+    <!-- Quick Overview Section -->
     <section class="py-16 relative z-10">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="bg-blue-900/30 backdrop-blur-lg rounded-2xl p-8 border border-blue-500/30">
-                <h2 class="text-2xl font-bold text-blue-400 mb-6">
-                    <i class="bi bi-lightbulb text-yellow-400 mr-3"></i>
-                    Pro Tips for Success
-                </h2>
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold text-white mb-8">
+                <i class="bi bi-lightning-charge text-yellow-400 mr-3"></i>
+                High-Intensity Cyber Defense
+            </h2>
+            
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-600/30 hover:border-blue-500/50 transition-colors duration-300">
+                    <i class="bi bi-clock text-orange-400 text-3xl mb-4"></i>
+                    <h3 class="text-xl font-semibold text-white mb-2">15-Minute Rounds</h3>
+                    <p class="text-gray-300">Fast-paced simulations with time pressure</p>
+                </div>
                 
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div class="space-y-4">
-                        <div class="flex items-start space-x-3 p-3 rounded-lg hover:bg-blue-800/20 transition-colors duration-200">
-                            <i class="bi bi-check-circle text-green-400 mt-1"></i>
-                            <div>
-                                <h4 class="font-semibold text-blue-200">Monitor Continuously</h4>
-                                <p class="text-blue-100 text-sm">Keep an eye on all system indicators and alerts</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-start space-x-3 p-3 rounded-lg hover:bg-blue-800/20 transition-colors duration-200">
-                            <i class="bi bi-check-circle text-green-400 mt-1"></i>
-                            <div>
-                                <h4 class="font-semibold text-blue-200">Act Quickly</h4>
-                                <p class="text-blue-100 text-sm">Time is critical in incident response</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-start space-x-3 p-3 rounded-lg hover:bg-blue-800/20 transition-colors duration-200">
-                            <i class="bi bi-check-circle text-green-400 mt-1"></i>
-                            <div>
-                                <h4 class="font-semibold text-blue-200">Use All Tools</h4>
-                                <p class="text-blue-100 text-sm">Leverage every security control at your disposal</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="space-y-4">
-                        <div class="flex items-start space-x-3 p-3 rounded-lg hover:bg-blue-800/20 transition-colors duration-200">
-                            <i class="bi bi-check-circle text-green-400 mt-1"></i>
-                            <div>
-                                <h4 class="font-semibold text-blue-200">Prioritize Assets</h4>
-                                <p class="text-blue-100 text-sm">Focus on protecting the most critical systems first</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-start space-x-3 p-3 rounded-lg hover:bg-blue-800/20 transition-colors duration-200">
-                            <i class="bi bi-check-circle text-green-400 mt-1"></i>
-                            <div>
-                                <h4 class="font-semibold text-blue-200">Learn from Failures</h4>
-                                <p class="text-blue-100 text-sm">Each simulation teaches valuable lessons</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex items-start space-x-3 p-3 rounded-lg hover:bg-blue-800/20 transition-colors duration-200">
-                            <i class="bi bi-check-circle text-green-400 mt-1"></i>
-                            <div>
-                                <h4 class="font-semibold text-blue-200">Stay Calm</h4>
-                                <p class="text-blue-100 text-sm">Clear thinking is your best defense</p>
-                            </div>
-                        </div>
-                    </div>
+                <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-600/30 hover:border-blue-500/50 transition-colors duration-300">
+                    <i class="bi bi-cpu-fill text-purple-400 text-3xl mb-4"></i>
+                    <h3 class="text-xl font-semibold text-white mb-2">Adaptive AI</h3>
+                    <p class="text-gray-300">Smart adversary that learns from your moves</p>
+                </div>
+                
+                <div class="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-600/30 hover:border-blue-500/50 transition-colors duration-300">
+                    <i class="bi bi-shield-check text-green-400 text-3xl mb-4"></i>
+                    <h3 class="text-xl font-semibold text-white mb-2">Real Defense</h3>
+                    <p class="text-gray-300">MITRE ATT&CK based attack scenarios</p>
                 </div>
             </div>
         </div>
     </section>
 </div>
+{% endblock %}
 
+{% block extra_js %}
 <script src="{{ url_for('static', filename='js/blue-team-vs-red-team-mode/introduction.js') }}"></script>
 {% endblock %}

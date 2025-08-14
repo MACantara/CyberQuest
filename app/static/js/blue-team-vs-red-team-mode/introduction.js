@@ -18,6 +18,15 @@ class IntroductionManager {
             startButton.addEventListener('click', () => this.startSimulation());
         }
         
+        // Tutorial button
+        const tutorialButton = document.querySelector('a[href="/blue-vs-red/tutorial"]');
+        if (tutorialButton) {
+            tutorialButton.addEventListener('click', (e) => {
+                // Let the default navigation happen, just add loading feedback
+                tutorialButton.innerHTML = '<i class="bi bi-hourglass-split animate-spin mr-2"></i>Loading Tutorial...';
+            });
+        }
+        
         // Keyboard navigation
         document.addEventListener('keydown', (e) => this.handleKeyNavigation(e));
     }
