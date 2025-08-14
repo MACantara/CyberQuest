@@ -11,7 +11,7 @@ from .logs import logs_bp
 from .levels import levels_bp
 from .api import api_bp
 from .news_api import news_api_bp
-from .blue_team_vs_red_team import blue_red_bp
+from .blue_team_vs_red_team_mode import blue_team_vs_red_team as blue_red_bp
 
 def register_blueprints(app):
     """Register all blueprints with the Flask app."""
