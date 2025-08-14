@@ -1,5 +1,5 @@
 # Blue Team vs Red Team Mode Routes
-from flask import Blueprint, render_template, request, jsonify, session
+from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for
 from flask_login import login_required, current_user
 import json
 import logging
@@ -12,11 +12,44 @@ blue_team_vs_red_team = Blueprint('blue_team_vs_red_team', __name__, url_prefix=
 logger = logging.getLogger(__name__)
 
 @blue_team_vs_red_team.route('/')
+@login_required
+def introduction():
+    """Introduction page for Blue Team vs Red Team mode"""
+    try:
+        return render_template('blue-team-vs-red-team-mode/introduction.html')
+    except Exception as e:
+        logger.error(f"Error rendering introduction: {str(e)}")
+        return render_template('error.html', 
+                             error_message="Unable to load Blue vs Red Team introduction"), 500
+
 @blue_team_vs_red_team.route('/dashboard')
 @login_required
 def dashboard():
     """Main dashboard for Blue Team vs Red Team simulation"""
     try:
+        # Initialize default game state if not exists
+        if 'blue_vs_red_game_state' not in session:
+            session['blue_vs_red_game_state'] = {
+                'isRunning': False,
+                'timeRemaining': 900,  # 15 minutes
+                'assets': {
+                    'academy-server': {'status': 'secure', 'integrity': 100},
+                    'student-db': {'status': 'secure', 'integrity': 100},
+                    'research-files': {'status': 'secure', 'integrity': 100},
+                    'learning-platform': {'status': 'secure', 'integrity': 100}
+                },
+                'alerts': [],
+                'incidents': [],
+                'securityControls': {
+                    'firewall': {'active': True, 'effectiveness': 80},
+                    'endpoint': {'active': True, 'effectiveness': 75},
+                    'access': {'active': True, 'effectiveness': 85}
+                },
+                'aiDifficulty': 'Normal',  # Default difficulty
+                'currentPhase': 'reconnaissance'
+            }
+            session.permanent = True
+        
         return render_template('blue-team-vs-red-team-mode/dashboard.html')
     except Exception as e:
         logger.error(f"Error rendering dashboard: {str(e)}")

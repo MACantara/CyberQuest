@@ -22,7 +22,7 @@
                 
                 <!-- Blue Team vs Red Team Mode for Authenticated Users -->
                 {% if current_user.is_authenticated %}
-                    <a href="{{ url_for('blue_team_vs_red_team.dashboard') }}" class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-all duration-300 font-medium relative group">
+                    <a href="{{ url_for('blue_team_vs_red_team.introduction') }}" class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-all duration-300 font-medium relative group">
                         <i class="bi bi-shield-check mr-1"></i>Blue vs Red
                         <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-red-600 to-orange-600 group-hover:w-full transition-all duration-300"></span>
                     </a>
