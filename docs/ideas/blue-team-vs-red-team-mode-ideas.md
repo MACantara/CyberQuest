@@ -126,6 +126,8 @@ Incorporating these techniques and their details into the game mode will allow f
 
 ---
 
+## 📚 References
+
 - MITRE ATT&CK framework for attack techniques
 - ISO 27001 for security controls and best practices
 - OpenAI Gym for RL environments
