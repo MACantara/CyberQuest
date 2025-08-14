@@ -169,19 +169,36 @@ class UIManager {
     
     updateGameControls() {
         const gameState = this.gameController.getGameState();
-        const startButton = document.getElementById('start-simulation');
+        const menuButton = document.getElementById('game-menu-button');
+        const pauseButton = document.getElementById('pause-simulation');
         const stopButton = document.getElementById('stop-simulation');
+        const resetButton = document.getElementById('reset-simulation');
         
-        if (startButton && stopButton) {
-            startButton.disabled = gameState.isRunning;
-            stopButton.disabled = !gameState.isRunning;
-            
+        // Update menu button text based on game state
+        if (menuButton) {
+            const buttonText = menuButton.querySelector('span');
+            if (buttonText) {
+                buttonText.textContent = gameState.isRunning ? 'Simulation Active' : 'Simulation Paused';
+            }
+        }
+        
+        // Update button states in dropdown
+        if (pauseButton) {
+            pauseButton.disabled = !gameState.isRunning;
             if (gameState.isRunning) {
-                startButton.classList.add('opacity-50', 'cursor-not-allowed');
-                stopButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                pauseButton.innerHTML = '<i class="bi bi-pause-fill mr-2 text-yellow-600"></i>Pause Simulation';
             } else {
-                startButton.classList.remove('opacity-50', 'cursor-not-allowed');
-                stopButton.classList.add('opacity-50', 'cursor-not-allowed');
+                pauseButton.innerHTML = '<i class="bi bi-play-fill mr-2 text-green-600"></i>Resume Simulation';
+                pauseButton.onclick = () => this.gameController.startGame();
+            }
+        }
+        
+        if (stopButton) {
+            stopButton.disabled = !gameState.isRunning;
+            if (!gameState.isRunning) {
+                stopButton.classList.add('opacity-50');
+            } else {
+                stopButton.classList.remove('opacity-50');
             }
         }
     }

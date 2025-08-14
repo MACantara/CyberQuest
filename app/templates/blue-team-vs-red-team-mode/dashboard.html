@@ -25,11 +25,45 @@
 <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-4">
     <div class="max-w-7xl mx-auto">
         <!-- Header -->
-        <div class="mb-8">
-            <h1 class="text-4xl font-bold bg-gradient-to-r from-red-600 via-orange-600 to-blue-600 bg-clip-text text-transparent mb-2">
-                <i class="bi bi-shield-check text-red-600"></i> Blue Team vs Red Team
-            </h1>
-            <p class="text-gray-600 dark:text-gray-400 text-lg">Defend Project Sentinel Academy against adaptive AI attacks</p>
+        <div class="mb-8 flex justify-between items-start">
+            <div>
+                <h1 class="text-4xl font-bold bg-gradient-to-r from-red-600 via-orange-600 to-blue-600 bg-clip-text text-transparent mb-2">
+                    <i class="bi bi-shield-check text-red-600"></i> Blue Team vs Red Team
+                </h1>
+                <p class="text-gray-600 dark:text-gray-400 text-lg">Defend Project Sentinel Academy against adaptive AI attacks</p>
+            </div>
+            
+            <!-- Game Controls Menu -->
+            <div class="relative">
+                <button id="game-menu-button" class="flex items-center px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                    <i class="bi bi-gear mr-2 text-gray-600 dark:text-gray-400"></i>
+                    <span class="text-gray-700 dark:text-gray-300">Controls</span>
+                    <i class="bi bi-chevron-down ml-2 text-gray-500"></i>
+                </button>
+                
+                <!-- Dropdown Menu -->
+                <div id="game-menu-dropdown" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50 hidden">
+                    <div class="py-2">
+                        <button id="pause-simulation" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center">
+                            <i class="bi bi-pause-fill mr-2 text-yellow-600"></i>
+                            Pause Simulation
+                        </button>
+                        <button id="stop-simulation" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center">
+                            <i class="bi bi-stop-fill mr-2 text-red-600"></i>
+                            Stop Simulation
+                        </button>
+                        <button id="reset-simulation" class="w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center">
+                            <i class="bi bi-arrow-clockwise mr-2 text-gray-600"></i>
+                            Reset Simulation
+                        </button>
+                        <hr class="my-2 border-gray-200 dark:border-gray-600">
+                        <button id="exit-simulation" class="w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center">
+                            <i class="bi bi-box-arrow-left mr-2"></i>
+                            Exit to Menu
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Game Status Bar -->
@@ -184,19 +218,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Game Controls -->
-        <div class="mt-8 flex justify-center space-x-4">
-            <button id="start-simulation" class="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-300 shadow-lg">
-                <i class="bi bi-play-fill mr-2"></i>Start Simulation
-            </button>
-            <button id="stop-simulation" class="px-6 py-3 bg-gradient-to-r from-red-600 to-rose-600 text-white font-semibold rounded-lg hover:from-red-700 hover:to-rose-700 transition-all duration-300 shadow-lg" disabled>
-                <i class="bi bi-stop-fill mr-2"></i>Stop Simulation
-            </button>
-            <button id="reset-simulation" class="px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white font-semibold rounded-lg hover:from-gray-700 hover:to-gray-800 transition-all duration-300 shadow-lg">
-                <i class="bi bi-arrow-clockwise mr-2"></i>Reset
-            </button>
         </div>
     </div>
 </div>

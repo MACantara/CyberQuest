@@ -37,20 +37,50 @@ class GameController {
         this.setupEventListeners();
         this.uiManager.updateDisplay();
         
+        // Auto-start the simulation after a brief delay
+        setTimeout(() => {
+            this.autoStartGame();
+        }, 1000);
+        
         console.log('🎮 Game Controller initialized');
     }
     
     setupEventListeners() {
+        // Game control menu
+        const menuButton = document.getElementById('game-menu-button');
+        const menuDropdown = document.getElementById('game-menu-dropdown');
+        
+        if (menuButton && menuDropdown) {
+            menuButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                menuDropdown.classList.toggle('hidden');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', () => {
+                menuDropdown.classList.add('hidden');
+            });
+            
+            // Prevent dropdown from closing when clicking inside
+            menuDropdown.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+        }
+        
         // Game control buttons
-        document.getElementById('start-simulation')?.addEventListener('click', () => this.startGame());
+        document.getElementById('pause-simulation')?.addEventListener('click', () => this.pauseGame());
         document.getElementById('stop-simulation')?.addEventListener('click', () => this.stopGame());
         document.getElementById('reset-simulation')?.addEventListener('click', () => this.resetGame());
+        document.getElementById('exit-simulation')?.addEventListener('click', () => this.exitToMenu());
         
         // Terminal input
         document.getElementById('terminal-input')?.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                this.handleTerminalCommand(e.target.value);
-                e.target.value = '';
+                const command = e.target.value.trim();
+                if (command) {
+                    this.handleTerminalCommand(command);
+                    e.target.value = '';
+                }
             }
         });
         
@@ -58,6 +88,7 @@ class GameController {
         document.getElementById('play-again')?.addEventListener('click', () => {
             this.hideGameOverModal();
             this.resetGame();
+            setTimeout(() => this.autoStartGame(), 500);
         });
         
         document.getElementById('close-modal')?.addEventListener('click', () => {
@@ -81,6 +112,37 @@ class GameController {
         this.aiEngine.startAttackSequence();
         
         console.log('🎮 Game started');
+    }
+    
+    autoStartGame() {
+        this.uiManager.addTerminalOutput('🤖 Auto-starting simulation...');
+        setTimeout(() => {
+            this.startGame();
+        }, 1500);
+    }
+    
+    pauseGame() {
+        if (!this.gameState.isRunning) return;
+        
+        this.gameState.isRunning = false;
+        
+        if (this.gameTimer) {
+            clearInterval(this.gameTimer);
+            this.gameTimer = null;
+        }
+        
+        this.aiEngine.stopAttackSequence();
+        this.uiManager.addTerminalOutput('⏸️ Simulation paused.');
+        this.uiManager.updateGameControls();
+        
+        console.log('🎮 Game paused');
+    }
+    
+    exitToMenu() {
+        if (confirm('Are you sure you want to exit the simulation and return to the main menu?')) {
+            this.stopGame();
+            window.location.href = '/blue-vs-red/';
+        }
     }
     
     stopGame() {
