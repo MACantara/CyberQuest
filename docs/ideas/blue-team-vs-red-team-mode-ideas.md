@@ -124,6 +124,37 @@ The MITRE ATT&CK knowledge base provides the following information for each tech
 
 Incorporating these techniques and their details into the game mode will allow for realistic simulation of attacker behavior and defender responses, enhancing both gameplay and educational value.
 
+### 11. Gameplay Loop Flowchart
+
+Below is a Mermaid.js flowchart representing the gameplay loop for the Blue Team vs Red Team simulation:
+
+```mermaid
+flowchart TD
+    A[Start Round] --> B[Initialize Game State]
+    B --> C[Player Monitors Systems]
+    C --> D[AI Performs Attack Action]
+    D --> E{Attack Detected?}
+    E -->|Yes| F[Player Responds to Alert]
+    E -->|No| G[AI Continues Attack]
+    F --> H[Player Takes Defensive Action]
+    G --> I{Attack Successful?}
+    H --> J{Threat Contained?}
+    J -->|Yes| K[Update Game State]
+    J -->|No| I
+    I -->|Yes| L{Critical Asset Compromised?}
+    I -->|No| M[AI Adapts Strategy]
+    L -->|Yes| N[Game Over - AI Wins]
+    L -->|No| M
+    M --> O{Round Time Remaining?}
+    K --> O
+    O -->|Yes| P[AI Learns from Player Actions]
+    O -->|No| Q[Game Over - Player Wins]
+    P --> C
+    N --> R[Display Results & Analysis]
+    Q --> R
+    R --> S[End]
+```
+
 ---
 
 ## 📚 References
