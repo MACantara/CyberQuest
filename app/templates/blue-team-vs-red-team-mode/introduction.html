@@ -4,6 +4,10 @@
 
 {% block extra_css %}
 <style>
+    body {
+        overflow-x: hidden;
+    }
+    
     .cyber-grid {
         background-image: 
             linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
@@ -30,18 +34,21 @@
         left: 0;
         right: 0;
         bottom: 0;
+        width: 100%;
+        height: 100%;
         background: 
             radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
             radial-gradient(circle at 80% 20%, rgba(239, 68, 68, 0.08) 0%, transparent 50%),
             radial-gradient(circle at 40% 40%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
         animation: float-orbs 30s ease-in-out infinite;
         pointer-events: none;
+        z-index: 0;
     }
     
     @keyframes float-orbs {
         0%, 100% { transform: translateY(0px) rotate(0deg); }
-        33% { transform: translateY(-15px) rotate(120deg); }
-        66% { transform: translateY(8px) rotate(240deg); }
+        33% { transform: translateY(-10px) rotate(120deg); }
+        66% { transform: translateY(5px) rotate(240deg); }
     }
 </style>
 {% endblock %}
@@ -69,9 +76,9 @@
 {% endblock %}
 
 {% block content %}
-<div class="min-h-screen gradient-bg floating-orbs cyber-grid relative overflow-x-hidden">&
+<div class="min-h-screen gradient-bg floating-orbs cyber-grid relative overflow-hidden">
     <!-- Hero Section -->
-    <section class="relative py-20">
+    <section class="relative py-20 z-10">
         <div class="max-w-6xl mx-auto px-4 text-center">
             <h1 class="text-5xl md:text-6xl font-bold mb-6" id="main-title">
                 <span class="bg-gradient-to-r from-blue-400 via-purple-500 to-red-500 bg-clip-text text-transparent">
@@ -85,7 +92,7 @@
     </section>
 
     <!-- Team Comparison Section -->
-    <section class="py-16">
+    <section class="py-16 relative z-10">
         <div class="max-w-7xl mx-auto px-4">
             <div class="grid md:grid-cols-2 gap-8">
                 <!-- Blue Team Side -->
@@ -192,7 +199,7 @@
     </section>
 
     <!-- Features Section -->
-    <section class="py-16">
+    <section class="py-16 relative z-10">
         <div class="max-w-6xl mx-auto px-4">
             <h2 class="text-3xl font-bold text-center text-white mb-12">
                 <i class="bi bi-stars text-yellow-400 mr-3"></i>
@@ -228,7 +235,7 @@
     </section>
 
     <!-- Start Simulation Section -->
-    <section class="py-16">
+    <section class="py-16 relative z-10">
         <div class="max-w-4xl mx-auto px-4 text-center">
             <div class="bg-gray-800/60 rounded-2xl p-8 border border-gray-600/50">
                 <h2 class="text-3xl font-bold text-white mb-8">
@@ -253,7 +260,7 @@
     </section>
     
     <!-- Tips Section -->
-    <section class="py-16">
+    <section class="py-16 relative z-10">
         <div class="max-w-6xl mx-auto px-4">
             <div class="bg-blue-900/30 backdrop-blur-lg rounded-2xl p-8 border border-blue-500/30">
                 <h2 class="text-2xl font-bold text-blue-400 mb-6">

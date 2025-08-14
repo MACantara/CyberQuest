@@ -23,20 +23,24 @@ class IntroductionManager {
     }
     
     startAnimations() {
-        // Simple fade in for subtitle
+        // Simple fade in for subtitle with safer selection
         setTimeout(() => {
-            const subtitle = document.querySelector('p.text-xl');
+            const subtitle = document.querySelector('section .text-xl');
             if (subtitle) {
                 subtitle.style.opacity = '1';
+                subtitle.style.transition = 'opacity 1s ease';
             }
         }, 1000);
         
         // Add hover effects to feature cards
         this.setupHoverEffects();
+        
+        // Ensure body doesn't have unnecessary overflow
+        document.body.style.overflowX = 'hidden';
     }
     
     setupHoverEffects() {
-        const featureCards = document.querySelectorAll('.bg-gray-800\\/50');
+        const featureCards = document.querySelectorAll('.bg-gray-800\\/50, .bg-blue-900\\/40, .bg-red-900\\/40');
         featureCards.forEach(card => {
             card.addEventListener('mouseenter', () => {
                 card.style.borderColor = 'rgba(59, 130, 246, 0.5)';
@@ -44,7 +48,7 @@ class IntroductionManager {
             });
             
             card.addEventListener('mouseleave', () => {
-                card.style.borderColor = 'rgba(107, 114, 128, 0.3)';
+                card.style.borderColor = '';
             });
         });
     }
