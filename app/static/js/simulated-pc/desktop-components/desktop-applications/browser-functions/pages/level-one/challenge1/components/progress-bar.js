@@ -6,7 +6,7 @@ export class ProgressBar {
                     <div class="text-emerald-400 text-sm font-semibold tracking-wide">
                         Training Progress
                     </div>
-                    <span class="text-gray-300 text-xs font-medium bg-gray-800 bg-opacity-50 px-2 py-1 rounded ml-2">
+                    <span class="text-gray-300 text-xs font-medium bg-gray-800/50 px-2 py-1 rounded ml-2">
                         Article ${currentIndex + 1} of ${totalArticles}
                     </span>
                 </div>
