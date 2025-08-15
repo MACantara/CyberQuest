@@ -343,12 +343,11 @@ class GameController {
             'reset-credentials'
         ];
         
-        // For MVP, automatically respond after a longer delay so alerts stay visible
+        // For MVP, automatically respond after a short delay
         setTimeout(() => {
             const response = responses[Math.floor(Math.random() * responses.length)];
-            // Execute response and mark as responded after the action completes
             this.executePlayerResponse(alert, response);
-        }, Math.random() * 5000 + 5000); // 5-10 seconds
+        }, Math.random() * 3000 + 1000); // 1-4 seconds
     }
     
     executePlayerResponse(alert, response) {
@@ -371,12 +370,9 @@ class GameController {
             );
         });
         
-        // Mark alert as responded after a short confirmation delay so UI shows the response
-        setTimeout(() => {
-            alert.status = 'responded';
-            this.uiManager.updateAlerts();
-            this.uiManager.addTerminalOutput(`🟢 Alert resolved: ${alert.technique} on ${alert.target}`);
-        }, 500); // small delay to allow UI updates
+        // Mark alert as responded
+        alert.status = 'responded';
+        this.uiManager.updateAlerts();
     }
     
     handleTerminalCommand(command) {
