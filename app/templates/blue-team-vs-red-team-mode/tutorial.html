@@ -91,11 +91,6 @@
             
             <!-- Quick Action Buttons -->
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
-                <a href="/blue-vs-red/dashboard" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-colors duration-300 shadow-lg hover:shadow-xl">
-                    <i class="bi bi-play-circle mr-2"></i>
-                    Skip to Simulation
-                </a>
-                
                 <a href="{{ url_for('blue_team_vs_red_team.introduction') }}" class="bg-gradient-to-r from-gray-600 to-gray-700 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:from-gray-700 hover:to-gray-800 transition-colors duration-300 shadow-lg hover:shadow-xl">
                     <i class="bi bi-arrow-left mr-2"></i>
                     Back to Intro
@@ -416,15 +411,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Resolve next target - allow shorthand 'dashboard' or a full path
         const nextTarget = next === 'dashboard' ? '/blue-vs-red/dashboard' : next;
 
-        // Enhance in-page dashboard links to show loading feedback
-        document.querySelectorAll('a[href="/blue-vs-red/dashboard"]').forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                link.innerHTML = '<i class="bi bi-hourglass-split animate-spin mr-2"></i>Opening Simulation...';
-                // Small delay for feedback
-                setTimeout(() => { window.location.href = nextTarget; }, 250);
-            });
-        });
 
         // If a tutorial manager instance is present, wait for it and override
         // the complete/cleanup handlers so they redirect after finishing.
