@@ -15,11 +15,13 @@ class IntroductionManager {
         // Start simulation button
         const startButton = document.getElementById('start-simulation');
         if (startButton) {
+            // Start simulation now routes to the tutorial first. The tutorial may
+            // then redirect to the dashboard (using ?next=dashboard) when it
+            // completes. This replaces the separate "Tutorial" button flow.
             startButton.addEventListener('click', () => this.startSimulation());
         }
         
-        // Tutorial button
-        const tutorialButton = document.querySelector('a[href="/blue-vs-red/tutorial"]');
+    const tutorialButton = document.querySelector('a[href^="/blue-vs-red/tutorial"]');
         if (tutorialButton) {
             tutorialButton.addEventListener('click', (e) => {
                 // Let the default navigation happen, just add loading feedback
@@ -67,13 +69,18 @@ class IntroductionManager {
         const startButton = document.getElementById('start-simulation');
         const originalContent = startButton.innerHTML;
         
-        startButton.innerHTML = '<i class="bi bi-hourglass-split animate-spin mr-2"></i>Loading Simulation...';
+    // Redirect to the tutorial first with a `next=dashboard` param.
+        startButton.innerHTML = '<i class="bi bi-hourglass-split animate-spin mr-2"></i>Opening Tutorial...';
         startButton.disabled = true;
-        
-        // Redirect to dashboard
+
+        // Informative notification so the user knows what happens next
+        this.showNotification('You will be guided through the tutorial before the simulation starts. Follow the steps and the dashboard will open when ready.', 'info');
+
+        // Redirect to tutorial with next target
         setTimeout(() => {
-            window.location.href = '/blue-vs-red/dashboard';
-        }, 500); // Small delay for user feedback
+            const nextUrl = '/blue-vs-red/tutorial?next=dashboard';
+            window.location.href = nextUrl;
+        }, 400); // brief delay for visual feedback
     }
     
     handleKeyNavigation(e) {
