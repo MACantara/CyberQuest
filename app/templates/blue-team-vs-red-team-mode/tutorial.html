@@ -405,6 +405,71 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     console.log('📚 Tutorial page loaded');
+    
+    // If `next` is present (e.g. ?next=dashboard), forward to that target
+    // after tutorial completion. Also enhance dashboard links with feedback.
+    (function handleNextRedirect() {
+        const params = new URLSearchParams(window.location.search);
+        const next = params.get('next');
+        if (!next) return; // nothing to do
+
+        // Resolve next target - allow shorthand 'dashboard' or a full path
+        const nextTarget = next === 'dashboard' ? '/blue-vs-red/dashboard' : next;
+
+        // Enhance in-page dashboard links to show loading feedback
+        document.querySelectorAll('a[href="/blue-vs-red/dashboard"]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                link.innerHTML = '<i class="bi bi-hourglass-split animate-spin mr-2"></i>Opening Simulation...';
+                // Small delay for feedback
+                setTimeout(() => { window.location.href = nextTarget; }, 250);
+            });
+        });
+
+        // If a tutorial manager instance is present, wait for it and override
+        // the complete/cleanup handlers so they redirect after finishing.
+        const wrapTutorialCompletion = (tutorial) => {
+            try {
+                if (!tutorial) return;
+                const origComplete = tutorial.complete && tutorial.complete.bind(tutorial);
+                if (origComplete) {
+                    tutorial.complete = () => {
+                        origComplete();
+                        // Allow the UI to settle then redirect
+                        setTimeout(() => { window.location.href = nextTarget; }, 200);
+                    };
+                }
+
+                const origCleanup = tutorial.cleanup && tutorial.cleanup.bind(tutorial);
+                if (origCleanup) {
+                    tutorial.cleanup = () => {
+                        origCleanup();
+                        setTimeout(() => { window.location.href = nextTarget; }, 200);
+                    };
+                }
+            } catch (err) {
+                console.warn('Could not wrap tutorial completion for redirect', err);
+            }
+        };
+
+        // If already available, wrap immediately
+        if (window.currentTutorial) {
+            wrapTutorialCompletion(window.currentTutorial);
+        } else {
+            // Poll for a short while for the tutorial instance to appear
+            const maxAttempts = 50; // ~10s
+            let attempts = 0;
+            const interval = setInterval(() => {
+                attempts += 1;
+                if (window.currentTutorial) {
+                    wrapTutorialCompletion(window.currentTutorial);
+                    clearInterval(interval);
+                } else if (attempts >= maxAttempts) {
+                    clearInterval(interval);
+                }
+            }, 200);
+        }
+    })();
 });
 </script>
 {% endblock %}
