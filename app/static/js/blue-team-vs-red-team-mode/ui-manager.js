@@ -3,7 +3,7 @@ class UIManager {
     constructor(gameController) {
         this.gameController = gameController;
         this.terminalOutput = [];
-    this.maxTerminalLines = 100;
+        this.maxTerminalLines = 20;
         
         console.log('🖥️ UI Manager initialized');
     }
@@ -95,7 +95,7 @@ class UIManager {
             assetElement.className = `flex items-center justify-between p-3 ${statusClass.bg} rounded-lg border ${statusClass.border}`;
             assetElement.innerHTML = `
                 <div class="flex items-center space-x-2">
-                    <span class="text-sm font-medium">${displayName}</span>
+                    <span class="text-sm font-medium ${statusClass.text}">${displayName}</span>
                     <div class="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                         <div class="h-2 rounded-full ${statusClass.bar}" style="width: ${asset.integrity}%"></div>
                     </div>
@@ -120,21 +120,24 @@ class UIManager {
                 border: 'border-green-200 dark:border-green-800',
                 badge: 'bg-green-200 dark:bg-green-800 text-green-800 dark:text-green-200',
                 bar: 'bg-green-500',
-                node: 'bg-green-100 dark:bg-green-900 border-green-300 dark:border-green-600'
+                node: 'bg-green-100 dark:bg-green-900 border-green-300 dark:border-green-600',
+                text: 'text-gray-800 dark:text-gray-200'
             },
             'vulnerable': {
                 bg: 'bg-orange-50 dark:bg-orange-900/20',
                 border: 'border-orange-200 dark:border-orange-800',
                 badge: 'bg-orange-200 dark:bg-orange-800 text-orange-800 dark:text-orange-200',
                 bar: 'bg-orange-500',
-                node: 'bg-orange-100 dark:bg-orange-900 border-orange-300 dark:border-orange-600'
+                node: 'bg-orange-100 dark:bg-orange-900 border-orange-300 dark:border-orange-600',
+                text: 'text-gray-800 dark:text-gray-200'
             },
             'compromised': {
                 bg: 'bg-red-50 dark:bg-red-900/20',
                 border: 'border-red-200 dark:border-red-800',
                 badge: 'bg-red-200 dark:bg-red-800 text-red-800 dark:text-red-200',
                 bar: 'bg-red-500',
-                node: 'bg-red-100 dark:bg-red-900 border-red-300 dark:border-red-600'
+                node: 'bg-red-100 dark:bg-red-900 border-red-300 dark:border-red-600',
+                text: 'text-gray-800 dark:text-gray-200'
             }
         };
         
@@ -251,22 +254,31 @@ class UIManager {
         
         const severityClass = this.getSeverityClass(alert.severity);
         const alertElement = document.createElement('div');
-        alertElement.className = `p-3 rounded-lg border-l-4 ${severityClass.bg} ${severityClass.border} animate-pulse mb-2`;
+        alertElement.className = `p-3 rounded-lg border-l-4 ${severityClass.bg} ${severityClass.border} mb-2`;
+        alertElement.dataset.alertId = alert.id || Date.now();
         alertElement.innerHTML = `
             <div class="flex items-center justify-between">
                 <div>
                     <div class="text-sm font-medium ${severityClass.text}">${alert.technique}</div>
                     <div class="text-xs text-gray-600 dark:text-gray-400">${this.formatAssetName(alert.target)} • ${alert.timestamp.toLocaleTimeString()}</div>
                 </div>
-                <span class="text-xs px-2 py-1 ${severityClass.badge} rounded-full">${alert.severity.toUpperCase()}</span>
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs px-2 py-1 ${severityClass.badge} rounded-full">${alert.severity.toUpperCase()}</span>
+                    <button class="text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" onclick="this.parentElement.parentElement.parentElement.remove()">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
             </div>
         `;
         
+        // Add flash animation for new alerts
+        alertElement.style.animation = 'flash 0.5s ease-in-out';
+        
         alertCenter.insertBefore(alertElement, alertCenter.firstChild);
         
-        // Keep only last 10 alerts
+        // Keep only last 15 alerts (increased from 10)
         const alerts = alertCenter.children;
-        if (alerts.length > 10) {
+        if (alerts.length > 15) {
             alertCenter.removeChild(alerts[alerts.length - 1]);
         }
     }
@@ -308,9 +320,11 @@ class UIManager {
         
         if (!alertCenter) return;
         
-        const activeAlerts = gameState.alerts.filter(alert => alert.status === 'detected');
+        // Only show "no alerts" message if there are truly no alerts at all
+        const hasAnyAlerts = alertCenter.children.length > 0 && 
+                           !alertCenter.querySelector('.italic');
         
-        if (activeAlerts.length === 0) {
+        if (gameState.alerts.length === 0 && !hasAnyAlerts) {
             alertCenter.innerHTML = '<div class="text-sm text-gray-600 dark:text-gray-400 italic">No active alerts.</div>';
         }
     }
