@@ -3,7 +3,7 @@ class UIManager {
     constructor(gameController) {
         this.gameController = gameController;
         this.terminalOutput = [];
-        this.maxTerminalLines = 20;
+    this.maxTerminalLines = 100;
         
         console.log('🖥️ UI Manager initialized');
     }
