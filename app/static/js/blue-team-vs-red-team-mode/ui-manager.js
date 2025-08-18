@@ -232,7 +232,6 @@ class UIManager {
                 pauseButton.disabled = false;
             } else {
                 pauseButton.innerHTML = '<i class="bi bi-play-fill me-2 text-green-400"></i>Resume Simulation';
-                pauseButton.onclick = () => this.gameController.startGame();
                 pauseButton.disabled = false;
             }
         }
