@@ -1,6 +1,3 @@
-// TODO: Create the malware scanner desktop app
-// TODO: Create the ransomeware decryptor desktop app
-
 import { WindowBase } from '../window-base.js';
 import { ProcessDataManager } from './process-monitor-functions/process-data-manager.js';
 import { ProcessSorter } from './process-monitor-functions/process-sorter.js';
