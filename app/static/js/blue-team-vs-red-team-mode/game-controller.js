@@ -507,7 +507,7 @@ class GameController {
         this.uiManager.addTerminalOutput(`$ Security control ${controlName} ${status} - Effectiveness: ${control.effectiveness}%`);
         
         // Update UI to reflect control status
-        this.uiManager.updateDisplay();
+        this.uiManager.updateSecurityControls();
         console.log(`Toggled security control: ${controlName}`, control);
     }
     
