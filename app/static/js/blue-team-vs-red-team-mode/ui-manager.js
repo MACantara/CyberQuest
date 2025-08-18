@@ -11,6 +11,7 @@ class UIManager {
     updateDisplay() {
         this.updateSystemStatus();
         this.updateAssetStatus();
+        this.updateSecurityControls();
         this.updateTimer();
         this.updateGameControls();
         this.updateAIDifficulty();
@@ -115,6 +116,49 @@ class UIManager {
         });
     }
     
+    updateSecurityControls() {
+        const gameState = this.gameController.getGameState();
+        
+        // Update security control visual indicators
+        Object.entries(gameState.securityControls).forEach(([controlName, control]) => {
+            const controlElement = document.querySelector(`[data-control="${controlName}"]`);
+            if (controlElement) {
+                const icon = controlElement.querySelector('i');
+                const text = controlElement.querySelector('span');
+                
+                if (control.active) {
+                    // Control is enabled
+                    controlElement.className = 'security-control bg-gray-700 p-3 rounded border border-green-400 cursor-pointer hover:bg-gray-600 transition-colors';
+                    if (icon) {
+                        icon.className = this.getSecurityControlIcon(controlName, true);
+                    }
+                    if (text) {
+                        text.className = 'text-xs text-green-400 ms-2';
+                    }
+                } else {
+                    // Control is disabled
+                    controlElement.className = 'security-control bg-gray-700 p-3 rounded border border-red-400 cursor-pointer hover:bg-gray-600 transition-colors';
+                    if (icon) {
+                        icon.className = this.getSecurityControlIcon(controlName, false);
+                    }
+                    if (text) {
+                        text.className = 'text-xs text-red-400 ms-2';
+                    }
+                }
+            }
+        });
+    }
+    
+    getSecurityControlIcon(controlName, isActive) {
+        const iconMap = {
+            'firewall': isActive ? 'bi bi-shield-check text-green-400' : 'bi bi-shield-x text-red-400',
+            'endpoint': isActive ? 'bi bi-laptop text-green-400' : 'bi bi-laptop text-red-400', 
+            'access': isActive ? 'bi bi-key text-green-400' : 'bi bi-key text-red-400'
+        };
+        
+        return iconMap[controlName] || 'bi bi-question-circle text-gray-400';
+    }
+    
     getAssetStatusClass(status) {
         const classes = {
             'secure': {
@@ -195,11 +239,9 @@ class UIManager {
         }
         
         if (stopButton) {
-            // Stop button should be enabled when game is running OR paused
-            // Only disable when the game hasn't been started yet or has been fully stopped
-            const gameHasBeenStarted = gameState.isRunning || gameState.timeRemaining < 900;
-            
-            if (gameHasBeenStarted) {
+            // Stop button should only be enabled when game is running
+            // Disable when game is paused or stopped
+            if (gameState.isRunning) {
                 stopButton.disabled = false;
                 stopButton.classList.remove('opacity-50');
             } else {
