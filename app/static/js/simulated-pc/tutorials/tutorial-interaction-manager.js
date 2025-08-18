@@ -59,7 +59,6 @@ export class TutorialInteractionManager {
             
             .tutorial-tooltip {
                 backdrop-filter: blur(10px);
-                border: 1px solid rgba(16, 185, 129, 0.3);
                 background: rgba(31, 41, 55, 0.95);
                 z-index: 9999 !important;
                 pointer-events: auto !important;

@@ -139,7 +139,7 @@ export class EthicsOathDialogue extends BaseDialogue {
         overlay.className = 'fixed inset-0 bg-black/50 flex justify-center items-center z-[10001]';
         
         overlay.innerHTML = `
-            <div class="bg-gray-800 border-2 border-green-500 rounded p-6 max-w-2xl w-[90%] shadow-2xl">
+            <div class="bg-gray-800 border-2 border-gray-600 rounded p-6 max-w-2xl w-[90%] shadow-2xl">
                 <h3 class="text-green-500 text-xl font-bold mb-4">Oath Declined</h3>
                 <p class="text-gray-300 mb-4">That's perfectly acceptable. The oath is a personal commitment, and you can choose to take it at any time in your cybersecurity career.</p>
                 <p class="text-green-400 mb-6">Your ethical choices throughout this level have still demonstrated your commitment to responsible security practices.</p>
@@ -189,7 +189,7 @@ export class EthicsOathDialogue extends BaseDialogue {
         overlay.className = 'fixed inset-0 bg-black/50 flex justify-center items-center z-[10001]';
         
         overlay.innerHTML = `
-            <div class="bg-gray-800 border-2 border-green-500 rounded p-6 max-w-2xl w-[90%] shadow-2xl">
+            <div class="bg-gray-800 border-2 border-gray-600 rounded p-6 max-w-2xl w-[90%] shadow-2xl">
                 <h3 class="text-green-500 text-2xl font-bold mb-4 text-center">Level 4 Complete!</h3>
                 
                 <div class="text-center mb-6">
@@ -199,7 +199,7 @@ export class EthicsOathDialogue extends BaseDialogue {
                     ${oathTaken ? '<p class="text-blue-400">🏅 Ethics Oath Badge Earned</p>' : ''}
                 </div>
                 
-                <div class="bg-green-900/30 border border-green-500 rounded p-4 mb-4">
+                <div class="bg-green-900/30 border border-gray-600 rounded p-4 mb-4">
                     <h4 class="text-green-400 font-bold mb-2">Level Summary</h4>
                     <p class="text-green-300">You have completed the White Hat Test, demonstrating your ability to navigate complex ethical dilemmas in cybersecurity research. Your decisions have shaped your professional reputation and contributed to the broader security community.</p>
                 </div>

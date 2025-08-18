@@ -19,6 +19,9 @@
     {% else %}
     <meta name="auth-state" content="anonymous">
     {% endif %}
+
+    <!-- CSRF Token for AJAX requests -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     
     <!-- Critical theme initialization to prevent FOUC -->
     <script src="{{ url_for('static', filename='js/utils/theme/theme-initializator.js') }}"></script>

@@ -41,7 +41,7 @@ export class BaseDialogue {
         
         // Create dialogue container
         this.dialogueContainer = document.createElement('div');
-        this.dialogueContainer.className = 'bg-gray-800 border-2 border-green-500 rounded p-4 max-w-2xl w-[90%] min-h-[200px] shadow-2xl flex flex-row items-start gap-8 dialogue-appear';
+        this.dialogueContainer.className = 'bg-gray-800 border-2 border-gray-600 rounded p-4 max-w-2xl w-[90%] min-h-[200px] shadow-2xl flex flex-row items-start gap-8 dialogue-appear';
         
         this.overlay.appendChild(this.dialogueContainer);
         document.body.appendChild(this.overlay);
@@ -72,7 +72,7 @@ export class BaseDialogue {
 
         this.dialogueContainer.innerHTML = `
             <img src="${avatarUrl}" alt="${characterName}" 
-                 class="w-40 h-50 rounded border-3 border-green-500 object-cover shadow-lg shadow-green-500/30 flex-shrink-0" 
+                 class="w-40 h-50 rounded border-3 border-gray-600 object-cover flex-shrink-0" 
                  onerror="this.src='/static/images/avatars/default.png'" width="120" height="120">
             
             <div class="flex-1 flex flex-col min-h-[200px] relative">
