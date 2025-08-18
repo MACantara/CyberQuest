@@ -101,16 +101,17 @@ class UIManager {
                 
                 // Update progress bar
                 const progressBar = networkNode.querySelector('.bg-green-400, .bg-orange-400, .bg-red-400');
+                const roundedIntegrity = Math.round(asset.integrity);
                 if (progressBar) {
                     progressBar.className = `h-1 rounded ${statusClass.bar}`;
-                    progressBar.style.width = `${asset.integrity}%`;
+                    progressBar.style.width = `${roundedIntegrity}%`;
                 }
                 
                 // Update integrity text
-                const integrityText = networkNode.querySelector('div:last-child');
-                if (integrityText && integrityText.textContent.includes('%')) {
-                    integrityText.textContent = `${Math.round(asset.integrity)}% Integrity`;
-                    integrityText.className = `text-xs text-gray-300 mt-1`;
+                const integrityText = networkNode.querySelector('.integrity-text');
+                if (integrityText) {
+                    integrityText.textContent = `${roundedIntegrity}% Integrity`;
+                    integrityText.className = `text-xs text-gray-300 mt-1 integrity-text`;
                 }
             }
         });
