@@ -26,15 +26,15 @@ class UIManager {
         const networkText = document.getElementById('network-text');
         
         if (gameState.isRunning) {
-            networkStatus?.classList.remove('bg-green-500', 'pulse-green');
+            networkStatus?.classList.remove('bg-green-400', 'pulse-green');
             networkStatus?.classList.add('bg-orange-500', 'pulse-red');
             if (networkText) networkText.textContent = 'Under Attack';
-            if (networkText) networkText.className = 'text-orange-600';
+            if (networkText) networkText.className = 'text-orange-400';
         } else {
             networkStatus?.classList.remove('bg-orange-500', 'pulse-red');
-            networkStatus?.classList.add('bg-green-500', 'pulse-green');
+            networkStatus?.classList.add('bg-green-400', 'pulse-green');
             if (networkText) networkText.textContent = 'Secure';
-            if (networkText) networkText.className = 'text-green-600';
+            if (networkText) networkText.className = 'text-green-400';
         }
         
         // Assets status
@@ -44,20 +44,20 @@ class UIManager {
         const vulnerableAssets = Object.values(gameState.assets).filter(asset => asset.status === 'vulnerable').length;
         
         if (compromisedAssets > 0) {
-            assetsStatus?.classList.remove('bg-green-500', 'bg-orange-500');
+            assetsStatus?.classList.remove('bg-green-400', 'bg-orange-500');
             assetsStatus?.classList.add('bg-red-500');
             if (assetsText) assetsText.textContent = 'Compromised';
-            if (assetsText) assetsText.className = 'text-red-600';
+            if (assetsText) assetsText.className = 'text-red-400';
         } else if (vulnerableAssets > 0) {
-            assetsStatus?.classList.remove('bg-green-500', 'bg-red-500');
+            assetsStatus?.classList.remove('bg-green-400', 'bg-red-500');
             assetsStatus?.classList.add('bg-orange-500');
             if (assetsText) assetsText.textContent = 'Vulnerable';
-            if (assetsText) assetsText.className = 'text-orange-600';
+            if (assetsText) assetsText.className = 'text-orange-400';
         } else {
             assetsStatus?.classList.remove('bg-red-500', 'bg-orange-500');
-            assetsStatus?.classList.add('bg-green-500');
+            assetsStatus?.classList.add('bg-green-400');
             if (assetsText) assetsText.textContent = 'Protected';
-            if (assetsText) assetsText.className = 'text-green-600';
+            if (assetsText) assetsText.className = 'text-green-400';
         }
         
         // Alerts count
@@ -66,16 +66,16 @@ class UIManager {
         
         if (alertsCount) {
             alertsCount.textContent = `${activeAlerts} Active`;
-            alertsCount.className = activeAlerts > 0 ? 'text-red-600' : 'text-gray-600';
+            alertsCount.className = activeAlerts > 0 ? 'text-red-400' : 'text-gray-300';
         }
         
         const alertsStatus = document.getElementById('alerts-status');
         if (activeAlerts > 0) {
-            alertsStatus?.classList.remove('bg-gray-400');
+            alertsStatus?.classList.remove('bg-gray-500');
             alertsStatus?.classList.add('bg-red-500', 'pulse-red');
         } else {
             alertsStatus?.classList.remove('bg-red-500', 'pulse-red');
-            alertsStatus?.classList.add('bg-gray-400');
+            alertsStatus?.classList.add('bg-gray-500');
         }
     }
     
@@ -92,11 +92,11 @@ class UIManager {
             const displayName = this.formatAssetName(name);
             
             const assetElement = document.createElement('div');
-            assetElement.className = `flex items-center justify-between p-3 ${statusClass.bg} rounded-lg border ${statusClass.border}`;
+            assetElement.className = `flex items-center justify-between p-3 bg-gray-700 border border-gray-600`;
             assetElement.innerHTML = `
                 <div class="flex items-center space-x-2">
-                    <span class="text-sm font-medium ${statusClass.text}">${displayName}</span>
-                    <div class="w-16 bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                    <span class="text-sm font-medium text-white">${displayName}</span>
+                    <div class="w-16 bg-gray-600 rounded-full h-2">
                         <div class="h-2 rounded-full ${statusClass.bar}" style="width: ${asset.integrity}%"></div>
                     </div>
                 </div>
@@ -108,7 +108,7 @@ class UIManager {
             // Update network map nodes
             const networkNode = document.querySelector(`[data-asset="${name}"]`);
             if (networkNode) {
-                networkNode.className = `network-node p-3 rounded-lg border-2 ${statusClass.node}`;
+                networkNode.className = `network-node p-4 rounded-lg border-2 cursor-pointer hover:bg-gray-600 transition-colors ${statusClass.node}`;
             }
         });
     }
@@ -116,28 +116,22 @@ class UIManager {
     getAssetStatusClass(status) {
         const classes = {
             'secure': {
-                bg: 'bg-green-50 dark:bg-green-900/20',
-                border: 'border-green-200 dark:border-green-800',
-                badge: 'bg-green-200 dark:bg-green-800 text-green-800 dark:text-green-200',
-                bar: 'bg-green-500',
-                node: 'bg-green-100 dark:bg-green-900 border-green-300 dark:border-green-600',
-                text: 'text-gray-800 dark:text-gray-200'
+                badge: 'bg-green-400 text-black',
+                bar: 'bg-green-400',
+                node: 'bg-gray-700 border-green-400',
+                text: 'text-white'
             },
             'vulnerable': {
-                bg: 'bg-orange-50 dark:bg-orange-900/20',
-                border: 'border-orange-200 dark:border-orange-800',
-                badge: 'bg-orange-200 dark:bg-orange-800 text-orange-800 dark:text-orange-200',
-                bar: 'bg-orange-500',
-                node: 'bg-orange-100 dark:bg-orange-900 border-orange-300 dark:border-orange-600',
-                text: 'text-gray-800 dark:text-gray-200'
+                badge: 'bg-orange-400 text-black',
+                bar: 'bg-orange-400',
+                node: 'bg-gray-700 border-orange-400',
+                text: 'text-white'
             },
             'compromised': {
-                bg: 'bg-red-50 dark:bg-red-900/20',
-                border: 'border-red-200 dark:border-red-800',
-                badge: 'bg-red-200 dark:bg-red-800 text-red-800 dark:text-red-200',
-                bar: 'bg-red-500',
-                node: 'bg-red-100 dark:bg-red-900 border-red-300 dark:border-red-600',
-                text: 'text-gray-800 dark:text-gray-200'
+                badge: 'bg-red-400 text-black',
+                bar: 'bg-red-400',
+                node: 'bg-gray-700 border-red-400',
+                text: 'text-white'
             }
         };
         
@@ -165,7 +159,7 @@ class UIManager {
             } else if (gameState.timeRemaining < 600) { // Less than 10 minutes
                 timerElement.className = 'text-orange-600';
             } else {
-                timerElement.className = 'text-blue-600';
+                timerElement.className = 'text-green-400';
             }
         }
     }
@@ -189,9 +183,9 @@ class UIManager {
         if (pauseButton) {
             pauseButton.disabled = !gameState.isRunning;
             if (gameState.isRunning) {
-                pauseButton.innerHTML = '<i class="bi bi-pause-fill mr-2 text-yellow-600"></i>Pause Simulation';
+                pauseButton.innerHTML = '<i class="bi bi-pause-fill mr-2 text-orange-400"></i>Pause Simulation';
             } else {
-                pauseButton.innerHTML = '<i class="bi bi-play-fill mr-2 text-green-600"></i>Resume Simulation';
+                pauseButton.innerHTML = '<i class="bi bi-play-fill mr-2 text-green-400"></i>Resume Simulation';
                 pauseButton.onclick = () => this.gameController.startGame();
             }
         }
@@ -260,11 +254,11 @@ class UIManager {
             <div class="flex items-center justify-between">
                 <div>
                     <div class="text-sm font-medium ${severityClass.text}">${alert.technique}</div>
-                    <div class="text-xs text-gray-600 dark:text-gray-400">${this.formatAssetName(alert.target)} • ${alert.timestamp.toLocaleTimeString()}</div>
+                    <div class="text-xs text-white">${this.formatAssetName(alert.target)} • ${alert.timestamp.toLocaleTimeString()}</div>
                 </div>
                 <div class="flex items-center space-x-2">
                     <span class="text-xs px-2 py-1 ${severityClass.badge} rounded-full">${alert.severity.toUpperCase()}</span>
-                    <button class="text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" onclick="this.parentElement.parentElement.parentElement.remove()">
+                    <button class="text-xs text-gray-400 hover:text-white" onclick="this.parentElement.parentElement.parentElement.remove()">
                         <i class="bi bi-x-lg cursor-pointer"></i>
                     </button>
                 </div>
@@ -329,28 +323,28 @@ class UIManager {
     getSeverityClass(severity) {
         const classes = {
             'low': {
-                bg: 'bg-blue-50 dark:bg-blue-900/20',
+                bg: 'bg-gray-700',
                 border: 'border-blue-400',
-                text: 'text-blue-800 dark:text-blue-200',
-                badge: 'bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200'
+                text: 'text-blue-400',
+                badge: 'bg-blue-400 text-black'
             },
             'medium': {
-                bg: 'bg-yellow-50 dark:bg-yellow-900/20',
+                bg: 'bg-gray-700',
                 border: 'border-yellow-400',
-                text: 'text-yellow-800 dark:text-yellow-200',
-                badge: 'bg-yellow-200 dark:bg-yellow-800 text-yellow-800 dark:text-yellow-200'
+                text: 'text-yellow-400',
+                badge: 'bg-yellow-400 text-black'
             },
             'high': {
-                bg: 'bg-orange-50 dark:bg-orange-900/20',
+                bg: 'bg-gray-700',
                 border: 'border-orange-400',
-                text: 'text-orange-800 dark:text-orange-200',
-                badge: 'bg-orange-200 dark:bg-orange-800 text-orange-800 dark:text-orange-200'
+                text: 'text-orange-400',
+                badge: 'bg-orange-400 text-black'
             },
             'critical': {
-                bg: 'bg-red-50 dark:bg-red-900/20',
+                bg: 'bg-gray-700',
                 border: 'border-red-400',
-                text: 'text-red-800 dark:text-red-200',
-                badge: 'bg-red-200 dark:bg-red-800 text-red-800 dark:text-red-200'
+                text: 'text-red-400',
+                badge: 'bg-red-400 text-black'
             }
         };
         
@@ -382,13 +376,13 @@ class UIManager {
         }
         
         const incidentElement = document.createElement('div');
-        incidentElement.className = 'p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg mb-2';
+        incidentElement.className = 'p-3 bg-gray-700 border border-red-400 rounded-lg mb-2';
         incidentElement.innerHTML = `
             <div class="flex items-center space-x-2">
-                <i class="bi bi-exclamation-triangle-fill text-red-600"></i>
+                <i class="bi bi-exclamation-triangle-fill text-red-400"></i>
                 <div>
-                    <div class="text-sm font-medium text-red-800 dark:text-red-200">Security Breach Detected</div>
-                    <div class="text-xs text-gray-600 dark:text-gray-400">
+                    <div class="text-sm font-medium text-red-400">Security Breach Detected</div>
+                    <div class="text-xs text-white">
                         ${incident.technique} affected ${this.formatAssetName(incident.target)} • 
                         ${Math.round(incident.damage)}% integrity loss • 
                         ${incident.timestamp.toLocaleTimeString()}
