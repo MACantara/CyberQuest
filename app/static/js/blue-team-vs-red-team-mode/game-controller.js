@@ -68,7 +68,13 @@ class GameController {
         }
         
         // Game control buttons
-        document.getElementById('pause-simulation')?.addEventListener('click', () => this.pauseGame());
+        document.getElementById('pause-simulation')?.addEventListener('click', () => {
+            if (this.gameState.isRunning) {
+                this.pauseGame();
+            } else {
+                this.startGame();
+            }
+        });
         document.getElementById('stop-simulation')?.addEventListener('click', () => this.stopGame());
         document.getElementById('reset-simulation')?.addEventListener('click', () => this.resetGame());
         document.getElementById('exit-simulation')?.addEventListener('click', () => this.exitToMenu());

@@ -229,7 +229,6 @@ class UIManager {
         if (pauseButton) {
             if (gameState.isRunning) {
                 pauseButton.innerHTML = '<i class="bi bi-pause-fill me-2 text-orange-400"></i>Pause Simulation';
-                pauseButton.onclick = () => this.gameController.pauseGame();
                 pauseButton.disabled = false;
             } else {
                 pauseButton.innerHTML = '<i class="bi bi-play-fill me-2 text-green-400"></i>Resume Simulation';
