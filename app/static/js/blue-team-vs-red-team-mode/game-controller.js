@@ -146,8 +146,7 @@ class GameController {
     }
     
     stopGame() {
-        if (!this.gameState.isRunning) return;
-        
+        // Allow stopping even when paused
         this.gameState.isRunning = false;
         
         if (this.gameTimer) {
@@ -266,7 +265,6 @@ class GameController {
         
         this.gameState.alerts.push(alert);
         this.uiManager.addAlert(alert);
-        this.uiManager.addTerminalOutput(`🚨 ALERT: ${attackData.technique} detected targeting ${attackData.target}`);
         
         // Player has a chance to respond
         this.offerPlayerResponse(alert);
@@ -278,9 +276,6 @@ class GameController {
         
         if (success) {
             this.executeSuccessfulAttack(attackData);
-        } else {
-            // Attack failed for other reasons
-            this.uiManager.addTerminalOutput(`⚠️ Unusual network activity detected (${attackData.type})`);
         }
     }
     
@@ -327,10 +322,6 @@ class GameController {
         this.uiManager.addIncident(incident);
         this.uiManager.updateAssetStatus();
         
-        // Delayed detection of the successful attack
-        setTimeout(() => {
-            this.uiManager.addTerminalOutput(`⚠️ Integrity check failed on ${attackData.target} - potential breach detected`);
-        }, Math.random() * 5000 + 2000); // 2-7 seconds delay
     }
     
     offerPlayerResponse(alert) {
@@ -343,9 +334,6 @@ class GameController {
             'patch-vulnerability',
             'reset-credentials'
         ];
-
-        // Instruct the player via terminal output
-        this.uiManager.addTerminalOutput(`🔔 Detected ${alert.technique} on ${alert.target}. Choose a response by clicking an action or typing the equivalent command.`);
 
         // Ask the UI to render response options on the alert element
         if (this.uiManager && typeof this.uiManager.showResponseOptions === 'function') {
@@ -495,6 +483,57 @@ class GameController {
     
     isGameRunning() {
         return this.gameState.isRunning;
+    }
+    
+    // Interactive network methods
+    selectNetworkNode(assetName) {
+        if (!this.gameState.assets[assetName]) {
+            console.log(`Asset ${assetName} not found`);
+            return;
+        }
+        
+        const asset = this.gameState.assets[assetName];
+        this.uiManager.addTerminalOutput(`$ Selected ${assetName} - Status: ${asset.status}, Integrity: ${asset.integrity}%`);
+        
+        // Show asset details or management options
+        console.log(`Selected network node: ${assetName}`, asset);
+    }
+    
+    toggleSecurityControl(controlName) {
+        if (!this.gameState.securityControls[controlName]) {
+            console.log(`Security control ${controlName} not found`);
+            return;
+        }
+        
+        const control = this.gameState.securityControls[controlName];
+        control.active = !control.active;
+        
+        const status = control.active ? 'ENABLED' : 'DISABLED';
+        this.uiManager.addTerminalOutput(`$ Security control ${controlName} ${status} - Effectiveness: ${control.effectiveness}%`);
+        
+        // Update UI to reflect control status
+        this.uiManager.updateDisplay();
+        console.log(`Toggled security control: ${controlName}`, control);
+    }
+    
+    executeResponse(action) {
+        if (!this.gameState.isRunning) {
+            this.uiManager.addTerminalOutput(`$ Cannot execute ${action}: Simulation not running`);
+            return;
+        }
+        
+        const responses = {
+            'block-ip': 'Blocked suspicious IP addresses',
+            'isolate-asset': 'Isolated affected systems from network',
+            'increase-monitoring': 'Increased security monitoring levels',
+            'patch-vulnerability': 'Applied security patches to vulnerabilities',
+            'reset-credentials': 'Reset user credentials for affected accounts'
+        };
+        
+        const message = responses[action] || `Executed response: ${action}`;
+        this.uiManager.addTerminalOutput(`$ ${message}`);
+        
+        console.log(`Executed response: ${action}`);
     }
 }
 
