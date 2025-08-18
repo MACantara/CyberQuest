@@ -184,11 +184,11 @@ class UIManager {
         // Update button states in dropdown
         if (pauseButton) {
             if (gameState.isRunning) {
-                pauseButton.innerHTML = '<i class="bi bi-pause-fill mr-2 text-orange-400"></i>Pause Simulation';
+                pauseButton.innerHTML = '<i class="bi bi-pause-fill me-2 text-orange-400"></i>Pause Simulation';
                 pauseButton.onclick = () => this.gameController.pauseGame();
                 pauseButton.disabled = false;
             } else {
-                pauseButton.innerHTML = '<i class="bi bi-play-fill mr-2 text-green-400"></i>Resume Simulation';
+                pauseButton.innerHTML = '<i class="bi bi-play-fill me-2 text-green-400"></i>Resume Simulation';
                 pauseButton.onclick = () => this.gameController.startGame();
                 pauseButton.disabled = false;
             }
@@ -418,7 +418,7 @@ class UIManager {
             inputDiv.className = 'flex items-center';
             inputDiv.innerHTML = `
                 <span>$ </span>
-                <input type="text" id="terminal-input" class="bg-transparent border-none outline-none text-green-400 flex-1 ml-1" placeholder="Enter command...">
+                <input type="text" id="terminal-input" class="bg-transparent border-none outline-none text-green-400 flex-1 ms-1" placeholder="Enter command...">
             `;
             terminalOutput.appendChild(inputDiv);
             
