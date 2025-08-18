@@ -1,3 +1,13 @@
+<!-- TODO: Remove the terminal text output for starting, pausing, stopping, and restarting a simulation -->
+<!-- TODO: Remove the AI Threat Analysis panel -->
+<!-- TODO: Add max-height to the Incident Response panel -->
+<!-- In the #file:dashboard.html
+1. Move the ai threat analysis and incident response sections on the same row with the network defense map and alert center
+2. Update the element with the id of alerts-count based on the number of alerts in the alert center
+3. Make the terminal occupy the whole width of the screen
+4. return the inputing of terminal commands in the Defense Command Terminal so that it can simulate for the player, blue team, on how to mitigate attacks of the red team
+5. Update the #file:__init__.py red team AI to decrease the component integrity if the action taken is either critical or high. This is because I have a situation where I have 8 critical alerts and only a integrity decreasing event happen when another critical alert happens switch seems...not right -->
+
 {% extends "base.html" %}
 
 {% block title %}Blue vs Red Team - Dashboard{% endblock %}
