@@ -206,7 +206,7 @@
                 <!-- Network Map with Interactive Elements -->
                 <div class="bg-gray-800 border border-gray-600 p-6 window-content">
                     <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
-                        <i class="bi bi-diagram-3 mr-2 text-green-400"></i>Network Defense Map
+                        <i class="bi bi-diagram-3 me-2 text-green-400"></i>Network Defense Map
                     </h3>
                     <div class="bg-black border border-gray-600 p-6">
                         <div id="network-map" class="space-y-4">
@@ -249,15 +249,15 @@
                             <div class="flex items-center justify-center space-x-8 mt-6">
                                 <div class="security-control bg-gray-700 p-3 rounded border border-gray-600 cursor-pointer hover:bg-gray-600 transition-colors" data-control="firewall" onclick="window.gameController?.toggleSecurityControl('firewall')">
                                     <i class="bi bi-shield-check text-green-400"></i>
-                                    <span class="text-xs text-white ml-2">Firewall</span>
+                                    <span class="text-xs text-white ms-2">Firewall</span>
                                 </div>
                                 <div class="security-control bg-gray-700 p-3 rounded border border-gray-600 cursor-pointer hover:bg-gray-600 transition-colors" data-control="endpoint" onclick="window.gameController?.toggleSecurityControl('endpoint')">
                                     <i class="bi bi-laptop text-green-400"></i>
-                                    <span class="text-xs text-white ml-2">Endpoint Protection</span>
+                                    <span class="text-xs text-white ms-2">Endpoint Protection</span>
                                 </div>
                                 <div class="security-control bg-gray-700 p-3 rounded border border-gray-600 cursor-pointer hover:bg-gray-600 transition-colors" data-control="access" onclick="window.gameController?.toggleSecurityControl('access')">
                                     <i class="bi bi-key text-green-400"></i>
-                                    <span class="text-xs text-white ml-2">Access Control</span>
+                                    <span class="text-xs text-white ms-2">Access Control</span>
                                 </div>
                             </div>
                         </div>
@@ -267,25 +267,25 @@
                 <!-- Interactive Terminal -->
                 <div class="bg-gray-800 border border-gray-600 p-4">
                     <h3 class="text-lg font-semibold text-green-400 mb-4 flex items-center">
-                        <i class="bi bi-terminal mr-2"></i>Defense Command Terminal
+                        <i class="bi bi-terminal me-2"></i>Defense Command Terminal
                     </h3>
                     <div id="terminal-output" class="bg-black text-green-400 font-mono text-sm p-3 border border-gray-600 h-80 overflow-y-auto terminal-output">
                         <div>$ System monitoring initialized...</div>
                         <div>$ Defense systems online. Type 'help' for commands...</div>
                         <div id="response-actions" class="mt-2 hidden">
                             <div class="text-yellow-400">╔══ THREAT RESPONSE ACTIONS ══╗</div>
-                            <div class="ml-2">
-                                <button class="response-btn bg-gray-700 hover:bg-green-400 hover:text-black text-green-400 px-3 py-1 mr-2 mt-1 rounded cursor-pointer" onclick="window.gameController?.executeResponse('block-ip')">1. Block IP</button>
-                                <button class="response-btn bg-gray-700 hover:bg-green-400 hover:text-black text-green-400 px-3 py-1 mr-2 mt-1 rounded cursor-pointer" onclick="window.gameController?.executeResponse('isolate-asset')">2. Isolate Asset</button>
-                                <button class="response-btn bg-gray-700 hover:bg-green-400 hover:text-black text-green-400 px-3 py-1 mr-2 mt-1 rounded cursor-pointer" onclick="window.gameController?.executeResponse('increase-monitoring')">3. Increase Monitoring</button>
-                                <button class="response-btn bg-gray-700 hover:bg-green-400 hover:text-black text-green-400 px-3 py-1 mr-2 mt-1 rounded cursor-pointer" onclick="window.gameController?.executeResponse('patch-vulnerability')">4. Patch Vulnerability</button>
-                                <button class="response-btn bg-gray-700 hover:bg-green-400 hover:text-black text-green-400 px-3 py-1 mr-2 mt-1 rounded cursor-pointer" onclick="window.gameController?.executeResponse('reset-credentials')">5. Reset Credentials</button>
+                            <div class="ms-2">
+                                <button class="response-btn bg-gray-700 hover:bg-green-400 hover:text-black text-green-400 px-3 py-1 me-2 mt-1 rounded cursor-pointer" onclick="window.gameController?.executeResponse('block-ip')">1. Block IP</button>
+                                <button class="response-btn bg-gray-700 hover:bg-green-400 hover:text-black text-green-400 px-3 py-1 me-2 mt-1 rounded cursor-pointer" onclick="window.gameController?.executeResponse('isolate-asset')">2. Isolate Asset</button>
+                                <button class="response-btn bg-gray-700 hover:bg-green-400 hover:text-black text-green-400 px-3 py-1 me-2 mt-1 rounded cursor-pointer" onclick="window.gameController?.executeResponse('increase-monitoring')">3. Increase Monitoring</button>
+                                <button class="response-btn bg-gray-700 hover:bg-green-400 hover:text-black text-green-400 px-3 py-1 me-2 mt-1 rounded cursor-pointer" onclick="window.gameController?.executeResponse('patch-vulnerability')">4. Patch Vulnerability</button>
+                                <button class="response-btn bg-gray-700 hover:bg-green-400 hover:text-black text-green-400 px-3 py-1 me-2 mt-1 rounded cursor-pointer" onclick="window.gameController?.executeResponse('reset-credentials')">5. Reset Credentials</button>
                             </div>
                             <div class="text-yellow-400">╚════════════════════════════╝</div>
                         </div>
                         <div class="flex items-center mt-2">
                             <span>$ </span>
-                            <input type="text" id="terminal-input" class="bg-transparent border-none outline-none text-green-400 flex-1 ml-1" placeholder="Enter command...">
+                            <input type="text" id="terminal-input" class="bg-transparent border-none outline-none text-green-400 flex-1 ms-1" placeholder="Enter command...">
                         </div>
                     </div>
                 </div>
@@ -296,7 +296,7 @@
                 <!-- Alert Center -->
                 <div class="bg-gray-800 border border-gray-600 p-6 window-content">
                     <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
-                        <i class="bi bi-exclamation-triangle mr-2 text-orange-400"></i>Alert Center
+                        <i class="bi bi-exclamation-triangle me-2 text-orange-400"></i>Alert Center
                     </h3>
                     <div id="alert-center" class="space-y-3 security-content">
                         <div class="text-sm text-gray-400 italic">No active alerts</div>
@@ -306,7 +306,7 @@
                 <!-- AI Evolution -->
                 <div class="bg-gray-800 border border-gray-600 p-6 window-content">
                     <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
-                        <i class="bi bi-cpu mr-2 text-red-400"></i>AI Threat Analysis
+                        <i class="bi bi-cpu me-2 text-red-400"></i>AI Threat Analysis
                     </h3>
                     <div class="space-y-3">
                         <div>
@@ -316,7 +316,7 @@
                         <div>
                             <span class="text-sm font-medium text-white">Threat Level:</span>
                             <div class="flex items-center mt-1">
-                                <div class="flex-1 bg-gray-700 rounded-full h-2 mr-2">
+                                <div class="flex-1 bg-gray-700 rounded-full h-2 me-2">
                                     <div id="difficulty-bar" class="bg-orange-500 h-2 rounded-full" style="width: 30%"></div>
                                 </div>
                                 <span id="difficulty-text" class="text-sm text-orange-400">Normal</span>
@@ -328,7 +328,7 @@
                 <!-- Incident Response Panel -->
                 <div class="bg-gray-800 border border-gray-600 p-6 window-content">
                     <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
-                        <i class="bi bi-exclamation-triangle mr-2 text-yellow-400"></i>Incident Response
+                        <i class="bi bi-exclamation-triangle me-2 text-yellow-400"></i>Incident Response
                     </h3>
                     <div id="incident-panel" class="space-y-3 security-content overflow-y-auto max-h-48">
                         <div class="text-sm text-gray-400 italic">No incidents detected. Monitoring for suspicious activity...</div>
