@@ -109,7 +109,7 @@ class UIManager {
                 // Update integrity text
                 const integrityText = networkNode.querySelector('div:last-child');
                 if (integrityText && integrityText.textContent.includes('%')) {
-                    integrityText.textContent = `${asset.integrity}% Integrity`;
+                    integrityText.textContent = `${Math.round(asset.integrity)}% Integrity`;
                     integrityText.className = `text-xs text-gray-300 mt-1`;
                 }
             }
