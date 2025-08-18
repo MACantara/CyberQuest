@@ -40,7 +40,7 @@ export class CryptocurrencyBribeDialogue extends BaseDialogue {
         overlay.className = 'fixed inset-0 bg-black/50 flex justify-center items-center z-[10001]';
         
         overlay.innerHTML = `
-            <div class="bg-gray-800 border-2 border-green-500 rounded p-6 max-w-2xl w-[90%] shadow-2xl">
+            <div class="bg-gray-800 border-2 border-gray-600 rounded p-6 max-w-2xl w-[90%] shadow-2xl">
                 <h3 class="text-green-500 text-xl font-bold mb-4">Critical Decision Point</h3>
                 <p class="text-green-400 mb-6">How do you respond to this cryptocurrency bribe offer?</p>
                 
@@ -138,7 +138,7 @@ export class CryptocurrencyBribeDialogue extends BaseDialogue {
         const ethicsSign = ethicsChange >= 0 ? '+' : '';
         
         overlay.innerHTML = `
-            <div class="bg-gray-800 border-2 border-green-500 rounded p-6 max-w-2xl w-[90%] shadow-2xl">
+            <div class="bg-gray-800 border-2 border-gray-600 rounded p-6 max-w-2xl w-[90%] shadow-2xl">
                 <h3 class="text-green-500 text-xl font-bold mb-4">Consequence</h3>
                 <p class="text-green-400 mb-4">${decision}</p>
                 <p class="text-gray-300 mb-4">${consequence}</p>

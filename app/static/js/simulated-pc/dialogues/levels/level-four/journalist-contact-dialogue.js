@@ -45,7 +45,7 @@ export class JournalistContactDialogue extends BaseDialogue {
         overlay.className = 'fixed inset-0 bg-black/50 flex justify-center items-center z-[10001]';
         
         overlay.innerHTML = `
-            <div class="bg-gray-800 border-2 border-green-500 rounded p-6 max-w-2xl w-[90%] shadow-2xl">
+            <div class="bg-gray-800 border-2 border-gray-600 rounded p-6 max-w-2xl w-[90%] shadow-2xl">
                 <h3 class="text-green-500 text-xl font-bold mb-4">Media Contact Decision</h3>
                 <p class="text-green-400 mb-6">How do you respond to this journalist's request?</p>
                 
@@ -55,7 +55,7 @@ export class JournalistContactDialogue extends BaseDialogue {
                         Full cooperation: Provide complete details for public transparency (+100 Ethics XP, High Publicity)
                     </button>
                     
-                    <button class="w-full text-left p-3 bg-green-900/30 border border-green-500 rounded hover:bg-green-900/50 text-green-300" 
+                    <button class="w-full text-left p-3 bg-green-900/30 border border-gray-600 rounded hover:bg-green-900/50 text-green-300" 
                             data-choice="redacted_info">
                         Provide redacted information protecting sensitive details (+150 Ethics XP)
                     </button>
@@ -159,7 +159,7 @@ export class JournalistContactDialogue extends BaseDialogue {
         const ethicsSign = ethicsChange >= 0 ? '+' : '';
         
         overlay.innerHTML = `
-            <div class="bg-gray-800 border-2 border-green-500 rounded p-6 max-w-2xl w-[90%] shadow-2xl">
+            <div class="bg-gray-800 border-2 border-gray-600 rounded p-6 max-w-2xl w-[90%] shadow-2xl">
                 <h3 class="text-green-500 text-xl font-bold mb-4">Media Response Outcome</h3>
                 <p class="text-green-400 mb-4">${decision}</p>
                 <p class="text-gray-300 mb-4">${consequence}</p>
