@@ -81,34 +81,36 @@ class UIManager {
     
     updateAssetStatus() {
         const gameState = this.gameController.getGameState();
-        const assetStatusContainer = document.getElementById('asset-status');
         
-        if (!assetStatusContainer) return;
-        
-        assetStatusContainer.innerHTML = '';
-        
+        // Update network nodes with current asset status
         Object.entries(gameState.assets).forEach(([name, asset]) => {
-            const statusClass = this.getAssetStatusClass(asset.status);
-            const displayName = this.formatAssetName(name);
-            
-            const assetElement = document.createElement('div');
-            assetElement.className = `flex items-center justify-between p-3 bg-gray-700 border border-gray-600`;
-            assetElement.innerHTML = `
-                <div class="flex items-center space-x-2">
-                    <span class="text-sm font-medium text-white">${displayName}</span>
-                    <div class="w-16 bg-gray-600 rounded-full h-2">
-                        <div class="h-2 rounded-full ${statusClass.bar}" style="width: ${asset.integrity}%"></div>
-                    </div>
-                </div>
-                <span class="text-xs px-2 py-1 ${statusClass.badge} rounded-full">${asset.status.charAt(0).toUpperCase() + asset.status.slice(1)}</span>
-            `;
-            
-            assetStatusContainer.appendChild(assetElement);
-            
-            // Update network map nodes
             const networkNode = document.querySelector(`[data-asset="${name}"]`);
             if (networkNode) {
-                networkNode.className = `network-node p-4 rounded-lg border-2 cursor-pointer hover:bg-gray-600 transition-colors ${statusClass.node}`;
+                const statusClass = this.getAssetStatusClass(asset.status);
+                
+                // Update border color based on status
+                networkNode.className = `network-node bg-gray-700 p-4 rounded-lg border-2 cursor-pointer hover:bg-gray-600 transition-colors ${statusClass.node}`;
+                
+                // Update icon color
+                const icon = networkNode.querySelector('i');
+                if (icon) {
+                    const iconClasses = icon.className.split(' ').filter(cls => !cls.startsWith('text-'));
+                    icon.className = iconClasses.join(' ') + ` ${statusClass.text.replace('text-white', 'text-green-400')}`;
+                }
+                
+                // Update progress bar
+                const progressBar = networkNode.querySelector('.bg-green-400, .bg-orange-400, .bg-red-400');
+                if (progressBar) {
+                    progressBar.className = `h-1 rounded ${statusClass.bar}`;
+                    progressBar.style.width = `${asset.integrity}%`;
+                }
+                
+                // Update integrity text
+                const integrityText = networkNode.querySelector('div:last-child');
+                if (integrityText && integrityText.textContent.includes('%')) {
+                    integrityText.textContent = `${asset.integrity}% Integrity`;
+                    integrityText.className = `text-xs text-gray-300 mt-1`;
+                }
             }
         });
     }
@@ -181,21 +183,28 @@ class UIManager {
         
         // Update button states in dropdown
         if (pauseButton) {
-            pauseButton.disabled = !gameState.isRunning;
             if (gameState.isRunning) {
                 pauseButton.innerHTML = '<i class="bi bi-pause-fill mr-2 text-orange-400"></i>Pause Simulation';
+                pauseButton.onclick = () => this.gameController.pauseGame();
+                pauseButton.disabled = false;
             } else {
                 pauseButton.innerHTML = '<i class="bi bi-play-fill mr-2 text-green-400"></i>Resume Simulation';
                 pauseButton.onclick = () => this.gameController.startGame();
+                pauseButton.disabled = false;
             }
         }
         
         if (stopButton) {
-            stopButton.disabled = !gameState.isRunning;
-            if (!gameState.isRunning) {
-                stopButton.classList.add('opacity-50');
-            } else {
+            // Stop button should be enabled when game is running OR paused
+            // Only disable when the game hasn't been started yet or has been fully stopped
+            const gameHasBeenStarted = gameState.isRunning || gameState.timeRemaining < 900;
+            
+            if (gameHasBeenStarted) {
+                stopButton.disabled = false;
                 stopButton.classList.remove('opacity-50');
+            } else {
+                stopButton.disabled = true;
+                stopButton.classList.add('opacity-50');
             }
         }
     }
