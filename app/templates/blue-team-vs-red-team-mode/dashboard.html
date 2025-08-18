@@ -215,22 +215,34 @@
                                 <div class="network-node bg-gray-700 p-4 rounded-lg border-2 border-green-400 cursor-pointer hover:bg-gray-600 transition-colors" data-asset="academy-server" onclick="window.gameController?.selectNetworkNode('academy-server')">
                                     <i class="bi bi-server text-green-400 text-xl"></i>
                                     <div class="text-xs font-medium mt-1 text-white">Academy Server</div>
-                                    <div class="text-xs text-gray-300 mt-1">Click to manage</div>
+                                    <div class="w-full bg-gray-600 h-1 mt-2 rounded">
+                                        <div class="bg-green-400 h-1 rounded" style="width: 100%"></div>
+                                    </div>
+                                    <div class="text-xs text-gray-300 mt-1">100% Integrity</div>
                                 </div>
                                 <div class="network-node bg-gray-700 p-4 rounded-lg border-2 border-green-400 cursor-pointer hover:bg-gray-600 transition-colors" data-asset="student-db" onclick="window.gameController?.selectNetworkNode('student-db')">
                                     <i class="bi bi-database text-green-400 text-xl"></i>
                                     <div class="text-xs font-medium mt-1 text-white">Student DB</div>
-                                    <div class="text-xs text-gray-300 mt-1">Click to manage</div>
+                                    <div class="w-full bg-gray-600 h-1 mt-2 rounded">
+                                        <div class="bg-green-400 h-1 rounded" style="width: 100%"></div>
+                                    </div>
+                                    <div class="text-xs text-gray-300 mt-1">100% Integrity</div>
                                 </div>
                                 <div class="network-node bg-gray-700 p-4 rounded-lg border-2 border-green-400 cursor-pointer hover:bg-gray-600 transition-colors" data-asset="research-files" onclick="window.gameController?.selectNetworkNode('research-files')">
                                     <i class="bi bi-file-earmark-text text-green-400 text-xl"></i>
                                     <div class="text-xs font-medium mt-1 text-white">Research Files</div>
-                                    <div class="text-xs text-gray-300 mt-1">Click to manage</div>
+                                    <div class="w-full bg-gray-600 h-1 mt-2 rounded">
+                                        <div class="bg-green-400 h-1 rounded" style="width: 100%"></div>
+                                    </div>
+                                    <div class="text-xs text-gray-300 mt-1">100% Integrity</div>
                                 </div>
                                 <div class="network-node bg-gray-700 p-4 rounded-lg border-2 border-green-400 cursor-pointer hover:bg-gray-600 transition-colors" data-asset="learning-platform" onclick="window.gameController?.selectNetworkNode('learning-platform')">
                                     <i class="bi bi-mortarboard text-green-400 text-xl"></i>
                                     <div class="text-xs font-medium mt-1 text-white">Learning Platform</div>
-                                    <div class="text-xs text-gray-300 mt-1">Click to manage</div>
+                                    <div class="w-full bg-gray-600 h-1 mt-2 rounded">
+                                        <div class="bg-green-400 h-1 rounded" style="width: 100%"></div>
+                                    </div>
+                                    <div class="text-xs text-gray-300 mt-1">100% Integrity</div>
                                 </div>
                             </div>
                             <!-- Interactive Security controls -->
@@ -281,24 +293,13 @@
 
             <!-- Right Panel - System Info -->
             <div class="space-y-6">
-                <!-- Asset Management -->
+                <!-- Alert Center -->
                 <div class="bg-gray-800 border border-gray-600 p-6 window-content">
                     <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
-                        <i class="bi bi-shield-shaded mr-2 text-green-400"></i>Asset Status
+                        <i class="bi bi-exclamation-triangle mr-2 text-orange-400"></i>Alert Center
                     </h3>
-                    <div id="asset-status" class="space-y-3">
-                        <div class="flex items-center justify-between p-3 bg-gray-700 border border-gray-600">
-                            <span class="text-sm font-medium text-white">Student DB</span>
-                            <span class="text-xs px-2 py-1 bg-green-400 text-black rounded-full">Secure</span>
-                        </div>
-                        <div class="flex items-center justify-between p-3 bg-gray-700 border border-gray-600">
-                            <span class="text-sm font-medium text-white">Research Files</span>
-                            <span class="text-xs px-2 py-1 bg-green-400 text-black rounded-full">Secure</span>
-                        </div>
-                        <div class="flex items-center justify-between p-3 bg-gray-700 border border-gray-600">
-                            <span class="text-sm font-medium text-white">Learning Platform</span>
-                            <span class="text-xs px-2 py-1 bg-green-400 text-black rounded-full">Secure</span>
-                        </div>
+                    <div id="alert-center" class="space-y-3 security-content">
+                        <div class="text-sm text-gray-400 italic">No active alerts</div>
                     </div>
                 </div>
 
