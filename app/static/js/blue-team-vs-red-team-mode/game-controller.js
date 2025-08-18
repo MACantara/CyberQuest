@@ -353,8 +353,6 @@ class GameController {
             'reset-credentials': 'Credentials reset'
         };
         
-        this.uiManager.addTerminalOutput(`✅ Response: ${responseMap[response]} (${Math.round(effectiveness * 100)}% effective)`);
-        
         // Update security controls effectiveness
         Object.keys(this.gameState.securityControls).forEach(control => {
             this.gameState.securityControls[control].effectiveness = Math.min(100, 
@@ -494,8 +492,6 @@ class GameController {
         }
         
         const asset = this.gameState.assets[assetName];
-        this.uiManager.addTerminalOutput(`$ Selected ${assetName} - Status: ${asset.status}, Integrity: ${asset.integrity}%`);
-        
         // Show asset details or management options
         console.log(`Selected network node: ${assetName}`, asset);
     }
@@ -509,9 +505,6 @@ class GameController {
         const control = this.gameState.securityControls[controlName];
         control.active = !control.active;
         
-        const status = control.active ? 'ENABLED' : 'DISABLED';
-        this.uiManager.addTerminalOutput(`$ Security control ${controlName} ${status} - Effectiveness: ${control.effectiveness}%`);
-        
         // Update UI to reflect control status
         this.uiManager.updateSecurityControls();
         console.log(`Toggled security control: ${controlName}`, control);
@@ -519,7 +512,6 @@ class GameController {
     
     executeResponse(action) {
         if (!this.gameState.isRunning) {
-            this.uiManager.addTerminalOutput(`$ Cannot execute ${action}: Simulation not running`);
             return;
         }
         
@@ -530,9 +522,6 @@ class GameController {
             'patch-vulnerability': 'Applied security patches to vulnerabilities',
             'reset-credentials': 'Reset user credentials for affected accounts'
         };
-        
-        const message = responses[action] || `Executed response: ${action}`;
-        this.uiManager.addTerminalOutput(`$ ${message}`);
         
         console.log(`Executed response: ${action}`);
     }
