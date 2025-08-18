@@ -334,11 +334,6 @@ class GameController {
             'patch-vulnerability',
             'reset-credentials'
         ];
-
-        // Ask the UI to render response options on the alert element
-        if (this.uiManager && typeof this.uiManager.showResponseOptions === 'function') {
-            this.uiManager.showResponseOptions(alert, responses);
-        }
     }
     
     executePlayerResponse(alert, response) {
