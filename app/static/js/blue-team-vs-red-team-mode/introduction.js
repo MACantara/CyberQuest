@@ -108,6 +108,8 @@ class IntroductionManager {
             </div>
         `;
         
+        // Make notifications feel clickable if needed
+        notification.classList.add('cursor-pointer');
         document.body.appendChild(notification);
         
         // Animate in

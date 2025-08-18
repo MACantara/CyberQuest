@@ -265,7 +265,7 @@ class UIManager {
                 <div class="flex items-center space-x-2">
                     <span class="text-xs px-2 py-1 ${severityClass.badge} rounded-full">${alert.severity.toUpperCase()}</span>
                     <button class="text-xs text-gray-500 hover:text-gray-700 dark:hover:text-gray-300" onclick="this.parentElement.parentElement.parentElement.remove()">
-                        <i class="bi bi-x-lg"></i>
+                        <i class="bi bi-x-lg cursor-pointer"></i>
                     </button>
                 </div>
             </div>
