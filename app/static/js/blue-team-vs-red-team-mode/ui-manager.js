@@ -282,6 +282,49 @@ class UIManager {
             alertCenter.removeChild(alerts[alerts.length - 1]);
         }
     }
+
+    // Render player response buttons for a detected alert
+    showResponseOptions(alert, responses = []) {
+        const alertCenter = document.getElementById('alert-center');
+        if (!alertCenter) return;
+
+        // Find the alert element by data attribute
+        const alertEl = alertCenter.querySelector(`[data-alert-id="${alert.id}"]`);
+        if (!alertEl) return;
+
+        // Create response container
+        const responseContainer = document.createElement('div');
+        responseContainer.className = 'mt-3 flex flex-wrap gap-2';
+
+        responses.forEach(response => {
+            const btn = document.createElement('button');
+            btn.className = 'px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded text-sm hover:bg-gray-200 dark:hover:bg-gray-600 cursor-pointer';
+            btn.textContent = response.replace('-', ' ');
+            btn.addEventListener('click', () => {
+                // Disable all buttons to avoid double actions
+                responseContainer.querySelectorAll('button').forEach(b => b.disabled = true);
+                // Call back into game controller
+                try {
+                    this.gameController.executePlayerResponse(alert, response);
+                } catch (err) {
+                    console.error('Error executing player response', err);
+                }
+
+                // Visually remove the options
+                responseContainer.remove();
+            });
+
+            responseContainer.appendChild(btn);
+        });
+
+        // Append to the alert element (below the content)
+        alertEl.appendChild(responseContainer);
+
+        // Auto-hide options after 20 seconds if no selection
+        setTimeout(() => {
+            if (responseContainer.parentElement) responseContainer.remove();
+        }, 20000);
+    }
     
     getSeverityClass(severity) {
         const classes = {

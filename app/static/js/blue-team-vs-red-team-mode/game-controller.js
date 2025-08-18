@@ -334,7 +334,8 @@ class GameController {
     }
     
     offerPlayerResponse(alert) {
-        // Simulate player response options
+        // Present player response options instead of auto-responding.
+        // The UI will render clickable action buttons and a brief terminal hint.
         const responses = [
             'block-ip',
             'isolate-asset',
@@ -342,12 +343,14 @@ class GameController {
             'patch-vulnerability',
             'reset-credentials'
         ];
-        
-        // For MVP, automatically respond after a short delay
-        setTimeout(() => {
-            const response = responses[Math.floor(Math.random() * responses.length)];
-            this.executePlayerResponse(alert, response);
-        }, Math.random() * 3000 + 1000); // 1-4 seconds
+
+        // Instruct the player via terminal output
+        this.uiManager.addTerminalOutput(`🔔 Detected ${alert.technique} on ${alert.target}. Choose a response by clicking an action or typing the equivalent command.`);
+
+        // Ask the UI to render response options on the alert element
+        if (this.uiManager && typeof this.uiManager.showResponseOptions === 'function') {
+            this.uiManager.showResponseOptions(alert, responses);
+        }
     }
     
     executePlayerResponse(alert, response) {
