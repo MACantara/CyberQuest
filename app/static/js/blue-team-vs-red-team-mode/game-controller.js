@@ -37,6 +37,11 @@ class GameController {
         this.setupEventListeners();
         this.uiManager.updateDisplay();
         
+        // Initialize terminal with welcome message
+        this.uiManager.addTerminalOutput('$ Defense Command Terminal - Ready');
+        this.uiManager.addTerminalOutput('$ Monitoring Project Sentinel Academy...');
+        this.uiManager.addTerminalOutput('$ Type "help" for available commands');
+        
         // Auto-start the simulation after a brief delay
         setTimeout(() => {
             this.autoStartGame();
@@ -106,7 +111,6 @@ class GameController {
         if (this.gameState.isRunning) return;
         
         this.gameState.isRunning = true;
-        this.uiManager.addTerminalOutput('🟢 Simulation started. Monitoring for threats...');
         this.uiManager.updateGameControls();
         
         // Start the game timer
@@ -121,7 +125,6 @@ class GameController {
     }
     
     autoStartGame() {
-        this.uiManager.addTerminalOutput('🤖 Auto-starting simulation...');
         setTimeout(() => {
             this.startGame();
         }, 1500);
@@ -138,7 +141,6 @@ class GameController {
         }
         
         this.aiEngine.stopAttackSequence();
-        this.uiManager.addTerminalOutput('⏸️ Simulation paused.');
         this.uiManager.updateGameControls();
         
         console.log('🎮 Game paused');
@@ -161,7 +163,6 @@ class GameController {
         }
         
         this.aiEngine.stopAttackSequence();
-        this.uiManager.addTerminalOutput('🔴 Simulation stopped.');
         this.uiManager.updateGameControls();
         
         console.log('🎮 Game stopped');
@@ -195,7 +196,8 @@ class GameController {
         // Update UI
         this.uiManager.updateDisplay();
         this.uiManager.clearTerminal();
-        this.uiManager.addTerminalOutput('$ System reset. Ready for new simulation.');
+        this.uiManager.addTerminalOutput('$ Defense Command Terminal - Ready');
+        this.uiManager.addTerminalOutput('$ Type "help" for available commands');
         
         console.log('🎮 Game reset');
     }
@@ -367,10 +369,12 @@ class GameController {
     
     handleTerminalCommand(command) {
         const cmd = command.toLowerCase().trim();
+        const args = cmd.split(' ');
+        const baseCmd = args[0];
         
         this.uiManager.addTerminalOutput(`$ ${command}`);
         
-        switch (cmd) {
+        switch (baseCmd) {
             case 'status':
                 this.showSystemStatus();
                 break;
@@ -386,8 +390,27 @@ class GameController {
             case 'scan':
                 this.runSecurityScan();
                 break;
+            case 'block-ip':
+                this.executeBlockIP(args[1]);
+                break;
+            case 'isolate-asset':
+                this.executeIsolateAsset(args[1]);
+                break;
+            case 'patch-vulnerability':
+                this.executePatchVulnerability(args[1]);
+                break;
+            case 'reset-credentials':
+                this.executeResetCredentials(args[1]);
+                break;
+            case 'increase-monitoring':
+                this.executeIncreaseMonitoring();
+                break;
+            case 'clear':
+                this.uiManager.clearTerminal();
+                this.uiManager.addTerminalOutput('$ Defense Command Terminal - Ready');
+                break;
             default:
-                this.uiManager.addTerminalOutput(`Command not found: ${cmd}. Type 'help' for available commands.`);
+                this.uiManager.addTerminalOutput(`Command not found: ${baseCmd}. Type 'help' for available commands.`);
         }
     }
     
@@ -415,19 +438,30 @@ class GameController {
     }
     
     showHelp() {
-        this.uiManager.addTerminalOutput('=== AVAILABLE COMMANDS ===');
-        this.uiManager.addTerminalOutput('status  - Show system status');
-        this.uiManager.addTerminalOutput('assets  - Show asset integrity');
-        this.uiManager.addTerminalOutput('alerts  - Show active alerts');
-        this.uiManager.addTerminalOutput('scan    - Run security scan');
-        this.uiManager.addTerminalOutput('help    - Show this help');
+        this.uiManager.addTerminalOutput('=== DEFENSE COMMAND TERMINAL ===');
+        this.uiManager.addTerminalOutput('INFORMATION COMMANDS:');
+        this.uiManager.addTerminalOutput('  status                    - Show system status');
+        this.uiManager.addTerminalOutput('  assets                    - Show asset integrity');
+        this.uiManager.addTerminalOutput('  alerts                    - Show active alerts');
+        this.uiManager.addTerminalOutput('  scan                      - Run security scan');
+        this.uiManager.addTerminalOutput('');
+        this.uiManager.addTerminalOutput('DEFENSIVE ACTIONS:');
+        this.uiManager.addTerminalOutput('  block-ip [address]        - Block suspicious IP address');
+        this.uiManager.addTerminalOutput('  isolate-asset [name]      - Isolate asset from network');
+        this.uiManager.addTerminalOutput('  patch-vulnerability [cve] - Apply security patch');
+        this.uiManager.addTerminalOutput('  reset-credentials [user]  - Reset user credentials');
+        this.uiManager.addTerminalOutput('  increase-monitoring       - Enhance monitoring systems');
+        this.uiManager.addTerminalOutput('');
+        this.uiManager.addTerminalOutput('UTILITY COMMANDS:');
+        this.uiManager.addTerminalOutput('  clear                     - Clear terminal screen');
+        this.uiManager.addTerminalOutput('  help                      - Show this help');
     }
     
     runSecurityScan() {
-        this.uiManager.addTerminalOutput('Running security scan...');
+        this.uiManager.addTerminalOutput('🔍 Running comprehensive security scan...');
         setTimeout(() => {
             const vulnerabilities = Math.floor(Math.random() * 3);
-            this.uiManager.addTerminalOutput(`Scan complete. Found ${vulnerabilities} potential vulnerabilities.`);
+            this.uiManager.addTerminalOutput(`✅ Scan complete. Found ${vulnerabilities} potential vulnerabilities.`);
             
             if (vulnerabilities > 0) {
                 // Improve security controls slightly
@@ -436,8 +470,110 @@ class GameController {
                         this.gameState.securityControls[control].effectiveness + 2
                     );
                 });
+                this.uiManager.addTerminalOutput('🛡️ Security controls enhanced based on scan results.');
             }
+            this.uiManager.updateDisplay();
         }, 2000);
+    }
+    
+    executeBlockIP(ipAddress) {
+        if (!ipAddress) {
+            this.uiManager.addTerminalOutput('❌ Error: IP address required. Usage: block-ip [address]');
+            return;
+        }
+        
+        this.uiManager.addTerminalOutput(`🚫 Blocking IP address: ${ipAddress}`);
+        
+        // Enhance firewall effectiveness temporarily
+        if (this.gameState.securityControls.firewall) {
+            this.gameState.securityControls.firewall.effectiveness = Math.min(100,
+                this.gameState.securityControls.firewall.effectiveness + 5
+            );
+        }
+        
+        this.uiManager.addTerminalOutput('✅ IP address blocked. Firewall rules updated.');
+        this.uiManager.updateDisplay();
+    }
+    
+    executeIsolateAsset(assetName) {
+        if (!assetName) {
+            this.uiManager.addTerminalOutput('❌ Error: Asset name required. Usage: isolate-asset [name]');
+            this.uiManager.addTerminalOutput('   Available assets: academy-server, student-db, research-files, learning-platform');
+            return;
+        }
+        
+        const asset = this.gameState.assets[assetName];
+        if (!asset) {
+            this.uiManager.addTerminalOutput(`❌ Error: Asset '${assetName}' not found.`);
+            return;
+        }
+        
+        this.uiManager.addTerminalOutput(`🔒 Isolating asset: ${assetName}`);
+        
+        // Temporarily improve asset security
+        asset.integrity = Math.min(100, asset.integrity + 10);
+        if (asset.status === 'vulnerable') {
+            asset.status = 'secure';
+        }
+        
+        this.uiManager.addTerminalOutput(`✅ Asset ${assetName} isolated from network. Security improved.`);
+        this.uiManager.updateDisplay();
+    }
+    
+    executePatchVulnerability(cveId) {
+        if (!cveId) {
+            this.uiManager.addTerminalOutput('❌ Error: CVE ID required. Usage: patch-vulnerability [cve-id]');
+            return;
+        }
+        
+        this.uiManager.addTerminalOutput(`🔧 Applying security patch for: ${cveId}`);
+        
+        setTimeout(() => {
+            // Improve all security controls
+            Object.keys(this.gameState.securityControls).forEach(control => {
+                this.gameState.securityControls[control].effectiveness = Math.min(100,
+                    this.gameState.securityControls[control].effectiveness + 3
+                );
+            });
+            
+            this.uiManager.addTerminalOutput(`✅ Security patch applied successfully. System hardened.`);
+            this.uiManager.updateDisplay();
+        }, 1500);
+    }
+    
+    executeResetCredentials(username) {
+        if (!username) {
+            this.uiManager.addTerminalOutput('❌ Error: Username required. Usage: reset-credentials [username]');
+            return;
+        }
+        
+        this.uiManager.addTerminalOutput(`🔄 Resetting credentials for user: ${username}`);
+        
+        // Enhance access control effectiveness
+        if (this.gameState.securityControls.access) {
+            this.gameState.securityControls.access.effectiveness = Math.min(100,
+                this.gameState.securityControls.access.effectiveness + 7
+            );
+        }
+        
+        this.uiManager.addTerminalOutput('✅ User credentials reset. Access controls strengthened.');
+        this.uiManager.updateDisplay();
+    }
+    
+    executeIncreaseMonitoring() {
+        this.uiManager.addTerminalOutput('📈 Increasing monitoring sensitivity...');
+        
+        setTimeout(() => {
+            // Enhance endpoint protection
+            if (this.gameState.securityControls.endpoint) {
+                this.gameState.securityControls.endpoint.effectiveness = Math.min(100,
+                    this.gameState.securityControls.endpoint.effectiveness + 8
+                );
+            }
+            
+            this.uiManager.addTerminalOutput('✅ Monitoring systems enhanced. Better threat detection enabled.');
+            this.uiManager.updateDisplay();
+        }, 1000);
     }
     
     formatTime(seconds) {

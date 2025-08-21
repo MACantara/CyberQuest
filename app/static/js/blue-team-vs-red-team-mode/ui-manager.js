@@ -433,15 +433,35 @@ class UIManager {
         const terminalOutput = document.getElementById('terminal-output');
         if (!terminalOutput) return;
         
-        // Preserve the input line
-        const inputLine = terminalOutput.querySelector('div:last-child');
+        // Preserve the existing input container
+        const existingInput = terminalOutput.querySelector('.flex.items-center');
         
         // Update output
         terminalOutput.innerHTML = this.terminalOutput.map(line => `<div>${line}</div>`).join('');
         
-        // Re-add input line
-        if (inputLine) {
-            terminalOutput.appendChild(inputLine);
+        // Add or restore input line
+        if (!terminalOutput.querySelector('.flex.items-center')) {
+            const inputDiv = document.createElement('div');
+            inputDiv.className = 'flex items-center mt-2';
+            inputDiv.innerHTML = `
+                <span>$ </span>
+                <input type="text" id="terminal-input" class="bg-transparent border-none outline-none text-green-400 flex-1 ms-1" placeholder="Enter command...">
+            `;
+            terminalOutput.appendChild(inputDiv);
+            
+            // Re-attach event listener for the new input
+            const input = document.getElementById('terminal-input');
+            if (input) {
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        const command = e.target.value.trim();
+                        if (command) {
+                            this.gameController.handleTerminalCommand(command);
+                            e.target.value = '';
+                        }
+                    }
+                });
+            }
         }
         
         // Scroll to bottom
@@ -451,29 +471,6 @@ class UIManager {
     clearTerminal() {
         this.terminalOutput = [];
         this.updateTerminal();
-        
-        // Re-add input line
-        const terminalOutput = document.getElementById('terminal-output');
-        if (terminalOutput) {
-            const inputDiv = document.createElement('div');
-            inputDiv.className = 'flex items-center';
-            inputDiv.innerHTML = `
-                <span>$ </span>
-                <input type="text" id="terminal-input" class="bg-transparent border-none outline-none text-green-400 flex-1 ms-1" placeholder="Enter command...">
-            `;
-            terminalOutput.appendChild(inputDiv);
-            
-            // Re-attach event listener
-            const input = document.getElementById('terminal-input');
-            if (input) {
-                input.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        this.gameController.handleTerminalCommand(e.target.value);
-                        e.target.value = '';
-                    }
-                });
-            }
-        }
     }
 }
 
