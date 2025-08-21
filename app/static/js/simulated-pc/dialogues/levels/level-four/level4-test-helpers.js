@@ -1,6 +1,33 @@
 /**
  * Level 4 Ethical Dilemma Integration Helper
- * Provides easy access to Level 4 features for testing and debugging
+    // Show current ethics score
+    getEthicsScore() {
+        const app = this.getVulnApp();
+        if (app && app.level4DilemmaManager) {
+            return app.level4DilemmaManager.getCurrentEthicsScore();
+        }
+        return 0;
+    }
+
+    // Show all Level 4 data (now mostly in memory)
+    getLevel4Data() {
+        const app = this.getVulnApp();
+        if (app && app.level4DilemmaManager) {
+            return app.level4DilemmaManager.getChoicesSummary();
+        }
+        
+        // Fallback to localStorage for persistent data
+        const keys = Object.keys(localStorage).filter(key => 
+            key.includes('ethics_oath') || 
+            key.includes('badge_ethics') ||
+            key.includes('level_4_completed')
+        );
+        const data = {};
+        keys.forEach(key => {
+            data[key] = localStorage.getItem(key);
+        });
+        return data;
+    }sy access to Level 4 features for testing and debugging
  */
 
 // Global helper functions for Level 4 testing
@@ -36,8 +63,9 @@ window.Level4TestHelpers = {
 
     resetProgress() {
         const app = this.getVulnApp();
-        if (app) {
-            app.resetLevel4Progress();
+        if (app && app.level4DilemmaManager) {
+            app.level4DilemmaManager.resetLevel4Progress();
+            console.log('Level 4 progress reset - new random dilemma selected');
         } else {
             console.warn('Vulnerability scanner app not found');
         }

@@ -1,9 +1,10 @@
 import { BaseDialogue } from '../../base-dialogue.js';
 
 export class EthicsOathDialogue extends BaseDialogue {
-    constructor(desktop, character = 'instructor') {
+    constructor(desktop, manager, character = 'instructor') {
         super(desktop, character);
-        this.ethicsScore = parseInt(sessionStorage.getItem('cyberquest_level4_ethics_score') || '0');
+        this.manager = manager;
+        this.ethicsScore = manager ? manager.getCurrentEthicsScore() : 0;
         this.messages = [
             {
                 text: "Congratulations on navigating the complex ethical challenges of Level 4. Your decisions have shaped not only your professional reputation but also the broader landscape of cybersecurity research."
@@ -91,9 +92,10 @@ export class EthicsOathDialogue extends BaseDialogue {
         if (choice === 'accept') {
             // Award ethics XP and badge
             this.ethicsScore += 250;
-            sessionStorage.setItem('cyberquest_level4_ethics_score', this.ethicsScore.toString());
-            localStorage.setItem('cyberquest_ethics_oath_taken', 'true');
-            localStorage.setItem('cyberquest_badge_ethics_oath', 'true');
+            if (this.manager) {
+                this.manager.updateEthicsScore(250);
+                this.manager.markOathTaken();
+            }
             
             this.showOathCeremony();
         } else {
@@ -159,8 +161,8 @@ export class EthicsOathDialogue extends BaseDialogue {
     }
 
     showLevelCompletion() {
-        const finalScore = parseInt(sessionStorage.getItem('cyberquest_level4_ethics_score') || '0');
-        const oathTaken = localStorage.getItem('cyberquest_ethics_oath_taken') === 'true';
+        const finalScore = this.manager ? this.manager.getCurrentEthicsScore() : this.ethicsScore;
+        const oathTaken = this.manager ? this.manager.oathTaken : false;
         
         // Determine performance rating
         let rating = '';

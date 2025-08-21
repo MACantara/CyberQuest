@@ -1,9 +1,10 @@
 import { BaseDialogue } from '../../base-dialogue.js';
 
 export class CryptocurrencyBribeDialogue extends BaseDialogue {
-    constructor(desktop, character = 'anonymous_contact') {
+    constructor(desktop, manager, character = 'anonymous_contact') {
         super(desktop, character);
-        this.ethicsScore = parseInt(sessionStorage.getItem('cyberquest_level4_ethics_score') || '0');
+        this.manager = manager;
+        this.ethicsScore = manager ? manager.getCurrentEthicsScore() : 0;
         this.messages = [
             {
                 text: "[ ENCRYPTED MESSAGE RECEIVED ]"
@@ -96,34 +97,32 @@ export class CryptocurrencyBribeDialogue extends BaseDialogue {
                 ethicsChange = -500;
                 message = 'You accepted the cryptocurrency bribe and provided immediate public disclosure.';
                 consequence = 'The vulnerability disclosure causes immediate chaos. Election officials scramble to secure systems, but public trust in digital voting plummets. Law enforcement begins investigating the leak source.';
-                sessionStorage.setItem('cyberquest_level4_choice_made', 'bribe_accepted');
                 break;
                 
             case 'report':
                 ethicsChange = 100;
                 message = 'You reported the bribery attempt to law enforcement.';
                 consequence = 'Federal investigators take over the case. Your professional integrity is recognized, and you continue the assessment under official protection. The attempted bribery becomes evidence in a larger investigation.';
-                sessionStorage.setItem('cyberquest_level4_choice_made', 'bribe_reported');
                 break;
                 
             case 'ignore':
                 ethicsChange = 50;
                 message = 'You ignored the bribery attempt and continued with responsible disclosure.';
                 consequence = 'You maintain your professional standards and continue the security assessment. The anonymous group may try other approaches, but your integrity remains intact.';
-                sessionStorage.setItem('cyberquest_level4_choice_made', 'bribe_ignored');
                 break;
                 
             case 'engage':
                 ethicsChange = -200;
                 message = 'You chose to engage with the anonymous group.';
                 consequence = 'Your curiosity leads you down a dangerous path. While you learn about their motivations, you risk being associated with their activities. This decision may have legal consequences.';
-                sessionStorage.setItem('cyberquest_level4_choice_made', 'bribe_engaged');
                 break;
         }
 
-        // Update ethics score
+        // Update ethics score through manager
+        if (this.manager) {
+            this.manager.onChoiceMade(choice, ethicsChange);
+        }
         this.ethicsScore += ethicsChange;
-        sessionStorage.setItem('cyberquest_level4_ethics_score', this.ethicsScore.toString());
 
         // Show consequence
         this.showConsequence(message, consequence, ethicsChange);

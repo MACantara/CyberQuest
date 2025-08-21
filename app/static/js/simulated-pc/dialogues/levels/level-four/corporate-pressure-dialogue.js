@@ -1,9 +1,10 @@
 import { BaseDialogue } from '../../base-dialogue.js';
 
 export class CorporatePressureDialogue extends BaseDialogue {
-    constructor(desktop, character = 'ceo') {
+    constructor(desktop, manager, character = 'ceo') {
         super(desktop, character);
-        this.ethicsScore = parseInt(sessionStorage.getItem('cyberquest_level4_ethics_score') || '0');
+        this.manager = manager;
+        this.ethicsScore = manager ? manager.getCurrentEthicsScore() : 0;
         this.messages = [
             {
                 text: "[ INCOMING CALL FROM SECUREVOTE INC. CEO ]"
@@ -101,34 +102,32 @@ export class CorporatePressureDialogue extends BaseDialogue {
                 ethicsChange = -300;
                 message = 'You accepted the $25,000 settlement and signed the NDA.';
                 consequence = 'The vulnerabilities remain unfixed during the election period. While you received compensation, the ethical compromise weighs heavily. Democratic processes remain at risk due to your silence.';
-                sessionStorage.setItem('cyberquest_level4_choice_made', 'corporate_accepted');
                 break;
                 
             case 'refuse_continue':
                 ethicsChange = 150;
                 message = 'You refused the settlement and continued with responsible disclosure.';
                 consequence = 'SecureVote Inc. becomes hostile and threatens legal action, but you maintain your professional integrity. The company may try to discredit your findings, but your ethical stance is uncompromised.';
-                sessionStorage.setItem('cyberquest_level4_choice_made', 'corporate_refused');
                 break;
                 
             case 'negotiate_timeline':
                 ethicsChange = 75;
                 message = 'You negotiated a compromise timeline for disclosure.';
                 consequence = 'You agree to a 30-day disclosure window, balancing election security with democratic continuity. The company appreciates your professionalism, and you maintain ethical standards while showing practical judgment.';
-                sessionStorage.setItem('cyberquest_level4_choice_made', 'corporate_negotiated');
                 break;
                 
             case 'report_pressure':
                 ethicsChange = 125;
                 message = 'You reported the pressure tactics to regulatory authorities.';
                 consequence = 'Regulatory bodies launch an investigation into SecureVote Inc.\'s business practices. Your report becomes part of a larger investigation into corporate intimidation of security researchers.';
-                sessionStorage.setItem('cyberquest_level4_choice_made', 'corporate_reported');
                 break;
         }
 
-        // Update ethics score
+        // Update ethics score through manager
+        if (this.manager) {
+            this.manager.onChoiceMade(choice, ethicsChange);
+        }
         this.ethicsScore += ethicsChange;
-        sessionStorage.setItem('cyberquest_level4_ethics_score', this.ethicsScore.toString());
 
         this.showConsequence(message, consequence, ethicsChange);
     }

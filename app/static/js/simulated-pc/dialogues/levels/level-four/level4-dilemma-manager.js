@@ -16,26 +16,27 @@ export class Level4DilemmaManager {
             'journalist_contact'
         ];
         this.selectedDilemma = null;
+        this.ethicsScore = 0;
+        this.dilemmaTriggered = false;
+        this.oathTriggered = false;
         this.initializeRandomDilemma();
     }
 
     initializeRandomDilemma() {
-        // Randomly select one dilemma for this session
+        // Randomly select one dilemma for this playthrough
         const randomIndex = Math.floor(Math.random() * this.availableDilemmas.length);
         this.selectedDilemma = this.availableDilemmas[randomIndex];
         
         console.log(`[Level4DilemmaManager] Selected random dilemma: ${this.selectedDilemma}`);
         
-        // Initialize basic tracking for the selected dilemma only
-        if (!sessionStorage.getItem('cyberquest_level4_ethics_score')) {
-            sessionStorage.setItem('cyberquest_level4_ethics_score', '0');
-        }
+        // Reset state for fresh experience
+        this.ethicsScore = 0;
+        this.dilemmaTriggered = false;
+        this.oathTriggered = false;
     }
 
     // Called when a vulnerability report is generated - trigger the selected dilemma
     onReportGenerated() {
-        sessionStorage.setItem('cyberquest_level4_report_generated', 'true');
-        
         // Trigger the randomly selected dilemma
         setTimeout(() => {
             this.triggerSelectedDilemma();
@@ -44,46 +45,40 @@ export class Level4DilemmaManager {
 
     // Called when a vulnerability scan is completed - alternative trigger point
     onScanCompleted() {
-        const scanCount = parseInt(sessionStorage.getItem('cyberquest_level4_scan_count') || '0');
-        sessionStorage.setItem('cyberquest_level4_scan_count', (scanCount + 1).toString());
-        
-        // If no dilemma has been triggered yet and we've done enough scans, trigger it
-        if (!sessionStorage.getItem('cyberquest_level4_dilemma_triggered') && scanCount >= 2) {
+        // If no dilemma has been triggered yet, trigger it after enough scans
+        if (!this.dilemmaTriggered) {
             this.triggerSelectedDilemma();
         }
     }
 
     // Called when nmap integration occurs - another potential trigger point
     onNmapIntegration() {
-        const nmapCount = parseInt(sessionStorage.getItem('cyberquest_level4_nmap_count') || '0');
-        sessionStorage.setItem('cyberquest_level4_nmap_count', (nmapCount + 1).toString());
-        
         // If no dilemma has been triggered yet and user is doing advanced analysis, trigger it
-        if (!sessionStorage.getItem('cyberquest_level4_dilemma_triggered') && nmapCount >= 1) {
+        if (!this.dilemmaTriggered) {
             this.triggerSelectedDilemma();
         }
     }
 
     triggerSelectedDilemma() {
         // Prevent multiple triggers
-        if (sessionStorage.getItem('cyberquest_level4_dilemma_triggered')) {
+        if (this.dilemmaTriggered) {
             return;
         }
         
-        sessionStorage.setItem('cyberquest_level4_dilemma_triggered', 'true');
+        this.dilemmaTriggered = true;
         
         switch (this.selectedDilemma) {
             case 'cryptocurrency_bribe':
-                new CryptocurrencyBribeDialogue(this.desktop).start();
+                new CryptocurrencyBribeDialogue(this.desktop, this).start();
                 break;
             case 'corporate_pressure':
-                new CorporatePressureDialogue(this.desktop).start();
+                new CorporatePressureDialogue(this.desktop, this).start();
                 break;
             case 'live_election_crisis':
-                new LiveElectionCrisisDialogue(this.desktop).start();
+                new LiveElectionCrisisDialogue(this.desktop, this).start();
                 break;
             case 'journalist_contact':
-                new JournalistContactDialogue(this.desktop).start();
+                new JournalistContactDialogue(this.desktop, this).start();
                 break;
             default:
                 console.warn('[Level4DilemmaManager] Unknown selected dilemma:', this.selectedDilemma);
@@ -96,19 +91,18 @@ export class Level4DilemmaManager {
     scheduleEndingSequence() {
         // Wait for the dilemma choice to be made, then show oath and consequences
         const checkInterval = setInterval(() => {
-            const choiceMade = sessionStorage.getItem('cyberquest_level4_choice_made');
-            
-            if (choiceMade && !sessionStorage.getItem('cyberquest_level4_oath_triggered')) {
-                sessionStorage.setItem('cyberquest_level4_oath_triggered', 'true');
+            // The dialogue will call onChoiceMade when complete
+            if (this.choiceMade && !this.oathTriggered) {
+                this.oathTriggered = true;
                 
                 // Show ethics oath
                 setTimeout(() => {
-                    new EthicsOathDialogue(this.desktop).start();
+                    new EthicsOathDialogue(this.desktop, this).start();
                 }, 3000);
                 
                 // Show final consequences
                 setTimeout(() => {
-                    new ConsequenceEndingDialogue(this.desktop).start();
+                    new ConsequenceEndingDialogue(this.desktop, this).start();
                 }, 6000);
                 
                 clearInterval(checkInterval);
@@ -119,37 +113,49 @@ export class Level4DilemmaManager {
         setTimeout(() => clearInterval(checkInterval), 600000);
     }
 
+    // Called by dialogue when a choice is made
+    onChoiceMade(choice, ethicsChange) {
+        this.choiceMade = choice;
+        this.ethicsScore += ethicsChange;
+        console.log(`[Level4DilemmaManager] Choice made: ${choice}, Ethics score: ${this.ethicsScore}`);
+    }
+
     // Get current ethics score
     getCurrentEthicsScore() {
-        return parseInt(sessionStorage.getItem('cyberquest_level4_ethics_score') || '0');
+        return this.ethicsScore;
     }
 
     // Get summary of the choice made in the selected dilemma
     getChoicesSummary() {
         return {
             selectedDilemma: this.selectedDilemma,
-            choiceMade: sessionStorage.getItem('cyberquest_level4_choice_made'),
-            ethicsScore: this.getCurrentEthicsScore(),
-            oathTaken: sessionStorage.getItem('cyberquest_ethics_oath_taken') === 'true'
+            choiceMade: this.choiceMade,
+            ethicsScore: this.ethicsScore,
+            oathTaken: this.oathTaken
         };
+    }
+
+    // Update ethics score
+    updateEthicsScore(change) {
+        this.ethicsScore += change;
+    }
+
+    // Mark oath as taken
+    markOathTaken() {
+        this.oathTaken = true;
+        // Still store in localStorage for badge persistence
+        localStorage.setItem('cyberquest_ethics_oath_taken', 'true');
+        localStorage.setItem('cyberquest_badge_ethics_oath', 'true');
     }
 
     // Reset all Level 4 progress (for testing or replay)
     resetLevel4Progress() {
-        // Clear session storage for current session
-        const keysToRemove = [
-            'cyberquest_level4_ethics_score',
-            'cyberquest_level4_report_generated',
-            'cyberquest_level4_scan_count',
-            'cyberquest_level4_nmap_count',
-            'cyberquest_level4_choice_made',
-            'cyberquest_level4_dilemma_triggered',
-            'cyberquest_level4_oath_triggered',
-            'cyberquest_level4_consequence_shown',
-            'cyberquest_ethics_oath_taken'
-        ];
-        
-        keysToRemove.forEach(key => sessionStorage.removeItem(key));
+        // Reset in-memory state for fresh experience
+        this.ethicsScore = 0;
+        this.dilemmaTriggered = false;
+        this.oathTriggered = false;
+        this.choiceMade = null;
+        this.oathTaken = false;
         
         // Reinitialize with new random dilemma
         this.initializeRandomDilemma();
@@ -159,9 +165,7 @@ export class Level4DilemmaManager {
 
     // Check if the level is complete
     isLevel4Complete() {
-        const oathCompleted = sessionStorage.getItem('cyberquest_ethics_oath_taken');
-        const consequenceShown = sessionStorage.getItem('cyberquest_level4_consequence_shown');
-        return oathCompleted && consequenceShown;
+        return this.oathTaken && this.choiceMade;
     }
 
     // Get which dilemma was selected for this session

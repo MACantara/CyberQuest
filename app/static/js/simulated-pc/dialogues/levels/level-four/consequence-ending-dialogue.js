@@ -1,14 +1,15 @@
 import { BaseDialogue } from '../../base-dialogue.js';
 
 export class ConsequenceEndingDialogue extends BaseDialogue {
-    constructor(desktop, character = 'narrator') {
+    constructor(desktop, manager, character = 'narrator') {
         super(desktop, character);
-        this.ethicsScore = parseInt(sessionStorage.getItem('cyberquest_level4_ethics_score') || '0');
+        this.manager = manager;
+        this.ethicsScore = manager ? manager.getCurrentEthicsScore() : 0;
         this.generateConsequenceMessages();
     }
 
     generateConsequenceMessages() {
-        const choiceMade = sessionStorage.getItem('cyberquest_level4_choice_made');
+        const choiceMade = this.manager ? this.manager.choiceMade : null;
 
         // Determine the primary ending path based on choices
         let endingType = this.determineEndingType();

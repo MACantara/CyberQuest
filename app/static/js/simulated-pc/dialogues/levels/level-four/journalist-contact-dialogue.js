@@ -1,9 +1,10 @@
 import { BaseDialogue } from '../../base-dialogue.js';
 
 export class JournalistContactDialogue extends BaseDialogue {
-    constructor(desktop, character = 'journalist') {
+    constructor(desktop, manager, character = 'journalist') {
         super(desktop, character);
-        this.ethicsScore = parseInt(sessionStorage.getItem('cyberquest_level4_ethics_score') || '0');
+        this.manager = manager;
+        this.ethicsScore = manager ? manager.getCurrentEthicsScore() : 0;
         this.messages = [
             {
                 text: "[ CALL FROM CYBERSECURITY REPORTER - TECH TIMES ]"
@@ -139,10 +140,11 @@ export class JournalistContactDialogue extends BaseDialogue {
                 break;
         }
 
-        // Update ethics score
+        // Update ethics score through manager
+        if (this.manager) {
+            this.manager.onChoiceMade(choice, ethicsChange);
+        }
         this.ethicsScore += ethicsChange;
-        sessionStorage.setItem('cyberquest_level4_ethics_score', this.ethicsScore.toString());
-        sessionStorage.setItem('cyberquest_level4_choice_made', choice);
 
         this.showConsequence(message, consequence, ethicsChange, mediaOutcome);
     }
