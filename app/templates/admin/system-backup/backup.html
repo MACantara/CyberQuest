@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+
+{% block title %}System Backup - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="bg-white dark:bg-gray-800 shadow rounded-lg mb-6">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <i class="bi bi-shield-check text-blue-600 dark:text-blue-400 text-2xl"></i>
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">System Backup & Restore</h1>
+                            <p class="text-gray-600 dark:text-gray-400">Manage database backups and system recovery</p>
+                        </div>
+                    </div>
+                    <div class="flex space-x-3">
+                        <a href="{{ url_for('admin.backup_schedule') }}" 
+                           class="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                            <i class="bi bi-calendar-event mr-2"></i>
+                            Schedule
+                        </a>
+                        <button onclick="document.getElementById('createBackupForm').submit()" 
+                                class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                            <i class="bi bi-plus-circle mr-2"></i>
+                            Create Backup
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-blue-100 dark:bg-blue-900/30">
+                        <i class="bi bi-people text-blue-600 dark:text-blue-400 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Users</p>
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ stats.total_users }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-green-100 dark:bg-green-900/30">
+                        <i class="bi bi-shield-check text-green-600 dark:text-green-400 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Records</p>
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ stats.total_users + stats.total_login_attempts + stats.total_verifications + stats.total_contacts }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-purple-100 dark:bg-purple-900/30">
+                        <i class="bi bi-archive text-purple-600 dark:text-purple-400 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Available Backups</p>
+                        <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ stats.backup_count }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-yellow-100 dark:bg-yellow-900/30">
+                        <i class="bi bi-clock text-yellow-600 dark:text-yellow-400 text-xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Last Backup</p>
+                        <p class="text-sm font-bold text-gray-900 dark:text-white">
+                            {% if stats.last_backup %}
+                                {{ stats.last_backup.strftime('%Y-%m-%d %H:%M') }}
+                            {% else %}
+                                Never
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Backup Actions -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            <!-- Create Backup -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Create New Backup</h3>
+                </div>
+                <div class="p-6">
+                    <form id="createBackupForm" method="POST" action="{{ url_for('admin.create_backup') }}">
+                        <input type="hidden" id="csrf_token" name="csrf_token" value="{{csrf_token()}}">
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">
+                            Create a complete backup of all system data including users, login attempts, email verifications, and contact submissions.
+                        </p>
+                        <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-4">
+                            <div class="flex items-start">
+                                <i class="bi bi-exclamation-triangle text-yellow-600 dark:text-yellow-400 text-lg mt-0.5 mr-3"></i>
+                                <div>
+                                    <p class="text-sm text-yellow-800 dark:text-yellow-200 font-medium">Important Notes:</p>
+                                    <ul class="text-sm text-yellow-700 dark:text-yellow-300 mt-1 space-y-1">
+                                        <li>• Backup process may take several minutes for large databases</li>
+                                        <li>• Sensitive data like passwords are included (encrypted)</li>
+                                        <li>• Store backups securely and limit access</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" 
+                                class="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
+                            <i class="bi bi-download mr-2"></i>
+                            Create Full Backup
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Restore Backup -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+                <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Restore from Backup</h3>
+                </div>
+                <div class="p-6">
+                    <form method="POST" action="{{ url_for('admin.restore_backup') }}" enctype="multipart/form-data" 
+                          onsubmit="return confirm('Are you sure you want to restore from backup? This action cannot be undone.')">
+                        <input type="hidden" id="csrf_token" name="csrf_token" value="{{csrf_token()}}">
+                        
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Select Backup File
+                            </label>
+                            <input type="file" name="backup_file" accept=".zip" required
+                                   class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                Restore Type
+                            </label>
+                            <select name="restore_type" class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                                <option value="merge">Merge with existing data</option>
+                                <option value="replace">Replace all data (DANGEROUS)</option>
+                            </select>
+                        </div>
+
+                        <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-4">
+                            <div class="flex items-start">
+                                <i class="bi bi-exclamation-triangle-fill text-red-600 dark:text-red-400 text-lg mt-0.5 mr-3"></i>
+                                <div>
+                                    <p class="text-sm text-red-800 dark:text-red-200 font-medium">CAUTION:</p>
+                                    <ul class="text-sm text-red-700 dark:text-red-300 mt-1 space-y-1">
+                                        <li>• Always create a backup before restoring</li>
+                                        <li>• "Replace" mode will delete ALL existing data</li>
+                                        <li>• This action cannot be undone</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" 
+                                class="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors">
+                            <i class="bi bi-upload mr-2"></i>
+                            Restore from Backup
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Existing Backups -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Available Backups</h3>
+            </div>
+            <div class="overflow-x-auto">
+                {% if backups %}
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead class="bg-gray-50 dark:bg-gray-900">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Backup File
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Created
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Size
+                            </th>
+                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        {% for backup in backups %}
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <i class="bi bi-file-earmark-zip text-blue-600 dark:text-blue-400 mr-3"></i>
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900 dark:text-white">
+                                            {{ backup.filename }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                {{ backup.created_at.strftime('%Y-%m-%d %H:%M:%S') }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                {{ backup.size_mb }} MB
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                <a href="{{ url_for('admin.download_backup', filename=backup.filename) }}" 
+                                   class="inline-flex items-center px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
+                                    <i class="bi bi-download mr-1"></i>
+                                    Download
+                                </a>
+                                <form method="POST" action="{{ url_for('admin.delete_backup', filename=backup.filename) }}" 
+                                      class="inline" onsubmit="return confirm('Are you sure you want to delete this backup?')">
+                                    <input type="hidden" id="csrf_token" name="csrf_token" value="{{csrf_token()}}">
+                                    <button type="submit" 
+                                            class="inline-flex items-center px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition-colors">
+                                        <i class="bi bi-trash mr-1"></i>
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div class="p-8 text-center">
+                    <i class="bi bi-archive text-gray-400 text-4xl mb-4"></i>
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No Backups Available</h3>
+                    <p class="text-gray-500 dark:text-gray-400 mb-4">Create your first backup to ensure data safety.</p>
+                    <button onclick="document.getElementById('createBackupForm').submit()" 
+                            class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                        Create First Backup
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
