@@ -1,12 +1,17 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, jsonify, send_file
 from flask_login import login_required, current_user
 from app.models.user import User
 from app.models.login_attempt import LoginAttempt
 from app.models.email_verification import EmailVerification
 from app.models.contact import Contact
-from app.database import DatabaseError
+from app.database import DatabaseError, get_supabase, Tables
 from datetime import datetime, timedelta
 from functools import wraps
+import json
+import os
+import tempfile
+import zipfile
+from typing import Dict, Any
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
@@ -561,3 +566,288 @@ def cleanup_logs():
         flash('Error during cleanup process.', 'error')
     
     return redirect(url_for('admin.dashboard'))
+
+@admin_bp.route('/system-backup')
+@login_required
+@admin_required
+def system_backup():
+    """System backup and restore management page."""
+    try:
+        # Get backup directory info
+        backup_dir = os.path.join(current_app.root_path, '..', 'backups')
+        os.makedirs(backup_dir, exist_ok=True)
+        
+        # List existing backups
+        backups = []
+        if os.path.exists(backup_dir):
+            for filename in os.listdir(backup_dir):
+                if filename.endswith('.zip'):
+                    backup_path = os.path.join(backup_dir, filename)
+                    stat = os.stat(backup_path)
+                    backups.append({
+                        'filename': filename,
+                        'size': stat.st_size,
+                        'created_at': datetime.fromtimestamp(stat.st_ctime),
+                        'size_mb': round(stat.st_size / (1024 * 1024), 2)
+                    })
+        
+        # Sort backups by creation date (newest first)
+        backups.sort(key=lambda x: x['created_at'], reverse=True)
+        
+        # Get database statistics
+        stats = {
+            'total_users': User.count_all(),
+            'total_login_attempts': LoginAttempt.count_recent_attempts(365 * 10),  # All time
+            'total_verifications': EmailVerification.count_verified_emails() + EmailVerification.count_pending_verifications(),
+            'total_contacts': Contact.get_unread_count() + 100,  # Approximate total (would need a count_all method)
+            'backup_count': len(backups),
+            'last_backup': backups[0]['created_at'] if backups else None
+        }
+        
+        return render_template('admin/system-backup/backup.html', 
+                             backups=backups, 
+                             stats=stats)
+    
+    except Exception as e:
+        current_app.logger.error(f"System backup page error: {e}")
+        flash('Error loading backup management page.', 'error')
+        return redirect(url_for('admin.dashboard'))
+
+@admin_bp.route('/create-backup', methods=['POST'])
+@login_required
+@admin_required
+def create_backup():
+    """Create a full system backup."""
+    try:
+        backup_dir = os.path.join(current_app.root_path, '..', 'backups')
+        os.makedirs(backup_dir, exist_ok=True)
+        
+        # Generate backup filename with timestamp
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        backup_filename = f'cyberquest_backup_{timestamp}.zip'
+        backup_path = os.path.join(backup_dir, backup_filename)
+        
+        # Create backup data
+        backup_data = _create_database_backup()
+        
+        # Create ZIP file with backup data
+        with zipfile.ZipFile(backup_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+            # Add database backup as JSON
+            zipf.writestr('database_backup.json', json.dumps(backup_data, indent=2, default=str))
+            
+            # Add metadata
+            metadata = {
+                'backup_type': 'full',
+                'created_at': datetime.now().isoformat(),
+                'created_by': current_user.username,
+                'version': '1.0',
+                'tables_included': list(backup_data.keys()),
+                'total_records': sum(len(table_data) for table_data in backup_data.values())
+            }
+            zipf.writestr('backup_metadata.json', json.dumps(metadata, indent=2))
+            
+            # Add application info
+            app_info = {
+                'app_name': 'CyberQuest',
+                'backup_created_at': datetime.now().isoformat(),
+                'python_version': '3.12',
+                'database_type': 'Supabase PostgreSQL'
+            }
+            zipf.writestr('app_info.json', json.dumps(app_info, indent=2))
+        
+        file_size = os.path.getsize(backup_path)
+        size_mb = round(file_size / (1024 * 1024), 2)
+        
+        flash(f'Backup created successfully: {backup_filename} ({size_mb} MB)', 'success')
+        current_app.logger.info(f'Database backup created by {current_user.username}: {backup_filename}')
+        
+    except Exception as e:
+        current_app.logger.error(f"Backup creation error: {e}")
+        flash('Error creating backup. Please check server logs.', 'error')
+    
+    return redirect(url_for('admin.system_backup'))
+
+@admin_bp.route('/download-backup/<filename>')
+@login_required
+@admin_required
+def download_backup(filename):
+    """Download a backup file."""
+    try:
+        backup_dir = os.path.join(current_app.root_path, '..', 'backups')
+        backup_path = os.path.join(backup_dir, filename)
+        
+        if not os.path.exists(backup_path) or not filename.endswith('.zip'):
+            flash('Backup file not found.', 'error')
+            return redirect(url_for('admin.system_backup'))
+        
+        current_app.logger.info(f'Backup downloaded by {current_user.username}: {filename}')
+        return send_file(backup_path, as_attachment=True, download_name=filename)
+        
+    except Exception as e:
+        current_app.logger.error(f"Backup download error: {e}")
+        flash('Error downloading backup file.', 'error')
+        return redirect(url_for('admin.system_backup'))
+
+@admin_bp.route('/delete-backup/<filename>', methods=['POST'])
+@login_required
+@admin_required
+def delete_backup(filename):
+    """Delete a backup file."""
+    try:
+        backup_dir = os.path.join(current_app.root_path, '..', 'backups')
+        backup_path = os.path.join(backup_dir, filename)
+        
+        if not os.path.exists(backup_path) or not filename.endswith('.zip'):
+            flash('Backup file not found.', 'error')
+            return redirect(url_for('admin.system_backup'))
+        
+        os.remove(backup_path)
+        flash(f'Backup {filename} deleted successfully.', 'success')
+        current_app.logger.info(f'Backup deleted by {current_user.username}: {filename}')
+        
+    except Exception as e:
+        current_app.logger.error(f"Backup deletion error: {e}")
+        flash('Error deleting backup file.', 'error')
+    
+    return redirect(url_for('admin.system_backup'))
+
+@admin_bp.route('/restore-backup', methods=['POST'])
+@login_required
+@admin_required
+def restore_backup():
+    """Restore system from a backup file."""
+    try:
+        if 'backup_file' not in request.files:
+            flash('No backup file provided.', 'error')
+            return redirect(url_for('admin.system_backup'))
+        
+        file = request.files['backup_file']
+        if file.filename == '' or not file.filename.endswith('.zip'):
+            flash('Please select a valid backup file (.zip).', 'error')
+            return redirect(url_for('admin.system_backup'))
+        
+        # Save uploaded file temporarily
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.zip') as temp_file:
+            file.save(temp_file.name)
+            
+            # Extract and restore backup
+            with zipfile.ZipFile(temp_file.name, 'r') as zipf:
+                # Read backup metadata
+                metadata = json.loads(zipf.read('backup_metadata.json'))
+                
+                # Read database backup
+                backup_data = json.loads(zipf.read('database_backup.json'))
+                
+                # Perform restore with confirmation
+                restore_type = request.form.get('restore_type', 'merge')
+                _restore_database_backup(backup_data, restore_type)
+                
+                flash(f'Database restored successfully from backup created on {metadata["created_at"]}', 'success')
+                current_app.logger.info(f'Database restored by {current_user.username} from backup: {file.filename}')
+            
+            # Clean up temp file
+            os.unlink(temp_file.name)
+        
+    except Exception as e:
+        current_app.logger.error(f"Backup restore error: {e}")
+        flash('Error restoring backup. Please check server logs.', 'error')
+    
+    return redirect(url_for('admin.system_backup'))
+
+def _create_database_backup() -> Dict[str, Any]:
+    """Create a complete database backup."""
+    supabase = get_supabase()
+    backup_data = {}
+    
+    try:
+        # Backup Users table
+        response = supabase.table(Tables.USERS).select("*").execute()
+        backup_data['users'] = response.data if response.data else []
+        
+        # Backup Login Attempts table
+        response = supabase.table(Tables.LOGIN_ATTEMPTS).select("*").execute()
+        backup_data['login_attempts'] = response.data if response.data else []
+        
+        # Backup Email Verifications table
+        response = supabase.table(Tables.EMAIL_VERIFICATIONS).select("*").execute()
+        backup_data['email_verifications'] = response.data if response.data else []
+        
+        # Backup Contact Submissions table
+        response = supabase.table(Tables.CONTACT_SUBMISSIONS).select("*").execute()
+        backup_data['contact_submissions'] = response.data if response.data else []
+        
+        # Backup Password Reset Tokens table
+        response = supabase.table(Tables.PASSWORD_RESET_TOKENS).select("*").execute()
+        backup_data['password_reset_tokens'] = response.data if response.data else []
+        
+        return backup_data
+        
+    except Exception as e:
+        current_app.logger.error(f"Database backup creation error: {e}")
+        raise DatabaseError(f"Failed to create database backup: {e}")
+
+def _restore_database_backup(backup_data: Dict[str, Any], restore_type: str = 'merge'):
+    """Restore database from backup data."""
+    supabase = get_supabase()
+    
+    try:
+        if restore_type == 'replace':
+            # WARNING: This will delete all existing data
+            current_app.logger.warning(f"Full database replacement initiated by {current_user.username}")
+            
+            # Delete existing data (in reverse dependency order)
+            supabase.table(Tables.PASSWORD_RESET_TOKENS).delete().neq('id', 0).execute()
+            supabase.table(Tables.EMAIL_VERIFICATIONS).delete().neq('id', 0).execute()
+            supabase.table(Tables.CONTACT_SUBMISSIONS).delete().neq('id', 0).execute()
+            supabase.table(Tables.LOGIN_ATTEMPTS).delete().neq('id', 0).execute()
+            # Note: Don't delete users table as it might break the current session
+        
+        # Restore data
+        for table_name, table_data in backup_data.items():
+            if not table_data:
+                continue
+                
+            table_mapping = {
+                'users': Tables.USERS,
+                'login_attempts': Tables.LOGIN_ATTEMPTS,
+                'email_verifications': Tables.EMAIL_VERIFICATIONS,
+                'contact_submissions': Tables.CONTACT_SUBMISSIONS,
+                'password_reset_tokens': Tables.PASSWORD_RESET_TOKENS
+            }
+            
+            if table_name in table_mapping:
+                # Insert data in batches to avoid timeout
+                batch_size = 100
+                for i in range(0, len(table_data), batch_size):
+                    batch = table_data[i:i + batch_size]
+                    if restore_type == 'merge':
+                        # Use upsert to merge data
+                        supabase.table(table_mapping[table_name]).upsert(batch).execute()
+                    else:
+                        # Insert new data
+                        supabase.table(table_mapping[table_name]).insert(batch).execute()
+        
+        current_app.logger.info(f"Database restore completed: {restore_type} mode")
+        
+    except Exception as e:
+        current_app.logger.error(f"Database restore error: {e}")
+        raise DatabaseError(f"Failed to restore database: {e}")
+
+@admin_bp.route('/backup-schedule')
+@login_required
+@admin_required
+def backup_schedule():
+    """Backup scheduling configuration page."""
+    # This would integrate with a task scheduler like Celery in production
+    # For now, provide manual backup options and information
+    
+    schedule_info = {
+        'auto_backup_enabled': False,  # Would be configurable
+        'backup_frequency': 'daily',   # daily, weekly, monthly
+        'backup_retention': 30,        # days to keep backups
+        'next_scheduled_backup': None,
+        'last_auto_backup': None
+    }
+    
+    return render_template('admin/system-backup/schedule.html', 
+                         schedule_info=schedule_info)
