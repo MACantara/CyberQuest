@@ -7,15 +7,19 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <!-- Header -->
-        <div class="mb-8">
+        <div class="mb-8 opacity-0 animate-fade-in-up" style="animation-delay: 0.1s;">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
                 <div>
-                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Level Analytics</h1>
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">📊 Level Analytics</h1>
                     <p class="text-gray-600 dark:text-gray-400 mt-2">Detailed performance metrics for each cybersecurity level</p>
                 </div>
                 <div class="flex space-x-3">
+                    <a href="{{ url_for('admin.dashboard') }}" 
+                       class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg">
+                        <i class="bi bi-speedometer2 mr-2"></i>Admin Dashboard
+                    </a>
                     <a href="{{ url_for('data_analytics.player_analytics') }}" 
-                       class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
+                       class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg">
                         <i class="bi bi-arrow-left mr-2"></i>Back to Analytics
                     </a>
                 </div>
@@ -23,9 +27,9 @@
         </div>
 
         <!-- Level Performance Overview -->
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8 opacity-0 animate-fade-in-up" style="animation-delay: 0.2s;">
             {% for level_key, level in level_details.items() %}
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                 <div class="text-center">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ level.name }}</h3>
                     <div class="relative w-20 h-20 mx-auto mb-4">
@@ -50,8 +54,8 @@
 
         <!-- Detailed Level Metrics -->
         {% for level_key, level in level_details.items() %}
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-8">
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6">{{ level.name }}</h2>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-8 border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 opacity-0 animate-fade-in-up" style="animation-delay: 0.4s;">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6"><i class="bi bi-award mr-2"></i> {{ level.name }}</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Level 1: Misinformation Maze -->
