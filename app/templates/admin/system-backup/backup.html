@@ -156,22 +156,23 @@
                             </p>
                         </div>
 
-                        <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-4" id="warning_box">
+                        <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-4" id="warning_box">
                             <div class="flex items-start">
-                                <i class="bi bi-exclamation-triangle-fill text-red-600 dark:text-red-400 text-lg mt-0.5 mr-3"></i>
+                                <i class="bi bi-exclamation-triangle-fill text-yellow-600 dark:text-yellow-400 text-lg mt-0.5 mr-3"></i>
                                 <div>
-                                    <p class="text-sm text-red-800 dark:text-red-200 font-medium">CAUTION:</p>
-                                    <ul class="text-sm text-red-700 dark:text-red-300 mt-1 space-y-1" id="warning_list">
+                                    <p class="text-sm text-yellow-800 dark:text-yellow-200 font-medium">CAUTION:</p>
+                                    <ul class="text-sm text-yellow-700 dark:text-yellow-300 mt-1 space-y-1" id="warning_list">
                                         <li>• Always create a backup before restoring</li>
-                                        <li>• Test restore process on development environment first</li>
-                                        <li>• This action cannot be undone</li>
+                                        <li>• Duplicate records will be updated with backup data</li>
+                                        <li>• New records from backup will be added</li>
+                                        <li>• Existing data not in backup will be preserved</li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
 
                         <button type="submit" id="restore_submit_btn"
-                                class="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors">
+                                class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors">
                             <i class="bi bi-upload mr-2"></i>
                             <span id="restore_btn_text">Restore from Backup (Merge Mode)</span>
                         </button>
@@ -457,9 +458,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
-    // Initialize warning on page load
-    updateRestoreWarning();
     
     // Add event listeners for restore buttons
     document.querySelectorAll('.restore-backup-btn').forEach(button => {
