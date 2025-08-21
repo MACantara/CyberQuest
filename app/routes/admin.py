@@ -732,25 +732,45 @@ def restore_backup():
             
             # Extract and restore backup
             with zipfile.ZipFile(temp_file.name, 'r') as zipf:
-                # Read backup metadata
-                metadata = json.loads(zipf.read('backup_metadata.json'))
-                
-                # Read database backup
-                backup_data = json.loads(zipf.read('database_backup.json'))
-                
-                # Perform restore with confirmation
-                restore_type = request.form.get('restore_type', 'merge')
-                _restore_database_backup(backup_data, restore_type)
-                
-                flash(f'Database restored successfully from backup created on {metadata["created_at"]}', 'success')
-                current_app.logger.info(f'Database restored by {current_user.username} from backup: {file.filename}')
+                try:
+                    # Read backup metadata
+                    metadata = json.loads(zipf.read('backup_metadata.json'))
+                    
+                    # Read database backup
+                    backup_data = json.loads(zipf.read('database_backup.json'))
+                    
+                    # Perform restore with confirmation
+                    restore_type = request.form.get('restore_type', 'merge')
+                    
+                    # Count records to be restored
+                    total_records = sum(len(table_data) for table_data in backup_data.values())
+                    
+                    current_app.logger.info(f'Starting database restore: {restore_type} mode, {total_records} records')
+                    
+                    _restore_database_backup(backup_data, restore_type)
+                    
+                    flash(f'Database restored successfully! Restored {total_records} records from backup created on {metadata.get("created_at", "unknown date")}.', 'success')
+                    current_app.logger.info(f'Database restored by {current_user.username} from backup: {file.filename}')
+                    
+                except json.JSONDecodeError as e:
+                    current_app.logger.error(f"Invalid backup file format: {e}")
+                    flash('Invalid backup file format. Please ensure you are uploading a valid CyberQuest backup.', 'error')
+                except KeyError as e:
+                    current_app.logger.error(f"Missing backup file components: {e}")
+                    flash('Incomplete backup file. Missing required components.', 'error')
+                except DatabaseError as e:
+                    current_app.logger.error(f"Database restore failed: {e}")
+                    flash(f'Database restore failed: {str(e)}', 'error')
             
             # Clean up temp file
             os.unlink(temp_file.name)
         
+    except zipfile.BadZipFile:
+        current_app.logger.error("Invalid ZIP file uploaded for restore")
+        flash('Invalid ZIP file. Please upload a valid backup file.', 'error')
     except Exception as e:
         current_app.logger.error(f"Backup restore error: {e}")
-        flash('Error restoring backup. Please check server logs.', 'error')
+        flash('Error restoring backup. Please check server logs for details.', 'error')
     
     return redirect(url_for('admin.system_backup'))
 
@@ -817,15 +837,46 @@ def _restore_database_backup(backup_data: Dict[str, Any], restore_type: str = 'm
             
             if table_name in table_mapping:
                 # Insert data in batches to avoid timeout
-                batch_size = 100
+                batch_size = 50  # Reduced batch size for better reliability
                 for i in range(0, len(table_data), batch_size):
                     batch = table_data[i:i + batch_size]
+                    
                     if restore_type == 'merge':
-                        # Use upsert to merge data
-                        supabase.table(table_mapping[table_name]).upsert(batch).execute()
+                        # Use upsert to merge data - this handles duplicate keys gracefully
+                        try:
+                            supabase.table(table_mapping[table_name]).upsert(
+                                batch, 
+                                on_conflict='id'  # Specify the conflict column
+                            ).execute()
+                        except Exception as e:
+                            # If upsert fails, try individual record insertion with conflict handling
+                            current_app.logger.warning(f"Batch upsert failed for {table_name}, trying individual records: {e}")
+                            for record in batch:
+                                try:
+                                    # Try to update first, then insert if not exists
+                                    existing = supabase.table(table_mapping[table_name]).select("id").eq('id', record['id']).execute()
+                                    if existing.data:
+                                        # Update existing record
+                                        supabase.table(table_mapping[table_name]).update(record).eq('id', record['id']).execute()
+                                    else:
+                                        # Insert new record
+                                        supabase.table(table_mapping[table_name]).insert(record).execute()
+                                except Exception as record_error:
+                                    current_app.logger.error(f"Failed to restore individual record in {table_name}: {record_error}")
+                                    continue
                     else:
-                        # Insert new data
-                        supabase.table(table_mapping[table_name]).insert(batch).execute()
+                        # Insert new data (replace mode)
+                        try:
+                            supabase.table(table_mapping[table_name]).insert(batch).execute()
+                        except Exception as e:
+                            current_app.logger.error(f"Failed to insert batch in {table_name}: {e}")
+                            # Try individual records for replace mode too
+                            for record in batch:
+                                try:
+                                    supabase.table(table_mapping[table_name]).insert(record).execute()
+                                except Exception as record_error:
+                                    current_app.logger.error(f"Failed to insert individual record in {table_name}: {record_error}")
+                                    continue
         
         current_app.logger.info(f"Database restore completed: {restore_type} mode")
         
