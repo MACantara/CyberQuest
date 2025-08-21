@@ -567,6 +567,17 @@ def cleanup_logs():
     
     return redirect(url_for('admin.dashboard'))
 
+def _format_file_size(size_bytes):
+    """Format file size in appropriate units."""
+    if size_bytes >= 1024 * 1024 * 1024:  # GB
+        return f"{size_bytes / (1024 * 1024 * 1024):.1f} GB"
+    elif size_bytes >= 1024 * 1024:  # MB
+        return f"{size_bytes / (1024 * 1024):.1f} MB"
+    elif size_bytes >= 1024:  # KB
+        return f"{size_bytes / 1024:.1f} KB"
+    else:  # Bytes
+        return f"{size_bytes} bytes"
+
 @admin_bp.route('/system-backup')
 @login_required
 @admin_required
@@ -589,7 +600,8 @@ def system_backup():
                             'filename': filename,
                             'size': stat.st_size,
                             'created_at': datetime.fromtimestamp(stat.st_ctime),
-                            'size_mb': round(stat.st_size / (1024 * 1024), 2)
+                            'size_mb': round(stat.st_size / (1024 * 1024), 2),
+                            'size_formatted': _format_file_size(stat.st_size)
                         }
                         
                         # Try to extract metadata from inside the ZIP file
@@ -607,12 +619,15 @@ def system_backup():
                                         except (ValueError, AttributeError):
                                             pass  # Keep filesystem timestamp as fallback
                                     
-                                    # Add additional metadata
+                                    # Add additional metadata with backward compatibility
                                     backup_info['metadata'] = {
-                                        'tables_backed_up': metadata.get('tables_backed_up', 0),
+                                        'tables_backed_up': metadata.get('tables_backed_up', len(metadata.get('tables_included', []))),
                                         'total_records': metadata.get('total_records', 0),
-                                        'app_version': metadata.get('app_version', 'Unknown'),
-                                        'database_type': metadata.get('database_type', 'Supabase')
+                                        'app_version': metadata.get('app_version', f"Version {metadata.get('version', 'Unknown')}"),
+                                        'database_type': metadata.get('database_type', 'Supabase'),
+                                        'created_by': metadata.get('created_by', 'Unknown'),
+                                        'record_counts': metadata.get('record_counts', {}),
+                                        'backup_version': metadata.get('version', '1.0')
                                     }
                                 else:
                                     # Legacy backup without metadata

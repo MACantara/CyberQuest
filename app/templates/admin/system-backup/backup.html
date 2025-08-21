@@ -232,7 +232,7 @@
                                 <div class="text-xs">{{ backup.created_at.strftime('%H:%M:%S') }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                <div class="font-medium">{{ backup.size_mb }} MB</div>
+                                <div class="font-medium">{{ backup.size_formatted }}</div>
                                 <div class="text-xs">
                                     {% if backup.metadata.total_records != 'Error' and backup.metadata.total_records != 'Unknown' %}
                                         {{ backup.metadata.total_records }} records
