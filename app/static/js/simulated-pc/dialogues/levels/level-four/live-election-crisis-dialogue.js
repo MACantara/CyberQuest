@@ -1,9 +1,10 @@
 import { BaseDialogue } from '../../base-dialogue.js';
 
 export class LiveElectionCrisisDialogue extends BaseDialogue {
-    constructor(desktop, character = 'election_official') {
+    constructor(desktop, manager, character = 'election_official') {
         super(desktop, character);
-        this.ethicsScore = parseInt(localStorage.getItem('cyberquest_level4_ethics_score') || '0');
+        this.manager = manager;
+        this.ethicsScore = manager ? manager.getCurrentEthicsScore() : 0;
         this.messages = [
             {
                 text: "[ URGENT CALL FROM MUNICIPAL ELECTION COMMISSION ]"
@@ -108,7 +109,6 @@ export class LiveElectionCrisisDialogue extends BaseDialogue {
                 message = 'You recommended immediate emergency disclosure and system shutdown.';
                 consequence = 'The voting system is shut down with 6 hours remaining in election day. While thousands of votes must be recast, the election integrity is preserved. You prevented potential vote manipulation.';
                 newsHeadline = '"Security Researcher Saves Election Integrity with Emergency Disclosure"';
-                localStorage.setItem('cyberquest_level4_choice_crisis', 'emergency_disclosure');
                 break;
                 
             case 'wait_election_ends':
@@ -116,7 +116,6 @@ export class LiveElectionCrisisDialogue extends BaseDialogue {
                 message = 'You recommended waiting until the election ends to preserve democratic continuity.';
                 consequence = 'The election continues, but irregularities persist. Post-election analysis reveals vote count discrepancies that cast doubt on the results. Legal challenges emerge from multiple candidates.';
                 newsHeadline = '"Election Results Disputed Due to Unaddressed Security Vulnerabilities"';
-                localStorage.setItem('cyberquest_level4_choice_crisis', 'waited');
                 break;
                 
             case 'anonymous_tip':
@@ -124,7 +123,6 @@ export class LiveElectionCrisisDialogue extends BaseDialogue {
                 message = 'You provided an anonymous tip to election officials for internal investigation.';
                 consequence = 'Election officials quietly implement monitoring procedures and catch attempted vote manipulation in real-time. The election proceeds with enhanced security oversight.';
                 newsHeadline = '"Municipal Election Secured Through Vigilant Monitoring"';
-                localStorage.setItem('cyberquest_level4_choice_crisis', 'anonymous_tip');
                 break;
                 
             case 'coordinate_fix':
@@ -132,14 +130,14 @@ export class LiveElectionCrisisDialogue extends BaseDialogue {
                 message = 'You coordinated a live hotfix while the election continued.';
                 consequence = 'Working with election IT staff, you implement patches during low-traffic periods. The fix is successful, securing the remaining voting hours without disrupting ongoing elections.';
                 newsHeadline = '"Innovative Security Solution Protects Live Election"';
-                localStorage.setItem('cyberquest_level4_choice_crisis', 'live_fix');
                 break;
         }
 
-        // Update ethics score
+        // Update ethics score through manager
+        if (this.manager) {
+            this.manager.onChoiceMade(choice, ethicsChange);
+        }
         this.ethicsScore += ethicsChange;
-        localStorage.setItem('cyberquest_level4_ethics_score', this.ethicsScore.toString());
-        localStorage.setItem('cyberquest_level4_news_headline', newsHeadline);
 
         this.showConsequence(message, consequence, ethicsChange, newsHeadline);
     }
@@ -179,20 +177,5 @@ export class LiveElectionCrisisDialogue extends BaseDialogue {
 
     getCharacterName() {
         return 'Election Commissioner';
-    }
-
-    static triggerDuringActivePhase(desktop) {
-        // This should trigger randomly during the assessment phase
-        const hasTriggered = localStorage.getItem('cyberquest_level4_crisis_triggered');
-        const scanCount = parseInt(localStorage.getItem('cyberquest_level4_scan_count') || '0');
-        
-        // Trigger after multiple scans have been performed
-        if (!hasTriggered && scanCount >= 2) {
-            localStorage.setItem('cyberquest_level4_crisis_triggered', 'true');
-            setTimeout(() => {
-                const dialogue = new LiveElectionCrisisDialogue(desktop);
-                dialogue.start();
-            }, 1000);
-        }
     }
 }

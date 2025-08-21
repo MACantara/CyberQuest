@@ -9,174 +9,172 @@ export class Level4DilemmaManager {
     constructor(desktop) {
         this.desktop = desktop;
         this.activeDialogues = new Set();
-        this.initializeLevel4Tracking();
+        this.availableDilemmas = [
+            'cryptocurrency_bribe',
+            'corporate_pressure', 
+            'live_election_crisis',
+            'journalist_contact'
+        ];
+        this.selectedDilemma = null;
+        this.ethicsScore = 0;
+        this.dilemmaTriggered = false;
+        this.oathTriggered = false;
+        this.initializeRandomDilemma();
     }
 
-    initializeLevel4Tracking() {
-        // Initialize ethics score if not present
-        if (!localStorage.getItem('cyberquest_level4_ethics_score')) {
-            localStorage.setItem('cyberquest_level4_ethics_score', '0');
-        }
+    initializeRandomDilemma() {
+        // Randomly select one dilemma for this playthrough
+        const randomIndex = Math.floor(Math.random() * this.availableDilemmas.length);
+        this.selectedDilemma = this.availableDilemmas[randomIndex];
         
-        // Reset scan count for crisis triggering
-        if (!localStorage.getItem('cyberquest_level4_scan_count')) {
-            localStorage.setItem('cyberquest_level4_scan_count', '0');
-        }
+        console.log(`[Level4DilemmaManager] Selected random dilemma: ${this.selectedDilemma}`);
+        
+        // Reset state for fresh experience
+        this.ethicsScore = 0;
+        this.dilemmaTriggered = false;
+        this.oathTriggered = false;
     }
 
-    // Called when a vulnerability report is generated
+    // Called when a vulnerability report is generated - trigger the selected dilemma
     onReportGenerated() {
-        localStorage.setItem('cyberquest_level4_report_generated', 'true');
-        
-        // Trigger cryptocurrency bribe dialogue
+        // Trigger the randomly selected dilemma
         setTimeout(() => {
-            CryptocurrencyBribeDialogue.triggerAfterReportGeneration(this.desktop);
+            this.triggerSelectedDilemma();
         }, 2000);
-        
-        // Set up cascade of other dialogues
-        this.setupDialogueCascade();
     }
 
-    // Called when a vulnerability scan is completed
+    // Called when a vulnerability scan is completed - alternative trigger point
     onScanCompleted() {
-        const scanCount = parseInt(localStorage.getItem('cyberquest_level4_scan_count') || '0');
-        localStorage.setItem('cyberquest_level4_scan_count', (scanCount + 1).toString());
-        
-        // Potentially trigger crisis dialogue
-        LiveElectionCrisisDialogue.triggerDuringActivePhase(this.desktop);
+        // If no dilemma has been triggered yet, trigger it after enough scans
+        if (!this.dilemmaTriggered) {
+            this.triggerSelectedDilemma();
+        }
     }
 
-    // Called when nmap integration occurs
+    // Called when nmap integration occurs - another potential trigger point
     onNmapIntegration() {
-        // This could trigger additional scenarios based on what's discovered
-        const nmapIntegrationCount = parseInt(localStorage.getItem('cyberquest_level4_nmap_count') || '0');
-        localStorage.setItem('cyberquest_level4_nmap_count', (nmapIntegrationCount + 1).toString());
-        
-        // Could trigger specific scenarios based on nmap findings
-        this.checkForAdvancedScenarios();
+        // If no dilemma has been triggered yet and user is doing advanced analysis, trigger it
+        if (!this.dilemmaTriggered) {
+            this.triggerSelectedDilemma();
+        }
     }
 
-    setupDialogueCascade() {
-        // Monitor for choice completion and trigger next dialogues
+    triggerSelectedDilemma() {
+        // Prevent multiple triggers
+        if (this.dilemmaTriggered) {
+            return;
+        }
+        
+        this.dilemmaTriggered = true;
+        
+        switch (this.selectedDilemma) {
+            case 'cryptocurrency_bribe':
+                new CryptocurrencyBribeDialogue(this.desktop, this).start();
+                break;
+            case 'corporate_pressure':
+                new CorporatePressureDialogue(this.desktop, this).start();
+                break;
+            case 'live_election_crisis':
+                new LiveElectionCrisisDialogue(this.desktop, this).start();
+                break;
+            case 'journalist_contact':
+                new JournalistContactDialogue(this.desktop, this).start();
+                break;
+            default:
+                console.warn('[Level4DilemmaManager] Unknown selected dilemma:', this.selectedDilemma);
+        }
+        
+        // Schedule the ethics oath and consequence dialogues
+        this.scheduleEndingSequence();
+    }
+
+    scheduleEndingSequence() {
+        // Wait for the dilemma choice to be made, then show oath and consequences
         const checkInterval = setInterval(() => {
-            // Check if bribe choice was made
-            const briberChoice = localStorage.getItem('cyberquest_level4_choice_bribe');
-            if (briberChoice && !localStorage.getItem('cyberquest_level4_corporate_triggered')) {
-                localStorage.setItem('cyberquest_level4_corporate_triggered', 'true');
-                CorporatePressureDialogue.triggerAfterBribeChoice(this.desktop);
-            }
-            
-            // Check if corporate choice was made
-            const corporateChoice = localStorage.getItem('cyberquest_level4_choice_corporate');
-            if (corporateChoice && !localStorage.getItem('cyberquest_level4_media_triggered')) {
-                localStorage.setItem('cyberquest_level4_media_triggered', 'true');
-                JournalistContactDialogue.triggerAfterCorporateChoice(this.desktop);
-            }
-            
-            // Check if all major choices are made
-            const mediaChoice = localStorage.getItem('cyberquest_level4_choice_media');
-            if (briberChoice && corporateChoice && mediaChoice && !localStorage.getItem('cyberquest_level4_oath_triggered')) {
-                localStorage.setItem('cyberquest_level4_oath_triggered', 'true');
-                EthicsOathDialogue.triggerAfterAllChoices(this.desktop);
+            // The dialogue will call onChoiceMade when complete
+            if (this.choiceMade && !this.oathTriggered) {
+                this.oathTriggered = true;
                 
-                // Also mark all choices as complete for final consequence
-                localStorage.setItem('cyberquest_level4_all_choices_complete', 'true');
-                ConsequenceEndingDialogue.triggerFinalConsequence(this.desktop);
+                // Show ethics oath
+                setTimeout(() => {
+                    new EthicsOathDialogue(this.desktop, this).start();
+                }, 3000);
+                
+                // Show final consequences
+                setTimeout(() => {
+                    new ConsequenceEndingDialogue(this.desktop, this).start();
+                }, 6000);
                 
                 clearInterval(checkInterval);
             }
         }, 1000);
         
-        // Clear interval after 5 minutes to prevent memory leaks
-        setTimeout(() => clearInterval(checkInterval), 300000);
+        // Clear interval after 10 minutes to prevent memory leaks
+        setTimeout(() => clearInterval(checkInterval), 600000);
     }
 
-    checkForAdvancedScenarios() {
-        // Could implement advanced scenarios based on specific nmap findings
-        // For example, if certain ports are discovered, trigger additional ethical dilemmas
-        
-        const nmapCount = parseInt(localStorage.getItem('cyberquest_level4_nmap_count') || '0');
-        if (nmapCount >= 3) {
-            // Could trigger special advanced scenario
-            console.log('[Level4DilemmaManager] Advanced scenarios could be triggered based on extensive nmap usage');
-        }
+    // Called by dialogue when a choice is made
+    onChoiceMade(choice, ethicsChange) {
+        this.choiceMade = choice;
+        this.ethicsScore += ethicsChange;
+        console.log(`[Level4DilemmaManager] Choice made: ${choice}, Ethics score: ${this.ethicsScore}`);
     }
 
     // Get current ethics score
     getCurrentEthicsScore() {
-        return parseInt(localStorage.getItem('cyberquest_level4_ethics_score') || '0');
+        return this.ethicsScore;
     }
 
-    // Get summary of all choices made
+    // Get summary of the choice made in the selected dilemma
     getChoicesSummary() {
         return {
-            bribe: localStorage.getItem('cyberquest_level4_choice_bribe'),
-            corporate: localStorage.getItem('cyberquest_level4_choice_corporate'),
-            crisis: localStorage.getItem('cyberquest_level4_choice_crisis'),
-            media: localStorage.getItem('cyberquest_level4_choice_media'),
-            oathTaken: localStorage.getItem('cyberquest_ethics_oath_taken') === 'true',
-            ethicsScore: this.getCurrentEthicsScore()
+            selectedDilemma: this.selectedDilemma,
+            choiceMade: this.choiceMade,
+            ethicsScore: this.ethicsScore,
+            oathTaken: this.oathTaken
         };
+    }
+
+    // Update ethics score
+    updateEthicsScore(change) {
+        this.ethicsScore += change;
+    }
+
+    // Mark oath as taken
+    markOathTaken() {
+        this.oathTaken = true;
+        // Still store in localStorage for badge persistence
+        localStorage.setItem('cyberquest_ethics_oath_taken', 'true');
+        localStorage.setItem('cyberquest_badge_ethics_oath', 'true');
     }
 
     // Reset all Level 4 progress (for testing or replay)
     resetLevel4Progress() {
-        const keysToRemove = [
-            'cyberquest_level4_ethics_score',
-            'cyberquest_level4_report_generated',
-            'cyberquest_level4_scan_count',
-            'cyberquest_level4_nmap_count',
-            'cyberquest_level4_choice_bribe',
-            'cyberquest_level4_choice_corporate',
-            'cyberquest_level4_choice_crisis',
-            'cyberquest_level4_choice_media',
-            'cyberquest_level4_corporate_triggered',
-            'cyberquest_level4_media_triggered',
-            'cyberquest_level4_oath_triggered',
-            'cyberquest_level4_all_choices_complete',
-            'cyberquest_level4_consequence_shown',
-            'cyberquest_level4_crisis_triggered',
-            'cyberquest_level4_oath_completed',
-            'cyberquest_ethics_oath_taken',
-            'cyberquest_level4_bitcoin_earned',
-            'cyberquest_level4_settlement_earned',
-            'cyberquest_level4_news_headline'
-        ];
+        // Reset in-memory state for fresh experience
+        this.ethicsScore = 0;
+        this.dilemmaTriggered = false;
+        this.oathTriggered = false;
+        this.choiceMade = null;
+        this.oathTaken = false;
         
-        keysToRemove.forEach(key => localStorage.removeItem(key));
-        console.log('[Level4DilemmaManager] Level 4 progress reset');
+        // Reinitialize with new random dilemma
+        this.initializeRandomDilemma();
+        
+        console.log('[Level4DilemmaManager] Level 4 progress reset, new dilemma selected:', this.selectedDilemma);
     }
 
-    // Check if all dialogues have been completed
+    // Check if the level is complete
     isLevel4Complete() {
-        const oathCompleted = localStorage.getItem('cyberquest_level4_oath_completed');
-        const consequenceShown = localStorage.getItem('cyberquest_level4_consequence_shown');
-        return oathCompleted && consequenceShown;
+        return this.oathTaken && this.choiceMade;
     }
 
-    // Manual trigger for specific dialogues (for testing)
-    triggerDialogue(dialogueType) {
-        switch (dialogueType) {
-            case 'bribe':
-                new CryptocurrencyBribeDialogue(this.desktop).start();
-                break;
-            case 'corporate':
-                new CorporatePressureDialogue(this.desktop).start();
-                break;
-            case 'crisis':
-                new LiveElectionCrisisDialogue(this.desktop).start();
-                break;
-            case 'journalist':
-                new JournalistContactDialogue(this.desktop).start();
-                break;
-            case 'oath':
-                new EthicsOathDialogue(this.desktop).start();
-                break;
-            case 'consequence':
-                new ConsequenceEndingDialogue(this.desktop).start();
-                break;
-            default:
-                console.warn('[Level4DilemmaManager] Unknown dialogue type:', dialogueType);
-        }
+    // Get which dilemma was selected for this session
+    getSelectedDilemma() {
+        return this.selectedDilemma;
+    }
+
+    // Manual trigger for testing - triggers the selected dilemma
+    triggerDialogue() {
+        this.triggerSelectedDilemma();
     }
 }
