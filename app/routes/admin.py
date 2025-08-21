@@ -548,11 +548,10 @@ def cleanup_logs():
         # Clean up expired email verification tokens
         expired_verifications = EmailVerification.cleanup_expired_tokens()
         
-        # Note: Contact cleanup would need a similar method in Contact model
-        # For now, we'll skip this part as it would require implementing a cleanup method
-        old_contacts = 0  # TODO: Implement Contact.cleanup_old_submissions()
+        # Clean up old contact submissions (older than 1 year)
+        old_contacts = Contact.cleanup_old_submissions(365)
         
-        flash(f'Cleanup completed: {old_attempts} login attempts and {expired_verifications} verification tokens removed.', 'success')
+        flash(f'Cleanup completed: {old_attempts} login attempts, {expired_verifications} verification tokens, and {old_contacts} old contact submissions removed.', 'success')
         
     except DatabaseError as e:
         current_app.logger.error(f'Database error during cleanup: {e}')
