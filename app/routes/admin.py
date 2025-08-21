@@ -147,14 +147,17 @@ def user_details(user_id):
         user_attempts = [attempt for attempt in all_attempts 
                         if attempt.username_or_email in [user.username, user.email]][:20]
         
-        # For now, we'll note that email verifications would need a different approach
-        # since we don't have a direct way to get them by user_id in our current model
-        verifications = []  # TODO: Implement get_by_user_id in EmailVerification
+        # Get email verifications for this user
+        verifications = EmailVerification.get_by_user_id(user.id)
+        
+        # Get contact submissions by this user's email
+        contact_submissions = Contact.get_by_email(user.email, limit=10)
         
         return render_template('admin/user-details/user-details.html', 
                              user=user,
                              login_attempts=user_attempts,
-                             verifications=verifications)
+                             verifications=verifications,
+                             contact_submissions=contact_submissions)
     
     except DatabaseError as e:
         current_app.logger.error(f"Admin user details error: {e}")
@@ -241,6 +244,87 @@ def api_stats():
     except DatabaseError as e:
         current_app.logger.error(f"Admin API stats error: {e}")
         return jsonify({'error': 'Failed to load statistics'}), 500
+
+@admin_bp.route('/contacts')
+@login_required
+@admin_required
+def contacts():
+    """Contact submissions management page."""
+    try:
+        page = request.args.get('page', 1, type=int)
+        per_page = request.args.get('per_page', 25, type=int)
+        
+        # Validate per_page to prevent abuse
+        if per_page not in [25, 50, 100]:
+            per_page = 25
+        
+        # Search functionality
+        search = request.args.get('search', '')
+        
+        # Filter by status
+        status_filter = request.args.get('status', 'all')
+        
+        # Get contact submissions with pagination and filtering
+        contacts_list, total_count = Contact.get_all_submissions(page, per_page, search, status_filter)
+        
+        # Calculate pagination info
+        total_pages = (total_count + per_page - 1) // per_page
+        has_prev = page > 1
+        has_next = page < total_pages
+        prev_num = page - 1 if has_prev else None
+        next_num = page + 1 if has_next else None
+        
+        # Create pagination object for template compatibility
+        pagination = type('Pagination', (), {
+            'items': contacts_list,
+            'page': page,
+            'per_page': per_page,
+            'total': total_count,
+            'pages': total_pages,
+            'has_prev': has_prev,
+            'has_next': has_next,
+            'prev_num': prev_num,
+            'next_num': next_num
+        })()
+        
+        return render_template('admin/contacts/contacts.html', 
+                             contacts=contacts_list,
+                             pagination=pagination,
+                             search=search,
+                             status_filter=status_filter)
+    
+    except DatabaseError as e:
+        current_app.logger.error(f"Admin contacts error: {e}")
+        flash('Error loading contacts data.', 'error')
+        return redirect(url_for('admin.dashboard'))
+
+@admin_bp.route('/contact/<int:contact_id>/mark-read', methods=['POST'])
+@login_required
+@admin_required
+def mark_contact_read(contact_id):
+    """Mark a contact submission as read."""
+    try:
+        # First get all contacts to find the one with the matching ID
+        all_contacts, _ = Contact.get_all_submissions(page=1, per_page=1000)  # Get a large number
+        contact = None
+        for c in all_contacts:
+            if c.id == contact_id:
+                contact = c
+                break
+        
+        if not contact:
+            flash('Contact submission not found.', 'error')
+            return redirect(url_for('admin.contacts'))
+        
+        contact.mark_as_read()
+        flash('Contact submission marked as read.', 'success')
+        
+        return redirect(url_for('admin.contacts'))
+    
+    except DatabaseError as e:
+        current_app.logger.error(f"Admin mark contact read error: {e}")
+        flash('Error updating contact status.', 'error')
+        return redirect(url_for('admin.contacts'))
 
 @admin_bp.route('/player-analytics')
 @login_required
