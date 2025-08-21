@@ -854,6 +854,70 @@ def restore_backup():
     
     return redirect(url_for('admin.system_backup'))
 
+@admin_bp.route('/restore-from-server', methods=['POST'])
+@login_required
+@admin_required
+def restore_from_server():
+    """Restore system from a backup file already on the server."""
+    try:
+        backup_filename = request.form.get('backup_filename')
+        restore_type = request.form.get('restore_type', 'merge')
+        
+        if not backup_filename:
+            flash('No backup file specified.', 'error')
+            return redirect(url_for('admin.system_backup'))
+        
+        # Validate backup file exists on server
+        backup_dir = os.path.join(current_app.root_path, '..', 'backups')
+        backup_path = os.path.join(backup_dir, backup_filename)
+        
+        if not os.path.exists(backup_path) or not backup_filename.endswith('.zip'):
+            flash(f'Backup file "{backup_filename}" not found on server.', 'error')
+            return redirect(url_for('admin.system_backup'))
+        
+        # Extract and restore backup
+        with zipfile.ZipFile(backup_path, 'r') as zipf:
+            try:
+                # Read backup metadata
+                metadata = json.loads(zipf.read('backup_metadata.json'))
+                
+                # Read database backup
+                backup_data = json.loads(zipf.read('database_backup.json'))
+                
+                # Count records to be restored
+                total_records = sum(len(table_data) for table_data in backup_data.values())
+                
+                current_app.logger.info(f'Starting server backup restore: {restore_type} mode, {total_records} records from {backup_filename}')
+                
+                _restore_database_backup(backup_data, restore_type)
+                
+                # Generate detailed success message
+                if restore_type == 'replace':
+                    flash(f'Database REPLACED successfully! All existing data was deleted and replaced with {total_records} records from {backup_filename} (created {metadata.get("created_at", "unknown date")}). Previous data is permanently lost.', 'success')
+                else:
+                    flash(f'Database MERGED successfully! {total_records} records from {backup_filename} (created {metadata.get("created_at", "unknown date")}) have been merged with existing data.', 'success')
+                
+                current_app.logger.info(f'Server backup restored by {current_user.username} using {restore_type} mode from {backup_filename}')
+                
+            except json.JSONDecodeError as e:
+                current_app.logger.error(f"Invalid backup file format: {e}")
+                flash('Invalid backup file format. Please ensure the file is a valid CyberQuest backup.', 'error')
+            except KeyError as e:
+                current_app.logger.error(f"Missing backup file components: {e}")
+                flash('Incomplete backup file. Missing required components.', 'error')
+            except DatabaseError as e:
+                current_app.logger.error(f"Server backup restore failed: {e}")
+                flash(f'Database restore failed: {str(e)}', 'error')
+        
+    except zipfile.BadZipFile:
+        current_app.logger.error(f"Invalid ZIP file: {backup_filename}")
+        flash('Invalid backup file. File appears to be corrupted.', 'error')
+    except Exception as e:
+        current_app.logger.error(f"Server backup restore error: {e}")
+        flash('Error restoring backup. Please check server logs for details.', 'error')
+    
+    return redirect(url_for('admin.system_backup'))
+
 def _create_database_backup() -> Dict[str, Any]:
     """Create a complete database backup."""
     supabase = get_supabase()
