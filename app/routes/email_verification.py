@@ -2,9 +2,10 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from flask_login import current_user
 from flask_mail import Message
 from flask_wtf.csrf import validate_csrf
-from app import db, mail
+from app import mail
 from app.models.user import User
 from app.models.email_verification import EmailVerification
+from app.database import DatabaseError
 
 email_verification_bp = Blueprint('email_verification', __name__, url_prefix='/auth')
 
@@ -313,13 +314,10 @@ def check_email_verification_status(user_or_identifier):
         user = user_or_identifier
     elif isinstance(user_or_identifier, (int, str)) and str(user_or_identifier).isdigit():
         # User ID
-        user = User.query.get(int(user_or_identifier))
+        user = User.find_by_id(int(user_or_identifier))
     else:
         # Username or email
-        user = User.query.filter(
-            (User.username == user_or_identifier) | 
-            (User.email == user_or_identifier)
-        ).first()
+        user = User.find_by_username_or_email(user_or_identifier)
     
     if not user:
         return False, None, None
@@ -385,7 +383,7 @@ def resend_verification():
         flash('Invalid request.', 'error')
         return redirect(url_for('auth.login'))
     
-    user = User.query.get(user_id)
+    user = User.find_by_id(user_id)
     if not user or user.email != user_email:
         flash('Invalid request.', 'error')
         return redirect(url_for('auth.login'))

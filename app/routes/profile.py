@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
 from flask_login import login_required, current_user
-from app import db
 from app.models.user import User
+from app.database import DatabaseError
 import re
 
 profile_bp = Blueprint('profile', __name__, url_prefix='/profile')
@@ -49,7 +49,7 @@ def edit_profile():
         
         # Check if username is taken by another user
         if username != current_user.username:
-            existing_user = User.query.filter_by(username=username).first()
+            existing_user = User.find_by_username(username)
             if existing_user:
                 flash('Username is already taken.', 'error')
                 return render_template('profile/edit-profile.html', user=current_user)
@@ -61,7 +61,7 @@ def edit_profile():
         
         # Check if email is taken by another user
         if email != current_user.email:
-            existing_user = User.query.filter_by(email=email).first()
+            existing_user = User.find_by_email(email)
             if existing_user:
                 flash('Email address is already registered.', 'error')
                 return render_template('profile/edit-profile.html', user=current_user)
@@ -85,13 +85,15 @@ def edit_profile():
             if new_password:
                 current_user.set_password(new_password)
             
-            db.session.commit()
+            current_user.save()
             
             flash('Profile updated successfully!', 'success')
             return redirect(url_for('profile.profile'))
             
+        except DatabaseError as e:
+            flash('An error occurred while updating your profile. Please try again.', 'error')
+            return render_template('profile/edit-profile.html', user=current_user)
         except Exception as e:
-            db.session.rollback()
             flash('An error occurred while updating your profile. Please try again.', 'error')
             return render_template('profile/edit-profile.html', user=current_user)
     
