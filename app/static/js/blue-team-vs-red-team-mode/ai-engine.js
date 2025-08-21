@@ -257,10 +257,6 @@ class AIEngine {
         
         if (Math.random() < progressProbability && this.currentPhase < this.attackPhases.length - 1) {
             this.currentPhase++;
-            
-            // Update UI with new tactics
-            const newTactics = this.attackPhases.slice(Math.max(0, this.currentPhase - 1), this.currentPhase + 2);
-            this.gameController.uiManager?.updateAITactics(newTactics);
         }
     }
     

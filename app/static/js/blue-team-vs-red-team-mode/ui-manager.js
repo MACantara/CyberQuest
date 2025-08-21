@@ -14,7 +14,6 @@ class UIManager {
         this.updateSecurityControls();
         this.updateTimer();
         this.updateGameControls();
-        this.updateAIDifficulty();
         this.updateAlerts();
         this.updateIncidents();
     }
@@ -247,43 +246,6 @@ class UIManager {
                 stopButton.disabled = true;
                 stopButton.classList.add('opacity-50');
             }
-        }
-    }
-    
-    updateAIDifficulty() {
-        if (!this.gameController.aiEngine) return;
-        
-        const difficulty = this.gameController.aiEngine.getDifficulty();
-        const difficultyBar = document.getElementById('difficulty-bar');
-        const difficultyText = document.getElementById('difficulty-text');
-        
-        if (difficultyBar) {
-            difficultyBar.style.width = `${difficulty.value}%`;
-            
-            // Update color based on difficulty
-            difficultyBar.className = 'h-2 rounded-full transition-all duration-500';
-            if (difficulty.value < 40) {
-                difficultyBar.classList.add('bg-green-500');
-            } else if (difficulty.value < 70) {
-                difficultyBar.classList.add('bg-orange-500');
-            } else {
-                difficultyBar.classList.add('bg-red-500');
-            }
-        }
-        
-        if (difficultyText) {
-            difficultyText.textContent = difficulty.level;
-            difficultyText.className = `text-sm ${difficulty.value < 40 ? 'text-green-600' : difficulty.value < 70 ? 'text-orange-600' : 'text-red-600'}`;
-        }
-    }
-    
-    updateAITactics(tactics) {
-        const tacticsElement = document.getElementById('ai-tactics');
-        if (tacticsElement && tactics) {
-            const formattedTactics = tactics.map(tactic => 
-                tactic.charAt(0).toUpperCase() + tactic.slice(1).replace('-', ' ')
-            ).join(', ');
-            tacticsElement.textContent = formattedTactics;
         }
     }
     
