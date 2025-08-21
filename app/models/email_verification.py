@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import secrets
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 from app.database import get_supabase, Tables, handle_supabase_error, DatabaseError
 
 def parse_datetime_naive(dt_string: str) -> datetime:
@@ -120,6 +120,17 @@ class EmailVerification:
             return None
         except Exception as e:
             raise DatabaseError(f"Failed to get verification by token: {e}")
+    
+    @classmethod
+    def get_by_user_id(cls, user_id: int) -> List['EmailVerification']:
+        """Get all verification entries for a specific user."""
+        supabase = get_supabase()
+        try:
+            response = supabase.table(Tables.EMAIL_VERIFICATIONS).select("*").eq('user_id', user_id).order('created_at', desc=True).execute()
+            data = handle_supabase_error(response)
+            return [cls(verification_data) for verification_data in data]
+        except Exception as e:
+            raise DatabaseError(f"Failed to get verifications by user_id: {e}")
     
     @classmethod
     def is_email_verified(cls, user_id: int, email: str) -> bool:
