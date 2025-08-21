@@ -308,18 +308,35 @@
 </div>
 
 <!-- Restore Modal -->
-<div id="restoreModal" class="fixed inset-0 bg-gray-600/50 overflow-y-auto h-full w-full hidden" style="z-index: 1000;">
-    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white dark:bg-gray-800">
-        <div class="mt-3">
-            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30">
-                <i class="bi bi-arrow-clockwise text-blue-600 dark:text-blue-400 text-xl"></i>
+<div id="restoreModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm overflow-y-auto h-full w-full hidden" style="z-index: 1000;">
+    <div class="relative min-h-screen flex items-center justify-center p-4">
+        <div class="relative w-full max-w-md bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30">
+                            <i class="bi bi-arrow-clockwise text-blue-600 dark:text-blue-400 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                                Restore from Server
+                            </h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                Restore database from backup file
+                            </p>
+                        </div>
+                    </div>
+                    <button onclick="closeRestoreModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                        <i class="bi bi-x-lg text-xl"></i>
+                    </button>
+                </div>
             </div>
-            <div class="mt-3 text-center">
-                <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white" id="modalTitle">
-                    Restore from Server Backup
-                </h3>
-                <div class="mt-2 px-7 py-3">
-                    <p class="text-sm text-gray-500 dark:text-gray-400" id="modalDescription">
+
+            <!-- Modal Body -->
+            <div class="px-6 py-4">
+                <div class="mb-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600">
+                    <p class="text-sm text-gray-700 dark:text-gray-300" id="modalDescription">
                         <!-- Will be filled by JavaScript -->
                     </p>
                 </div>
@@ -330,23 +347,23 @@
                     <input type="hidden" name="backup_filename" id="modalBackupFilename">
                     
                     <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 text-left">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                             Restore Type
                         </label>
                         <select name="restore_type" id="modalRestoreType" 
                                 onchange="updateModalWarning()"
-                                class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                                class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                             <option value="merge">Merge with existing data (Recommended)</option>
                             <option value="replace">Replace all data (DANGEROUS)</option>
                         </select>
                     </div>
                     
-                    <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 mb-4" id="modalWarningBox">
+                    <div class="mb-6 p-4 rounded-lg border" id="modalWarningBox">
                         <div class="flex items-start">
-                            <i class="bi bi-exclamation-triangle text-yellow-600 dark:text-yellow-400 text-sm mt-0.5 mr-2"></i>
-                            <div>
-                                <p class="text-xs text-yellow-800 dark:text-yellow-200 font-medium">CAUTION:</p>
-                                <ul class="text-xs text-yellow-700 dark:text-yellow-300 mt-1 space-y-1" id="modalWarningList">
+                            <i class="bi bi-exclamation-triangle text-yellow-600 dark:text-yellow-400 text-lg mt-0.5 mr-3 flex-shrink-0"></i>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-yellow-800 dark:text-yellow-200 mb-1">CAUTION:</p>
+                                <ul class="text-sm text-yellow-700 dark:text-yellow-300 space-y-1" id="modalWarningList">
                                     <li>• Always create a backup before restoring</li>
                                     <li>• This action cannot be undone</li>
                                 </ul>
@@ -354,14 +371,14 @@
                         </div>
                     </div>
                     
-                    <div class="items-center px-4 py-3">
-                        <button type="submit" id="modalRestoreBtn"
-                                class="px-4 py-2 bg-blue-600 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
-                            Restore from Server
-                        </button>
+                    <div class="flex space-x-3">
                         <button type="button" onclick="closeRestoreModal()"
-                                class="mt-3 px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-400 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                                class="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200 font-medium rounded-lg hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors">
                             Cancel
+                        </button>
+                        <button type="submit" id="modalRestoreBtn"
+                                class="flex-1 px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors">
+                            Restore Backup
                         </button>
                     </div>
                 </form>
@@ -463,12 +480,27 @@ function showRestoreModal(filename, records, created) {
     // Set the hidden form field
     modalBackupFilename.value = filename;
     
-    // Update modal content
+    // Update modal content with better formatting
     modalDescription.innerHTML = `
-        <strong>Backup File:</strong> ${filename}<br>
-        <strong>Created:</strong> ${created}<br>
-        <strong>Records:</strong> ${records !== 'Error' && records !== 'Unknown' ? records + ' records' : 'Unknown'}<br><br>
-        Choose how to restore this backup:
+        <div class="space-y-2">
+            <div class="flex justify-between">
+                <span class="font-medium text-gray-700 dark:text-gray-300">Backup File:</span>
+                <span class="text-gray-900 dark:text-white font-mono text-sm">${filename}</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="font-medium text-gray-700 dark:text-gray-300">Created:</span>
+                <span class="text-gray-900 dark:text-white">${created}</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="font-medium text-gray-700 dark:text-gray-300">Records:</span>
+                <span class="text-gray-900 dark:text-white">${records !== 'Error' && records !== 'Unknown' ? records + ' records' : 'Unknown'}</span>
+            </div>
+        </div>
+        <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-600">
+            <p class="text-sm text-gray-600 dark:text-gray-400">
+                Choose how to restore this backup to your database:
+            </p>
+        </div>
     `;
     
     // Reset to merge mode
@@ -492,24 +524,36 @@ function updateModalWarning() {
     
     if (restoreType === 'replace') {
         // Update warning for replace mode
-        warningBox.className = 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 mb-4';
+        warningBox.className = 'mb-6 p-4 rounded-lg border bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800';
         warningList.innerHTML = `
             <li>• <strong>DESTRUCTIVE:</strong> All existing data will be deleted</li>
             <li>• You may be logged out during restore</li>
             <li>• This action cannot be undone</li>
         `;
         restoreBtn.textContent = 'REPLACE ALL DATA (DESTRUCTIVE)';
-        restoreBtn.className = 'px-4 py-2 bg-red-600 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-300';
+        restoreBtn.className = 'flex-1 px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors';
+        
+        // Update icon color for danger
+        const icon = warningBox.querySelector('i');
+        if (icon) {
+            icon.className = 'bi bi-exclamation-triangle text-red-600 dark:text-red-400 text-lg mt-0.5 mr-3 flex-shrink-0';
+        }
     } else {
         // Update warning for merge mode
-        warningBox.className = 'bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 mb-4';
+        warningBox.className = 'mb-6 p-4 rounded-lg border bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800';
         warningList.innerHTML = `
             <li>• Always create a backup before restoring</li>
             <li>• Existing data will be preserved and updated</li>
             <li>• This action cannot be undone</li>
         `;
-        restoreBtn.textContent = 'Restore from Server (Merge)';
-        restoreBtn.className = 'px-4 py-2 bg-blue-600 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300';
+        restoreBtn.textContent = 'Restore Backup';
+        restoreBtn.className = 'flex-1 px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors';
+        
+        // Update icon color for warning
+        const icon = warningBox.querySelector('i');
+        if (icon) {
+            icon.className = 'bi bi-exclamation-triangle text-yellow-600 dark:text-yellow-400 text-lg mt-0.5 mr-3 flex-shrink-0';
+        }
     }
 }
 
