@@ -180,6 +180,11 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 
-# Backup files
+# Backup files and sensitive data
 
-backups/*.zip
+*.zip
+*.tar.gz
+*.dump
+*.sql
+*.bak
+*.backup
