@@ -17,6 +17,7 @@ export class InteractiveLabeling {
         this.analysisSource = 'batch-json';
         this.articlesData = []; // Store all articles data centrally
         this.initialized = false;
+        this.selectedElementId = null; // Track currently selected element for labeling
         
         // Initialize modular components
         this.ui = new InteractiveUI(this);
@@ -26,6 +27,7 @@ export class InteractiveLabeling {
         
         // Bind methods to preserve context
         this.handleElementClick = this.handleElementClick.bind(this);
+        this.applyLabel = this.applyLabel.bind(this);
         this.submitAnalysis = this.submitAnalysis.bind(this);
         this.nextArticle = this.nextArticle.bind(this);
     }
@@ -93,9 +95,11 @@ export class InteractiveLabeling {
                 'relative', 'rounded', 'p-1', 'm-1',
                 'bg-red-600/20', 'border-2', 'border-red-500',
                 'bg-green-600/20', 'border-green-500',
+                'bg-gray-600/20', 'border-gray-400',
                 'bg-green-600/30', 'border-green-500',
                 'bg-red-600/30', 'border-red-500',
-                'hover:bg-blue-600/10', 'hover:shadow-lg'
+                'hover:bg-blue-600/10', 'hover:shadow-lg',
+                'ring-2', 'ring-blue-500', 'ring-opacity-75'
             );
             el.removeAttribute('data-element-id');
             el.removeAttribute('data-label');
@@ -109,6 +113,7 @@ export class InteractiveLabeling {
         });
         
         this.labeledElements.clear();
+        this.selectedElementId = null;
     }
 
     loadAnalysisFromBatch(articleData) {
@@ -177,7 +182,7 @@ export class InteractiveLabeling {
                 element.setAttribute('data-element-id', elementDef.id);
                 element.setAttribute('data-label', elementDef.label);
                 element.setAttribute('data-reasoning', elementDef.reasoning);
-                element.setAttribute('title', `Click to label "${elementDef.label}" as fake or real`);
+                element.setAttribute('title', `Click to select "${elementDef.label}" for labeling as Fake News, Real News, or No Label`);
                 
                 // Initialize in labeledElements
                 this.labeledElements.set(elementDef.id, {
@@ -214,27 +219,55 @@ export class InteractiveLabeling {
         const elementData = this.labeledElements.get(elementId);
         if (!elementData) return;
         
+        // Show the label selector panel
+        this.ui.showLabelSelector(elementId, elementData.label);
+        
+        // Highlight the selected element temporarily
+        document.querySelectorAll('.interactive-element').forEach(el => {
+            el.classList.remove('ring-2', 'ring-blue-500', 'ring-opacity-75');
+        });
+        
+        elementData.element.classList.add('ring-2', 'ring-blue-500', 'ring-opacity-75');
+    }
+
+    applyLabel(labelType) {
+        if (!this.selectedElementId) return;
+        
+        const elementData = this.labeledElements.get(this.selectedElementId);
+        if (!elementData) return;
+        
         // Remove previous styling
         elementData.element.classList.remove(
             'bg-red-600/20', 'border-2', 'border-red-500',
-            'bg-green-600/20', 'border-green-500'
+            'bg-green-600/20', 'border-green-500',
+            'bg-gray-600/20', 'border-gray-400',
+            'ring-2', 'ring-blue-500', 'ring-opacity-75'
         );
         
-        // Toggle between fake/real/unlabeled
-        if (!elementData.labeled) {
-            // First click - mark as fake with Tailwind classes
-            elementData.labeled = true;
-            elementData.labeledAsFake = true;
-            elementData.element.classList.add('bg-red-600/20', 'border-2', 'border-red-500');
-        } else if (elementData.labeledAsFake) {
-            // Second click - mark as real with Tailwind classes
-            elementData.labeledAsFake = false;
-            elementData.element.classList.add('bg-green-600/20', 'border-2', 'border-green-500');
-        } else {
-            // Third click - remove label
-            elementData.labeled = false;
+        // Apply new label and styling
+        switch (labelType) {
+            case 'fake':
+                elementData.labeled = true;
+                elementData.labeledAsFake = true;
+                elementData.element.classList.add('bg-red-600/20', 'border-2', 'border-red-500');
+                elementData.element.setAttribute('title', `Labeled as: Fake News - ${elementData.label}`);
+                break;
+            case 'real':
+                elementData.labeled = true;
+                elementData.labeledAsFake = false;
+                elementData.element.classList.add('bg-green-600/20', 'border-2', 'border-green-500');
+                elementData.element.setAttribute('title', `Labeled as: Real News - ${elementData.label}`);
+                break;
+            case 'none':
+                elementData.labeled = false;
+                elementData.labeledAsFake = false;
+                elementData.element.classList.add('bg-gray-600/20', 'border-2', 'border-gray-400');
+                elementData.element.setAttribute('title', `No label applied - ${elementData.label}`);
+                break;
         }
         
+        // Hide the label selector and update UI
+        this.ui.hideLabelSelector();
         this.ui.updateInstructions();
     }
 
@@ -279,6 +312,7 @@ export class InteractiveLabeling {
         this.batchAnalysis = null;
         this.analysisSource = 'none';
         this.initialized = false;
+        this.selectedElementId = null;
         
         // Only clear global reference if this is the active instance
         if (window.interactiveLabeling === this) {

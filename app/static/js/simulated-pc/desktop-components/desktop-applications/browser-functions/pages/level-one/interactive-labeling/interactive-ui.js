@@ -17,7 +17,7 @@ export class InteractiveUI {
             'bi-database-check text-blue-400' : 'bi-exclamation-triangle text-red-400';
         
         const instructions = document.createElement('div');
-        instructions.className = 'labeling-instructions fixed top-20 right-5 w-80 bg-gray-800 border border-gray-600 rounded p-5 shadow-xl text-white font-sans z-50';
+        instructions.className = 'labeling-instructions fixed top-20 right-5 w-96 bg-gray-800 border border-gray-600 rounded p-5 shadow-xl text-white font-sans z-50';
         instructions.innerHTML = `
             <h3 class="text-emerald-400 text-sm font-bold mb-4 pb-1 border-b border-gray-600 flex items-center gap-2">
                 <i class="bi bi-bullseye"></i>
@@ -29,7 +29,7 @@ export class InteractiveUI {
                 <div>
                     <h4 class="text-sm font-semibold text-blue-400 mb-2">How to Use</h4>
                     <p class="text-xs text-gray-300 leading-relaxed">
-                        ${educationalNotes}
+                        Click on different parts of the article to select them, then use the label selector buttons to mark them as "Fake News", "Real News", or "No Label". Analyze each element carefully to identify misinformation.
                     </p>
                 </div>
                 
@@ -41,14 +41,42 @@ export class InteractiveUI {
                             <div class="w-4 h-4 rounded-full bg-red-600/20 border-2 border-red-500 flex items-center justify-center">
                                 <i class="bi bi-x-circle text-red-500 text-xs"></i>
                             </div>
-                            <span>Fake/Suspicious</span>
+                            <span>Fake News</span>
                         </div>
                         <div class="flex items-center gap-2 text-xs text-gray-300">
                             <div class="w-4 h-4 rounded-full bg-green-600/20 border-2 border-green-500 flex items-center justify-center">
                                 <i class="bi bi-check-circle text-green-500 text-xs"></i>
                             </div>
-                            <span>Real/Legitimate</span>
+                            <span>Real News</span>
                         </div>
+                        <div class="flex items-center gap-2 text-xs text-gray-300">
+                            <div class="w-4 h-4 rounded-full bg-gray-600/20 border-2 border-gray-400 flex items-center justify-center">
+                                <i class="bi bi-question-circle text-gray-400 text-xs"></i>
+                            </div>
+                            <span>No Label</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Label Selection Panel -->
+                <div id="label-selection-panel" class="hidden">
+                    <h4 class="text-sm font-semibold text-blue-400 mb-2">Select Label</h4>
+                    <div class="space-y-2">
+                        <button class="w-full bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded transition-colors duration-200 flex items-center justify-center gap-2 cursor-pointer text-xs" onclick="window.interactiveLabeling?.applyLabel('fake')">
+                            <i class="bi bi-x-circle"></i>
+                            Fake News
+                        </button>
+                        <button class="w-full bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded transition-colors duration-200 flex items-center justify-center gap-2 cursor-pointer text-xs" onclick="window.interactiveLabeling?.applyLabel('real')">
+                            <i class="bi bi-check-circle"></i>
+                            Real News
+                        </button>
+                        <button class="w-full bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded transition-colors duration-200 flex items-center justify-center gap-2 cursor-pointer text-xs" onclick="window.interactiveLabeling?.applyLabel('none')">
+                            <i class="bi bi-question-circle"></i>
+                            No Label
+                        </button>
+                    </div>
+                    <div class="mt-2 pt-2 border-t border-gray-600">
+                        <p id="selected-element-name" class="text-xs text-gray-400 italic">Click an element to label it</p>
                     </div>
                 </div>
                 
@@ -79,6 +107,30 @@ export class InteractiveUI {
         
         document.body.appendChild(instructions);
         window.interactiveLabeling = this.labelingSystem;
+    }
+
+    showLabelSelector(elementId, elementName) {
+        const panel = document.querySelector('#label-selection-panel');
+        const nameDisplay = document.querySelector('#selected-element-name');
+        
+        if (panel && nameDisplay) {
+            panel.classList.remove('hidden');
+            nameDisplay.textContent = `Selected: ${elementName}`;
+            
+            // Store the current element ID for labeling
+            this.labelingSystem.selectedElementId = elementId;
+        }
+    }
+
+    hideLabelSelector() {
+        const panel = document.querySelector('#label-selection-panel');
+        const nameDisplay = document.querySelector('#selected-element-name');
+        
+        if (panel && nameDisplay) {
+            panel.classList.add('hidden');
+            nameDisplay.textContent = 'Click an element to label it';
+            this.labelingSystem.selectedElementId = null;
+        }
     }
 
     updateInstructions() {
