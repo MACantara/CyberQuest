@@ -182,7 +182,7 @@ export class InteractiveLabeling {
                 element.setAttribute('data-element-id', elementDef.id);
                 element.setAttribute('data-label', elementDef.label);
                 element.setAttribute('data-reasoning', elementDef.reasoning);
-                element.setAttribute('title', `Click to select "${elementDef.label}" for labeling as Fake News, Real News, or No Label`);
+                element.setAttribute('title', `Click to open label menu for "${elementDef.label}"`);
                 
                 // Initialize in labeledElements
                 this.labeledElements.set(elementDef.id, {
@@ -219,15 +219,16 @@ export class InteractiveLabeling {
         const elementData = this.labeledElements.get(elementId);
         if (!elementData) return;
         
-        // Show the label selector panel
-        this.ui.showLabelSelector(elementId, elementData.label);
-        
-        // Highlight the selected element temporarily
+        // Remove highlight from all elements
         document.querySelectorAll('.interactive-element').forEach(el => {
             el.classList.remove('ring-2', 'ring-blue-500', 'ring-opacity-75');
         });
         
+        // Highlight the selected element
         elementData.element.classList.add('ring-2', 'ring-blue-500', 'ring-opacity-75');
+        
+        // Show the dropdown menu next to the clicked element
+        this.ui.showDropdownMenu(elementData.element, elementId, elementData.label);
     }
 
     applyLabel(labelType) {
@@ -266,8 +267,7 @@ export class InteractiveLabeling {
                 break;
         }
         
-        // Hide the label selector and update UI
-        this.ui.hideLabelSelector();
+        // Update UI
         this.ui.updateInstructions();
     }
 
