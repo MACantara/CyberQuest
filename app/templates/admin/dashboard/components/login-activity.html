@@ -2,7 +2,7 @@
 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 sm:p-6 border border-gray-200 dark:border-gray-700 opacity-0 animate-fade-in-right" style="animation-delay: 0.3s;">
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 space-y-2 sm:space-y-0">
         <h2 class="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">Recent Login Activity</h2>
-        <a href="{{ url_for('logs.logs', type='login_attempts') }}" class="text-blue-600 dark:text-blue-400 hover:underline text-sm self-start sm:self-auto">View all logs</a>
+        <a href="{{ url_for('admin_logs.logs_management', type='login_attempts') }}" class="text-blue-600 dark:text-blue-400 hover:underline text-sm self-start sm:self-auto">View all logs</a>
     </div>
     <div class="space-y-3">
         {% for attempt in recent_login_logs %}

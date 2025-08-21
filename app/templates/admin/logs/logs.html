@@ -15,7 +15,7 @@
         <div class="animate-fade-in-up opacity-0" style="animation-delay: 0.3s;">
             <!-- Top Pagination -->
             {% macro build_pagination_url(page) -%}
-            {{ url_for('logs.logs', type=log_type, page=page, per_page=request.args.get('per_page', '25')) }}
+            {{ url_for('admin_logs.logs_management', type=log_type, page=page, per_page=request.args.get('per_page', '25')) }}
             {%- endmacro %}
             {% set position = 'top' %}
             {% include 'partials/shared/pagination.html' %}
