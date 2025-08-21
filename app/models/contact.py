@@ -172,5 +172,17 @@ class Contact:
         except Exception as e:
             raise DatabaseError(f"Failed to count recent submissions: {e}")
     
+    @classmethod
+    def cleanup_old_submissions(cls, days_old: int = 365) -> int:
+        """Clean up old contact submissions."""
+        supabase = get_supabase()
+        try:
+            cutoff_date = (datetime.utcnow() - timedelta(days=days_old)).isoformat()
+            response = supabase.table(Tables.CONTACT_SUBMISSIONS).delete().lt('created_at', cutoff_date).execute()
+            data = handle_supabase_error(response)
+            return len(data) if data else 0
+        except Exception as e:
+            raise DatabaseError(f"Failed to cleanup old submissions: {e}")
+    
     def __repr__(self):
         return f'<Contact {self.name} - {self.subject}>'
