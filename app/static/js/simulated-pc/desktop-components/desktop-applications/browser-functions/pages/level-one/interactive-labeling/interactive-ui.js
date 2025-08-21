@@ -29,7 +29,7 @@ export class InteractiveUI {
                 <div>
                     <h4 class="text-sm font-semibold text-blue-400 mb-2">How to Use</h4>
                     <p class="text-xs text-gray-300 leading-relaxed">
-                        ${educationalNotes}
+                        Click on different parts of the article to label them. A dropdown menu will appear allowing you to select "Fake News", "Real News", or "No Label". Analyze each element carefully to identify misinformation.
                     </p>
                 </div>
                 
@@ -41,13 +41,19 @@ export class InteractiveUI {
                             <div class="w-4 h-4 rounded-full bg-red-600/20 border-2 border-red-500 flex items-center justify-center">
                                 <i class="bi bi-x-circle text-red-500 text-xs"></i>
                             </div>
-                            <span>Fake/Suspicious</span>
+                            <span>Fake News</span>
                         </div>
                         <div class="flex items-center gap-2 text-xs text-gray-300">
                             <div class="w-4 h-4 rounded-full bg-green-600/20 border-2 border-green-500 flex items-center justify-center">
                                 <i class="bi bi-check-circle text-green-500 text-xs"></i>
                             </div>
-                            <span>Real/Legitimate</span>
+                            <span>Real News</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-xs text-gray-300">
+                            <div class="w-4 h-4 rounded-full bg-gray-600/20 border-2 border-gray-400 flex items-center justify-center">
+                                <i class="bi bi-question-circle text-gray-400 text-xs"></i>
+                            </div>
+                            <span>No Label</span>
                         </div>
                     </div>
                 </div>
@@ -79,6 +85,92 @@ export class InteractiveUI {
         
         document.body.appendChild(instructions);
         window.interactiveLabeling = this.labelingSystem;
+    }
+
+    showDropdownMenu(element, elementId, elementName) {
+        // Remove any existing dropdown
+        this.hideDropdownMenu();
+        
+        const rect = element.getBoundingClientRect();
+        const dropdown = document.createElement('div');
+        dropdown.id = 'label-dropdown';
+        dropdown.className = 'fixed bg-gray-800 border border-gray-600 rounded-lg shadow-xl text-white font-sans z-[60] min-w-[200px]';
+        
+        // Position the dropdown near the clicked element
+        const top = rect.bottom + window.scrollY + 5;
+        const left = Math.min(rect.left + window.scrollX, window.innerWidth - 220); // Ensure it stays in viewport
+        
+        dropdown.style.top = `${top}px`;
+        dropdown.style.left = `${left}px`;
+        
+        dropdown.innerHTML = `
+            <div class="p-3">
+                <div class="text-xs text-blue-400 font-semibold mb-2 border-b border-gray-600 pb-2">
+                    <i class="bi bi-tag mr-1"></i>
+                    Label: ${elementName}
+                </div>
+                <div class="space-y-1">
+                    <button class="w-full bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded transition-colors duration-200 flex items-center gap-2 cursor-pointer text-xs" data-label="fake">
+                        <i class="bi bi-x-circle"></i>
+                        Fake News
+                    </button>
+                    <button class="w-full bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded transition-colors duration-200 flex items-center gap-2 cursor-pointer text-xs" data-label="real">
+                        <i class="bi bi-check-circle"></i>
+                        Real News
+                    </button>
+                    <button class="w-full bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 rounded transition-colors duration-200 flex items-center gap-2 cursor-pointer text-xs" data-label="none">
+                        <i class="bi bi-question-circle"></i>
+                        No Label
+                    </button>
+                </div>
+                <div class="mt-2 pt-2 border-t border-gray-600">
+                    <button class="w-full text-gray-400 hover:text-white text-xs px-2 py-1 rounded transition-colors duration-200" data-label="cancel">
+                        <i class="bi bi-x mr-1"></i>Cancel
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(dropdown);
+        
+        // Add click handlers for dropdown options
+        dropdown.addEventListener('click', (e) => {
+            const button = e.target.closest('button[data-label]');
+            if (button) {
+                const labelType = button.dataset.label;
+                if (labelType === 'cancel') {
+                    this.hideDropdownMenu();
+                } else {
+                    this.labelingSystem.applyLabel(labelType);
+                    this.hideDropdownMenu();
+                }
+            }
+        });
+        
+        // Add click outside to close
+        setTimeout(() => {
+            document.addEventListener('click', this.handleOutsideClick.bind(this), { once: true });
+        }, 100);
+        
+        // Store reference for cleanup
+        this.currentDropdown = dropdown;
+        this.labelingSystem.selectedElementId = elementId;
+    }
+
+    hideDropdownMenu() {
+        const dropdown = document.getElementById('label-dropdown');
+        if (dropdown) {
+            dropdown.remove();
+        }
+        this.currentDropdown = null;
+        this.labelingSystem.selectedElementId = null;
+    }
+
+    handleOutsideClick(event) {
+        const dropdown = document.getElementById('label-dropdown');
+        if (dropdown && !dropdown.contains(event.target)) {
+            this.hideDropdownMenu();
+        }
     }
 
     updateInstructions() {
@@ -116,5 +208,7 @@ export class InteractiveUI {
     cleanup() {
         const instructions = document.querySelector('.labeling-instructions');
         if (instructions) instructions.remove();
+        
+        this.hideDropdownMenu();
     }
 }
