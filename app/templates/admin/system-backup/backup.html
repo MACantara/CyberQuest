@@ -197,7 +197,10 @@
                                 Created
                             </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                                Size
+                                Size & Records
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                Details
                             </th>
                             <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                 Actions
@@ -214,14 +217,45 @@
                                         <div class="text-sm font-medium text-gray-900 dark:text-white">
                                             {{ backup.filename }}
                                         </div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400">
+                                            {% if backup.metadata.app_version != 'Error' %}
+                                                {{ backup.metadata.app_version }}
+                                            {% else %}
+                                                Legacy Format
+                                            {% endif %}
+                                        </div>
                                     </div>
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                {{ backup.created_at.strftime('%Y-%m-%d %H:%M:%S') }}
+                                <div>{{ backup.created_at.strftime('%Y-%m-%d') }}</div>
+                                <div class="text-xs">{{ backup.created_at.strftime('%H:%M:%S') }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                {{ backup.size_mb }} MB
+                                <div class="font-medium">{{ backup.size_mb }} MB</div>
+                                <div class="text-xs">
+                                    {% if backup.metadata.total_records != 'Error' and backup.metadata.total_records != 'Unknown' %}
+                                        {{ backup.metadata.total_records }} records
+                                    {% else %}
+                                        Size only
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                <div class="text-xs">
+                                    {% if backup.metadata.tables_backed_up != 'Error' and backup.metadata.tables_backed_up != 'Unknown' %}
+                                        {{ backup.metadata.tables_backed_up }} tables
+                                    {% else %}
+                                        Unknown structure
+                                    {% endif %}
+                                </div>
+                                <div class="text-xs">
+                                    {% if backup.metadata.database_type != 'Error' and backup.metadata.database_type != 'Unknown' %}
+                                        {{ backup.metadata.database_type }}
+                                    {% else %}
+                                        Legacy
+                                    {% endif %}
+                                </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                                 <a href="{{ url_for('admin.download_backup', filename=backup.filename) }}" 
@@ -297,37 +331,40 @@ function updateRestoreWarning() {
 }
 
 // Enhanced form submission with specific confirmation messages
-document.querySelector('form[action*="restore_backup"]').addEventListener('submit', function(e) {
-    const restoreType = document.getElementById('restore_type').value;
-    const fileName = document.querySelector('input[name="backup_file"]').files[0]?.name || 'selected backup';
-    
-    let confirmMessage;
-    if (restoreType === 'replace') {
-        confirmMessage = `⚠️ DESTRUCTIVE OPERATION WARNING ⚠️\n\n` +
-                        `You are about to PERMANENTLY DELETE all existing data and replace it with: ${fileName}\n\n` +
-                        `This will:\n` +
-                        `• Delete ALL users, login attempts, contacts, and verifications\n` +
-                        `• You may be logged out and need to log in again\n` +
-                        `• Terminate current user sessions\n` +
-                        `• Cannot be undone\n\n` +
-                        `Are you absolutely sure you want to proceed?`;
-    } else {
-        confirmMessage = `Confirm Backup Restore\n\n` +
-                        `You are about to restore data from: ${fileName}\n\n` +
-                        `This will merge backup data with existing data:\n` +
-                        `• Update existing records with backup versions\n` +
-                        `• Add new records from backup\n` +
-                        `• Preserve existing data not in backup\n\n` +
-                        `Continue with restore?`;
-    }
-    
-    if (!confirm(confirmMessage)) {
-        e.preventDefault();
-    }
-});
-
-// Initialize warning on page load
 document.addEventListener('DOMContentLoaded', function() {
+    const restoreForm = document.querySelector('form[action*="restore_backup"]');
+    if (restoreForm) {
+        restoreForm.addEventListener('submit', function(e) {
+            const restoreType = document.getElementById('restore_type').value;
+            const fileName = document.querySelector('input[name="backup_file"]').files[0]?.name || 'selected backup';
+            
+            let confirmMessage;
+            if (restoreType === 'replace') {
+                confirmMessage = `⚠️ DESTRUCTIVE OPERATION WARNING ⚠️\n\n` +
+                                `You are about to PERMANENTLY DELETE all existing data and replace it with: ${fileName}\n\n` +
+                                `This will:\n` +
+                                `• Delete ALL users, login attempts, contacts, and verifications\n` +
+                                `• You may be logged out and need to log in again\n` +
+                                `• Terminate current user sessions\n` +
+                                `• Cannot be undone\n\n` +
+                                `Are you absolutely sure you want to proceed?`;
+            } else {
+                confirmMessage = `Confirm Backup Restore\n\n` +
+                                `You are about to restore data from: ${fileName}\n\n` +
+                                `This will merge backup data with existing data:\n` +
+                                `• Update existing records with backup versions\n` +
+                                `• Add new records from backup\n` +
+                                `• Preserve existing data not in backup\n\n` +
+                                `Continue with restore?`;
+            }
+            
+            if (!confirm(confirmMessage)) {
+                e.preventDefault();
+            }
+        });
+    }
+    
+    // Initialize warning on page load
     updateRestoreWarning();
 });
 </script>
