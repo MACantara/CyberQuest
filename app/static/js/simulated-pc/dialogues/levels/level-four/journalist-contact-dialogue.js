@@ -3,7 +3,7 @@ import { BaseDialogue } from '../../base-dialogue.js';
 export class JournalistContactDialogue extends BaseDialogue {
     constructor(desktop, character = 'journalist') {
         super(desktop, character);
-        this.ethicsScore = parseInt(localStorage.getItem('cyberquest_level4_ethics_score') || '0');
+        this.ethicsScore = parseInt(sessionStorage.getItem('cyberquest_level4_ethics_score') || '0');
         this.messages = [
             {
                 text: "[ CALL FROM CYBERSECURITY REPORTER - TECH TIMES ]"
@@ -108,7 +108,6 @@ export class JournalistContactDialogue extends BaseDialogue {
                 message = 'You provided full cooperation and complete details to the journalist.';
                 consequence = 'Your disclosure triggers nationwide attention to voting system security. While transparency is achieved, the sudden publicity may rush vendors into hasty fixes. Your name becomes associated with major electoral security reforms.';
                 mediaOutcome = 'Front-page story leads to Congressional hearings on election security.';
-                localStorage.setItem('cyberquest_level4_choice_media', 'full_cooperation');
                 break;
                 
             case 'redacted_info':
@@ -116,7 +115,6 @@ export class JournalistContactDialogue extends BaseDialogue {
                 message = 'You provided redacted information that protects sensitive technical details.';
                 consequence = 'Your balanced approach allows public awareness while preventing malicious exploitation. The story raises important questions about election security without providing a how-to guide for attackers.';
                 mediaOutcome = 'Responsible reporting leads to measured security improvements.';
-                localStorage.setItem('cyberquest_level4_choice_media', 'redacted');
                 break;
                 
             case 'no_comment':
@@ -124,7 +122,6 @@ export class JournalistContactDialogue extends BaseDialogue {
                 message = 'You maintained "no comment" and stuck to responsible disclosure timelines.';
                 consequence = 'The journalist publishes a story about suspected vulnerabilities without your input. While you maintain professional standards, the lack of expert guidance leads to some misinformation in the coverage.';
                 mediaOutcome = 'Story published with limited accuracy due to lack of expert input.';
-                localStorage.setItem('cyberquest_level4_choice_media', 'no_comment');
                 break;
                 
             case 'misleading_info':
@@ -132,7 +129,6 @@ export class JournalistContactDialogue extends BaseDialogue {
                 message = 'You provided misleading information to the journalist.';
                 consequence = 'Your deception is eventually discovered, destroying your professional credibility. The false information delays important security fixes and puts democratic processes at greater risk. Legal and professional consequences follow.';
                 mediaOutcome = 'Deception discovered, professional reputation ruined.';
-                localStorage.setItem('cyberquest_level4_choice_media', 'misled');
                 break;
                 
             case 'refer_officials':
@@ -140,13 +136,13 @@ export class JournalistContactDialogue extends BaseDialogue {
                 message = 'You referred the journalist to official channels while maintaining neutrality.';
                 consequence = 'Your professional approach guides the journalist to appropriate sources. Official channels provide measured responses, leading to constructive dialogue about election security improvements.';
                 mediaOutcome = 'Professional handling leads to constructive public discourse.';
-                localStorage.setItem('cyberquest_level4_choice_media', 'referred');
                 break;
         }
 
         // Update ethics score
         this.ethicsScore += ethicsChange;
-        localStorage.setItem('cyberquest_level4_ethics_score', this.ethicsScore.toString());
+        sessionStorage.setItem('cyberquest_level4_ethics_score', this.ethicsScore.toString());
+        sessionStorage.setItem('cyberquest_level4_choice_made', choice);
 
         this.showConsequence(message, consequence, ethicsChange, mediaOutcome);
     }
@@ -186,18 +182,5 @@ export class JournalistContactDialogue extends BaseDialogue {
 
     getCharacterName() {
         return 'Sarah Chen - Tech Times';
-    }
-
-    static triggerAfterCorporateChoice(desktop) {
-        // Trigger after corporate pressure choice
-        const corporateChoice = localStorage.getItem('cyberquest_level4_choice_corporate');
-        const mediaChoice = localStorage.getItem('cyberquest_level4_choice_media');
-        
-        if (corporateChoice && !mediaChoice) {
-            setTimeout(() => {
-                const dialogue = new JournalistContactDialogue(desktop);
-                dialogue.start();
-            }, 2000);
-        }
     }
 }

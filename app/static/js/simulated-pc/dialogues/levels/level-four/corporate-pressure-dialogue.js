@@ -3,7 +3,7 @@ import { BaseDialogue } from '../../base-dialogue.js';
 export class CorporatePressureDialogue extends BaseDialogue {
     constructor(desktop, character = 'ceo') {
         super(desktop, character);
-        this.ethicsScore = parseInt(localStorage.getItem('cyberquest_level4_ethics_score') || '0');
+        this.ethicsScore = parseInt(sessionStorage.getItem('cyberquest_level4_ethics_score') || '0');
         this.messages = [
             {
                 text: "[ INCOMING CALL FROM SECUREVOTE INC. CEO ]"
@@ -101,35 +101,34 @@ export class CorporatePressureDialogue extends BaseDialogue {
                 ethicsChange = -300;
                 message = 'You accepted the $25,000 settlement and signed the NDA.';
                 consequence = 'The vulnerabilities remain unfixed during the election period. While you received compensation, the ethical compromise weighs heavily. Democratic processes remain at risk due to your silence.';
-                localStorage.setItem('cyberquest_level4_choice_corporate', 'accepted_settlement');
-                localStorage.setItem('cyberquest_level4_settlement_earned', '25000');
+                sessionStorage.setItem('cyberquest_level4_choice_made', 'corporate_accepted');
                 break;
                 
             case 'refuse_continue':
                 ethicsChange = 150;
                 message = 'You refused the settlement and continued with responsible disclosure.';
                 consequence = 'SecureVote Inc. becomes hostile and threatens legal action, but you maintain your professional integrity. The company may try to discredit your findings, but your ethical stance is uncompromised.';
-                localStorage.setItem('cyberquest_level4_choice_corporate', 'refused_settlement');
+                sessionStorage.setItem('cyberquest_level4_choice_made', 'corporate_refused');
                 break;
                 
             case 'negotiate_timeline':
                 ethicsChange = 75;
                 message = 'You negotiated a compromise timeline for disclosure.';
                 consequence = 'You agree to a 30-day disclosure window, balancing election security with democratic continuity. The company appreciates your professionalism, and you maintain ethical standards while showing practical judgment.';
-                localStorage.setItem('cyberquest_level4_choice_corporate', 'negotiated_timeline');
+                sessionStorage.setItem('cyberquest_level4_choice_made', 'corporate_negotiated');
                 break;
                 
             case 'report_pressure':
                 ethicsChange = 125;
                 message = 'You reported the pressure tactics to regulatory authorities.';
                 consequence = 'Regulatory bodies launch an investigation into SecureVote Inc.\'s business practices. Your report becomes part of a larger investigation into corporate intimidation of security researchers.';
-                localStorage.setItem('cyberquest_level4_choice_corporate', 'reported_pressure');
+                sessionStorage.setItem('cyberquest_level4_choice_made', 'corporate_reported');
                 break;
         }
 
         // Update ethics score
         this.ethicsScore += ethicsChange;
-        localStorage.setItem('cyberquest_level4_ethics_score', this.ethicsScore.toString());
+        sessionStorage.setItem('cyberquest_level4_ethics_score', this.ethicsScore.toString());
 
         this.showConsequence(message, consequence, ethicsChange);
     }
@@ -169,18 +168,5 @@ export class CorporatePressureDialogue extends BaseDialogue {
 
     getCharacterName() {
         return 'SecureVote CEO';
-    }
-
-    static triggerAfterBribeChoice(desktop) {
-        // Trigger this dialogue after the bribe choice if user made ethical choice
-        const briberChoice = localStorage.getItem('cyberquest_level4_choice_bribe');
-        const corporateChoice = localStorage.getItem('cyberquest_level4_choice_corporate');
-        
-        if ((briberChoice === 'reported' || briberChoice === 'ignored') && !corporateChoice) {
-            setTimeout(() => {
-                const dialogue = new CorporatePressureDialogue(desktop);
-                dialogue.start();
-            }, 3000);
-        }
     }
 }

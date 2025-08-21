@@ -3,16 +3,12 @@ import { BaseDialogue } from '../../base-dialogue.js';
 export class ConsequenceEndingDialogue extends BaseDialogue {
     constructor(desktop, character = 'narrator') {
         super(desktop, character);
-        this.ethicsScore = parseInt(localStorage.getItem('cyberquest_level4_ethics_score') || '0');
+        this.ethicsScore = parseInt(sessionStorage.getItem('cyberquest_level4_ethics_score') || '0');
         this.generateConsequenceMessages();
     }
 
     generateConsequenceMessages() {
-        const briberChoice = localStorage.getItem('cyberquest_level4_choice_bribe');
-        const corporateChoice = localStorage.getItem('cyberquest_level4_choice_corporate');
-        const crisisChoice = localStorage.getItem('cyberquest_level4_choice_crisis');
-        const mediaChoice = localStorage.getItem('cyberquest_level4_choice_media');
-        const newsHeadline = localStorage.getItem('cyberquest_level4_news_headline');
+        const choiceMade = sessionStorage.getItem('cyberquest_level4_choice_made');
 
         // Determine the primary ending path based on choices
         let endingType = this.determineEndingType();
@@ -36,41 +32,27 @@ export class ConsequenceEndingDialogue extends BaseDialogue {
     }
 
     determineEndingType() {
-        const briberChoice = localStorage.getItem('cyberquest_level4_choice_bribe');
-        const corporateChoice = localStorage.getItem('cyberquest_level4_choice_corporate');
+        const choiceMade = sessionStorage.getItem('cyberquest_level4_choice_made');
         
-        // Fallen researcher path
-        if (briberChoice === 'accepted' || corporateChoice === 'accepted_settlement') {
+        // Map choices to ending types based on ethics score and choice
+        if (this.ethicsScore >= 300) {
+            return 'ethical_hero';
+        } else if (this.ethicsScore >= 100) {
+            return 'mixed_results';
+        } else if (this.ethicsScore >= -100) {
+            return 'compromised_professional';
+        } else {
             return 'fallen_researcher';
         }
-        
-        // Ethical hero path
-        if ((briberChoice === 'reported' || briberChoice === 'ignored') && 
-            (corporateChoice === 'refused_settlement' || corporateChoice === 'reported_pressure')) {
-            return 'ethical_hero';
-        }
-        
-        // Compromised professional path
-        if (briberChoice === 'engaged' || corporateChoice === 'negotiated_timeline') {
-            return 'compromised_professional';
-        }
-        
-        // Mixed results for everything else
-        return 'mixed_results';
     }
 
     getEthicalHeroEnding() {
-        const newsHeadline = localStorage.getItem('cyberquest_level4_news_headline') || 'Security Researcher Maintains High Ethical Standards';
-        
         return [
             {
                 text: "[ SIX MONTHS LATER - CYBERSECURITY CONFERENCE ]"
             },
             {
                 text: "You stand before an audience of security professionals, receiving the prestigious 'Ethical Researcher of the Year' award."
-            },
-            {
-                text: `The news headline from your case still resonates: "${newsHeadline}"`
             },
             {
                 text: "Your decision to maintain ethical standards under pressure has become a case study taught in cybersecurity ethics courses worldwide."
@@ -257,19 +239,5 @@ export class ConsequenceEndingDialogue extends BaseDialogue {
 
     getCharacterName() {
         return 'Story Narrator';
-    }
-
-    static triggerFinalConsequence(desktop) {
-        // This should be triggered at the very end of level 4
-        const allChoicesMade = localStorage.getItem('cyberquest_level4_all_choices_complete');
-        const consequenceShown = localStorage.getItem('cyberquest_level4_consequence_shown');
-        
-        if (allChoicesMade && !consequenceShown) {
-            localStorage.setItem('cyberquest_level4_consequence_shown', 'true');
-            setTimeout(() => {
-                const dialogue = new ConsequenceEndingDialogue(desktop);
-                dialogue.start();
-            }, 1000);
-        }
     }
 }
