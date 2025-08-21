@@ -727,11 +727,14 @@ def restore_backup():
             return redirect(url_for('admin.system_backup'))
         
         # Save uploaded file temporarily
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.zip') as temp_file:
-            file.save(temp_file.name)
+        temp_file_path = None
+        try:
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.zip') as temp_file:
+                temp_file_path = temp_file.name
+                file.save(temp_file_path)
             
             # Extract and restore backup
-            with zipfile.ZipFile(temp_file.name, 'r') as zipf:
+            with zipfile.ZipFile(temp_file_path, 'r') as zipf:
                 try:
                     # Read backup metadata
                     metadata = json.loads(zipf.read('backup_metadata.json'))
@@ -749,8 +752,13 @@ def restore_backup():
                     
                     _restore_database_backup(backup_data, restore_type)
                     
-                    flash(f'Database restored successfully! Restored {total_records} records from backup created on {metadata.get("created_at", "unknown date")}.', 'success')
-                    current_app.logger.info(f'Database restored by {current_user.username} from backup: {file.filename}')
+                    # Generate detailed success message
+                    if restore_type == 'replace':
+                        flash(f'Database REPLACED successfully! All existing data was deleted and replaced with {total_records} records from backup created on {metadata.get("created_at", "unknown date")}. Previous data is permanently lost.', 'success')
+                    else:
+                        flash(f'Database MERGED successfully! {total_records} records from backup created on {metadata.get("created_at", "unknown date")} have been merged with existing data.', 'success')
+                    
+                    current_app.logger.info(f'Database restored by {current_user.username} using {restore_type} mode from backup: {file.filename}')
                     
                 except json.JSONDecodeError as e:
                     current_app.logger.error(f"Invalid backup file format: {e}")
@@ -762,8 +770,13 @@ def restore_backup():
                     current_app.logger.error(f"Database restore failed: {e}")
                     flash(f'Database restore failed: {str(e)}', 'error')
             
+        finally:
             # Clean up temp file
-            os.unlink(temp_file.name)
+            if temp_file_path and os.path.exists(temp_file_path):
+                try:
+                    os.unlink(temp_file_path)
+                except OSError as e:
+                    current_app.logger.warning(f"Could not delete temp file {temp_file_path}: {e}")
         
     except zipfile.BadZipFile:
         current_app.logger.error("Invalid ZIP file uploaded for restore")
@@ -820,7 +833,10 @@ def _restore_database_backup(backup_data: Dict[str, Any], restore_type: str = 'm
             supabase.table(Tables.EMAIL_VERIFICATIONS).delete().neq('id', 0).execute()
             supabase.table(Tables.CONTACT_SUBMISSIONS).delete().neq('id', 0).execute()
             supabase.table(Tables.LOGIN_ATTEMPTS).delete().neq('id', 0).execute()
-            # Note: Don't delete users table as it might break the current session
+            
+            # For users table in replace mode, we need to be careful about the current session
+            # Delete all users first - the session will be handled by re-inserting the current user if they exist in backup
+            supabase.table(Tables.USERS).delete().neq('id', 0).execute()
         
         # Restore data
         for table_name, table_data in backup_data.items():
@@ -836,6 +852,8 @@ def _restore_database_backup(backup_data: Dict[str, Any], restore_type: str = 'm
             }
             
             if table_name in table_mapping:
+                current_app.logger.info(f"Restoring {len(table_data)} records to {table_name} table")
+                
                 # Insert data in batches to avoid timeout
                 batch_size = 50  # Reduced batch size for better reliability
                 for i in range(0, len(table_data), batch_size):
@@ -865,17 +883,19 @@ def _restore_database_backup(backup_data: Dict[str, Any], restore_type: str = 'm
                                     current_app.logger.error(f"Failed to restore individual record in {table_name}: {record_error}")
                                     continue
                     else:
-                        # Insert new data (replace mode)
+                        # Replace mode: Direct insert since we deleted all data
                         try:
                             supabase.table(table_mapping[table_name]).insert(batch).execute()
                         except Exception as e:
-                            current_app.logger.error(f"Failed to insert batch in {table_name}: {e}")
-                            # Try individual records for replace mode too
+                            current_app.logger.error(f"Failed to insert batch in {table_name} (replace mode): {e}")
+                            # If there are still conflicts in replace mode, log details and continue
+                            current_app.logger.error(f"Possible incomplete deletion or backup data issues in {table_name}")
+                            # Try individual inserts to identify problematic records
                             for record in batch:
                                 try:
                                     supabase.table(table_mapping[table_name]).insert(record).execute()
                                 except Exception as record_error:
-                                    current_app.logger.error(f"Failed to insert individual record in {table_name}: {record_error}")
+                                    current_app.logger.error(f"Failed to insert record ID {record.get('id', 'unknown')} in {table_name}: {record_error}")
                                     continue
         
         current_app.logger.info(f"Database restore completed: {restore_type} mode")
