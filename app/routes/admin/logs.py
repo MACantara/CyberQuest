@@ -9,15 +9,15 @@ from datetime import datetime, timedelta
 import csv
 import io
 
-# Import admin_required from admin module
-from app.routes.admin import admin_required
+# Import admin_required from admin utils module
+from app.routes.admin.admin_utils import admin_required
 
-logs_bp = Blueprint('logs', __name__, url_prefix='/admin/logs')
+admin_logs_bp = Blueprint('admin_logs', __name__, url_prefix='/admin/logs')
 
-@logs_bp.route('/')
+@admin_logs_bp.route('/')
 @login_required
 @admin_required
-def logs():
+def logs_management():
     """View system logs."""
     try:
         log_type = request.args.get('type', 'login_attempts')
@@ -52,7 +52,7 @@ def logs():
         
         else:
             flash('Invalid log type.', 'error')
-            return redirect(url_for('logs.logs'))
+            return redirect(url_for('admin_logs.logs_management'))
         
         # Calculate pagination info
         total_pages = (total_count + per_page - 1) // per_page
@@ -84,7 +84,7 @@ def logs():
         flash('Error loading logs.', 'error')
         return redirect(url_for('admin.dashboard'))
 
-@logs_bp.route('/export')
+@admin_logs_bp.route('/export')
 @login_required
 @admin_required
 def export_logs():
@@ -144,4 +144,4 @@ def export_logs():
     except DatabaseError as e:
         current_app.logger.error(f"Logs export error: {e}")
         flash('Error exporting logs.', 'error')
-        return redirect(url_for('logs.logs'))
+        return redirect(url_for('admin_logs.logs_management'))
