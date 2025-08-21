@@ -16,9 +16,11 @@ def get_client_ip():
 def check_ip_lockout():
     """Check if current IP is locked out and return lockout info."""
     client_ip = get_client_ip()
+    max_attempts = current_app.config.get('MAX_LOGIN_ATTEMPTS', 5)
+    lockout_minutes = current_app.config.get('LOGIN_LOCKOUT_MINUTES', 15)
     
-    if LoginAttempt.is_ip_locked(client_ip):
-        remaining_time = LoginAttempt.get_lockout_time_remaining(client_ip)
+    if LoginAttempt.is_ip_locked(client_ip, max_attempts, lockout_minutes):
+        remaining_time = LoginAttempt.get_lockout_time_remaining(client_ip, lockout_minutes)
         if remaining_time:
             minutes = int(remaining_time.total_seconds() / 60) + 1
             return True, minutes
@@ -40,13 +42,15 @@ def record_login_attempt(username_or_email, success=False):
 def get_remaining_attempts():
     """Get the number of remaining login attempts for current IP."""
     client_ip = get_client_ip()
-    failed_count = LoginAttempt.get_failed_attempts_count(client_ip)
     max_attempts = current_app.config.get('MAX_LOGIN_ATTEMPTS', 5)
+    lockout_minutes = current_app.config.get('LOGIN_LOCKOUT_MINUTES', 15)
+    failed_count = LoginAttempt.get_failed_attempts_count(client_ip, lockout_minutes)
     return max(0, max_attempts - failed_count)
 
 def is_lockout_triggered():
     """Check if the current IP should be locked out after this attempt."""
     client_ip = get_client_ip()
-    failed_count = LoginAttempt.get_failed_attempts_count(client_ip)
     max_attempts = current_app.config.get('MAX_LOGIN_ATTEMPTS', 5)
+    lockout_minutes = current_app.config.get('LOGIN_LOCKOUT_MINUTES', 15)
+    failed_count = LoginAttempt.get_failed_attempts_count(client_ip, lockout_minutes)
     return failed_count >= max_attempts

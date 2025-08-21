@@ -18,10 +18,12 @@ class Config:
         SQLALCHEMY_TRACK_MODIFICATIONS = False
         DISABLE_DATABASE = True
     else:
-        # Local development with SQLite
+        # Local development with SQLite and supabase
         basedir = os.path.abspath(os.path.dirname(__file__))
         SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
             'sqlite:///' + os.path.join(basedir, 'instance', 'app.db')
+        SUPABASE_URL = os.environ.get('SUPABASE_URL')
+        SUPABASE_KEY = os.environ.get('SUPABASE_KEY')
         SQLALCHEMY_TRACK_MODIFICATIONS = False
         DISABLE_DATABASE = False
     

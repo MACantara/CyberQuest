@@ -1,8 +1,9 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
 from flask_mail import Message
-from app import db, mail
+from app import mail
 from app.models.contact import Contact
 from app.utils.hcaptcha_utils import verify_hcaptcha
+from app.database import DatabaseError
 import re
 
 contact_bp = Blueprint('contact', __name__)
@@ -157,14 +158,12 @@ def contact_page():
         
         try:
             # Save to database
-            contact_submission = Contact(
+            contact_submission = Contact.create(
                 name=name,
                 email=email,
                 subject=subject,
                 message=message
             )
-            db.session.add(contact_submission)
-            db.session.commit()
             
             # Send email notifications
             email_sent = send_contact_notification(contact_submission)
@@ -177,8 +176,10 @@ def contact_page():
             current_app.logger.info(f"Contact form submission saved: {name} <{email}> - {subject}")
             return redirect(url_for('contact.contact_page'))
             
+        except DatabaseError as e:
+            current_app.logger.error(f"Database error during contact submission: {e}")
+            flash('There was an error submitting your message. Please try again.', 'error')
         except Exception as e:
-            db.session.rollback()
             current_app.logger.error(f"Contact form submission error: {e}")
             flash('There was an error submitting your message. Please try again.', 'error')
     

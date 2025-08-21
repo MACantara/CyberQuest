@@ -1,6 +1,4 @@
 from flask import Flask, session
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 from flask_mail import Mail
 from config import config
 from flask_login import LoginManager
@@ -8,8 +6,6 @@ from flask_wtf.csrf import CSRFProtect
 import os
 
 # Initialize extensions
-db = SQLAlchemy()
-migrate = Migrate()
 mail = Mail()
 login_manager = LoginManager()
 csrf = CSRFProtect()
@@ -21,13 +17,15 @@ def create_app(config_name=None):
     config_name = config_name or os.environ.get('FLASK_CONFIG', 'default')
     app.config.from_object(config[config_name])
 
-    # Initialize extensions only if database is not disabled
-    if not app.config.get('DISABLE_DATABASE', False):
-        db.init_app(app)
-        migrate.init_app(app, db)
-    else:
-        # Initialize a dummy db for compatibility
-        db.init_app(app)
+    # Initialize Supabase
+    from app.database import init_supabase
+    try:
+        init_supabase()
+        app.logger.info("Supabase client initialized successfully")
+    except Exception as e:
+        app.logger.error(f"Failed to initialize Supabase: {e}")
+        if not app.config.get('DISABLE_DATABASE', False):
+            raise  # Re-raise if database is not explicitly disabled
     
     # Initialize Flask-Mail
     mail.init_app(app)
@@ -41,7 +39,11 @@ def create_app(config_name=None):
     @login_manager.user_loader
     def load_user(user_id):
         from app.models.user import User
-        return User.query.get(int(user_id))
+        try:
+            return User.find_by_id(int(user_id))
+        except Exception as e:
+            app.logger.error(f"Error loading user {user_id}: {e}")
+            return None
 
     # Initialize CSRF protection
     csrf.init_app(app)
@@ -50,68 +52,51 @@ def create_app(config_name=None):
     from app.utils.hcaptcha_utils import init_hcaptcha
     init_hcaptcha(app)
 
-    # Import models to ensure they are registered with SQLAlchemy
-    if not app.config.get('DISABLE_DATABASE', False):
-        from app.models import Contact, User, PasswordResetToken
-
     # Register blueprints
     from app.routes import register_blueprints
     register_blueprints(app)
 
-    # Remove the duplicate registrations - they're now handled in routes/__init__.py
-    
-    # Create database tables only in non-Vercel environments
+    # Create default admin user if it doesn't exist (only if database is not disabled)
     with app.app_context():
         if not app.config.get('DISABLE_DATABASE', False):
             try:
-                db.create_all()
-                
-                # Create default admin user if it doesn't exist
                 from app.models.user import User
                 from app.models.email_verification import EmailVerification
+                from app.database import DatabaseError
                 
-                admin_user = User.query.filter_by(username='admin').first()
+                # Check if admin user exists
+                admin_user = User.find_by_username('admin')
                 if not admin_user:
-                    admin_user = User(
+                    admin_user = User.create(
                         username='admin',
                         email='admin@example.com',
-                        is_admin=True,
-                        is_active=True
+                        password='admin123'  # Change this in production!
                     )
-                    admin_user.set_password('admin123')  # Change this in production!
-                    db.session.add(admin_user)
-                    db.session.commit()
+                    admin_user.is_admin = True
+                    admin_user.save()
                     
                     # Create verified email verification for admin
-                    admin_verification = EmailVerification(
-                        user_id=admin_user.id,
-                        email=admin_user.email
+                    admin_verification = EmailVerification.create_verification(
+                        admin_user.id,
+                        admin_user.email
                     )
-                    # Add to session first
-                    db.session.add(admin_verification)
-                    db.session.commit()
-                    
-                    # Now mark as verified
                     admin_verification.verify()
                     
                     app.logger.info("Default admin user created: admin/admin123 (email verified)")
                 else:
                     # Ensure existing admin has verified email
                     if not EmailVerification.is_email_verified(admin_user.id, admin_user.email):
-                        admin_verification = EmailVerification(
-                            user_id=admin_user.id,
-                            email=admin_user.email
+                        admin_verification = EmailVerification.create_verification(
+                            admin_user.id,
+                            admin_user.email
                         )
-                        # Add to session first
-                        db.session.add(admin_verification)
-                        db.session.commit()
-                        
-                        # Now mark as verified
                         admin_verification.verify()
                         app.logger.info("Admin email verification created and verified")
                     
-            except Exception as e:
+            except DatabaseError as e:
                 app.logger.warning(f"Database initialization failed: {e}")
+            except Exception as e:
+                app.logger.warning(f"Admin user setup failed: {e}")
 
         # Add current year and date to template context
         @app.context_processor

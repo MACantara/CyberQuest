@@ -1,12 +1,12 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
 from flask_login import login_user, logout_user, login_required, current_user
-from app import db
 from app.models.user import User
 from app.models.email_verification import EmailVerification
 from app.routes.login_attempts import check_ip_lockout, record_login_attempt, get_remaining_attempts, is_lockout_triggered
 from app.routes.email_verification import create_and_send_verification, check_email_verification_status
 from app.utils.hcaptcha_utils import verify_hcaptcha
 from app.utils.password_validator import PasswordValidator
+from app.database import DatabaseError
 from argon2.exceptions import HashingError
 import re
 from urllib.parse import unquote
@@ -79,10 +79,7 @@ def login():
             return render_template('auth/login.html', locked_out=True, minutes_remaining=minutes_remaining)
         
         # Find user by username or email first
-        user = User.query.filter(
-            (User.username == username_or_email) | 
-            (User.email == username_or_email)
-        ).first()
+        user = User.find_by_username_or_email(username_or_email)
         
         # Check if user exists and is active
         if user and user.is_active:
@@ -154,14 +151,14 @@ def signup():
             errors.append('Username is required.')
         elif not is_valid_username(username):
             errors.append('Username must be 3-30 characters long and contain only letters, numbers, and underscores.')
-        elif User.query.filter_by(username=username).first():
+        elif User.find_by_username(username):
             errors.append('Username already exists.')
         
         if not email:
             errors.append('Email is required.')
         elif not is_valid_email(email):
             errors.append('Please provide a valid email address.')
-        elif User.query.filter_by(email=email).first():
+        elif User.find_by_email(email):
             errors.append('Email already registered.')
         
         if not password:
@@ -183,10 +180,7 @@ def signup():
         
         try:
             # Create new user
-            user = User(username=username, email=email)
-            user.set_password(password)
-            db.session.add(user)
-            db.session.commit()
+            user = User.create(username=username, email=email, password=password)
             
             # Create verification and send email
             verification, email_sent = create_and_send_verification(user)
@@ -205,8 +199,10 @@ def signup():
             
         except HashingError:
             flash('Error creating account. Please try again.', 'error')
+        except DatabaseError as e:
+            current_app.logger.error(f"Database error during signup: {e}")
+            flash('Error creating account. Please try again.', 'error')
         except Exception as e:
-            db.session.rollback()
             current_app.logger.error(f"Signup error: {e}")
             flash('Error creating account. Please try again.', 'error')
     
@@ -214,10 +210,6 @@ def signup():
 
 @auth_bp.route('/logout')
 @login_required
-def logout():
-    logout_user()
-    flash('You have been logged out successfully.', 'success')
-    return redirect(url_for('main.home'))
 def logout():
     logout_user()
     flash('You have been logged out successfully.', 'success')

@@ -1,10 +1,11 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
 from flask_login import current_user
 from flask_mail import Message
-from app import db, mail
+from app import mail
 from app.models.user import User, PasswordResetToken
 from app.utils.hcaptcha_utils import verify_hcaptcha
 from app.utils.password_validator import PasswordValidator
+from app.database import DatabaseError
 from argon2.exceptions import HashingError
 import re
 
@@ -313,7 +314,7 @@ def forgot_password():
         # Always show success message for security (don't reveal if email exists)
         flash('If an account with that email exists, we\'ve sent password reset instructions.', 'info')
         
-        user = User.query.filter_by(email=email).first()
+        user = User.find_by_email(email)
         if user and user.is_active:
             try:
                 token = user.generate_reset_token()
@@ -379,15 +380,17 @@ def reset_password(token):
             user = reset_token.user
             user.set_password(password)
             reset_token.use_token()
-            db.session.commit()
+            user.save()  # Save the user with new password
             
             flash('Your password has been reset successfully! Please log in with your new password.', 'success')
             return redirect(url_for('auth.login'))
             
         except HashingError:
             flash('Error resetting password. Please try again.', 'error')
+        except DatabaseError as e:
+            current_app.logger.error(f"Database error during password reset: {e}")
+            flash('Error resetting password. Please try again.', 'error')
         except Exception as e:
-            db.session.rollback()
             current_app.logger.error(f"Password reset error: {e}")
             flash('Error resetting password. Please try again.', 'error')
     

@@ -1,25 +1,76 @@
-from app import db
-from datetime import datetime
+from datetime import datetime, timedelta
+from typing import Optional, List, Dict, Any, Tuple
+from app.database import get_supabase, Tables, handle_supabase_error, DatabaseError
 
-class Contact(db.Model):
+def parse_datetime_naive(dt_string: str) -> datetime:
+    """Parse datetime string and ensure it's timezone-naive."""
+    if not dt_string:
+        return None
+    
+    # Remove various timezone indicators to make it timezone-naive
+    dt_str = dt_string.replace('Z', '').replace('+00:00', '')
+    
+    # Handle fromisoformat parsing
+    try:
+        dt = datetime.fromisoformat(dt_str)
+        # If it somehow still has timezone info, remove it
+        if dt.tzinfo is not None:
+            dt = dt.replace(tzinfo=None)
+        return dt
+    except ValueError:
+        # Fallback: try parsing without microseconds
+        if '.' in dt_str:
+            dt_str = dt_str.split('.')[0]
+        return datetime.fromisoformat(dt_str)
+
+class Contact:
     """Contact form submission model."""
-    __tablename__ = 'contact_submissions'
     
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(120), nullable=False)
-    subject = db.Column(db.String(200), nullable=False)
-    message = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    is_read = db.Column(db.Boolean, default=False)
+    def __init__(self, data: Dict[str, Any]):
+        """Initialize Contact from Supabase data."""
+        self.id = data.get('id')
+        self.name = data.get('name')
+        self.email = data.get('email')
+        self.subject = data.get('subject')
+        self.message = data.get('message')
+        self.created_at = data.get('created_at')
+        self.is_read = data.get('is_read', False)
+        
+        # Convert string timestamp to datetime object if needed
+        if isinstance(self.created_at, str):
+            self.created_at = parse_datetime_naive(self.created_at)
     
-    def __repr__(self):
-        return f'<Contact {self.name} - {self.subject}>'
+    def save(self):
+        """Save contact submission to database."""
+        supabase = get_supabase()
+        try:
+            contact_data = {
+                'name': self.name,
+                'email': self.email,
+                'subject': self.subject,
+                'message': self.message,
+                'is_read': self.is_read
+            }
+            
+            if self.id:
+                # Update existing contact
+                response = supabase.table(Tables.CONTACT_SUBMISSIONS).update(contact_data).eq('id', self.id).execute()
+                handle_supabase_error(response)
+            else:
+                # Create new contact
+                contact_data['created_at'] = datetime.utcnow().isoformat()
+                response = supabase.table(Tables.CONTACT_SUBMISSIONS).insert(contact_data).execute()
+                data = handle_supabase_error(response)
+                if data and len(data) > 0:
+                    self.id = data[0]['id']
+                    self.created_at = parse_datetime_naive(data[0]['created_at'])
+        except Exception as e:
+            raise DatabaseError(f"Failed to save contact: {e}")
 
     def mark_as_read(self):
         """Mark the contact submission as read."""
         self.is_read = True
-        db.session.commit()
+        self.save()
     
     def to_dict(self):
         """Convert contact submission to dictionary."""
@@ -29,16 +80,97 @@ class Contact(db.Model):
             'email': self.email,
             'subject': self.subject,
             'message': self.message,
-            'created_at': self.created_at.isoformat(),
+            'created_at': self.created_at.isoformat() if self.created_at else None,
             'is_read': self.is_read
         }
     
     @classmethod
-    def get_unread_count(cls):
-        """Get count of unread contact submissions."""
-        return cls.query.filter_by(is_read=False).count()
+    def create(cls, name: str, email: str, subject: str, message: str) -> 'Contact':
+        """Create a new contact submission."""
+        contact_data = {
+            'name': name,
+            'email': email,
+            'subject': subject,
+            'message': message,
+            'created_at': datetime.utcnow(),
+            'is_read': False
+        }
+        contact = cls(contact_data)
+        contact.save()
+        return contact
     
     @classmethod
-    def get_recent_submissions(cls, limit=10):
+    def get_unread_count(cls) -> int:
+        """Get count of unread contact submissions."""
+        supabase = get_supabase()
+        try:
+            response = supabase.table(Tables.CONTACT_SUBMISSIONS).select("*", count='exact').eq('is_read', False).execute()
+            return response.count if hasattr(response, 'count') else 0
+        except Exception as e:
+            raise DatabaseError(f"Failed to count unread contacts: {e}")
+    
+    @classmethod
+    def get_recent_submissions(cls, limit: int = 10) -> List['Contact']:
         """Get recent contact submissions."""
-        return cls.query.order_by(cls.created_at.desc()).limit(limit).all()
+        supabase = get_supabase()
+        try:
+            response = supabase.table(Tables.CONTACT_SUBMISSIONS).select("*").order('created_at', desc=True).limit(limit).execute()
+            data = handle_supabase_error(response)
+            return [cls(contact_data) for contact_data in data]
+        except Exception as e:
+            raise DatabaseError(f"Failed to get recent submissions: {e}")
+    
+    @classmethod
+    def get_by_email(cls, email: str, limit: int = 10) -> List['Contact']:
+        """Get contact submissions by email address."""
+        supabase = get_supabase()
+        try:
+            response = supabase.table(Tables.CONTACT_SUBMISSIONS).select("*").eq('email', email).order('created_at', desc=True).limit(limit).execute()
+            data = handle_supabase_error(response)
+            return [cls(contact_data) for contact_data in data]
+        except Exception as e:
+            raise DatabaseError(f"Failed to get submissions by email: {e}")
+    
+    @classmethod
+    def get_all_submissions(cls, page: int = 1, per_page: int = 25, search: str = None, status_filter: str = 'all') -> tuple:
+        """Get paginated list of contact submissions with optional filtering."""
+        supabase = get_supabase()
+        try:
+            query = supabase.table(Tables.CONTACT_SUBMISSIONS).select("*", count='exact')
+            
+            # Apply filters
+            if search:
+                query = query.or_(f"name.ilike.%{search}%,email.ilike.%{search}%,subject.ilike.%{search}%")
+            
+            if status_filter == 'read':
+                query = query.eq('is_read', True)
+            elif status_filter == 'unread':
+                query = query.eq('is_read', False)
+            
+            # Calculate offset
+            offset = (page - 1) * per_page
+            
+            # Execute query with pagination
+            response = query.order('created_at', desc=True).range(offset, offset + per_page - 1).execute()
+            data = handle_supabase_error(response)
+            
+            contacts = [cls(contact_data) for contact_data in data]
+            total_count = response.count if hasattr(response, 'count') else len(data)
+            
+            return contacts, total_count
+        except Exception as e:
+            raise DatabaseError(f"Failed to get contact submissions: {e}")
+    
+    @classmethod
+    def count_recent_submissions(cls, days: int = 30) -> int:
+        """Count recent contact submissions."""
+        supabase = get_supabase()
+        try:
+            cutoff_date = (datetime.utcnow() - timedelta(days=days)).isoformat()
+            response = supabase.table(Tables.CONTACT_SUBMISSIONS).select("*", count='exact').gte('created_at', cutoff_date).execute()
+            return response.count if hasattr(response, 'count') else 0
+        except Exception as e:
+            raise DatabaseError(f"Failed to count recent submissions: {e}")
+    
+    def __repr__(self):
+        return f'<Contact {self.name} - {self.subject}>'
