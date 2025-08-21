@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Backup Schedule - Admin Panel{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 dark:bg-gray-900 py-6">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="bg-white dark:bg-gray-800 shadow rounded-lg mb-6">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <i class="bi bi-calendar-event text-blue-600 dark:text-blue-400 text-2xl"></i>
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Backup Schedule</h1>
+                            <p class="text-gray-600 dark:text-gray-400">Configure automated backup settings</p>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('admin.system_backup') }}" 
+                       class="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                        <i class="bi bi-arrow-left mr-2"></i>
+                        Back to Backups
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Schedule Configuration -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow mb-6">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Automatic Backup Configuration</h3>
+            </div>
+            <div class="p-6">
+                <form method="POST" action="#" class="space-y-6">
+                    <input type="hidden" id="csrf_token" name="csrf_token" value="{{csrf_token()}}">
+                    
+                    <!-- Enable/Disable Auto Backup -->
+                    <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                        <div>
+                            <h4 class="text-lg font-medium text-gray-900 dark:text-white">Automatic Backups</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Enable scheduled automatic database backups</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="auto_backup_enabled" class="sr-only peer" 
+                                   {% if schedule_info.auto_backup_enabled %}checked{% endif %}>
+                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                        </label>
+                    </div>
+
+                    <!-- Backup Frequency -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Backup Frequency
+                        </label>
+                        <select name="backup_frequency" class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                            <option value="daily" {% if schedule_info.backup_frequency == 'daily' %}selected{% endif %}>Daily (Recommended)</option>
+                            <option value="weekly" {% if schedule_info.backup_frequency == 'weekly' %}selected{% endif %}>Weekly</option>
+                            <option value="monthly" {% if schedule_info.backup_frequency == 'monthly' %}selected{% endif %}>Monthly</option>
+                        </select>
+                    </div>
+
+                    <!-- Backup Time (for daily/weekly) -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Backup Time (24-hour format)
+                        </label>
+                        <input type="time" name="backup_time" value="02:00" 
+                               class="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Recommended: 2:00 AM (low traffic hours)</p>
+                    </div>
+
+                    <!-- Retention Period -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Backup Retention Period
+                        </label>
+                        <div class="flex items-center space-x-2">
+                            <input type="number" name="backup_retention" value="{{ schedule_info.backup_retention }}" 
+                                   min="1" max="365" 
+                                   class="w-20 p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                            <span class="text-gray-700 dark:text-gray-300">days</span>
+                        </div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Backups older than this will be automatically deleted</p>
+                    </div>
+
+                    <!-- Backup Location -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Backup Storage Location
+                        </label>
+                        <div class="space-y-3">
+                            <label class="flex items-center">
+                                <input type="radio" name="backup_location" value="local" checked 
+                                       class="text-blue-600 dark:text-blue-400">
+                                <span class="ml-2 text-gray-700 dark:text-gray-300">Local Server Storage</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="backup_location" value="cloud" disabled 
+                                       class="text-blue-600 dark:text-blue-400">
+                                <span class="ml-2 text-gray-500 dark:text-gray-400">Cloud Storage (Coming Soon)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Email Notifications -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            Email Notifications
+                        </label>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" name="notify_success" checked 
+                                       class="text-blue-600 dark:text-blue-400">
+                                <span class="ml-2 text-gray-700 dark:text-gray-300">Notify on successful backup</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="notify_failure" checked 
+                                       class="text-blue-600 dark:text-blue-400">
+                                <span class="ml-2 text-gray-700 dark:text-gray-300">Notify on backup failure</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Save Button -->
+                    <div class="flex justify-end">
+                        <button type="submit" 
+                                class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="bi bi-check-circle mr-2"></i>
+                            Save Schedule Settings
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Current Schedule Status -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Schedule Status</h3>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-medium text-gray-900 dark:text-white mb-3">Current Configuration</h4>
+                        <dl class="space-y-2">
+                            <div class="flex justify-between">
+                                <dt class="text-sm text-gray-600 dark:text-gray-400">Status:</dt>
+                                <dd class="text-sm font-medium">
+                                    {% if schedule_info.auto_backup_enabled %}
+                                        <span class="text-green-600 dark:text-green-400">Enabled</span>
+                                    {% else %}
+                                        <span class="text-red-600 dark:text-red-400">Disabled</span>
+                                    {% endif %}
+                                </dd>
+                            </div>
+                            <div class="flex justify-between">
+                                <dt class="text-sm text-gray-600 dark:text-gray-400">Frequency:</dt>
+                                <dd class="text-sm font-medium text-gray-900 dark:text-white capitalize">{{ schedule_info.backup_frequency }}</dd>
+                            </div>
+                            <div class="flex justify-between">
+                                <dt class="text-sm text-gray-600 dark:text-gray-400">Retention:</dt>
+                                <dd class="text-sm font-medium text-gray-900 dark:text-white">{{ schedule_info.backup_retention }} days</dd>
+                            </div>
+                        </dl>
+                    </div>
+                    <div>
+                        <h4 class="font-medium text-gray-900 dark:text-white mb-3">Next Backup</h4>
+                        <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                            {% if schedule_info.next_scheduled_backup %}
+                                <p class="text-blue-800 dark:text-blue-200">
+                                    <i class="bi bi-calendar-check mr-2"></i>
+                                    {{ schedule_info.next_scheduled_backup.strftime('%Y-%m-%d at %H:%M') }}
+                                </p>
+                            {% else %}
+                                <p class="text-blue-800 dark:text-blue-200">
+                                    <i class="bi bi-calendar-x mr-2"></i>
+                                    No automatic backup scheduled
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Box -->
+        <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-6 mt-6">
+            <div class="flex items-start">
+                <i class="bi bi-info-circle text-yellow-600 dark:text-yellow-400 text-xl mt-0.5 mr-3"></i>
+                <div>
+                    <h4 class="text-yellow-800 dark:text-yellow-200 font-medium mb-2">Production Deployment Note</h4>
+                    <p class="text-yellow-700 dark:text-yellow-300 text-sm">
+                        Automatic backup scheduling requires a task scheduler like Celery or a cron job in production environments. 
+                        In the current development setup, only manual backups are available. Contact your system administrator 
+                        to set up automated backups in production.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
