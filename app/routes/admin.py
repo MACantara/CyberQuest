@@ -577,19 +577,65 @@ def system_backup():
         backup_dir = os.path.join(current_app.root_path, '..', 'backups')
         os.makedirs(backup_dir, exist_ok=True)
         
-        # List existing backups
+        # List existing backups with enhanced metadata
         backups = []
         if os.path.exists(backup_dir):
             for filename in os.listdir(backup_dir):
                 if filename.endswith('.zip'):
                     backup_path = os.path.join(backup_dir, filename)
-                    stat = os.stat(backup_path)
-                    backups.append({
-                        'filename': filename,
-                        'size': stat.st_size,
-                        'created_at': datetime.fromtimestamp(stat.st_ctime),
-                        'size_mb': round(stat.st_size / (1024 * 1024), 2)
-                    })
+                    try:
+                        stat = os.stat(backup_path)
+                        backup_info = {
+                            'filename': filename,
+                            'size': stat.st_size,
+                            'created_at': datetime.fromtimestamp(stat.st_ctime),
+                            'size_mb': round(stat.st_size / (1024 * 1024), 2)
+                        }
+                        
+                        # Try to extract metadata from inside the ZIP file
+                        try:
+                            with zipfile.ZipFile(backup_path, 'r') as zipf:
+                                # Check if backup metadata exists
+                                if 'backup_metadata.json' in zipf.namelist():
+                                    metadata_json = zipf.read('backup_metadata.json')
+                                    metadata = json.loads(metadata_json)
+                                    
+                                    # Use metadata creation time if available (more accurate)
+                                    if 'created_at' in metadata:
+                                        try:
+                                            backup_info['created_at'] = datetime.fromisoformat(metadata['created_at'].replace('Z', '+00:00')).replace(tzinfo=None)
+                                        except (ValueError, AttributeError):
+                                            pass  # Keep filesystem timestamp as fallback
+                                    
+                                    # Add additional metadata
+                                    backup_info['metadata'] = {
+                                        'tables_backed_up': metadata.get('tables_backed_up', 0),
+                                        'total_records': metadata.get('total_records', 0),
+                                        'app_version': metadata.get('app_version', 'Unknown'),
+                                        'database_type': metadata.get('database_type', 'Supabase')
+                                    }
+                                else:
+                                    # Legacy backup without metadata
+                                    backup_info['metadata'] = {
+                                        'tables_backed_up': 'Unknown',
+                                        'total_records': 'Unknown',
+                                        'app_version': 'Legacy',
+                                        'database_type': 'Unknown'
+                                    }
+                        except (zipfile.BadZipFile, json.JSONDecodeError, KeyError) as e:
+                            current_app.logger.warning(f"Could not read metadata from backup {filename}: {e}")
+                            backup_info['metadata'] = {
+                                'tables_backed_up': 'Error',
+                                'total_records': 'Error',
+                                'app_version': 'Error',
+                                'database_type': 'Error'
+                            }
+                        
+                        backups.append(backup_info)
+                        
+                    except OSError as e:
+                        current_app.logger.error(f"Could not access backup file {filename}: {e}")
+                        continue
         
         # Sort backups by creation date (newest first)
         backups.sort(key=lambda x: x['created_at'], reverse=True)
@@ -636,13 +682,19 @@ def create_backup():
             zipf.writestr('database_backup.json', json.dumps(backup_data, indent=2, default=str))
             
             # Add metadata
+            total_records = sum(len(table_data) for table_data in backup_data.values())
             metadata = {
                 'backup_type': 'full',
                 'created_at': datetime.now().isoformat(),
                 'created_by': current_user.username,
-                'version': '1.0',
+                'version': '2.0',  # Updated version
                 'tables_included': list(backup_data.keys()),
-                'total_records': sum(len(table_data) for table_data in backup_data.values())
+                'tables_backed_up': len(backup_data.keys()),
+                'total_records': total_records,
+                'record_counts': {table: len(data) for table, data in backup_data.items()},
+                'app_version': 'CyberQuest v1.0',
+                'database_type': 'Supabase PostgreSQL',
+                'backup_size_estimate': 'See file properties'
             }
             zipf.writestr('backup_metadata.json', json.dumps(metadata, indent=2))
             
