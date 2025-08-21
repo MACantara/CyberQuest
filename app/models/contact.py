@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Tuple
 from app.database import get_supabase, Tables, handle_supabase_error, DatabaseError
 
 def parse_datetime_naive(dt_string: str) -> datetime:
@@ -119,6 +119,47 @@ class Contact:
             return [cls(contact_data) for contact_data in data]
         except Exception as e:
             raise DatabaseError(f"Failed to get recent submissions: {e}")
+    
+    @classmethod
+    def get_by_email(cls, email: str, limit: int = 10) -> List['Contact']:
+        """Get contact submissions by email address."""
+        supabase = get_supabase()
+        try:
+            response = supabase.table(Tables.CONTACT_SUBMISSIONS).select("*").eq('email', email).order('created_at', desc=True).limit(limit).execute()
+            data = handle_supabase_error(response)
+            return [cls(contact_data) for contact_data in data]
+        except Exception as e:
+            raise DatabaseError(f"Failed to get submissions by email: {e}")
+    
+    @classmethod
+    def get_all_submissions(cls, page: int = 1, per_page: int = 25, search: str = None, status_filter: str = 'all') -> tuple:
+        """Get paginated list of contact submissions with optional filtering."""
+        supabase = get_supabase()
+        try:
+            query = supabase.table(Tables.CONTACT_SUBMISSIONS).select("*", count='exact')
+            
+            # Apply filters
+            if search:
+                query = query.or_(f"name.ilike.%{search}%,email.ilike.%{search}%,subject.ilike.%{search}%")
+            
+            if status_filter == 'read':
+                query = query.eq('is_read', True)
+            elif status_filter == 'unread':
+                query = query.eq('is_read', False)
+            
+            # Calculate offset
+            offset = (page - 1) * per_page
+            
+            # Execute query with pagination
+            response = query.order('created_at', desc=True).range(offset, offset + per_page - 1).execute()
+            data = handle_supabase_error(response)
+            
+            contacts = [cls(contact_data) for contact_data in data]
+            total_count = response.count if hasattr(response, 'count') else len(data)
+            
+            return contacts, total_count
+        except Exception as e:
+            raise DatabaseError(f"Failed to get contact submissions: {e}")
     
     @classmethod
     def count_recent_submissions(cls, days: int = 30) -> int:
