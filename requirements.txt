@@ -48,3 +48,6 @@ google-genai
 pandas
 numpy
 requests
+
+# Supabase
+supabase
