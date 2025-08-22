@@ -283,21 +283,6 @@ def should_show_hint():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
-@adaptive_bp.route('/leaderboard')
-@login_required
-def get_leaderboard_position():
-    """Get user's leaderboard position."""
-    try:
-        timeframe = request.args.get('timeframe', 'all_time')
-        position = GameificationEngine.get_leaderboard_position(current_user.id, timeframe)
-        
-        return jsonify({
-            'success': True,
-            'leaderboard': position
-        })
-    except Exception as e:
-        return jsonify({'success': False, 'error': str(e)}), 500
-
 @adaptive_bp.route('/skills')
 @login_required
 def get_skill_assessments():

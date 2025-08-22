@@ -508,25 +508,3 @@ class GameificationEngine:
             
         except Exception as e:
             return []
-    
-    @classmethod
-    def get_leaderboard_position(cls, user_id: int, timeframe: str = 'all_time') -> Dict[str, Any]:
-        """Get user's position on the leaderboard."""
-        try:
-            # This would typically query all users' progress and rank them
-            # For now, return mock data
-            progress_summary = UserProgress.get_user_progress_summary(user_id)
-            total_xp = progress_summary.get('total_xp', 0)
-            
-            # Mock ranking logic (in production, query all users)
-            mock_rank = max(1, 100 - (total_xp // 50))  # Simplified ranking
-            
-            return {
-                'rank': mock_rank,
-                'total_xp': total_xp,
-                'percentile': max(1, 100 - mock_rank),
-                'next_rank_xp': (mock_rank - 1) * 50 + 50 if mock_rank > 1 else total_xp + 100
-            }
-            
-        except Exception:
-            return {'rank': 999, 'total_xp': 0, 'percentile': 1, 'next_rank_xp': 100}

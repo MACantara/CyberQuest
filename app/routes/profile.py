@@ -109,7 +109,7 @@ def dashboard():
     
     from app.routes.levels import CYBERSECURITY_LEVELS
     from app.models.adaptive_learning import UserProgress, SkillAssessment, LearningRecommendation
-    from app.utils.adaptive_learning_engine import AdaptiveLearningEngine, GameificationEngine
+    from app.utils.adaptive_learning_engine import AdaptiveLearningEngine
     
     # Get comprehensive user progress from adaptive learning system
     progress_summary = UserProgress.get_user_progress_summary(current_user.id)
@@ -190,9 +190,6 @@ def dashboard():
                 'max_score': 100
             })
     
-    # Get gamification data
-    leaderboard_position = GameificationEngine.get_leaderboard_position(current_user.id)
-    
     # Get learning recommendations
     rec_data = []
     for rec in recommendations[:3]:  # Show top 3 recommendations
@@ -219,6 +216,5 @@ def dashboard():
                          blue_team_progress=blue_team_progress,
                          blue_team_unlocked=blue_team_unlocked,
                          skill_analysis=skill_analysis,
-                         leaderboard_position=leaderboard_position,
                          recommendations=rec_data,
                          learning_patterns=learning_patterns)
