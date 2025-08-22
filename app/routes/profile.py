@@ -103,34 +103,56 @@ def edit_profile():
 @login_required
 def dashboard():
     """Display user dashboard with cybersecurity level progress."""
+    if current_app.config.get('DISABLE_DATABASE', False):
+        flash('User dashboard is not available in this deployment environment.', 'warning')
+        return redirect(url_for('main.home'))
+    
     from app.routes.levels import CYBERSECURITY_LEVELS
+    from app.models.adaptive_learning import UserProgress, SkillAssessment, LearningRecommendation
+    from app.utils.adaptive_learning_engine import AdaptiveLearningEngine, GameificationEngine
     
-    # Calculate user progress (mock data for now)
-    # TODO: Replace with actual user progress from database
+    # Get comprehensive user progress from adaptive learning system
+    progress_summary = UserProgress.get_user_progress_summary(current_user.id)
+    skills = SkillAssessment.get_user_skills(current_user.id)
+    recommendations = LearningRecommendation.get_user_recommendations(current_user.id)
+    
+    # Use real data from adaptive learning system
     total_levels = len(CYBERSECURITY_LEVELS)
-    completed_levels = 0  # Mock: user has completed no levels
-    total_xp = 0  # Mock: XP from completed levels
-    learning_streak = 0  # Mock: days of consecutive learning
-    progress_percentage = (completed_levels / total_levels) * 100
+    completed_levels = progress_summary.get('completed_levels', 0)
+    total_xp = progress_summary.get('total_xp', 0)
+    learning_streak = progress_summary.get('learning_streak', 0)
+    user_rank = progress_summary.get('user_rank', 'Novice')
+    progress_percentage = (completed_levels / total_levels) * 100 if total_levels > 0 else 0
     
-    # Determine user rank based on XP
-    if total_xp < 100:
-        user_rank = "Novice"
-    elif total_xp < 500:
-        user_rank = "Apprentice"
-    elif total_xp < 1000:
-        user_rank = "Guardian"
-    elif total_xp < 2000:
-        user_rank = "Expert"
-    else:
-        user_rank = "Master"
-    
-    # Prepare levels with completion status
+    # Prepare levels with completion status from database
     levels_progress = []
     for i, level in enumerate(CYBERSECURITY_LEVELS):
         level_data = level.copy()
-        level_data['completed'] = i < completed_levels  # Mock: only first level completed
-        level_data['unlocked'] = i < completed_levels + 1  # Next level is unlocked
+        
+        # Get actual progress from database
+        user_progress = UserProgress.get_by_user_and_level(current_user.id, level['id'], 'simulation')
+        if user_progress:
+            level_data['completed'] = user_progress.status == 'completed'
+            level_data['score'] = user_progress.score
+            level_data['attempts'] = user_progress.attempts
+            level_data['time_spent'] = user_progress.time_spent
+            level_data['xp_earned'] = user_progress.xp_earned
+        else:
+            level_data['completed'] = False
+            level_data['score'] = 0
+            level_data['attempts'] = 0
+            level_data['time_spent'] = 0
+            level_data['xp_earned'] = 0
+        
+        # Determine if level is unlocked (first level or previous level completed)
+        level_data['unlocked'] = i == 0 or (i > 0 and levels_progress[i-1]['completed'])
+        
+        # Get adaptive difficulty recommendation
+        if level_data['unlocked'] and not level_data['completed']:
+            level_data['recommended_difficulty'] = AdaptiveLearningEngine.calculate_adaptive_difficulty(
+                current_user.id, level['id'], 'simulation'
+            )
+        
         levels_progress.append(level_data)
     
     # Find next available level
@@ -140,6 +162,51 @@ def dashboard():
             next_level = level
             break
     
+    # Get Blue Team vs Red Team progress
+    blue_team_progress = UserProgress.get_by_user_and_level(current_user.id, 1, 'blue_team_vs_red_team')
+    blue_team_unlocked = completed_levels >= 1  # Unlock after completing first simulation level
+    
+    # Prepare skill analysis
+    skill_analysis = []
+    all_skills = ['critical_thinking', 'source_verification', 'fact_checking', 'phishing_detection', 
+                  'email_analysis', 'social_engineering', 'malware_recognition', 'system_security', 
+                  'threat_analysis', 'penetration_testing', 'vulnerability_assessment', 'ethical_hacking',
+                  'digital_forensics', 'evidence_analysis', 'advanced_investigation']
+    
+    for skill in all_skills:
+        if skill in skills:
+            assessment = skills[skill]
+            skill_analysis.append({
+                'name': skill.replace('_', ' ').title(),
+                'proficiency': assessment.proficiency_level,
+                'score': assessment.assessment_score,
+                'max_score': assessment.max_score
+            })
+        else:
+            skill_analysis.append({
+                'name': skill.replace('_', ' ').title(),
+                'proficiency': 'not_assessed',
+                'score': 0,
+                'max_score': 100
+            })
+    
+    # Get gamification data
+    leaderboard_position = GameificationEngine.get_leaderboard_position(current_user.id)
+    
+    # Get learning recommendations
+    rec_data = []
+    for rec in recommendations[:3]:  # Show top 3 recommendations
+        rec_data.append({
+            'id': rec.id,
+            'title': rec.recommendation_data.get('title', 'New Recommendation'),
+            'description': rec.recommendation_data.get('description', ''),
+            'type': rec.recommendation_type,
+            'confidence': rec.confidence_score
+        })
+    
+    # Get learning analytics
+    learning_patterns = AdaptiveLearningEngine.analyze_learning_patterns(current_user.id, 30)
+    
     return render_template('profile/dashboard.html',
                          total_xp=total_xp,
                          completed_levels=completed_levels,
@@ -148,4 +215,10 @@ def dashboard():
                          user_rank=user_rank,
                          progress_percentage=int(progress_percentage),
                          levels=levels_progress,
-                         next_level=next_level)
+                         next_level=next_level,
+                         blue_team_progress=blue_team_progress,
+                         blue_team_unlocked=blue_team_unlocked,
+                         skill_analysis=skill_analysis,
+                         leaderboard_position=leaderboard_position,
+                         recommendations=rec_data,
+                         learning_patterns=learning_patterns)
