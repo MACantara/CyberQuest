@@ -46,7 +46,7 @@
                                            placeholder="e.g., STP-001-01"
                                            value="{{ test_plan.test_plan_no if test_plan else '' }}"
                                            required>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Unique identifier for this test plan</p>
+                                    <p class="text-xs text-gray-600 dark:text-gray-300 mt-1">Unique identifier for this test plan</p>
                                 </div>
                                 <div>
                                     <label for="module_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Module Name <span class="text-red-500">*</span></label>
@@ -90,7 +90,7 @@
                                        placeholder="Brief description of what is being tested"
                                        value="{{ test_plan.description if test_plan else '' }}"
                                        required>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Concise description of the test objective</p>
+                                <p class="text-xs text-gray-600 dark:text-gray-300 mt-1">Concise description of the test objective</p>
                             </div>
                             <div>
                                 <label for="scenario" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Scenario</label>
@@ -99,7 +99,7 @@
                                           name="scenario" 
                                           rows="3"
                                           placeholder="Describe the test scenario context">{{ test_plan.scenario if test_plan else '' }}</textarea>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Context and background for the test</p>
+                                <p class="text-xs text-gray-600 dark:text-gray-300 mt-1">Context and background for the test</p>
                             </div>
                             <div>
                                 <label for="expected_results" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Expected Results <span class="text-red-500">*</span></label>
@@ -109,7 +109,7 @@
                                           rows="3"
                                           placeholder="What should happen when the test passes"
                                           required>{{ test_plan.expected_results if test_plan else '' }}</textarea>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Expected outcome when test is successful</p>
+                                <p class="text-xs text-gray-600 dark:text-gray-300 mt-1">Expected outcome when test is successful</p>
                             </div>
                         </div>
                     </div>
@@ -129,7 +129,7 @@
                                       rows="8"
                                       placeholder="1. Step 1 description&#10;2. Step 2 description&#10;3. Step 3 description"
                                       required>{{ test_plan.procedure if test_plan else '' }}</textarea>
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Step-by-step instructions to execute the test</p>
+                            <p class="text-xs text-gray-600 dark:text-gray-300 mt-1">Step-by-step instructions to execute the test</p>
                         </div>
                     </div>
                 </div>
