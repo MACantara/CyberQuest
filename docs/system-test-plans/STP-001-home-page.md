@@ -8,7 +8,7 @@
 | **Description / Scenario** | Verify that the home page loads correctly when accessing the root URL |
 | **Expected Results** | Display the complete home page with hero section, features, learning modules, and CTA sections |
 | **Procedure** | 1. Open web browser <br> 2. Navigate to `http://localhost:5000/` <br> 3. Verify page loads completely <br> 4. Check all sections are visible (Hero, Features, Learning Modules, CTA) |
-| **Remarks** | Pending |
+| **Remarks** | Passed |
 
 ---
 
