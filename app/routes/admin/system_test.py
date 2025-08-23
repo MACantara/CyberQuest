@@ -381,3 +381,97 @@ def api_modules_summary():
     except Exception as e:
         current_app.logger.error(f'Error getting modules summary: {str(e)}')
         return jsonify({'success': False, 'error': str(e)}), 500
+
+@system_test_bp.route('/export/docx')
+@login_required
+@admin_required
+def export_test_plans_docx():
+    """Export test plans to DOCX format."""
+    try:
+        from docx import Document
+        from docx.shared import Inches
+        from docx.enum.table import WD_TABLE_ALIGNMENT
+        from docx.enum.text import WD_ALIGN_PARAGRAPH
+        from flask import send_file
+        import io
+        
+        # Get all test plans
+        test_plans = SystemTestPlan.get_all()
+        
+        # Create document
+        doc = Document()
+        
+        # Add title
+        title = doc.add_heading('System Test Plans Report', 0)
+        title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        
+        # Add generation info
+        doc.add_paragraph(f'Generated on: {datetime.now().strftime("%B %d, %Y at %H:%M")}')
+        doc.add_paragraph('')
+        
+        # Process each test plan
+        for test_plan in test_plans:
+            # Add test plan header
+            doc.add_heading(f'Test Plan No: {test_plan.test_plan_no}', level=1)
+            
+            # Create table for test plan details
+            table = doc.add_table(rows=6, cols=2)
+            table.style = 'Table Grid'
+            table.alignment = WD_TABLE_ALIGNMENT.CENTER
+            
+            # Set column widths
+            for col in table.columns:
+                col.width = Inches(3.0)
+            
+            # Populate table data
+            rows_data = [
+                ('Screen Design Ref No', test_plan.screen_design_ref or 'N/A'),
+                ('Description / Scenario', test_plan.description or 'N/A'),
+                ('Expected Results', test_plan.expected_results or 'N/A'),
+                ('Procedure', test_plan.procedure or 'N/A'),
+                ('Test Status', test_plan.test_status or 'Pending'),
+                ('Remarks', test_plan.failure_reason or 'Passed' if test_plan.test_status == 'passed' else 'N/A')
+            ]
+            
+            for i, (label, value) in enumerate(rows_data):
+                # Set header cell
+                header_cell = table.cell(i, 0)
+                header_cell.text = label
+                header_cell.paragraphs[0].runs[0].bold = True
+                
+                # Set value cell
+                value_cell = table.cell(i, 1)
+                value_cell.text = str(value)
+                
+                # Format procedure cell with numbered list if it contains steps
+                if label == 'Procedure' and value and value != 'N/A':
+                    value_cell.text = ''  # Clear default text
+                    # Split procedure into steps and format as numbered list
+                    steps = value.split('\n') if '\n' in value else [value]
+                    for step_num, step in enumerate(steps, 1):
+                        if step.strip():
+                            p = value_cell.add_paragraph(f'{step_num}. {step.strip()}')
+            
+            # Add page break after each test plan (except the last one)
+            if test_plan != test_plans[-1]:
+                doc.add_page_break()
+        
+        # Save to BytesIO
+        docx_buffer = io.BytesIO()
+        doc.save(docx_buffer)
+        docx_buffer.seek(0)
+        
+        # Generate filename with current date
+        filename = f'system-test-plans-{datetime.now().strftime("%Y-%m-%d")}.docx'
+        
+        return send_file(
+            docx_buffer,
+            mimetype='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            as_attachment=True,
+            download_name=filename
+        )
+        
+    except Exception as e:
+        current_app.logger.error(f'Error exporting to DOCX: {str(e)}')
+        flash('Error generating DOCX export', 'error')
+        return redirect(url_for('system_test.reports'))
