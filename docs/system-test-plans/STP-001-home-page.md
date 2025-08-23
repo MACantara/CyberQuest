@@ -32,7 +32,7 @@
 | **Description / Scenario** | Verify unauthenticated user is directed to signup from home page |
 | **Expected Results** | User is redirected to signup page when clicking "Get Started" |
 | **Procedure** | 1. Ensure user is not logged in <br> 2. Navigate to home page <br> 3. Click "Get Started" button <br> 4. Verify redirection to signup page |
-| **Remarks** | Pending |
+| **Remarks** | Passed |
 
 ---
 
