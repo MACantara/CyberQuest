@@ -241,7 +241,7 @@
                                             {{ test.test_plan_no }}
                                         </a>
                                     </td>
-                                    <td class="py-3 px-2">{{ test.module_name }}</td>
+                                    <td class="py-3 px-2 dark:text-gray-300">{{ test.module_name }}</td>
                                     <td class="text-center py-3 px-2">
                                         {% set status = test.test_status or 'pending' %}
                                         {% if status == 'passed' %}
