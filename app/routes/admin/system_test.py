@@ -404,9 +404,15 @@ def export_test_plans_docx():
         # Add title
         title = doc.add_heading('System Test Plans Report', 0)
         title.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        # Set title text color to black
+        for run in title.runs:
+            run.font.color.rgb = None  # Default black
         
         # Add generation info
-        doc.add_paragraph(f'Generated on: {datetime.now().strftime("%B %d, %Y at %H:%M")}')
+        gen_info = doc.add_paragraph(f'Generated on: {datetime.now().strftime("%B %d, %Y at %H:%M")}')
+        # Set generation info text color to black
+        for run in gen_info.runs:
+            run.font.color.rgb = None  # Default black
         doc.add_paragraph('')
         
         # Process each test plan
@@ -415,7 +421,7 @@ def export_test_plans_docx():
             doc.add_heading(f'Test Plan No: {test_plan.test_plan_no}', level=1)
             
             # Create table for test plan details
-            table = doc.add_table(rows=6, cols=2)
+            table = doc.add_table(rows=5, cols=2)
             table.style = 'Table Grid'
             table.alignment = WD_TABLE_ALIGNMENT.CENTER
             
@@ -423,13 +429,12 @@ def export_test_plans_docx():
             for col in table.columns:
                 col.width = Inches(3.0)
             
-            # Populate table data
+            # Populate table data (removed test_status)
             rows_data = [
                 ('Screen Design Ref No', test_plan.screen_design_ref or 'N/A'),
                 ('Description / Scenario', test_plan.description or 'N/A'),
                 ('Expected Results', test_plan.expected_results or 'N/A'),
                 ('Procedure', test_plan.procedure or 'N/A'),
-                ('Test Status', test_plan.test_status or 'Pending'),
                 ('Remarks', test_plan.failure_reason or 'Passed' if test_plan.test_status == 'passed' else 'N/A')
             ]
             
@@ -438,10 +443,16 @@ def export_test_plans_docx():
                 header_cell = table.cell(i, 0)
                 header_cell.text = label
                 header_cell.paragraphs[0].runs[0].bold = True
+                # Set text color to black
+                header_cell.paragraphs[0].runs[0].font.color.rgb = None  # Default black
                 
                 # Set value cell
                 value_cell = table.cell(i, 1)
                 value_cell.text = str(value)
+                # Set text color to black
+                for paragraph in value_cell.paragraphs:
+                    for run in paragraph.runs:
+                        run.font.color.rgb = None  # Default black
                 
                 # Format procedure cell with numbered list if it contains steps
                 if label == 'Procedure' and value and value != 'N/A':
@@ -451,6 +462,9 @@ def export_test_plans_docx():
                     for step_num, step in enumerate(steps, 1):
                         if step.strip():
                             p = value_cell.add_paragraph(f'{step_num}. {step.strip()}')
+                            # Set text color to black for procedure steps
+                            for run in p.runs:
+                                run.font.color.rgb = None  # Default black
             
             # Add page break after each test plan (except the last one)
             if test_plan != test_plans[-1]:
