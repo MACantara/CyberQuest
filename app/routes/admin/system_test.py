@@ -4,7 +4,7 @@ Admin interface for managing system test plans and test execution
 """
 from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify, current_app, abort
 from flask_login import login_required, current_user
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 import json
 from app.models.system_test_plan import SystemTestPlan
 from app.models.user import User
@@ -311,14 +311,29 @@ def reports():
         
         # Get test execution trends (last 30 days)
         all_tests = SystemTestPlan.get_all()
-        recent_executions = [t for t in all_tests if t.execution_date and 
-                           (datetime.utcnow() - t.execution_date).days <= 30]
+        
+        # Create timezone-aware datetime for comparison
+        thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
+        
+        recent_executions = []
+        for test in all_tests:
+            if test.execution_date:
+                # Ensure execution_date is timezone-aware for comparison
+                if test.execution_date.tzinfo is None:
+                    # If naive, assume UTC
+                    test_date = test.execution_date.replace(tzinfo=timezone.utc)
+                else:
+                    test_date = test.execution_date
+                
+                if test_date >= thirty_days_ago:
+                    recent_executions.append(test)
         
         return render_template('admin/system-test/reports.html',
                              test_summary=test_summary,
                              modules_summary=modules_summary,
                              failed_tests=failed_tests,
-                             recent_executions=recent_executions)
+                             recent_executions=recent_executions,
+                             report_generated_at=datetime.now())
     except Exception as e:
         current_app.logger.error(f'Error generating reports: {str(e)}')
         abort(500)

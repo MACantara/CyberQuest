@@ -292,7 +292,7 @@
                 <div>
                     <h4 class="text-blue-800 dark:text-blue-200 font-medium">Report Information</h4>
                     <p class="text-blue-700 dark:text-blue-300 text-sm mt-1">
-                        This report was generated on {{ moment().format('MMMM DD, YYYY [at] HH:mm') }} and includes all test execution data up to this point.
+                        This report was generated on {{ report_generated_at.strftime('%B %d, %Y at %H:%M') }} and includes all test execution data up to this point.
                         Recent executions include tests run within the last 30 days.
                     </p>
                 </div>
