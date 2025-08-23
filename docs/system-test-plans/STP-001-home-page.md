@@ -44,7 +44,7 @@
 | **Description / Scenario** | Verify navigation to about page from home page |
 | **Expected Results** | User is redirected to about page when clicking "Learn More" |
 | **Procedure** | 1. Navigate to home page <br> 2. Click "Learn More" button in hero section <br> 3. Verify redirection to `/about` page <br> 4. Confirm about page content loads |
-| **Remarks** | Pending |
+| **Remarks** | Passed |
 
 ---
 
