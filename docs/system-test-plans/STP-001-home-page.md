@@ -20,7 +20,7 @@
 | **Description / Scenario** | Verify authenticated user can navigate to levels overview from home page |
 | **Expected Results** | User is redirected to levels overview page when clicking "Start Learning" or "Continue Learning" |
 | **Procedure** | 1. Login as authenticated user <br> 2. Navigate to home page <br> 3. Click "Start Learning" or "Continue Learning" button <br> 4. Verify redirection to levels overview |
-| **Remarks** | Pending |
+| **Remarks** | Passed |
 
 ---
 
