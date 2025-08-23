@@ -56,7 +56,7 @@
 | **Description / Scenario** | Verify dark mode functionality on home page |
 | **Expected Results** | Page theme changes to dark mode with appropriate color scheme |
 | **Procedure** | 1. Navigate to home page <br> 2. Click dark mode toggle (if available) <br> 3. Verify background changes to dark theme <br> 4. Check text colors are readable in dark mode |
-| **Remarks** | Pending |
+| **Remarks** | Passed |
 
 ---
 
