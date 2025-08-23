@@ -86,13 +86,13 @@ class SystemTestPlan:
                     expected_results=data['expected_results'],
                     procedure=data['procedure'],
                     test_status=data['test_status'],
-                    execution_date=datetime.fromisoformat(data['execution_date']) if data['execution_date'] else None,
+                    execution_date=datetime.fromisoformat(data['execution_date'].replace('Z', '+00:00')) if data['execution_date'] else None,
                     executed_by=data['executed_by'],
                     failure_reason=data['failure_reason'],
                     priority=data['priority'],
                     category=data['category'],
-                    created_at=datetime.fromisoformat(data['created_at']) if data['created_at'] else None,
-                    updated_at=datetime.fromisoformat(data['updated_at']) if data['updated_at'] else None
+                    created_at=datetime.fromisoformat(data['created_at'].replace('Z', '+00:00')) if data['created_at'] else None,
+                    updated_at=datetime.fromisoformat(data['updated_at'].replace('Z', '+00:00')) if data['updated_at'] else None
                 )
             return None
         except Exception as e:
@@ -119,8 +119,18 @@ class SystemTestPlan:
                 if 'executed_by' in filters and filters['executed_by']:
                     query = query.eq('executed_by', filters['executed_by'])
             
-            # Apply ordering
-            result = query.order(order_by).execute()
+            # Apply ordering - handle desc/asc properly
+            if order_by:
+                if ' desc' in order_by.lower():
+                    column = order_by.lower().replace(' desc', '').strip()
+                    query = query.order(column, desc=True)
+                elif ' asc' in order_by.lower():
+                    column = order_by.lower().replace(' asc', '').strip()
+                    query = query.order(column, desc=False)
+                else:
+                    query = query.order(order_by)
+            
+            result = query.execute()
             
             test_plans = []
             for data in result.data:
@@ -134,13 +144,13 @@ class SystemTestPlan:
                     expected_results=data['expected_results'],
                     procedure=data['procedure'],
                     test_status=data['test_status'],
-                    execution_date=datetime.fromisoformat(data['execution_date']) if data['execution_date'] else None,
+                    execution_date=datetime.fromisoformat(data['execution_date'].replace('Z', '+00:00')) if data['execution_date'] else None,
                     executed_by=data['executed_by'],
                     failure_reason=data['failure_reason'],
                     priority=data['priority'],
                     category=data['category'],
-                    created_at=datetime.fromisoformat(data['created_at']) if data['created_at'] else None,
-                    updated_at=datetime.fromisoformat(data['updated_at']) if data['updated_at'] else None
+                    created_at=datetime.fromisoformat(data['created_at'].replace('Z', '+00:00')) if data['created_at'] else None,
+                    updated_at=datetime.fromisoformat(data['updated_at'].replace('Z', '+00:00')) if data['updated_at'] else None
                 ))
             
             return test_plans
@@ -175,12 +185,30 @@ class SystemTestPlan:
                 if status in summary:
                     summary[status] += 1
             
-            summary['pass_rate'] = (summary['passed'] / summary['total'] * 100) if summary['total'] > 0 else 0
+            pass_rate = (summary['passed'] / summary['total'] * 100) if summary['total'] > 0 else 0
             
-            return summary
+            # Create object-like structure for template
+            summary_obj = type('TestSummary', (), {
+                'total_tests': summary['total'],
+                'passed_tests': summary['passed'],
+                'failed_tests': summary['failed'],
+                'pending_tests': summary['pending'],
+                'skipped_tests': summary['skipped'],
+                'pass_rate': pass_rate
+            })()
+            
+            return summary_obj
         except Exception as e:
             print(f"Error getting test summary: {e}")
-            return {'total': 0, 'passed': 0, 'failed': 0, 'pending': 0, 'skipped': 0, 'pass_rate': 0}
+            # Return empty object with all attributes set to 0
+            return type('TestSummary', (), {
+                'total_tests': 0,
+                'passed_tests': 0,
+                'failed_tests': 0,
+                'pending_tests': 0,
+                'skipped_tests': 0,
+                'pass_rate': 0
+            })()
     
     @classmethod
     def get_modules_summary(cls):
@@ -200,16 +228,33 @@ class SystemTestPlan:
                 modules[module]['total'] += 1
                 modules[module][status] += 1
             
-            # Calculate pass rates
-            for module in modules:
-                total = modules[module]['total']
-                passed = modules[module]['passed']
-                modules[module]['pass_rate'] = (passed / total * 100) if total > 0 else 0
+            # Convert to list of objects with proper attribute names for template
+            modules_list = []
+            for module_name, stats in modules.items():
+                total = stats['total']
+                passed = stats['passed']
+                pass_rate = (passed / total * 100) if total > 0 else 0
+                
+                # Create a simple object-like dictionary that supports dot notation in template
+                module_obj = type('ModuleSummary', (), {
+                    'module_name': module_name,
+                    'total_tests': total,
+                    'passed_tests': passed,
+                    'failed_tests': stats['failed'],
+                    'pending_tests': stats['pending'],
+                    'skipped_tests': stats['skipped'],
+                    'pass_rate': pass_rate
+                })()
+                
+                modules_list.append(module_obj)
             
-            return modules
+            # Sort by module name for consistent display
+            modules_list.sort(key=lambda x: x.module_name)
+            
+            return modules_list
         except Exception as e:
             print(f"Error getting modules summary: {e}")
-            return {}
+            return []
     
     def delete(self):
         """Delete test plan from database."""
