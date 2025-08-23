@@ -1,0 +1,312 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Bulk Import Test Plans{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+<style>
+.import-section {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid #007bff;
+}
+
+.json-editor {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+
+.example-json {
+    background: #263238;
+    color: #eeffff;
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-x: auto;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+}
+</style>
+{% endblock %}
+
+{% block admin_content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">Bulk Import Test Plans</h1>
+            <p class="text-muted">Import multiple test plans from JSON data</p>
+        </div>
+        <div>
+            <a href="{{ url_for('system_test.test_plans_list') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Test Plans
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Import Form -->
+            <div class="import-section">
+                <h5><i class="bi bi-upload"></i> Import Data</h5>
+                <form method="POST" id="importForm">
+                    <div class="mb-3">
+                        <label for="import_data" class="form-label">
+                            JSON Data <span class="text-danger">*</span>
+                        </label>
+                        <textarea class="form-control json-editor" id="import_data" name="import_data" 
+                                  rows="20" placeholder="Paste your JSON data here..." required></textarea>
+                        <div class="form-text">
+                            Paste JSON array of test plan objects. See the example format on the right.
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <button type="button" class="btn btn-outline-info" onclick="validateJson()">
+                                <i class="bi bi-check-circle"></i> Validate JSON
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="loadExample()">
+                                <i class="bi bi-file-text"></i> Load Example
+                            </button>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-upload"></i> Import Test Plans
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Validation Results -->
+            <div id="validationResults" class="alert" style="display: none;"></div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Instructions -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-info">
+                        <i class="bi bi-info-circle"></i> Instructions
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <ol class="small">
+                        <li>Prepare your test plans data in JSON format</li>
+                        <li>Use the example format shown below</li>
+                        <li>Validate your JSON before importing</li>
+                        <li>Click "Import Test Plans" to process</li>
+                    </ol>
+
+                    <h6 class="mt-3">Required Fields:</h6>
+                    <ul class="small">
+                        <li><code>test_plan_no</code> - Unique identifier</li>
+                        <li><code>module_name</code> - Module being tested</li>
+                        <li><code>description</code> - Test description</li>
+                        <li><code>expected_results</code> - Expected outcomes</li>
+                        <li><code>procedure</code> - Test steps</li>
+                    </ul>
+
+                    <h6 class="mt-3">Optional Fields:</h6>
+                    <ul class="small">
+                        <li><code>screen_design_ref</code> - Design reference</li>
+                        <li><code>scenario</code> - Test scenario</li>
+                        <li><code>test_status</code> - pending, passed, failed, skipped</li>
+                        <li><code>priority</code> - low, medium, high, critical</li>
+                        <li><code>category</code> - functional, ui, performance, security, integration</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Example JSON -->
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-success">
+                        <i class="bi bi-code-square"></i> Example JSON Format
+                    </h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="example-json">
+<pre>[
+  {
+    "test_plan_no": "STP-001-01",
+    "module_name": "Home Page",
+    "screen_design_ref": "Figure 2.1: Home Page",
+    "description": "Verify home page loads correctly",
+    "scenario": "User navigates to home page",
+    "expected_results": "Home page displays all sections",
+    "procedure": "1. Open browser\n2. Navigate to URL\n3. Verify page loads\n4. Check all sections visible",
+    "test_status": "pending",
+    "priority": "high",
+    "category": "functional"
+  },
+  {
+    "test_plan_no": "STP-001-02",
+    "module_name": "Home Page",
+    "description": "Test navigation functionality",
+    "expected_results": "Navigation works correctly",
+    "procedure": "1. Click navigation links\n2. Verify redirection\n3. Check page content",
+    "priority": "medium",
+    "category": "functional"
+  }
+]</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function validateJson() {
+    const textarea = document.getElementById('import_data');
+    const resultsDiv = document.getElementById('validationResults');
+    
+    try {
+        const data = JSON.parse(textarea.value);
+        
+        if (!Array.isArray(data)) {
+            throw new Error('Data must be a JSON array');
+        }
+        
+        if (data.length === 0) {
+            throw new Error('Array cannot be empty');
+        }
+        
+        // Validate each test plan object
+        const requiredFields = ['test_plan_no', 'module_name', 'description', 'expected_results', 'procedure'];
+        const errors = [];
+        
+        data.forEach((item, index) => {
+            requiredFields.forEach(field => {
+                if (!item[field] || item[field].trim() === '') {
+                    errors.push(`Item ${index + 1}: Missing required field '${field}'`);
+                }
+            });
+            
+            // Validate test_plan_no uniqueness
+            const duplicates = data.filter(d => d.test_plan_no === item.test_plan_no);
+            if (duplicates.length > 1) {
+                errors.push(`Item ${index + 1}: Duplicate test_plan_no '${item.test_plan_no}'`);
+            }
+            
+            // Validate enum fields
+            if (item.test_status && !['pending', 'passed', 'failed', 'skipped'].includes(item.test_status)) {
+                errors.push(`Item ${index + 1}: Invalid test_status '${item.test_status}'`);
+            }
+            
+            if (item.priority && !['low', 'medium', 'high', 'critical'].includes(item.priority)) {
+                errors.push(`Item ${index + 1}: Invalid priority '${item.priority}'`);
+            }
+            
+            if (item.category && !['functional', 'ui', 'performance', 'security', 'integration'].includes(item.category)) {
+                errors.push(`Item ${index + 1}: Invalid category '${item.category}'`);
+            }
+        });
+        
+        if (errors.length > 0) {
+            resultsDiv.className = 'alert alert-danger';
+            resultsDiv.innerHTML = `
+                <h6><i class="bi bi-exclamation-triangle"></i> Validation Errors (${errors.length}):</h6>
+                <ul class="mb-0">
+                    ${errors.map(error => `<li>${error}</li>`).join('')}
+                </ul>
+            `;
+        } else {
+            resultsDiv.className = 'alert alert-success';
+            resultsDiv.innerHTML = `
+                <h6><i class="bi bi-check-circle"></i> Validation Successful!</h6>
+                <p class="mb-0">Found ${data.length} valid test plan(s) ready for import.</p>
+            `;
+        }
+        
+        resultsDiv.style.display = 'block';
+        
+    } catch (error) {
+        resultsDiv.className = 'alert alert-danger';
+        resultsDiv.innerHTML = `
+            <h6><i class="bi bi-x-circle"></i> JSON Parse Error:</h6>
+            <p class="mb-0">${error.message}</p>
+        `;
+        resultsDiv.style.display = 'block';
+    }
+}
+
+function loadExample() {
+    const exampleData = [
+        {
+            "test_plan_no": "STP-001-01",
+            "module_name": "Home Page",
+            "screen_design_ref": "Figure 2.1: Home Page",
+            "description": "Verify that the home page loads correctly when accessing the root URL",
+            "scenario": "User navigates to the home page by typing the URL",
+            "expected_results": "Display the complete home page with hero section, features, learning modules, and CTA sections",
+            "procedure": "1. Open web browser\n2. Navigate to http://localhost:5000/\n3. Verify page loads completely\n4. Check all sections are visible (Hero, Features, Learning Modules, CTA)",
+            "test_status": "pending",
+            "priority": "high",
+            "category": "functional"
+        },
+        {
+            "test_plan_no": "STP-001-02",
+            "module_name": "Home Page", 
+            "screen_design_ref": "Figure 2.2: Home Page CTA - Authenticated",
+            "description": "Verify authenticated user can navigate to levels overview from home page",
+            "scenario": "Authenticated user clicks on learning buttons",
+            "expected_results": "User is redirected to levels overview page when clicking Start Learning or Continue Learning",
+            "procedure": "1. Login as authenticated user\n2. Navigate to home page\n3. Click Start Learning or Continue Learning button\n4. Verify redirection to levels overview",
+            "test_status": "pending",
+            "priority": "high", 
+            "category": "functional"
+        }
+    ];
+    
+    document.getElementById('import_data').value = JSON.stringify(exampleData, null, 2);
+}
+
+// Form validation before submission
+document.getElementById('importForm').addEventListener('submit', function(e) {
+    const textarea = document.getElementById('import_data');
+    
+    if (!textarea.value.trim()) {
+        e.preventDefault();
+        alert('Please provide JSON data to import.');
+        return;
+    }
+    
+    try {
+        const data = JSON.parse(textarea.value);
+        if (!Array.isArray(data) || data.length === 0) {
+            e.preventDefault();
+            alert('Please provide a valid JSON array with test plan data.');
+            return;
+        }
+        
+        if (!confirm(`Are you sure you want to import ${data.length} test plan(s)?`)) {
+            e.preventDefault();
+            return;
+        }
+        
+    } catch (error) {
+        e.preventDefault();
+        alert('Invalid JSON format. Please validate your data first.');
+        return;
+    }
+});
+
+// Auto-format JSON on paste
+document.getElementById('import_data').addEventListener('paste', function() {
+    setTimeout(() => {
+        try {
+            const data = JSON.parse(this.value);
+            this.value = JSON.stringify(data, null, 2);
+        } catch (e) {
+            // Ignore formatting errors
+        }
+    }, 100);
+});
+</script>
+{% endblock %}

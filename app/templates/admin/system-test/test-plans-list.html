@@ -1,0 +1,306 @@
+{% extends "admin/base.html" %}
+
+{% block title %}System Test Plans{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+<style>
+.test-status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.status-passed { background-color: #d1fae5; color: #065f46; }
+.status-failed { background-color: #fee2e2; color: #991b1b; }
+.status-pending { background-color: #fef3c7; color: #92400e; }
+.status-skipped { background-color: #e5e7eb; color: #374151; }
+
+.priority-badge {
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+.priority-critical { background-color: #fecaca; color: #dc2626; }
+.priority-high { background-color: #fed7aa; color: #ea580c; }
+.priority-medium { background-color: #fde68a; color: #d97706; }
+.priority-low { background-color: #d1fae5; color: #059669; }
+
+.filter-card {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+</style>
+{% endblock %}
+
+{% block admin_content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">System Test Plans</h1>
+            <p class="text-muted">Manage and execute system test plans</p>
+        </div>
+        <div>
+            <a href="{{ url_for('system_test.dashboard') }}" class="btn btn-outline-primary">
+                <i class="bi bi-graph-up"></i> Dashboard
+            </a>
+            <a href="{{ url_for('system_test.create_test_plan') }}" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> New Test Plan
+            </a>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card shadow mb-4">
+        <div class="card-body filter-card">
+            <form method="GET" class="row g-3">
+                <div class="col-md-3">
+                    <label for="module" class="form-label">Module</label>
+                    <select class="form-select" id="module" name="module">
+                        <option value="">All Modules</option>
+                        {% for module in modules %}
+                        <option value="{{ module }}" 
+                                {{ 'selected' if current_filters.module == module else '' }}>
+                            {{ module }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="status" class="form-label">Status</label>
+                    <select class="form-select" id="status" name="status">
+                        <option value="">All Status</option>
+                        <option value="pending" {{ 'selected' if current_filters.status == 'pending' else '' }}>Pending</option>
+                        <option value="passed" {{ 'selected' if current_filters.status == 'passed' else '' }}>Passed</option>
+                        <option value="failed" {{ 'selected' if current_filters.status == 'failed' else '' }}>Failed</option>
+                        <option value="skipped" {{ 'selected' if current_filters.status == 'skipped' else '' }}>Skipped</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="priority" class="form-label">Priority</label>
+                    <select class="form-select" id="priority" name="priority">
+                        <option value="">All Priorities</option>
+                        <option value="low" {{ 'selected' if current_filters.priority == 'low' else '' }}>Low</option>
+                        <option value="medium" {{ 'selected' if current_filters.priority == 'medium' else '' }}>Medium</option>
+                        <option value="high" {{ 'selected' if current_filters.priority == 'high' else '' }}>High</option>
+                        <option value="critical" {{ 'selected' if current_filters.priority == 'critical' else '' }}>Critical</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="category" class="form-label">Category</label>
+                    <select class="form-select" id="category" name="category">
+                        <option value="">All Categories</option>
+                        <option value="functional" {{ 'selected' if current_filters.category == 'functional' else '' }}>Functional</option>
+                        <option value="ui" {{ 'selected' if current_filters.category == 'ui' else '' }}>UI</option>
+                        <option value="performance" {{ 'selected' if current_filters.category == 'performance' else '' }}>Performance</option>
+                        <option value="security" {{ 'selected' if current_filters.category == 'security' else '' }}>Security</option>
+                        <option value="integration" {{ 'selected' if current_filters.category == 'integration' else '' }}>Integration</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="bi bi-filter"></i> Filter
+                    </button>
+                    <a href="{{ url_for('system_test.test_plans_list') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-x"></i> Clear
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Test Plans Table -->
+    <div class="card shadow">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">
+                Test Plans ({{ test_plans|length }} found)
+            </h6>
+        </div>
+        <div class="card-body">
+            {% if test_plans %}
+            <div class="table-responsive">
+                <table class="table table-bordered" id="testPlansTable">
+                    <thead>
+                        <tr>
+                            <th>Test Plan No.</th>
+                            <th>Module</th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Priority</th>
+                            <th>Category</th>
+                            <th>Executed By</th>
+                            <th>Last Updated</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for test_plan in test_plans %}
+                        <tr>
+                            <td>
+                                <a href="{{ url_for('system_test.view_test_plan', test_plan_id=test_plan.id) }}" 
+                                   class="text-decoration-none fw-bold">
+                                    {{ test_plan.test_plan_no }}
+                                </a>
+                            </td>
+                            <td>{{ test_plan.module_name }}</td>
+                            <td>
+                                <div class="text-truncate" style="max-width: 200px;" 
+                                     title="{{ test_plan.description }}">
+                                    {{ test_plan.description }}
+                                </div>
+                            </td>
+                            <td>
+                                <span class="test-status-badge status-{{ test_plan.test_status or 'pending' }}">
+                                    {{ (test_plan.test_status or 'pending').replace('_', ' ') }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="priority-badge priority-{{ test_plan.priority or 'medium' }}">
+                                    {{ test_plan.priority or 'medium' }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">{{ test_plan.category or 'functional' }}</span>
+                            </td>
+                            <td>{{ test_plan.executed_by or '-' }}</td>
+                            <td>
+                                {% if test_plan.updated_at %}
+                                {{ test_plan.updated_at.strftime('%Y-%m-%d %H:%M') }}
+                                {% else %}
+                                -
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a href="{{ url_for('system_test.view_test_plan', test_plan_id=test_plan.id) }}" 
+                                       class="btn btn-sm btn-outline-primary" title="View">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{{ url_for('system_test.execute_test_plan', test_plan_id=test_plan.id) }}" 
+                                       class="btn btn-sm btn-outline-success" title="Execute">
+                                        <i class="bi bi-play"></i>
+                                    </a>
+                                    <a href="{{ url_for('system_test.edit_test_plan', test_plan_id=test_plan.id) }}" 
+                                       class="btn btn-sm btn-outline-warning" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" 
+                                            onclick="confirmDelete({{ test_plan.id }}, '{{ test_plan.test_plan_no }}')" 
+                                            title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-inbox text-muted" style="font-size: 4rem;"></i>
+                <h5 class="text-muted mt-3">No test plans found</h5>
+                <p class="text-muted">
+                    {% if current_filters.module or current_filters.status or current_filters.priority or current_filters.category %}
+                    Try adjusting your filters or 
+                    <a href="{{ url_for('system_test.test_plans_list') }}">clear all filters</a>
+                    {% else %}
+                    <a href="{{ url_for('system_test.create_test_plan') }}">Create your first test plan</a>
+                    {% endif %}
+                </p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete test plan <strong id="deleteTestPlanNo"></strong>?</p>
+                <p class="text-danger small">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function confirmDelete(testPlanId, testPlanNo) {
+    document.getElementById('deleteTestPlanNo').textContent = testPlanNo;
+    document.getElementById('deleteForm').action = `/admin/system-test/test-plans/${testPlanId}/delete`;
+    
+    const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    modal.show();
+}
+
+// DataTable initialization
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('testPlansTable')) {
+        // Add search functionality
+        const searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.className = 'form-control mb-3';
+        searchInput.placeholder = 'Search test plans...';
+        searchInput.addEventListener('keyup', function() {
+            const filter = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#testPlansTable tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(filter) ? '' : 'none';
+            });
+        });
+        
+        const table = document.getElementById('testPlansTable');
+        table.parentNode.insertBefore(searchInput, table);
+    }
+});
+
+// Quick status update
+function updateStatus(testPlanId, status) {
+    if (confirm(`Mark this test as ${status}?`)) {
+        fetch(`/admin/system-test/api/test-plans/${testPlanId}/status`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                status: status,
+                failure_reason: status === 'failed' ? prompt('Failure reason (optional):') || '' : ''
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Error updating status: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error updating status');
+        });
+    }
+}
+</script>
+{% endblock %}

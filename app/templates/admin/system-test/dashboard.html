@@ -1,0 +1,352 @@
+{% extends "admin/base.html" %}
+
+{% block title %}System Test Dashboard{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+<style>
+.test-status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.status-passed { background-color: #d1fae5; color: #065f46; }
+.status-failed { background-color: #fee2e2; color: #991b1b; }
+.status-pending { background-color: #fef3c7; color: #92400e; }
+.status-skipped { background-color: #e5e7eb; color: #374151; }
+
+.priority-badge {
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 500;
+}
+.priority-critical { background-color: #fecaca; color: #dc2626; }
+.priority-high { background-color: #fed7aa; color: #ea580c; }
+.priority-medium { background-color: #fde68a; color: #d97706; }
+.priority-low { background-color: #d1fae5; color: #059669; }
+
+.stat-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+</style>
+{% endblock %}
+
+{% block admin_content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">System Test Dashboard</h1>
+            <p class="text-muted">Monitor and manage system test execution</p>
+        </div>
+        <div>
+            <a href="{{ url_for('system_test.test_plans_list') }}" class="btn btn-primary">
+                <i class="bi bi-list-check"></i> View All Tests
+            </a>
+            <a href="{{ url_for('system_test.create_test_plan') }}" class="btn btn-success">
+                <i class="bi bi-plus-circle"></i> New Test Plan
+            </a>
+        </div>
+    </div>
+
+    <!-- Summary Statistics -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2 stat-card">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Tests</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ test_summary.total }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-clipboard-check fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2 stat-card">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Passed</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ test_summary.passed }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-check-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2 stat-card">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Failed</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ test_summary.failed }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-x-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2 stat-card">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Pass Rate</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ "%.1f"|format(test_summary.pass_rate) }}%</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="bi bi-graph-up fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Module Overview -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Module Test Overview</h6>
+                    <a href="{{ url_for('system_test.reports') }}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-file-earmark-text"></i> Generate Report
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if modules_summary %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Module</th>
+                                    <th>Total</th>
+                                    <th>Passed</th>
+                                    <th>Failed</th>
+                                    <th>Pending</th>
+                                    <th>Pass Rate</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for module_name, stats in modules_summary.items() %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ url_for('system_test.module_tests', module_name=module_name) }}" 
+                                           class="text-decoration-none">
+                                            {{ module_name }}
+                                        </a>
+                                    </td>
+                                    <td>{{ stats.total }}</td>
+                                    <td>
+                                        <span class="text-success">{{ stats.passed }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="text-danger">{{ stats.failed }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="text-warning">{{ stats.pending }}</span>
+                                    </td>
+                                    <td>
+                                        <div class="progress" style="height: 20px;">
+                                            <div class="progress-bar bg-success" role="progressbar" 
+                                                 style="width: {{ stats.pass_rate }}%">
+                                                {{ "%.0f"|format(stats.pass_rate) }}%
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('system_test.module_tests', module_name=module_name) }}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                        <p class="text-muted mt-2">No test plans found. 
+                            <a href="{{ url_for('system_test.create_test_plan') }}">Create your first test plan</a>
+                        </p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Failed Tests Requiring Attention -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-danger">Failed Tests</h6>
+                </div>
+                <div class="card-body">
+                    {% if failed_tests %}
+                    <div class="list-group list-group-flush">
+                        {% for test in failed_tests[:10] %}
+                        <div class="list-group-item px-0">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">
+                                        <a href="{{ url_for('system_test.view_test_plan', test_plan_id=test.id) }}" 
+                                           class="text-decoration-none text-dark">
+                                            {{ test.test_plan_no }}
+                                        </a>
+                                    </h6>
+                                    <p class="mb-1 text-muted small">{{ test.module_name }}</p>
+                                    {% if test.failure_reason %}
+                                    <small class="text-danger">{{ test.failure_reason[:100] }}...</small>
+                                    {% endif %}
+                                </div>
+                                <span class="priority-badge priority-{{ test.priority }}">
+                                    {{ test.priority }}
+                                </span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% if failed_tests|length > 10 %}
+                    <div class="text-center mt-3">
+                        <a href="{{ url_for('system_test.test_plans_list', status='failed') }}" 
+                           class="btn btn-sm btn-outline-danger">
+                            View All Failed Tests ({{ failed_tests|length }})
+                        </a>
+                    </div>
+                    {% endif %}
+                    {% else %}
+                    <div class="text-center py-3">
+                        <i class="bi bi-check-circle text-success" style="font-size: 2rem;"></i>
+                        <p class="text-muted mt-2 mb-0">No failed tests!</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{{ url_for('system_test.create_test_plan') }}" class="btn btn-success">
+                            <i class="bi bi-plus-circle"></i> New Test Plan
+                        </a>
+                        <a href="{{ url_for('system_test.bulk_import') }}" class="btn btn-info">
+                            <i class="bi bi-upload"></i> Bulk Import
+                        </a>
+                        <a href="{{ url_for('system_test.reports') }}" class="btn btn-outline-primary">
+                            <i class="bi bi-file-earmark-text"></i> Generate Reports
+                        </a>
+                        <a href="{{ url_for('system_test.test_plans_list', status='pending') }}" class="btn btn-outline-warning">
+                            <i class="bi bi-clock"></i> Pending Tests
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    {% if recent_tests %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Recent Test Activity</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Test Plan</th>
+                                    <th>Module</th>
+                                    <th>Status</th>
+                                    <th>Executed By</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for test in recent_tests %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ url_for('system_test.view_test_plan', test_plan_id=test.id) }}" 
+                                           class="text-decoration-none">
+                                            {{ test.test_plan_no }}
+                                        </a>
+                                    </td>
+                                    <td>{{ test.module_name }}</td>
+                                    <td>
+                                        <span class="test-status-badge status-{{ test.test_status or 'pending' }}">
+                                            {{ (test.test_status or 'pending').replace('_', ' ') }}
+                                        </span>
+                                    </td>
+                                    <td>{{ test.executed_by or '-' }}</td>
+                                    <td>
+                                        {% if test.execution_date %}
+                                        {{ test.execution_date.strftime('%Y-%m-%d %H:%M') }}
+                                        {% else %}
+                                        -
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ url_for('system_test.execute_test_plan', test_plan_id=test.id) }}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-play"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Auto-refresh dashboard every 5 minutes
+setTimeout(() => {
+    location.reload();
+}, 5 * 60 * 1000);
+
+// Add tooltips to priority badges
+document.addEventListener('DOMContentLoaded', function() {
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
+{% endblock %}

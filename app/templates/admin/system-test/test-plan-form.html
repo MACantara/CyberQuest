@@ -1,0 +1,324 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ action }} Test Plan{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+<style>
+.form-section {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid #007bff;
+}
+
+.form-section h5 {
+    color: #007bff;
+    margin-bottom: 1rem;
+}
+
+.procedure-editor {
+    min-height: 150px;
+}
+
+.char-count {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+</style>
+{% endblock %}
+
+{% block admin_content %}
+<div class="container-fluid">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-0 text-gray-800">{{ action }} Test Plan</h1>
+            <p class="text-muted">
+                {% if test_plan %}
+                Editing test plan: {{ test_plan.test_plan_no }}
+                {% else %}
+                Create a new system test plan
+                {% endif %}
+            </p>
+        </div>
+        <div>
+            <a href="{{ url_for('system_test.test_plans_list') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
+
+    <form method="POST" id="testPlanForm">
+        <div class="row">
+            <div class="col-lg-8">
+                <!-- Basic Information -->
+                <div class="form-section">
+                    <h5><i class="bi bi-info-circle"></i> Basic Information</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="test_plan_no" class="form-label">Test Plan Number <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="test_plan_no" name="test_plan_no" 
+                                   value="{{ test_plan.test_plan_no if test_plan else '' }}" 
+                                   placeholder="e.g., STP-001-01" required>
+                            <div class="form-text">Unique identifier for this test plan</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="module_name" class="form-label">Module Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="module_name" name="module_name" 
+                                   value="{{ test_plan.module_name if test_plan else '' }}" 
+                                   placeholder="e.g., Home Page" required>
+                            <div class="form-text">Name of the module being tested</div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <label for="screen_design_ref" class="form-label">Screen Design Reference</label>
+                            <input type="text" class="form-control" id="screen_design_ref" name="screen_design_ref" 
+                                   value="{{ test_plan.screen_design_ref if test_plan else '' }}" 
+                                   placeholder="e.g., Figure 2.1: Home Page">
+                            <div class="form-text">Reference to design documentation or mockups</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Test Details -->
+                <div class="form-section">
+                    <h5><i class="bi bi-clipboard-check"></i> Test Details</h5>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="description" name="description" 
+                               value="{{ test_plan.description if test_plan else '' }}" 
+                               placeholder="Brief description of what is being tested" required>
+                        <div class="form-text">Concise description of the test objective</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="scenario" class="form-label">Scenario</label>
+                        <textarea class="form-control" id="scenario" name="scenario" rows="3" 
+                                  placeholder="Detailed scenario or context for the test">{{ test_plan.scenario if test_plan else '' }}</textarea>
+                        <div class="form-text">Detailed scenario or use case being tested</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="expected_results" class="form-label">Expected Results <span class="text-danger">*</span></label>
+                        <textarea class="form-control" id="expected_results" name="expected_results" rows="3" 
+                                  placeholder="What should happen when the test is executed" required>{{ test_plan.expected_results if test_plan else '' }}</textarea>
+                        <div class="form-text">Clear description of expected behavior or outcomes</div>
+                    </div>
+                </div>
+
+                <!-- Test Procedure -->
+                <div class="form-section">
+                    <h5><i class="bi bi-list-ol"></i> Test Procedure</h5>
+                    <div class="mb-3">
+                        <label for="procedure" class="form-label">Procedure Steps <span class="text-danger">*</span></label>
+                        <textarea class="form-control procedure-editor" id="procedure" name="procedure" 
+                                  placeholder="1. First step&#10;2. Second step&#10;3. Third step..." required>{{ test_plan.procedure if test_plan else '' }}</textarea>
+                        <div class="form-text">
+                            Step-by-step instructions for executing the test. Use numbered format for clarity.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <!-- Test Configuration -->
+                <div class="form-section">
+                    <h5><i class="bi bi-gear"></i> Test Configuration</h5>
+                    <div class="mb-3">
+                        <label for="test_status" class="form-label">Status</label>
+                        <select class="form-select" id="test_status" name="test_status">
+                            <option value="pending" {{ 'selected' if not test_plan or test_plan.test_status == 'pending' else '' }}>
+                                Pending
+                            </option>
+                            <option value="passed" {{ 'selected' if test_plan and test_plan.test_status == 'passed' else '' }}>
+                                Passed
+                            </option>
+                            <option value="failed" {{ 'selected' if test_plan and test_plan.test_status == 'failed' else '' }}>
+                                Failed
+                            </option>
+                            <option value="skipped" {{ 'selected' if test_plan and test_plan.test_status == 'skipped' else '' }}>
+                                Skipped
+                            </option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="priority" class="form-label">Priority</label>
+                        <select class="form-select" id="priority" name="priority">
+                            <option value="low" {{ 'selected' if test_plan and test_plan.priority == 'low' else '' }}>
+                                Low
+                            </option>
+                            <option value="medium" {{ 'selected' if not test_plan or test_plan.priority == 'medium' else '' }}>
+                                Medium
+                            </option>
+                            <option value="high" {{ 'selected' if test_plan and test_plan.priority == 'high' else '' }}>
+                                High
+                            </option>
+                            <option value="critical" {{ 'selected' if test_plan and test_plan.priority == 'critical' else '' }}>
+                                Critical
+                            </option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select class="form-select" id="category" name="category">
+                            <option value="functional" {{ 'selected' if not test_plan or test_plan.category == 'functional' else '' }}>
+                                Functional
+                            </option>
+                            <option value="ui" {{ 'selected' if test_plan and test_plan.category == 'ui' else '' }}>
+                                UI/UX
+                            </option>
+                            <option value="performance" {{ 'selected' if test_plan and test_plan.category == 'performance' else '' }}>
+                                Performance
+                            </option>
+                            <option value="security" {{ 'selected' if test_plan and test_plan.category == 'security' else '' }}>
+                                Security
+                            </option>
+                            <option value="integration" {{ 'selected' if test_plan and test_plan.category == 'integration' else '' }}>
+                                Integration
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Help & Guidelines -->
+                <div class="card shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="m-0"><i class="bi bi-lightbulb"></i> Guidelines</h6>
+                    </div>
+                    <div class="card-body">
+                        <h6>Test Plan Number Format:</h6>
+                        <ul class="small mb-3">
+                            <li>STP-XXX-YY format</li>
+                            <li>XXX = Module number</li>
+                            <li>YY = Test case number</li>
+                        </ul>
+                        
+                        <h6>Writing Procedures:</h6>
+                        <ul class="small mb-3">
+                            <li>Use clear, numbered steps</li>
+                            <li>Include specific actions</li>
+                            <li>Mention expected results</li>
+                            <li>Be precise and actionable</li>
+                        </ul>
+
+                        <h6>Priority Levels:</h6>
+                        <ul class="small">
+                            <li><strong>Critical:</strong> Core functionality</li>
+                            <li><strong>High:</strong> Important features</li>
+                            <li><strong>Medium:</strong> Standard features</li>
+                            <li><strong>Low:</strong> Nice-to-have features</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <a href="{{ url_for('system_test.test_plans_list') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancel
+                        </a>
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> {{ action }} Test Plan
+                        </button>
+                        {% if test_plan %}
+                        <a href="{{ url_for('system_test.execute_test_plan', test_plan_id=test_plan.id) }}" 
+                           class="btn btn-primary ms-2">
+                            <i class="bi bi-play"></i> Execute Test
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-generate test plan number
+    const moduleInput = document.getElementById('module_name');
+    const testPlanNoInput = document.getElementById('test_plan_no');
+    
+    if (!testPlanNoInput.value) {
+        moduleInput.addEventListener('input', function() {
+            const moduleName = this.value.toLowerCase().replace(/\s+/g, '-');
+            if (moduleName) {
+                // This is a simple example - in real implementation, you'd want to
+                // check existing test plan numbers for the module
+                testPlanNoInput.value = `STP-001-01`;
+            }
+        });
+    }
+
+    // Form validation
+    const form = document.getElementById('testPlanForm');
+    form.addEventListener('submit', function(e) {
+        const requiredFields = form.querySelectorAll('[required]');
+        let isValid = true;
+
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                field.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                field.classList.remove('is-invalid');
+            }
+        });
+
+        if (!isValid) {
+            e.preventDefault();
+            alert('Please fill in all required fields.');
+        }
+    });
+
+    // Character counter for textareas
+    const textareas = document.querySelectorAll('textarea');
+    textareas.forEach(textarea => {
+        const charCountDiv = document.createElement('div');
+        charCountDiv.className = 'char-count text-end mt-1';
+        textarea.parentNode.appendChild(charCountDiv);
+
+        function updateCharCount() {
+            const count = textarea.value.length;
+            charCountDiv.textContent = `${count} characters`;
+        }
+
+        textarea.addEventListener('input', updateCharCount);
+        updateCharCount();
+    });
+
+    // Procedure formatting helper
+    const procedureTextarea = document.getElementById('procedure');
+    if (procedureTextarea) {
+        procedureTextarea.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const cursorPosition = this.selectionStart;
+                const textBefore = this.value.substring(0, cursorPosition);
+                const lastLine = textBefore.split('\n').pop();
+                const match = lastLine.match(/^(\d+)\.\s/);
+                
+                if (match) {
+                    const nextNumber = parseInt(match[1]) + 1;
+                    setTimeout(() => {
+                        const cursorPos = this.selectionStart;
+                        this.value = this.value.substring(0, cursorPos) + 
+                                   nextNumber + '. ' + 
+                                   this.value.substring(cursorPos);
+                        this.selectionStart = this.selectionEnd = cursorPos + (nextNumber + '. ').length;
+                    }, 0);
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}
