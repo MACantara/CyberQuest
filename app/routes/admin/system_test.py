@@ -466,9 +466,8 @@ def export_test_plans_docx():
                             for run in p.runs:
                                 run.font.color.rgb = None  # Default black
             
-            # Add page break after each test plan (except the last one)
-            if test_plan != test_plans[-1]:
-                doc.add_page_break()
+            # Add spacing between test plans instead of page break
+            doc.add_paragraph('')  # Add single blank line for separation
         
         # Save to BytesIO
         docx_buffer = io.BytesIO()
