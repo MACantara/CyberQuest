@@ -415,48 +415,59 @@ def export_test_plans_docx():
             run.font.color.rgb = None  # Default black
         doc.add_paragraph('')
         
-        # Process each test plan
-        for test_plan in test_plans:
-            # Add test plan header
-            doc.add_heading(f'Test Plan No: {test_plan.test_plan_no}', level=1)
-            
-            # Create table for test plan details
-            table = doc.add_table(rows=6, cols=2)
+        # Create one continuous table for all test plans
+        if test_plans:
+            # Create table with header row + number of test plans
+            table = doc.add_table(rows=1, cols=4)
             table.style = 'Table Grid'
             table.alignment = WD_TABLE_ALIGNMENT.CENTER
-            
-            # Set column widths
-            for col in table.columns:
-                col.width = Inches(3.0)
-            
-            # Populate table data with specified headers
-            rows_data = [
-                ('Test Plan No.', test_plan.test_plan_no or 'N/A'),
-                ('Screen Design Ref No.', test_plan.screen_design_ref or 'N/A'),
-                ('Module', test_plan.module_name or 'N/A'),
-                ('Description/Scenario', test_plan.description or 'N/A'),
-                ('Expected Results', test_plan.expected_results or 'N/A'),
-                ('Remarks', test_plan.failure_reason or 'Passed' if test_plan.test_status == 'passed' else 'N/A')
-            ]
-            
-            for i, (label, value) in enumerate(rows_data):
-                # Set header cell
-                header_cell = table.cell(i, 0)
-                header_cell.text = label
-                header_cell.paragraphs[0].runs[0].bold = True
+            table.autofit = False  # important to prevent Word from resizing columns
+
+            # Desired column widths
+            col_widths = [Inches(1.0), Inches(1.2), Inches(4.0), Inches(0.8)]
+
+            # Apply widths to header row cells
+            for i, width in enumerate(col_widths):
+                table.columns[i].width = width
+                for cell in table.columns[i].cells:
+                    cell.width = width
+
+            # Add header row
+            header_cells = table.rows[0].cells
+            headers = ['Test Plan No.', 'Module', 'Description', 'Remarks']
+
+            for i, header in enumerate(headers):
+                header_cells[i].text = header
+                header_cells[i].paragraphs[0].runs[0].bold = True
                 # Set text color to black
-                header_cell.paragraphs[0].runs[0].font.color.rgb = None  # Default black
-                
-                # Set value cell
-                value_cell = table.cell(i, 1)
-                value_cell.text = str(value)
-                # Set text color to black
-                for paragraph in value_cell.paragraphs:
-                    for run in paragraph.runs:
-                        run.font.color.rgb = None  # Default black
-            
-            # Add spacing between test plans instead of page break
-            doc.add_paragraph('')  # Add single blank line for separation
+                header_cells[i].paragraphs[0].runs[0].font.color.rgb = None  # Default black
+
+            # Add data rows for each test plan
+            for test_plan in test_plans:
+                row_cells = table.add_row().cells
+
+                # Populate row data
+                row_data = [
+                    test_plan.test_plan_no or 'N/A',
+                    test_plan.module_name or 'N/A',
+                    test_plan.description or 'N/A',
+                    test_plan.failure_reason or 'Passed' if test_plan.test_status == 'passed' else 'N/A'
+                ]
+
+                for i, value in enumerate(row_data):
+                    row_cells[i].text = str(value)
+                    # Force width for each new cell too
+                    row_cells[i].width = col_widths[i]
+                    # Set text color to black
+                    for paragraph in row_cells[i].paragraphs:
+                        for run in paragraph.runs:
+                            run.font.color.rgb = None  # Default black
+        else:
+            # Add message if no test plans found
+            doc.add_paragraph('No test plans found.')
+
+        # Add spacing at the end
+        doc.add_paragraph('')
         
         # Save to BytesIO
         docx_buffer = io.BytesIO()
