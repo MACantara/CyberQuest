@@ -188,6 +188,7 @@ def execute_test_plan(test_plan_id):
         if request.method == 'POST':
             test_status = request.form.get('test_status')
             failure_reason = request.form.get('failure_reason', '').strip()
+            proceed_to_next = request.form.get('proceed_to_next') == 'on'
             
             test_plan.test_status = test_status
             test_plan.execution_date = datetime.utcnow()
@@ -196,7 +197,20 @@ def execute_test_plan(test_plan_id):
             
             if test_plan.save():
                 flash(f'Test execution recorded: {test_status.upper()}', 'success')
-                return redirect(url_for('system_test.view_test_plan', test_plan_id=test_plan_id))
+                
+                # Check if user wants to proceed to next test
+                if proceed_to_next:
+                    # Find next pending test case
+                    next_test = SystemTestPlan.get_next_pending_test(test_plan_id)
+                    if next_test:
+                        flash(f'Proceeding to next test: {next_test.test_plan_no}', 'info')
+                        return redirect(url_for('system_test.execute_test_plan', test_plan_id=next_test.id))
+                    else:
+                        flash('No more pending tests found. All tests completed!', 'success')
+                        return redirect(url_for('system_test.test_plans_list'))
+                else:
+                    # Return to test plans list if user doesn't want to proceed
+                    return redirect(url_for('system_test.test_plans_list'))
             else:
                 flash('Error recording test execution.', 'error')
                 abort(500)
@@ -208,9 +222,22 @@ def execute_test_plan(test_plan_id):
             steps = [step.strip() for step in test_plan.procedure.split('\n') if step.strip()]
             procedure_steps = steps
         
+        # Get test execution context information
+        all_tests = SystemTestPlan.get_all(order_by='test_plan_no')
+        current_index = next((i for i, test in enumerate(all_tests) if test.id == test_plan_id), 0)
+        pending_tests = [test for test in all_tests if test.test_status == 'pending']
+        
+        test_context = {
+            'current_position': current_index + 1,
+            'total_tests': len(all_tests),
+            'pending_count': len(pending_tests),
+            'has_next_pending': len([test for test in all_tests[current_index + 1:] if test.test_status == 'pending']) > 0
+        }
+        
         return render_template('admin/system-test/test-execution.html', 
                              test_plan=test_plan,
-                             procedure_steps=procedure_steps)
+                             procedure_steps=procedure_steps,
+                             test_context=test_context)
     except Exception as e:
         current_app.logger.error(f'Error executing test plan: {str(e)}')
         abort(500)
