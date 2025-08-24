@@ -48,6 +48,40 @@ CREATE INDEX IF NOT EXISTS idx_login_attempts_ip_attempted_at ON login_attempts(
 CREATE INDEX IF NOT EXISTS idx_login_attempts_ip_success ON login_attempts(ip_address, success);
 CREATE INDEX IF NOT EXISTS idx_login_attempts_attempted_at ON login_attempts(attempted_at);
 
+-- Create system_test_plans table
+CREATE TABLE IF NOT EXISTS system_test_plans (
+    id SERIAL PRIMARY KEY,
+    test_plan_no VARCHAR(50) UNIQUE NOT NULL,
+    module_name VARCHAR(100) NOT NULL,
+    screen_design_ref VARCHAR(200),
+    description TEXT NOT NULL,
+    scenario TEXT,
+    expected_results TEXT NOT NULL,
+    procedure TEXT NOT NULL,
+    test_status VARCHAR(20) NOT NULL DEFAULT 'pending',
+    execution_date TIMESTAMPTZ,
+    executed_by VARCHAR(80),
+    failure_reason TEXT,
+    priority VARCHAR(20) NOT NULL DEFAULT 'medium',
+    category VARCHAR(30) NOT NULL DEFAULT 'functional',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT chk_test_status CHECK (test_status IN ('pending', 'passed', 'failed', 'skipped')),
+    CONSTRAINT chk_priority CHECK (priority IN ('low', 'medium', 'high', 'critical')),
+    CONSTRAINT chk_category CHECK (category IN ('functional', 'ui', 'performance', 'security', 'integration'))
+);
+
+-- Create indexes for system_test_plans table
+CREATE INDEX IF NOT EXISTS idx_system_test_plans_test_plan_no ON system_test_plans(test_plan_no);
+CREATE INDEX IF NOT EXISTS idx_system_test_plans_module_name ON system_test_plans(module_name);
+CREATE INDEX IF NOT EXISTS idx_system_test_plans_test_status ON system_test_plans(test_status);
+CREATE INDEX IF NOT EXISTS idx_system_test_plans_priority ON system_test_plans(priority);
+CREATE INDEX IF NOT EXISTS idx_system_test_plans_category ON system_test_plans(category);
+CREATE INDEX IF NOT EXISTS idx_system_test_plans_executed_by ON system_test_plans(executed_by);
+CREATE INDEX IF NOT EXISTS idx_system_test_plans_execution_date ON system_test_plans(execution_date);
+CREATE INDEX IF NOT EXISTS idx_system_test_plans_created_at ON system_test_plans(created_at);
+CREATE INDEX IF NOT EXISTS idx_system_test_plans_updated_at ON system_test_plans(updated_at);
+
 -- Create email_verifications table
 CREATE TABLE IF NOT EXISTS email_verifications (
     id SERIAL PRIMARY KEY,

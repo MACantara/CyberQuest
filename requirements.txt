@@ -42,5 +42,8 @@ pandas
 numpy
 requests
 
+# Document generation
+python-docx
+
 # Supabase (PostgreSQL database)
 supabase
