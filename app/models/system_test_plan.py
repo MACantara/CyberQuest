@@ -164,6 +164,74 @@ class SystemTestPlan:
         return cls.get_all(filters={'module_name': module_name})
     
     @classmethod
+    def get_next_pending_test(cls, current_test_id: int):
+        """Get the next pending test case after the current one."""
+        try:
+            supabase = get_supabase()
+            
+            # First, get the current test to know its order
+            current_test_result = supabase.table('system_test_plans').select('test_plan_no').eq('id', current_test_id).execute()
+            if not current_test_result.data:
+                return None
+            
+            current_test_plan_no = current_test_result.data[0]['test_plan_no']
+            
+            # Find the next pending test case ordered by test_plan_no
+            result = supabase.table('system_test_plans').select('*').eq('test_status', 'pending').gt('test_plan_no', current_test_plan_no).order('test_plan_no').limit(1).execute()
+            
+            if result.data:
+                data = result.data[0]
+                return cls(
+                    id=data['id'],
+                    test_plan_no=data['test_plan_no'],
+                    module_name=data['module_name'],
+                    screen_design_ref=data['screen_design_ref'],
+                    description=data['description'],
+                    scenario=data['scenario'],
+                    expected_results=data['expected_results'],
+                    procedure=data['procedure'],
+                    test_status=data['test_status'],
+                    execution_date=datetime.fromisoformat(data['execution_date'].replace('Z', '+00:00')) if data['execution_date'] else None,
+                    executed_by=data['executed_by'],
+                    failure_reason=data['failure_reason'],
+                    priority=data['priority'],
+                    category=data['category'],
+                    created_at=datetime.fromisoformat(data['created_at'].replace('Z', '+00:00')) if data['created_at'] else None,
+                    updated_at=datetime.fromisoformat(data['updated_at'].replace('Z', '+00:00')) if data['updated_at'] else None
+                )
+            
+            # If no test found after current one, try to find the first pending test from the beginning
+            result = supabase.table('system_test_plans').select('*').eq('test_status', 'pending').order('test_plan_no').limit(1).execute()
+            
+            if result.data:
+                data = result.data[0]
+                # Only return if it's different from the current test
+                if data['id'] != current_test_id:
+                    return cls(
+                        id=data['id'],
+                        test_plan_no=data['test_plan_no'],
+                        module_name=data['module_name'],
+                        screen_design_ref=data['screen_design_ref'],
+                        description=data['description'],
+                        scenario=data['scenario'],
+                        expected_results=data['expected_results'],
+                        procedure=data['procedure'],
+                        test_status=data['test_status'],
+                        execution_date=datetime.fromisoformat(data['execution_date'].replace('Z', '+00:00')) if data['execution_date'] else None,
+                        executed_by=data['executed_by'],
+                        failure_reason=data['failure_reason'],
+                        priority=data['priority'],
+                        category=data['category'],
+                        created_at=datetime.fromisoformat(data['created_at'].replace('Z', '+00:00')) if data['created_at'] else None,
+                        updated_at=datetime.fromisoformat(data['updated_at'].replace('Z', '+00:00')) if data['updated_at'] else None
+                    )
+            
+            return None
+        except Exception as e:
+            print(f"Error getting next pending test: {e}")
+            return None
+    
+    @classmethod
     def get_test_summary(cls):
         """Get test execution summary statistics."""
         try:
