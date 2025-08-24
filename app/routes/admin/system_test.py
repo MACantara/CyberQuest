@@ -201,8 +201,16 @@ def execute_test_plan(test_plan_id):
                 flash('Error recording test execution.', 'error')
                 abort(500)
         
+        # Process procedure steps for display
+        procedure_steps = []
+        if test_plan.procedure:
+            # Split procedure by lines and filter out empty lines
+            steps = [step.strip() for step in test_plan.procedure.split('\n') if step.strip()]
+            procedure_steps = steps
+        
         return render_template('admin/system-test/test-execution.html', 
-                             test_plan=test_plan)
+                             test_plan=test_plan,
+                             procedure_steps=procedure_steps)
     except Exception as e:
         current_app.logger.error(f'Error executing test plan: {str(e)}')
         abort(500)
