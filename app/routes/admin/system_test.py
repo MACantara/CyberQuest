@@ -421,7 +421,7 @@ def export_test_plans_docx():
             doc.add_heading(f'Test Plan No: {test_plan.test_plan_no}', level=1)
             
             # Create table for test plan details
-            table = doc.add_table(rows=5, cols=2)
+            table = doc.add_table(rows=6, cols=2)
             table.style = 'Table Grid'
             table.alignment = WD_TABLE_ALIGNMENT.CENTER
             
@@ -429,12 +429,13 @@ def export_test_plans_docx():
             for col in table.columns:
                 col.width = Inches(3.0)
             
-            # Populate table data (removed test_status)
+            # Populate table data with specified headers
             rows_data = [
-                ('Screen Design Ref No', test_plan.screen_design_ref or 'N/A'),
-                ('Description / Scenario', test_plan.description or 'N/A'),
+                ('Test Plan No.', test_plan.test_plan_no or 'N/A'),
+                ('Screen Design Ref No.', test_plan.screen_design_ref or 'N/A'),
+                ('Module', test_plan.module_name or 'N/A'),
+                ('Description/Scenario', test_plan.description or 'N/A'),
                 ('Expected Results', test_plan.expected_results or 'N/A'),
-                ('Procedure', test_plan.procedure or 'N/A'),
                 ('Remarks', test_plan.failure_reason or 'Passed' if test_plan.test_status == 'passed' else 'N/A')
             ]
             
@@ -453,18 +454,6 @@ def export_test_plans_docx():
                 for paragraph in value_cell.paragraphs:
                     for run in paragraph.runs:
                         run.font.color.rgb = None  # Default black
-                
-                # Format procedure cell with numbered list if it contains steps
-                if label == 'Procedure' and value and value != 'N/A':
-                    value_cell.text = ''  # Clear default text
-                    # Split procedure into steps and format as numbered list
-                    steps = value.split('\n') if '\n' in value else [value]
-                    for step_num, step in enumerate(steps, 1):
-                        if step.strip():
-                            p = value_cell.add_paragraph(f'{step_num}. {step.strip()}')
-                            # Set text color to black for procedure steps
-                            for run in p.runs:
-                                run.font.color.rgb = None  # Default black
             
             # Add spacing between test plans instead of page break
             doc.add_paragraph('')  # Add single blank line for separation
