@@ -14,6 +14,11 @@ def home():
     """Home page route."""
     return render_template('home.html')
 
+@main_bp.route('/csrf-test')
+def csrf_test():
+    """CSRF debugging and testing page."""
+    return render_template('csrf-test.html')
+
 @main_bp.route('/about')
 def about():
     """About page route."""

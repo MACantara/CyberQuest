@@ -2,11 +2,13 @@ import dropdownManager from './utils/dropdown-toggle.js';
 import themeManager from './utils/theme/theme-manager.js';
 import hcaptchaValidator from './utils/hcaptcha-validator.js';
 import FormSubmissionHandler from './utils/form-submission-handler.js';
+import csrfUtils from './utils/csrf-utils.js';
 
 document.addEventListener("DOMContentLoaded", function () {
     // Initialize all managers
     dropdownManager.init();
     themeManager.init();
+    csrfUtils.init();
     // hcaptchaValidator and FormSubmissionHandler initialize automatically
 
     // Close alert messages

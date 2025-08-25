@@ -1,6 +1,6 @@
-from flask import Flask, session
+from flask import Flask, session, request, jsonify
 from flask_mail import Mail
-from config import config
+from config import config, get_config
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 import os
@@ -13,9 +13,11 @@ csrf = CSRFProtect()
 def create_app(config_name=None):
     app = Flask(__name__)
     
-    # Load configuration
-    config_name = config_name or os.environ.get('FLASK_CONFIG', 'default')
-    app.config.from_object(config[config_name])
+    # Load configuration - use get_config() for automatic environment detection
+    if config_name:
+        app.config.from_object(config[config_name])
+    else:
+        app.config.from_object(get_config())
 
     # Initialize Supabase
     from app.database import init_supabase
@@ -47,6 +49,44 @@ def create_app(config_name=None):
 
     # Initialize CSRF protection
     csrf.init_app(app)
+    
+    # Enhanced CSRF error handling with Vercel debugging
+    from flask_wtf.csrf import ValidationError
+    
+    @app.errorhandler(ValidationError)
+    def handle_csrf_validation_error(e):
+        app.logger.error(f"CSRF ValidationError: {e}")
+        if app.config.get('IS_VERCEL'):
+            app.logger.error(f"Vercel CSRF debug info:")
+            app.logger.error(f"  - Headers: {dict(request.headers)}")
+            app.logger.error(f"  - Form data: {request.form}")
+            app.logger.error(f"  - Session: {dict(session)}")
+            app.logger.error(f"  - SECRET_KEY set: {bool(app.config.get('SECRET_KEY'))}")
+            app.logger.error(f"  - CSRF enabled: {app.config.get('WTF_CSRF_ENABLED')}")
+            app.logger.error(f"  - SSL strict: {app.config.get('WTF_CSRF_SSL_STRICT')}")
+        
+        return jsonify({
+            'error': 'CSRF token validation failed',
+            'message': 'Security validation failed. Please refresh the page and try again.',
+            'debug': str(e) if app.debug else None
+        }), 400
+    
+    @app.errorhandler(400)
+    def handle_400_error(e):
+        # Check if this is a CSRF-related 400 error
+        error_str = str(e).lower()
+        if any(term in error_str for term in ['csrf', 'security validation', 'token']):
+            app.logger.error(f"400 error (CSRF-related): {e}")
+            if app.config.get('IS_VERCEL'):
+                app.logger.error(f"Vercel 400 debug - Method: {request.method}, Endpoint: {request.endpoint}")
+            
+            return jsonify({
+                'error': 'Security validation failed',
+                'message': 'Please refresh the page and try again.'
+            }), 400
+        
+        # For other 400 errors, return normally
+        return str(e), 400
 
     # Initialize hCaptcha
     from app.utils.hcaptcha_utils import init_hcaptcha
