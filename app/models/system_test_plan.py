@@ -100,7 +100,7 @@ class SystemTestPlan:
             return None
     
     @classmethod
-    def get_all(cls, filters: Dict[str, Any] = None, order_by: str = 'test_plan_no'):
+    def get_all(cls, filters: Dict[str, Any] = None, order_by: str = 'test_plan_no', limit: int = None):
         """Get all test plans with optional filters."""
         try:
             supabase = get_supabase()
@@ -130,6 +130,13 @@ class SystemTestPlan:
                 else:
                     query = query.order(order_by)
             
+            # Apply limit - use a high limit if not specified to get all records
+            if limit is not None:
+                query = query.limit(limit)
+            else:
+                # Set a high limit to get all records (Supabase default is 1000)
+                query = query.limit(10000)  # Increase to handle your 1105+ records
+            
             result = query.execute()
             
             test_plans = []
@@ -156,6 +163,80 @@ class SystemTestPlan:
             return test_plans
         except Exception as e:
             print(f"Error getting test plans: {e}")
+            return []
+    
+    @classmethod
+    def get_all_paginated(cls, filters: Dict[str, Any] = None, order_by: str = 'test_plan_no', page_size: int = 1000):
+        """Get all test plans using pagination to handle large datasets."""
+        try:
+            all_test_plans = []
+            offset = 0
+            
+            while True:
+                supabase = get_supabase()
+                query = supabase.table('system_test_plans').select('*')
+                
+                # Apply filters
+                if filters:
+                    if 'module_name' in filters and filters['module_name']:
+                        query = query.eq('module_name', filters['module_name'])
+                    if 'test_status' in filters and filters['test_status']:
+                        query = query.eq('test_status', filters['test_status'])
+                    if 'priority' in filters and filters['priority']:
+                        query = query.eq('priority', filters['priority'])
+                    if 'category' in filters and filters['category']:
+                        query = query.eq('category', filters['category'])
+                    if 'executed_by' in filters and filters['executed_by']:
+                        query = query.eq('executed_by', filters['executed_by'])
+                
+                # Apply ordering
+                if order_by:
+                    if ' desc' in order_by.lower():
+                        column = order_by.lower().replace(' desc', '').strip()
+                        query = query.order(column, desc=True)
+                    elif ' asc' in order_by.lower():
+                        column = order_by.lower().replace(' asc', '').strip()
+                        query = query.order(column, desc=False)
+                    else:
+                        query = query.order(order_by)
+                
+                # Apply pagination
+                query = query.range(offset, offset + page_size - 1)
+                result = query.execute()
+                
+                if not result.data:
+                    break
+                
+                # Convert to objects
+                for data in result.data:
+                    all_test_plans.append(cls(
+                        id=data['id'],
+                        test_plan_no=data['test_plan_no'],
+                        module_name=data['module_name'],
+                        screen_design_ref=data['screen_design_ref'],
+                        description=data['description'],
+                        scenario=data['scenario'],
+                        expected_results=data['expected_results'],
+                        procedure=data['procedure'],
+                        test_status=data['test_status'],
+                        execution_date=datetime.fromisoformat(data['execution_date'].replace('Z', '+00:00')) if data['execution_date'] else None,
+                        executed_by=data['executed_by'],
+                        failure_reason=data['failure_reason'],
+                        priority=data['priority'],
+                        category=data['category'],
+                        created_at=datetime.fromisoformat(data['created_at'].replace('Z', '+00:00')) if data['created_at'] else None,
+                        updated_at=datetime.fromisoformat(data['updated_at'].replace('Z', '+00:00')) if data['updated_at'] else None
+                    ))
+                
+                # If we got less than page_size records, we've reached the end
+                if len(result.data) < page_size:
+                    break
+                
+                offset += page_size
+            
+            return all_test_plans
+        except Exception as e:
+            print(f"Error getting test plans with pagination: {e}")
             return []
     
     @classmethod
@@ -235,21 +316,19 @@ class SystemTestPlan:
     def get_test_summary(cls):
         """Get test execution summary statistics."""
         try:
-            supabase = get_supabase()
-            
-            # Get total counts by status
-            result = supabase.table('system_test_plans').select('test_status').execute()
+            # Use pagination to get ALL records for accurate counts
+            all_records = cls.get_all_paginated()
             
             summary = {
-                'total': len(result.data),
+                'total': len(all_records),
                 'passed': 0,
                 'failed': 0,
                 'pending': 0,
                 'skipped': 0
             }
             
-            for row in result.data:
-                status = row['test_status'] or 'pending'
+            for test_plan in all_records:
+                status = test_plan.test_status or 'pending'
                 if status in summary:
                     summary[status] += 1
             
@@ -282,13 +361,13 @@ class SystemTestPlan:
     def get_modules_summary(cls):
         """Get test summary by module."""
         try:
-            supabase = get_supabase()
-            result = supabase.table('system_test_plans').select('module_name, test_status').execute()
+            # Use pagination to get ALL records for accurate module summary
+            all_records = cls.get_all_paginated()
             
             modules = {}
-            for row in result.data:
-                module = row['module_name']
-                status = row['test_status'] or 'pending'
+            for test_plan in all_records:
+                module = test_plan.module_name
+                status = test_plan.test_status or 'pending'
                 
                 if module not in modules:
                     modules[module] = {'total': 0, 'passed': 0, 'failed': 0, 'pending': 0, 'skipped': 0}
