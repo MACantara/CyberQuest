@@ -26,15 +26,15 @@ def admin_required(f):
 def dashboard():
     """System test dashboard with overview statistics."""
     try:
-        # Get summary statistics
+        # Get summary statistics (these methods now handle large datasets)
         test_summary = SystemTestPlan.get_test_summary()
         modules_summary = SystemTestPlan.get_modules_summary()
         
-        # Get recent test executions
-        recent_tests = SystemTestPlan.get_all(order_by='updated_at desc')[:10]
+        # Get recent test executions (limit to 10 for display)
+        recent_tests = SystemTestPlan.get_all(order_by='updated_at desc', limit=10)
         
-        # Get failed tests requiring attention
-        failed_tests = SystemTestPlan.get_all(filters={'test_status': 'failed'})
+        # Get failed tests requiring attention (use pagination to get all failed tests)
+        failed_tests = SystemTestPlan.get_all_paginated(filters={'test_status': 'failed'})
         
         return render_template('admin/system-test/dashboard.html',
                              test_summary=test_summary,
@@ -68,11 +68,11 @@ def test_plans_list():
         if category_filter:
             filters['category'] = category_filter
         
-        # Get test plans
-        test_plans = SystemTestPlan.get_all(filters=filters)
+        # Get test plans (use pagination to handle large datasets)
+        test_plans = SystemTestPlan.get_all_paginated(filters=filters)
         
-        # Get unique values for filter dropdowns
-        all_plans = SystemTestPlan.get_all()
+        # Get unique values for filter dropdowns (use pagination to get all records)
+        all_plans = SystemTestPlan.get_all_paginated()
         modules = sorted(list(set(plan.module_name for plan in all_plans if plan.module_name)))
         
         return render_template('admin/system-test/test-plans-list.html',
@@ -223,7 +223,7 @@ def execute_test_plan(test_plan_id):
             procedure_steps = steps
         
         # Get test execution context information
-        all_tests = SystemTestPlan.get_all(order_by='test_plan_no')
+        all_tests = SystemTestPlan.get_all_paginated(order_by='test_plan_no')
         current_index = next((i for i, test in enumerate(all_tests) if test.id == test_plan_id), 0)
         pending_tests = [test for test in all_tests if test.test_status == 'pending']
         
@@ -342,10 +342,10 @@ def reports():
         modules_summary = SystemTestPlan.get_modules_summary()
         
         # Get failed tests with reasons
-        failed_tests = SystemTestPlan.get_all(filters={'test_status': 'failed'})
+        failed_tests = SystemTestPlan.get_all_paginated(filters={'test_status': 'failed'})
         
         # Get test execution trends (last 30 days)
-        all_tests = SystemTestPlan.get_all()
+        all_tests = SystemTestPlan.get_all_paginated()
         
         # Create timezone-aware datetime for comparison
         thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
@@ -431,7 +431,7 @@ def export_test_plans_docx():
         import io
         
         # Get all test plans
-        test_plans = SystemTestPlan.get_all()
+        test_plans = SystemTestPlan.get_all_paginated()
         
         # Create document
         doc = Document()
