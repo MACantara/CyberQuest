@@ -1,6 +1,6 @@
-from flask import Flask, session
+from flask import Flask, session, request
 from flask_mail import Mail
-from config import config
+from config import config, get_config
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 import os
@@ -13,9 +13,11 @@ csrf = CSRFProtect()
 def create_app(config_name=None):
     app = Flask(__name__)
     
-    # Load configuration
-    config_name = config_name or os.environ.get('FLASK_CONFIG', 'default')
-    app.config.from_object(config[config_name])
+    # Load configuration - use get_config() for automatic environment detection
+    if config_name:
+        app.config.from_object(config[config_name])
+    else:
+        app.config.from_object(get_config())
 
     # Initialize Supabase
     from app.database import init_supabase
@@ -47,6 +49,31 @@ def create_app(config_name=None):
 
     # Initialize CSRF protection
     csrf.init_app(app)
+    
+    # CSRF error handler for better debugging
+    @app.errorhandler(400)
+    def handle_csrf_error(e):
+        if 'CSRF' in str(e.description):
+            app.logger.warning(f"CSRF validation failed: {e.description}")
+            # In development, provide more detailed error information
+            if app.debug:
+                return f"CSRF Error: {e.description}. Check that forms include CSRF tokens.", 400
+            else:
+                return "Security validation failed. Please refresh the page and try again.", 400
+        return e
+    
+    # Additional CSRF debugging for Vercel
+    @app.errorhandler(400)
+    def handle_csrf_error(e):
+        # Check if this is a CSRF error  
+        if 'csrf' in str(e).lower() or 'security validation' in str(e).lower():
+            app.logger.error(f"CSRF error: {e}")
+            if app.config.get('IS_VERCEL'):
+                app.logger.error(f"Vercel CSRF error - Headers: {dict(request.headers)}")
+                app.logger.error(f"Request form: {request.form}")
+                app.logger.error(f"Session: {dict(session)}")
+            return "Security validation failed. Please refresh the page and try again.", 400
+        return str(e), 400
 
     # Initialize hCaptcha
     from app.utils.hcaptcha_utils import init_hcaptcha
