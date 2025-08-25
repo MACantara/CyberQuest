@@ -7,7 +7,7 @@ load_dotenv()
 class Config:
     """Base configuration class."""
     # Generate a secure random secret key
-    SECRET_KEY = os.urandom(24)
+    SECRET_KEY = os.environ.get('SECRET_KEY') or os.urandom(24)
     
     # Check if running on Vercel
     IS_VERCEL = os.environ.get('VERCEL') == '1'
@@ -27,6 +27,12 @@ class Config:
         SQLALCHEMY_TRACK_MODIFICATIONS = False
         DISABLE_DATABASE = False
     
+    # CSRF Configuration for serverless compatibility
+    WTF_CSRF_ENABLED = True
+    WTF_CSRF_CHECK_DEFAULT = True
+    WTF_CSRF_TIME_LIMIT = 3600  # 1 hour token validity
+    WTF_CSRF_SSL_STRICT = False  # Allow CSRF over HTTP for development
+    
     # Email configuration (required for password reset)
     MAIL_SERVER = os.environ.get('MAIL_SERVER')
     MAIL_PORT = int(os.environ.get('MAIL_PORT') or 587)
@@ -34,11 +40,21 @@ class Config:
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     
-    # Session configuration
-    PERMANENT_SESSION_LIFETIME = timedelta(days=int(os.environ.get('PERMANENT_SESSION_LIFETIME', 30)))
-    SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
+    # Session configuration for serverless compatibility
+    PERMANENT_SESSION_LIFETIME = timedelta(days=int(os.environ.get('PERMANENT_SESSION_LIFETIME', 7)))  # Shorter for serverless
+    SESSION_COOKIE_SECURE = IS_VERCEL  # True for Vercel (HTTPS), False for local dev
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = 'Lax'
+    SESSION_COOKIE_NAME = 'cyberquest_session'
+    
+    # Serverless-specific session settings
+    if IS_VERCEL:
+        # Use a consistent SECRET_KEY for Vercel to ensure session consistency
+        SECRET_KEY = os.environ.get('SECRET_KEY', os.urandom(24))
+        # More permissive CSRF settings for serverless
+        WTF_CSRF_SSL_STRICT = False
+        # Shorter session lifetime for serverless
+        PERMANENT_SESSION_LIFETIME = timedelta(hours=2)
     
     # Application settings
     POSTS_PER_PAGE = int(os.environ.get('POSTS_PER_PAGE', 10))
@@ -67,6 +83,10 @@ class DevelopmentConfig(Config):
     DEBUG = True
     TESTING = False
     
+    # Development-specific CSRF settings
+    WTF_CSRF_SSL_STRICT = False
+    SESSION_COOKIE_SECURE = False
+    
     # Override feature flags for development
     FEATURES = {
         'HCAPTCHA': False,  # Disable hCaptcha in development
@@ -82,10 +102,42 @@ class ProductionConfig(Config):
     DEBUG = False
     TESTING = False
     
+    # Production-specific CSRF settings
+    WTF_CSRF_SSL_STRICT = not Config.IS_VERCEL  # Strict SSL for non-Vercel production
+    WTF_CSRF_TIME_LIMIT = 7200  # 2 hours for production
+    
     # Use more secure settings in production
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = 'Lax'
+    
+    # Ensure SECRET_KEY is set from environment in production
+    SECRET_KEY = os.environ.get('SECRET_KEY', os.urandom(24))
+
+class VercelConfig(ProductionConfig):
+    """Vercel-specific production configuration."""
+    DEBUG = False
+    TESTING = False
+    
+    # Vercel-optimized CSRF settings
+    WTF_CSRF_SSL_STRICT = False  # Vercel handles SSL termination
+    WTF_CSRF_TIME_LIMIT = 3600  # 1 hour for serverless
+    WTF_CSRF_METHODS = ['POST', 'PUT', 'PATCH', 'DELETE']
+    
+    # Serverless-optimized session settings
+    SESSION_COOKIE_SECURE = True  # Vercel uses HTTPS
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = 'Lax'
+    SESSION_COOKIE_NAME = 'cyberquest_session'
+    PERMANENT_SESSION_LIFETIME = timedelta(hours=2)  # Shorter for serverless
+    
+    # Ensure consistent SECRET_KEY for session persistence
+    SECRET_KEY = os.environ.get('SECRET_KEY', os.urandom(24))
+    
+    # Disable database functionality
+    DISABLE_DATABASE = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 class TestingConfig(Config):
     """Testing configuration."""
@@ -109,6 +161,18 @@ class TestingConfig(Config):
 config = {
     'development': DevelopmentConfig,
     'production': ProductionConfig,
+    'vercel': VercelConfig,
     'testing': TestingConfig,
     'default': DevelopmentConfig
 }
+
+def get_config():
+    """Get the appropriate configuration based on environment."""
+    if os.environ.get('VERCEL') == '1':
+        return VercelConfig
+    elif os.environ.get('FLASK_ENV') == 'production':
+        return ProductionConfig
+    elif os.environ.get('FLASK_ENV') == 'testing':
+        return TestingConfig
+    else:
+        return DevelopmentConfig
