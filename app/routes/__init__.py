@@ -9,6 +9,7 @@ from .profile import profile_bp
 from .admin import admin_bp, data_analytics_bp, system_backup_bp, admin_logs_bp, system_test_bp
 from .levels import levels_bp
 from .api import api_bp
+from .csrf_api import csrf_api_bp
 from .news_api import news_api_bp
 from .adaptive_learning import adaptive_bp
 from .blue_team_vs_red_team_mode import blue_team_vs_red_team as blue_red_bp
@@ -32,6 +33,7 @@ def register_blueprints(app):
     
     app.register_blueprint(levels_bp)
     app.register_blueprint(api_bp)
+    app.register_blueprint(csrf_api_bp)
     app.register_blueprint(news_api_bp)
     app.register_blueprint(adaptive_bp)
     app.register_blueprint(blue_red_bp)
