@@ -6,11 +6,16 @@ load_dotenv()
 
 class Config:
     """Base configuration class."""
-    # Generate a secure random secret key
-    SECRET_KEY = os.environ.get('SECRET_KEY') or os.urandom(24)
-    
     # Check if running on Vercel
     IS_VERCEL = os.environ.get('VERCEL') == '1'
+    
+    # Generate a secure secret key - use a fallback string for Vercel consistency
+    if IS_VERCEL:
+        # For Vercel, we need a consistent SECRET_KEY across all function instances
+        SECRET_KEY = os.environ.get('SECRET_KEY', 'vercel-fallback-key-change-in-production-123456789')
+    else:
+        # For local development, use random key if not set
+        SECRET_KEY = os.environ.get('SECRET_KEY') or os.urandom(24)
     
     if IS_VERCEL:
         # In Vercel, disable database functionality
@@ -49,8 +54,6 @@ class Config:
     
     # Serverless-specific session settings
     if IS_VERCEL:
-        # Use a consistent SECRET_KEY for Vercel to ensure session consistency
-        SECRET_KEY = os.environ.get('SECRET_KEY', os.urandom(24))
         # More permissive CSRF settings for serverless
         WTF_CSRF_SSL_STRICT = False
         # Shorter session lifetime for serverless
@@ -119,6 +122,9 @@ class VercelConfig(ProductionConfig):
     DEBUG = False
     TESTING = False
     
+    # Ensure consistent SECRET_KEY for Vercel - this is critical for CSRF
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'vercel-csrf-fallback-key-please-set-env-var-123456789')
+    
     # Vercel-optimized CSRF settings
     WTF_CSRF_SSL_STRICT = False  # Vercel handles SSL termination
     WTF_CSRF_TIME_LIMIT = 3600  # 1 hour for serverless
@@ -130,9 +136,6 @@ class VercelConfig(ProductionConfig):
     SESSION_COOKIE_SAMESITE = 'Lax'
     SESSION_COOKIE_NAME = 'cyberquest_session'
     PERMANENT_SESSION_LIFETIME = timedelta(hours=2)  # Shorter for serverless
-    
-    # Ensure consistent SECRET_KEY for session persistence
-    SECRET_KEY = os.environ.get('SECRET_KEY', os.urandom(24))
     
     # Disable database functionality
     DISABLE_DATABASE = True
