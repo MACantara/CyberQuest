@@ -18,10 +18,11 @@ class Config:
         SECRET_KEY = os.environ.get('SECRET_KEY') or os.urandom(24)
     
     if IS_VERCEL:
-        # In Vercel, disable database functionality
-        SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'  # In-memory database for compatibility
+        # In Vercel, enable database functionality with supabase credentials
+        SUPABASE_URL = os.environ.get('SUPABASE_URL')
+        SUPABASE_SERVICE_ROLE_KEY = os.environ.get('SUPABASE_SERVICE_ROLE_KEY')
         SQLALCHEMY_TRACK_MODIFICATIONS = False
-        DISABLE_DATABASE = True
+        DISABLE_DATABASE = False
     else:
         # Local development with SQLite and supabase
         basedir = os.path.abspath(os.path.dirname(__file__))
@@ -137,18 +138,18 @@ class VercelConfig(ProductionConfig):
     SESSION_COOKIE_NAME = 'cyberquest_session'
     PERMANENT_SESSION_LIFETIME = timedelta(hours=2)  # Shorter for serverless
     
-    # Disable database functionality
-    DISABLE_DATABASE = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    # Enable database functionality with supabase credentials (for Vercel)
+    DISABLE_DATABASE = False
+    SUPABASE_URL = os.environ.get('SUPABASE_URL')
+    SUPABASE_SERVICE_ROLE_KEY = os.environ.get('SUPABASE_SERVICE_ROLE_KEY')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 class TestingConfig(Config):
     """Testing configuration."""
     DEBUG = True
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
     WTF_CSRF_ENABLED = False
-    DISABLE_DATABASE = True
+    DISABLE_DATABASE = False
     
     # Override feature flags for testing
     FEATURES = {
