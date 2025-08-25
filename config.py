@@ -23,7 +23,7 @@ class Config:
         SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
             'sqlite:///' + os.path.join(basedir, 'instance', 'app.db')
         SUPABASE_URL = os.environ.get('SUPABASE_URL')
-        SUPABASE_KEY = os.environ.get('SUPABASE_KEY')
+        SUPABASE_SERVICE_ROLE_KEY = os.environ.get('SUPABASE_SERVICE_ROLE_KEY')
         SQLALCHEMY_TRACK_MODIFICATIONS = False
         DISABLE_DATABASE = False
     

@@ -52,7 +52,7 @@ Add these environment variables to your `.env` file:
 
 ```bash
 SUPABASE_URL=your_supabase_project_url
-SUPABASE_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_anon_key
 ```
 
 ### 3. Install Dependencies
@@ -141,7 +141,7 @@ Supabase handles transactions automatically for single operations. Complex opera
 
 ### Common Issues
 
-1. **Connection Issues**: Verify SUPABASE_URL and SUPABASE_KEY are correct
+1. **Connection Issues**: Verify SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are correct
 2. **Table Not Found**: Ensure the schema script was run successfully
 3. **Permission Errors**: Check Row Level Security policies if enabled
 4. **Performance**: Add appropriate indexes for frequently queried columns
