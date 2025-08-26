@@ -110,33 +110,6 @@
             </div>
 
             <div class="space-y-8">
-                <!-- Execution Controls -->
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg">
-                    <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Execution Timer</h3>
-                    </div>
-                    <div class="p-6 text-center">
-                        <div id="executionTimer" class="text-3xl font-mono font-bold text-gray-900 dark:text-white mb-6">
-                            <i class="bi bi-stopwatch"></i> 00:00:00
-                        </div>
-                        <div class="space-y-3">
-                            <button id="startTest" 
-                                    class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg transition-colors duration-200 flex items-center justify-center">
-                                <i class="bi bi-play mr-2"></i> Start Test
-                            </button>
-                            <button id="pauseTest" 
-                                    class="w-full bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-3 rounded-lg transition-colors duration-200 flex items-center justify-center" 
-                                    disabled>
-                                <i class="bi bi-pause mr-2"></i> Pause
-                            </button>
-                            <button id="resetTest" 
-                                    class="w-full bg-gray-600 hover:bg-gray-700 text-white px-4 py-3 rounded-lg transition-colors duration-200 flex items-center justify-center">
-                                <i class="bi bi-arrow-clockwise mr-2"></i> Reset
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Test Result -->
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg">
                     <div class="p-6 border-b border-gray-200 dark:border-gray-700">
@@ -216,43 +189,7 @@
 
 {% block extra_js %}
 <script>
-let testStartTime = null;
-let testTimer = null;
-let isPaused = false;
 let totalSteps = {% if procedure_steps %}{{ procedure_steps|length }}{% else %}0{% endif %};
-
-// Timer functions
-function startTimer() {
-    testStartTime = new Date();
-    testTimer = setInterval(updateTimer, 1000);
-}
-
-function pauseTimer() {
-    if (testTimer) {
-        clearInterval(testTimer);
-        testTimer = null;
-    }
-}
-
-function resetTimer() {
-    pauseTimer();
-    testStartTime = null;
-    document.getElementById('executionTimer').innerHTML = '<i class="bi bi-stopwatch"></i> 00:00:00';
-}
-
-function updateTimer() {
-    if (!testStartTime) return;
-    
-    const now = new Date();
-    const elapsed = Math.floor((now - testStartTime) / 1000);
-    
-    const hours = Math.floor(elapsed / 3600);
-    const minutes = Math.floor((elapsed % 3600) / 60);
-    const seconds = elapsed % 60;
-    
-    const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    document.getElementById('executionTimer').innerHTML = `<i class="bi bi-stopwatch"></i> ${timeString}`;
-}
 
 // Progress tracking
 function updateProgress() {
@@ -308,44 +245,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize total steps counter
     document.getElementById('totalSteps').textContent = totalSteps;
     
-    // Start test button
-    document.getElementById('startTest').addEventListener('click', function() {
-        startTimer();
-        this.disabled = true;
-        document.getElementById('pauseTest').disabled = false;
-    });
-    
-    // Pause test button
-    document.getElementById('pauseTest').addEventListener('click', function() {
-        if (isPaused) {
-            startTimer();
-            this.innerHTML = '<i class="bi bi-pause mr-2"></i> Pause';
-            this.className = 'w-full bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-3 rounded-lg transition-colors duration-200 flex items-center justify-center';
-            isPaused = false;
-        } else {
-            pauseTimer();
-            this.innerHTML = '<i class="bi bi-play mr-2"></i> Resume';
-            this.className = 'w-full bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg transition-colors duration-200 flex items-center justify-center';
-            isPaused = true;
-        }
-    });
-    
-    // Reset test button
-    document.getElementById('resetTest').addEventListener('click', function() {
-        if (confirm('Are you sure you want to reset the test execution?')) {
-            resetTimer();
-            document.getElementById('startTest').disabled = false;
-            document.getElementById('pauseTest').disabled = true;
-            isPaused = false;
-            
-            // Uncheck all steps
-            document.querySelectorAll('.step-checkbox').forEach(checkbox => {
-                checkbox.checked = false;
-            });
-            updateProgress();
-        }
-    });
-    
     // Step checkboxes
     document.querySelectorAll('.step-checkbox').forEach(checkbox => {
         checkbox.addEventListener('change', function() {
@@ -379,9 +278,6 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Please provide a failure reason for failed tests.');
             return;
         }
-        
-        // Stop timer
-        pauseTimer();
         
         // Confirm submission
         if (!confirm(`Are you sure you want to mark this test as ${status.toUpperCase()}?`)) {
