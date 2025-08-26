@@ -148,6 +148,14 @@ def create_app(config_name=None):
                 'current_year': current_date.year,
                 'current_date': current_date,
             }
+        
+        # Add breadcrumb context processor
+        @app.context_processor
+        def inject_breadcrumb_context():
+            from app.utils.breadcrumb_utils import get_breadcrumb_data
+            return {
+                'breadcrumb_data': get_breadcrumb_data()
+            }
 
     # Make hCaptcha available in templates
     from app.utils.hcaptcha_utils import hcaptcha, is_hcaptcha_enabled
