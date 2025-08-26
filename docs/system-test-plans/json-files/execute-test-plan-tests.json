@@ -5,8 +5,8 @@
     "screen_design_ref": "Figure 31.1: Test Execution Page",
     "description": "Verify that the test execution page loads correctly with proper authentication and test plan data",
     "scenario": "Admin user navigates to execute a specific test plan using the execution functionality",
-    "expected_results": "Display the test execution page with test information, timer, progress tracker, and result form",
-    "procedure": "1. Log in as admin user\n2. Navigate to test plans list\n3. Click execute button for an existing test plan\n4. Verify page loads at /admin/system-test/test-plans/{id}/execute\n5. Check header shows 'Execute Test Plan' with test plan number and module\n6. Verify all sections are displayed: test information, procedure steps, timer, and result form",
+    "expected_results": "Display the test execution page with test information, progress tracker, and result form",
+    "procedure": "1. Log in as admin user\n2. Navigate to test plans list\n3. Click execute button for an existing test plan\n4. Verify page loads at /admin/system-test/test-plans/{id}/execute\n5. Check header shows 'Execute Test Plan' with test plan number and module\n6. Verify all sections are displayed: test information, procedure steps, and result form",
     "test_status": "pending",
     "priority": "critical",
     "category": "functional"
@@ -74,54 +74,6 @@
   {
     "test_plan_no": "STP-031-07",
     "module_name": "Execute Test Plan",
-    "screen_design_ref": "Figure 31.7: Execution Timer Functionality",
-    "description": "Verify the execution timer displays correctly and can be controlled",
-    "scenario": "Admin uses timer controls to track test execution time",
-    "expected_results": "Timer displays in HH:MM:SS format with start, pause, and reset controls",
-    "procedure": "1. Locate execution timer section\n2. Verify timer displays '00:00:00' initially with stopwatch icon\n3. Check 'Start Test' button is enabled\n4. Confirm 'Pause' button is disabled initially\n5. Verify 'Reset' button is always available",
-    "test_status": "pending",
-    "priority": "high",
-    "category": "functional"
-  },
-  {
-    "test_plan_no": "STP-031-08",
-    "module_name": "Execute Test Plan",
-    "screen_design_ref": "Figure 31.8: Timer Start Functionality",
-    "description": "Verify the timer starts correctly when start button is clicked",
-    "scenario": "Admin starts timer to begin test execution tracking",
-    "expected_results": "Timer starts counting and start button becomes disabled while pause button enables",
-    "procedure": "1. Click 'Start Test' button\n2. Verify timer begins counting (00:00:01, 00:00:02, etc.)\n3. Check 'Start Test' button becomes disabled\n4. Confirm 'Pause' button becomes enabled\n5. Verify timer updates every second accurately",
-    "test_status": "pending",
-    "priority": "high",
-    "category": "functional"
-  },
-  {
-    "test_plan_no": "STP-031-09",
-    "module_name": "Execute Test Plan",
-    "screen_design_ref": "Figure 31.9: Timer Pause and Resume",
-    "description": "Verify the timer can be paused and resumed correctly",
-    "scenario": "Admin pauses timer during test execution and resumes when ready",
-    "expected_results": "Timer pauses counting and can be resumed, button text changes appropriately",
-    "procedure": "1. Start timer first\n2. Click 'Pause' button after a few seconds\n3. Verify timer stops counting\n4. Check button text changes to 'Resume' with play icon\n5. Click 'Resume' and verify timer continues from paused time\n6. Confirm button returns to 'Pause' state",
-    "test_status": "pending",
-    "priority": "medium",
-    "category": "functional"
-  },
-  {
-    "test_plan_no": "STP-031-10",
-    "module_name": "Execute Test Plan",
-    "screen_design_ref": "Figure 31.10: Timer Reset Functionality",
-    "description": "Verify the timer can be reset to initial state with confirmation",
-    "scenario": "Admin resets timer to start test execution over",
-    "expected_results": "Timer resets to 00:00:00 after confirmation, buttons return to initial state",
-    "procedure": "1. Start timer and let it run for a few seconds\n2. Click 'Reset' button\n3. Verify confirmation dialog appears\n4. Confirm reset operation\n5. Check timer returns to '00:00:00'\n6. Verify 'Start Test' button is enabled and 'Pause' is disabled\n7. Confirm all step checkboxes are unchecked",
-    "test_status": "pending",
-    "priority": "medium",
-    "category": "functional"
-  },
-  {
-    "test_plan_no": "STP-031-11",
-    "module_name": "Execute Test Plan",
     "screen_design_ref": "Figure 31.11: Step Checkbox Functionality",
     "description": "Verify procedure step checkboxes update progress tracking correctly",
     "scenario": "Admin checks off completed steps during test execution",
@@ -132,7 +84,7 @@
     "category": "functional"
   },
   {
-    "test_plan_no": "STP-031-12",
+    "test_plan_no": "STP-031-08",
     "module_name": "Execute Test Plan",
     "screen_design_ref": "Figure 31.12: Progress Bar Color Changes",
     "description": "Verify progress bar changes color based on completion percentage",
@@ -144,7 +96,7 @@
     "category": "ui"
   },
   {
-    "test_plan_no": "STP-031-13",
+    "test_plan_no": "STP-031-09",
     "module_name": "Execute Test Plan",
     "screen_design_ref": "Figure 31.13: Test Result Selection",
     "description": "Verify test result buttons (Pass, Fail, Skip) function correctly",
@@ -156,7 +108,7 @@
     "category": "functional"
   },
   {
-    "test_plan_no": "STP-031-14",
+    "test_plan_no": "STP-031-10",
     "module_name": "Execute Test Plan",
     "screen_design_ref": "Figure 31.14: Failure Reason Handling",
     "description": "Verify failure reason textarea appears when test is marked as failed",
@@ -168,7 +120,7 @@
     "category": "functional"
   },
   {
-    "test_plan_no": "STP-031-15",
+    "test_plan_no": "STP-031-11",
     "module_name": "Execute Test Plan",
     "screen_design_ref": "Figure 31.15: Submit Button State Management",
     "description": "Verify submit button is enabled only when test status is selected",
@@ -180,7 +132,7 @@
     "category": "functional"
   },
   {
-    "test_plan_no": "STP-031-16",
+    "test_plan_no": "STP-031-12",
     "module_name": "Execute Test Plan",
     "screen_design_ref": "Figure 31.16: Form Validation Before Submission",
     "description": "Verify form validation prevents submission without required fields",
@@ -192,7 +144,7 @@
     "category": "functional"
   },
   {
-    "test_plan_no": "STP-031-17",
+    "test_plan_no": "STP-031-13",
     "module_name": "Execute Test Plan",
     "screen_design_ref": "Figure 31.17: Successful Test Execution Submission",
     "description": "Verify successful test execution submission saves data and redirects appropriately",
@@ -204,7 +156,7 @@
     "category": "functional"
   },
   {
-    "test_plan_no": "STP-031-18",
+    "test_plan_no": "STP-031-14",
     "module_name": "Execute Test Plan",
     "screen_design_ref": "Figure 31.18: Submission Confirmation Dialog",
     "description": "Verify confirmation dialog appears before final submission",
@@ -216,19 +168,7 @@
     "category": "functional"
   },
   {
-    "test_plan_no": "STP-031-19",
-    "module_name": "Execute Test Plan",
-    "screen_design_ref": "Figure 31.19: Timer Stop on Submission",
-    "description": "Verify timer stops automatically when test result is submitted",
-    "scenario": "Admin submits test result and timer should stop counting",
-    "expected_results": "Timer stops counting when form is submitted successfully",
-    "procedure": "1. Start timer and let it run\n2. Complete test execution form\n3. Submit test result\n4. Verify timer stops counting at submission\n5. Check timer value is preserved after submission",
-    "test_status": "pending",
-    "priority": "low",
-    "category": "functional"
-  },
-  {
-    "test_plan_no": "STP-031-20",
+    "test_plan_no": "STP-031-15",
     "module_name": "Execute Test Plan",
     "screen_design_ref": "Figure 31.20: Error Handling During Submission",
     "description": "Verify proper error handling when test execution submission fails",
@@ -240,7 +180,7 @@
     "category": "functional"
   },
   {
-    "test_plan_no": "STP-031-21",
+    "test_plan_no": "STP-031-16",
     "module_name": "Execute Test Plan",
     "screen_design_ref": "Figure 31.21: CSRF Protection Validation",
     "description": "Verify that CSRF token is properly included and validated during execution submission",
@@ -252,7 +192,7 @@
     "category": "security"
   },
   {
-    "test_plan_no": "STP-031-22",
+    "test_plan_no": "STP-031-17",
     "module_name": "Execute Test Plan",
     "screen_design_ref": "Figure 31.22: Responsive Layout Design",
     "description": "Verify the execution page layout adapts properly to different screen sizes",
@@ -264,7 +204,7 @@
     "category": "ui"
   },
   {
-    "test_plan_no": "STP-031-23",
+    "test_plan_no": "STP-031-18",
     "module_name": "Execute Test Plan",
     "screen_design_ref": "Figure 31.23: Page Title Display",
     "description": "Verify that browser page title shows 'Execute Test Plan'",
@@ -276,7 +216,7 @@
     "category": "functional"
   },
   {
-    "test_plan_no": "STP-031-24",
+    "test_plan_no": "STP-031-19",
     "module_name": "Execute Test Plan",
     "screen_design_ref": "Figure 31.24: Navigation Integration",
     "description": "Verify proper integration with test management navigation workflow",
@@ -288,31 +228,31 @@
     "category": "functional"
   },
   {
-    "test_plan_no": "STP-031-25",
+    "test_plan_no": "STP-031-20",
     "module_name": "Execute Test Plan",
     "screen_design_ref": "Figure 31.25: Browser Compatibility Testing",
     "description": "Verify test execution functionality works across different web browsers",
     "scenario": "Admin accesses test execution using various browsers to ensure cross-browser compatibility",
     "expected_results": "Test execution functionality works correctly in Chrome, Firefox, Safari, and Edge",
-    "procedure": "1. Test execution page in Google Chrome (latest version)\n2. Verify functionality in Mozilla Firefox\n3. Check display and features in Safari (if available)\n4. Test in Microsoft Edge browser\n5. Confirm all JavaScript features (timer, progress, form) work in each browser",
+    "procedure": "1. Test execution page in Google Chrome (latest version)\n2. Verify functionality in Mozilla Firefox\n3. Check display and features in Safari (if available)\n4. Test in Microsoft Edge browser\n5. Confirm all JavaScript features (progress, form) work in each browser",
     "test_status": "pending",
     "priority": "medium",
     "category": "functional"
   },
   {
-    "test_plan_no": "STP-031-26",
+    "test_plan_no": "STP-031-21",
     "module_name": "Execute Test Plan",
     "screen_design_ref": "Figure 31.26: Dark Mode Compatibility",
     "description": "Verify that test execution page displays correctly in both light and dark themes",
     "scenario": "Admin switches between light and dark modes to ensure proper theming support",
     "expected_results": "All page elements display with appropriate colors and contrast in both themes",
-    "procedure": "1. View execution page in light mode\n2. Switch to dark mode (if theme toggle available)\n3. Verify all text remains readable with proper contrast\n4. Check form sections use appropriate dark theme colors\n5. Confirm timer and progress elements adapt to theme",
+    "procedure": "1. View execution page in light mode\n2. Switch to dark mode (if theme toggle available)\n3. Verify all text remains readable with proper contrast\n4. Check form sections use appropriate dark theme colors\n5. Confirm progress elements adapt to theme",
     "test_status": "pending",
     "priority": "low",
     "category": "ui"
   },
   {
-    "test_plan_no": "STP-031-27",
+    "test_plan_no": "STP-031-22",
     "module_name": "Execute Test Plan",
     "screen_design_ref": "Figure 31.27: Accessibility Compliance",
     "description": "Verify that test execution page meets accessibility standards for screen readers and keyboard navigation",
@@ -324,19 +264,19 @@
     "category": "ui"
   },
   {
-    "test_plan_no": "STP-031-28",
+    "test_plan_no": "STP-031-23",
     "module_name": "Execute Test Plan",
     "screen_design_ref": "Figure 31.28: Performance During Execution",
-    "description": "Verify that test execution page performs efficiently with timer and interactive elements",
-    "scenario": "Admin measures execution page performance including timer updates and form responsiveness",
-    "expected_results": "Page maintains responsive performance with accurate timer and smooth interactions",
-    "procedure": "1. Measure page load time\n2. Test timer accuracy over extended periods\n3. Check JavaScript performance with multiple step checkboxes\n4. Verify form submission performance\n5. Confirm no memory leaks during long test sessions",
+    "description": "Verify that test execution page performs efficiently with interactive elements",
+    "scenario": "Admin measures execution page performance including form responsiveness",
+    "expected_results": "Page maintains responsive performance with smooth interactions",
+    "procedure": "1. Measure page load time\n2. Check JavaScript performance with multiple step checkboxes\n3. Verify form submission performance\n4. Confirm no memory leaks during test sessions",
     "test_status": "pending",
     "priority": "medium",
     "category": "performance"
   },
   {
-    "test_plan_no": "STP-031-29",
+    "test_plan_no": "STP-031-24",
     "module_name": "Execute Test Plan",
     "screen_design_ref": "Figure 31.29: Data Persistence and Tracking",
     "description": "Verify that execution data is properly tracked and saved to database",
@@ -348,13 +288,13 @@
     "category": "functional"
   },
   {
-    "test_plan_no": "STP-031-30",
+    "test_plan_no": "STP-031-25",
     "module_name": "Execute Test Plan",
     "screen_design_ref": "Figure 31.30: Complete Execution Workflow Integration",
     "description": "Verify complete test execution workflow from navigation through result submission",
-    "scenario": "Admin completes entire test execution workflow including timing, progress tracking, and result submission",
+    "scenario": "Admin completes entire test execution workflow including progress tracking and result submission",
     "expected_results": "Complete workflow provides seamless test execution experience with proper tracking and feedback",
-    "procedure": "1. Navigate to execution from test plan view\n2. Review test information and procedure steps\n3. Start timer and begin test execution\n4. Check off procedure steps as completed\n5. Monitor progress bar and counter updates\n6. Pause and resume timer as needed\n7. Select test result status (Pass/Fail/Skip)\n8. Provide failure reason if test failed\n9. Submit result with confirmation\n10. Verify redirect to test plan view with updated status and success message\n11. Confirm all execution data is properly saved and displayed",
+    "procedure": "1. Navigate to execution from test plan view\n2. Review test information and procedure steps\n3. Begin test execution\n4. Check off procedure steps as completed\n5. Monitor progress bar and counter updates\n6. Select test result status (Pass/Fail/Skip)\n7. Provide failure reason if test failed\n8. Submit result with confirmation\n9. Verify redirect to test plan view with updated status and success message\n10. Confirm all execution data is properly saved and displayed",
     "test_status": "pending",
     "priority": "critical",
     "category": "integration"
