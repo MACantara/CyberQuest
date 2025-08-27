@@ -47,3 +47,6 @@ python-docx
 
 # Supabase (PostgreSQL database)
 supabase
+
+# Playwright for end-to-end testing
+playwright
