@@ -130,7 +130,7 @@ def contact_page():
         if errors:
             for error in errors:
                 flash(error, 'error')
-            return render_template('contact.html')
+            return redirect(url_for('contact.contact_page'))
         
         # Check if database is disabled (Vercel environment)
         if current_app.config.get('DISABLE_DATABASE', False):
@@ -179,8 +179,10 @@ def contact_page():
         except DatabaseError as e:
             current_app.logger.error(f"Database error during contact submission: {e}")
             flash('There was an error submitting your message. Please try again.', 'error')
+            return redirect(url_for('contact.contact_page'))
         except Exception as e:
             current_app.logger.error(f"Contact form submission error: {e}")
             flash('There was an error submitting your message. Please try again.', 'error')
+            return redirect(url_for('contact.contact_page'))
     
     return render_template('contact.html')
