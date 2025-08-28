@@ -1,4 +1,4 @@
-import { ALL_EMAILS } from './emails/email-registry.js';
+import { ALL_EMAILS } from '../../../levels/level-two/emails/email-registry.js';
 
 export class EmailSecurityManager {
     constructor(emailApp) {
