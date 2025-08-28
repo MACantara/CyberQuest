@@ -10,7 +10,7 @@ Flask-WTF
 WTForms
 
 # Email support (for contact forms and password reset)
-Flask-Mail
+Flask-Mailman
 
 # Authentication and password hashing
 argon2-cffi
@@ -47,3 +47,6 @@ python-docx
 
 # Supabase (PostgreSQL database)
 supabase
+
+# Additional production dependencies
+psycopg2-binary

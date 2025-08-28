@@ -1,5 +1,5 @@
 from flask import Flask, session, request, jsonify
-from flask_mail import Mail
+from flask_mailman import Mail
 from config import config, get_config
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
