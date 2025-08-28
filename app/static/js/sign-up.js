@@ -212,7 +212,15 @@ class CyberQuestSignup {
             this.showFieldError('username', 'Agent username can only contain letters, numbers, and underscores');
             isValid = false;
         } else {
-            this.clearFieldError('username');
+            // Check if username is available
+            const isUsernameAvailable = await this.checkAvailability('username', username);
+            if (!isUsernameAvailable) {
+                errors.push('Username is already taken');
+                this.showFieldError('username', 'Username is already taken');
+                isValid = false;
+            } else {
+                this.clearFieldError('username');
+            }
         }
         
         // Email validation using the same regex as backend
