@@ -627,19 +627,6 @@ class CyberQuestSignup {
             field.classList.add('ring-blue-500');
         }
     }
-
-    // Handle field blur events
-    handleFieldBlur(fieldName) {
-        const field = document.getElementById(fieldName);
-        field.classList.remove('ring-2', 'ring-green-500', 'ring-blue-500');
-        
-        // Trigger validation on blur to give immediate feedback
-        if (fieldName === 'username') {
-            this.validateUsernameRealTime();
-        } else if (fieldName === 'email') {
-            this.validateEmailRealTime();
-        }
-    }
 }
 
 // Initialize when DOM is loaded
