@@ -18,7 +18,17 @@ export class EmailApp extends WindowBase {
         this.completionTracker = new EmailCompletionTracker(this);
         
         // Load saved email state
-        this.state.loadFromLocalStorage();
+        this.initializeState();
+    }
+
+    async initializeState() {
+        try {
+            await this.state.loadFromServer();
+            await this.readTracker.ensureLoaded();
+            await this.actionHandler.feedback.loadSessionData();
+        } catch (error) {
+            console.warn('Failed to load some email state data:', error);
+        }
     }
 
     createContent() {
