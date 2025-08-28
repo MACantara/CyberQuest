@@ -233,7 +233,15 @@ class CyberQuestSignup {
             this.showFieldError('email', 'Please enter a valid agent email address');
             isValid = false;
         } else {
-            this.clearFieldError('email');
+            // Check if email is available
+            const isEmailAvailable = await this.checkAvailability('email', email);
+            if (!isEmailAvailable) {
+                errors.push('Email is already registered');
+                this.showFieldError('email', 'Email is already registered');
+                isValid = false;
+            } else {
+                this.clearFieldError('email');
+            }
         }
         
         if (isValid) {
