@@ -147,7 +147,7 @@
                         <div class="p-6 space-y-4">
                             <div>
                                 <label for="test_status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Test Status</label>
-                                <select class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white" 
+                                <select class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white cursor-pointer" 
                                         id="test_status" 
                                         name="test_status">
                                     <option value="pending" {{ 'selected' if test_plan and test_plan.test_status == 'pending' else '' }}>Pending</option>
@@ -158,7 +158,7 @@
                             </div>
                             <div>
                                 <label for="priority" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Priority</label>
-                                <select class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white" 
+                                <select class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white cursor-pointer" 
                                         id="priority" 
                                         name="priority">
                                     <option value="low" {{ 'selected' if test_plan and test_plan.priority == 'low' else '' }}>Low</option>
@@ -169,7 +169,7 @@
                             </div>
                             <div>
                                 <label for="category" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category</label>
-                                <select class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white" 
+                                <select class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white cursor-pointer" 
                                         id="category" 
                                         name="category">
                                     <option value="functional" {{ 'selected' if test_plan and test_plan.category == 'functional' else 'selected' }}>Functional</option>
@@ -225,11 +225,11 @@
                 </div>
                 <div class="flex space-x-4">
                     <a href="{{ url_for('system_test.test_plans_list') }}" 
-                       class="px-6 py-3 text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-600 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors">
+                       class="px-6 py-3 text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-600 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors cursor-pointer">
                         Cancel
                     </a>
                     <button type="submit" 
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors duration-200 flex items-center">
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors duration-200 flex items-center cursor-pointer">
                         <i class="bi bi-save mr-2"></i>
                         {% if test_plan %}Update{% else %}Create{% endif %} Test Plan
                     </button>
