@@ -56,8 +56,20 @@ class CyberQuestSignup {
         this.prevBtn.addEventListener('click', () => this.goToPreviousStep());
         
         // Form inputs for live validation
-        this.usernameInput.addEventListener('input', () => this.updateUserInputs());
-        this.emailInput.addEventListener('input', () => this.updateUserInputs());
+        this.usernameInput.addEventListener('input', () => {
+            this.updateUserInputs();
+            this.validateUsernameRealTime();
+        });
+        this.emailInput.addEventListener('input', () => {
+            this.updateUserInputs();
+            this.validateEmailRealTime();
+        });
+        
+        // Add focus and blur events for better UX
+        this.usernameInput.addEventListener('focus', () => this.handleFieldFocus('username'));
+        this.usernameInput.addEventListener('blur', () => this.handleFieldBlur('username'));
+        this.emailInput.addEventListener('focus', () => this.handleFieldFocus('email'));
+        this.emailInput.addEventListener('blur', () => this.handleFieldBlur('email'));
         
         // Real-time summary updates
         this.usernameInput.addEventListener('input', () => this.updateSummary());
@@ -130,23 +142,46 @@ class CyberQuestSignup {
         const username = this.usernameInput.value.trim();
         const email = this.emailInput.value.trim();
         
+        let isValid = true;
+        let errors = [];
+        
+        // Username validation
         if (!username || username.length < 3) {
-            this.showNotification('Agent username must be at least 3 characters', 'error');
-            return false;
+            errors.push('Agent username must be at least 3 characters');
+            this.showFieldError('username', 'Agent username must be at least 3 characters');
+            isValid = false;
+        } else if (username.length > 30) {
+            errors.push('Agent username must be 30 characters or less');
+            this.showFieldError('username', 'Agent username must be 30 characters or less');
+            isValid = false;
+        } else if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+            errors.push('Agent username can only contain letters, numbers, and underscores');
+            this.showFieldError('username', 'Agent username can only contain letters, numbers, and underscores');
+            isValid = false;
+        } else {
+            this.clearFieldError('username');
         }
         
-        if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-            this.showNotification('Agent username can only contain letters, numbers, and underscores', 'error');
-            return false;
+        // Email validation using the same regex as backend
+        if (!email) {
+            errors.push('Agent email is required');
+            this.showFieldError('email', 'Agent email is required');
+            isValid = false;
+        } else if (!this.isValidEmailBackendCompliant(email)) {
+            errors.push('Please enter a valid agent email address');
+            this.showFieldError('email', 'Please enter a valid agent email address');
+            isValid = false;
+        } else {
+            this.clearFieldError('email');
         }
         
-        if (!email || !this.isValidEmail(email)) {
-            this.showNotification('Please enter a valid agent email address', 'error');
-            return false;
+        if (isValid) {
+            this.showNotification('Step 1 completed!', 'success');
+        } else {
+            this.showNotification(errors[0], 'error');
         }
         
-        this.showNotification('Step 1 completed!', 'success');
-        return true;
+        return isValid;
     }
 
     validateStep2() {
@@ -372,6 +407,177 @@ class CyberQuestSignup {
 
     isValidEmail(email) {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    // Backend-compliant email validation (matches auth.py regex)
+    isValidEmailBackendCompliant(email) {
+        const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return pattern.test(email);
+    }
+
+    // Real-time username validation
+    validateUsernameRealTime() {
+        const username = this.usernameInput.value.trim();
+        
+        if (username.length === 0) {
+            this.clearFieldError('username');
+            return;
+        }
+        
+        if (username.length < 3) {
+            this.showFieldError('username', 'Username must be at least 3 characters');
+        } else if (username.length > 30) {
+            this.showFieldError('username', 'Username must be 30 characters or less');
+        } else if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+            this.showFieldError('username', 'Username can only contain letters, numbers, and underscores');
+        } else {
+            this.clearFieldError('username');
+            this.showFieldSuccess('username', 'Username format is valid');
+        }
+    }
+
+    // Real-time email validation
+    validateEmailRealTime() {
+        const email = this.emailInput.value.trim();
+        
+        if (email.length === 0) {
+            this.clearFieldError('email');
+            return;
+        }
+        
+        // Check for basic email structure first
+        if (!email.includes('@')) {
+            this.showFieldError('email', 'Email must contain @ symbol');
+            return;
+        }
+        
+        // Check for domain
+        const parts = email.split('@');
+        if (parts.length !== 2 || parts[0].length === 0 || parts[1].length === 0) {
+            this.showFieldError('email', 'Email format is incomplete');
+            return;
+        }
+        
+        // Check domain has dot
+        if (!parts[1].includes('.')) {
+            this.showFieldError('email', 'Email domain must contain a dot');
+            return;
+        }
+        
+        // Full backend-compliant validation
+        if (!this.isValidEmailBackendCompliant(email)) {
+            this.showFieldError('email', 'Please enter a valid email address');
+        } else {
+            this.clearFieldError('email');
+            this.showFieldSuccess('email', 'Email format is valid');
+        }
+    }
+
+    // Show field-specific error
+    showFieldError(fieldName, message) {
+        const field = document.getElementById(fieldName);
+        const errorContainer = this.getOrCreateErrorContainer(fieldName);
+        
+        // Update field styling
+        field.classList.remove('border-green-300', 'dark:border-green-500/30', 'border-blue-300', 'dark:border-blue-500/30');
+        field.classList.add('border-red-500', 'dark:border-red-500');
+        
+        // Show error message
+        errorContainer.className = 'mt-2 text-xs text-red-600 dark:text-red-400 flex items-center';
+        errorContainer.innerHTML = `<i class="bi bi-exclamation-circle mr-1"></i>${message}`;
+    }
+
+    // Show field success
+    showFieldSuccess(fieldName, message) {
+        const field = document.getElementById(fieldName);
+        const errorContainer = this.getOrCreateErrorContainer(fieldName);
+        
+        // Update field styling
+        field.classList.remove('border-red-500', 'dark:border-red-500');
+        if (fieldName === 'username') {
+            field.classList.add('border-green-300', 'dark:border-green-500/30');
+        } else if (fieldName === 'email') {
+            field.classList.add('border-blue-300', 'dark:border-blue-500/30');
+        }
+        
+        // Show success message
+        errorContainer.className = 'mt-2 text-xs text-green-600 dark:text-green-400 flex items-center';
+        errorContainer.innerHTML = `<i class="bi bi-check-circle mr-1"></i>${message}`;
+        
+        // Auto-hide success message after 2 seconds
+        setTimeout(() => {
+            if (errorContainer.classList.contains('text-green-600')) {
+                errorContainer.innerHTML = '';
+                errorContainer.className = 'mt-2 text-xs';
+            }
+        }, 2000);
+    }
+
+    // Clear field error
+    clearFieldError(fieldName) {
+        const field = document.getElementById(fieldName);
+        const errorContainer = this.getOrCreateErrorContainer(fieldName);
+        
+        // Reset field styling
+        field.classList.remove('border-red-500', 'dark:border-red-500');
+        if (fieldName === 'username') {
+            field.classList.add('border-green-300', 'dark:border-green-500/30');
+        } else if (fieldName === 'email') {
+            field.classList.add('border-blue-300', 'dark:border-blue-500/30');
+        }
+        
+        // Clear error message
+        errorContainer.innerHTML = '';
+        errorContainer.className = 'mt-2 text-xs';
+    }
+
+    // Get or create error container for field
+    getOrCreateErrorContainer(fieldName) {
+        const field = document.getElementById(fieldName);
+        let existingError = field.parentNode.querySelector('.field-error');
+        
+        if (existingError) {
+            return existingError;
+        }
+        
+        const errorContainer = document.createElement('div');
+        errorContainer.className = 'mt-2 text-xs field-error';
+        
+        // Find the help text element (the <p> tag after the input)
+        const helpText = field.nextElementSibling;
+        if (helpText && helpText.tagName === 'P') {
+            // Insert error container after the help text
+            field.parentNode.insertBefore(errorContainer, helpText.nextSibling);
+        } else {
+            // Insert directly after the input if no help text found
+            field.parentNode.insertBefore(errorContainer, field.nextSibling);
+        }
+        
+        return errorContainer;
+    }
+
+    // Handle field focus events
+    handleFieldFocus(fieldName) {
+        const field = document.getElementById(fieldName);
+        field.classList.add('ring-2');
+        if (fieldName === 'username') {
+            field.classList.add('ring-green-500');
+        } else if (fieldName === 'email') {
+            field.classList.add('ring-blue-500');
+        }
+    }
+
+    // Handle field blur events
+    handleFieldBlur(fieldName) {
+        const field = document.getElementById(fieldName);
+        field.classList.remove('ring-2', 'ring-green-500', 'ring-blue-500');
+        
+        // Trigger validation on blur to give immediate feedback
+        if (fieldName === 'username') {
+            this.validateUsernameRealTime();
+        } else if (fieldName === 'email') {
+            this.validateEmailRealTime();
+        }
     }
 }
 
