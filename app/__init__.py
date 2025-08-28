@@ -157,6 +157,16 @@ def create_app(config_name=None):
                 'breadcrumb_data': get_breadcrumb_data()
             }
 
+    # Custom Jinja2 filters
+    @app.template_filter('format_module_name')
+    def format_module_name(name):
+        """Format module name by capitalizing and removing hyphens"""
+        if not name:
+            return name
+        # Replace hyphens and underscores with spaces, then capitalize each word
+        formatted = name.replace('-', ' ').replace('_', ' ')
+        return ' '.join(word.capitalize() for word in formatted.split())
+
     # Make hCaptcha available in templates
     from app.utils.hcaptcha_utils import hcaptcha, is_hcaptcha_enabled
     app.jinja_env.globals.update(hcaptcha=hcaptcha, hcaptcha_enabled=is_hcaptcha_enabled)
