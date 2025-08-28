@@ -1,4 +1,4 @@
-import { DirectoryRegistry } from './directories/directory-registry.js';
+import { DirectoryRegistry } from '../../../levels/level-five/directories/directory-registry.js';
 
 export class FileNavigator {
     constructor(fileManagerApp) {

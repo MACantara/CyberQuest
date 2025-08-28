@@ -113,7 +113,20 @@
 }
 </script>
 
+<!-- Dynamically load level-specific JavaScript files -->
+{% if level_js_files %}
+    {% for js_file in level_js_files %}
+        {% if js_file.endswith('/') %}
+            <!-- This indicates a directory - we'll handle it differently -->
+            <!-- For now, skip directory entries -->
+        {% else %}
+            <script type="module" src="{{ url_for('static', filename=js_file) }}"></script>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
 <script type="module">
+    // Import only the main SimulatedPC class since other modules are loaded above
     import { SimulatedPC } from '{{ url_for("static", filename="js/simulated-pc/main.js") }}';
     
     // Get level data from the JSON script tag
@@ -121,6 +134,7 @@
     const levelData = JSON.parse(levelDataElement.textContent);
     
     console.log('Level data loaded:', levelData);
+    console.log('Level-specific JS files loaded for level {{ level.id if level else "unknown" }}');
     
     // Initialize the simulation with the level data
     window.currentSimulation = {

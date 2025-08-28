@@ -48,7 +48,7 @@ export class Desktop {
         this.windowManager = new WindowManager(this.desktopElement, this.taskbar, this.tutorial);
         this.taskbar.windowManager = this.windowManager;
         
-        this.desktopIcons = new DesktopIcons(this.desktopElement, this.windowManager);
+        this.desktopIcons = new DesktopIcons(this.desktopElement, this.windowManager, this.level);
         this.controlPanel = new ControlPanel(this.desktopElement, this.windowManager, this);
 
         // Trigger fade-in effect after all components are loaded

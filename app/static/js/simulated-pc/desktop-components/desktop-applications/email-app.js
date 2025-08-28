@@ -3,7 +3,7 @@ import { EmailState } from './email-functions/email-state.js';
 import { EmailActionHandler } from './email-functions/email-action-handler.js';
 import { EmailReadTracker } from './email-functions/email-read-tracker.js';
 import { EmailCompletionTracker } from './email-functions/email-completion-tracker.js';
-import { ALL_EMAILS } from './email-functions/emails/email-registry.js';
+import { ALL_EMAILS } from '../../levels/level-two/emails/email-registry.js';
 import { NavigationUtil } from '../shared-utils/navigation-util.js';
 
 export class EmailApp extends WindowBase {

@@ -1,4 +1,4 @@
-import { ALL_EMAILS } from './emails/email-registry.js';
+import { ALL_EMAILS } from '../../../levels/level-two/emails/email-registry.js';
 import { EmailFeedback } from './email-feedback.js';
 import { EmailSessionSummary } from './email-session-summary.js';
 import { EmailCompletionTracker } from './email-completion-tracker.js';

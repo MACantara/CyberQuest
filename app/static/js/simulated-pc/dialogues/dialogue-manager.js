@@ -129,15 +129,27 @@ export class DialogueManager {
     async startLevelDialogue(levelDialogueName, character = 'instructor') {
         console.log(`[DialogueManager] Starting level dialogue: ${levelDialogueName}`);
         try {
-            // First try the direct relative path from dialogue-manager location
+            // Determine which level this dialogue belongs to
+            const levelNumber = this.extractLevelNumber(levelDialogueName);
+            const levelWord = this.getLevelWord(levelNumber);
+            
+            // Try level-specific path first
             let module;
             try {
-                module = await import(`./dialogues/levels/${levelDialogueName}.js`);
-            } catch (relativeError) {
-                console.log(`[DialogueManager] Relative import failed, trying absolute path...`);
-                // Try absolute path as fallback
-                const absolutePath = `/static/js/simulated-pc/dialogues/levels/${levelDialogueName}.js`;
-                module = await import(absolutePath);
+                const levelPath = `../levels/level-${levelWord}/dialogues/${levelDialogueName}.js`;
+                console.log(`[DialogueManager] Trying level-specific path: ${levelPath}`);
+                module = await import(levelPath);
+            } catch (levelError) {
+                console.log(`[DialogueManager] Level-specific import failed, trying old structure...`);
+                // Fallback to old structure if it exists
+                try {
+                    module = await import(`./levels/${levelDialogueName}.js`);
+                } catch (oldError) {
+                    console.log(`[DialogueManager] Old structure failed, trying absolute path...`);
+                    // Final fallback to absolute path
+                    const absolutePath = `/static/js/simulated-pc/levels/level-${levelWord}/dialogues/${levelDialogueName}.js`;
+                    module = await import(absolutePath);
+                }
             }
             
             // Generate the class name by capitalizing each word and appending 'Dialogue'
@@ -182,7 +194,9 @@ export class DialogueManager {
             // If it's a missing file error, provide helpful guidance
             if (error.message.includes('Failed to fetch')) {
                 console.error(`[DialogueManager] File not found: ${levelDialogueName}.js`);
-                console.error(`[DialogueManager] Expected location: /static/js/simulated-pc/dialogues/levels/${levelDialogueName}.js`);
+                const levelNumber = this.extractLevelNumber(levelDialogueName);
+                const levelWord = this.getLevelWord(levelNumber);
+                console.error(`[DialogueManager] Expected location: /static/js/simulated-pc/levels/level-${levelWord}/dialogues/${levelDialogueName}.js`);
                 
                 // Try to provide alternative suggestions
                 const suggestions = this.getSuggestedDialogues(levelDialogueName);
@@ -193,6 +207,18 @@ export class DialogueManager {
             
             throw new Error(`Failed to load dialogue '${levelDialogueName}': ${error.message}`);
         }
+    }
+
+    // Extract level number from dialogue name
+    extractLevelNumber(dialogueName) {
+        const match = dialogueName.match(/level(\d+)/i);
+        return match ? parseInt(match[1]) : 1; // Default to level 1
+    }
+
+    // Convert level number to word
+    getLevelWord(levelNumber) {
+        const words = ['one', 'two', 'three', 'four', 'five'];
+        return words[levelNumber - 1] || levelNumber.toString();
     }
 
     // Helper method to suggest alternative dialogue names

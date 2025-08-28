@@ -15,7 +15,7 @@ export class ApplicationLauncher {
         }
 
         const isFirstTime = !localStorage.getItem(appConfig.storageKey);
-        const app = this.appRegistry.createAppInstance(appId);
+        const app = await this.appRegistry.createAppInstance(appId);
         
         this.windowManager.createWindow(appId, windowTitle || appConfig.title, app);
         this.appRegistry.markAsOpened(appId);

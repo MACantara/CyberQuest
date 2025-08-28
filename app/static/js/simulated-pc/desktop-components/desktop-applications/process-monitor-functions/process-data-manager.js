@@ -1,4 +1,4 @@
-import { ProcessFactory } from './processes/process-factory.js';
+import { ProcessFactory } from '../../../levels/level-three/processes/process-factory.js';
 
 export class ProcessDataManager {
     constructor(activityEmitter = null) {

@@ -1,9 +1,12 @@
 export class DesktopIcons {
-    constructor(container, windowManager) {
+    constructor(container, windowManager, levelId = null) {
         this.container = container;
         this.windowManager = windowManager;
+        this.levelId = levelId;
         this.selectedIcon = null;
-        this.icons = [
+        
+        // All available icons
+        this.allIcons = [
             { id: 'browser', name: 'Web Browser', icon: 'bi-globe', action: 'openBrowser' },
             { id: 'terminal', name: 'Terminal', icon: 'bi-terminal', action: 'openTerminal' },
             { id: 'files', name: 'File Manager', icon: 'bi-folder', action: 'openFileManager' },
@@ -15,7 +18,27 @@ export class DesktopIcons {
             { id: 'ransomware-decryptor', name: 'Ransomware Decryptor', icon: 'bi-unlock', action: 'openRansomwareDecryptor' },
             { id: 'vulnerability-scanner', name: 'Vulnerability Scanner', icon: 'bi-bug', action: 'openVulnerabilityScanner' }
         ];
+        
+        // Set level-specific icons
+        this.icons = this.getLevelSpecificIcons();
         this.init();
+    }
+
+    getLevelSpecificIcons() {
+        // Define which icons are available for each level
+        const levelIconMap = {
+            1: ['browser'], // Level 1: Misinformation Maze
+            2: ['email'], // Level 2: Shadow in the Inbox
+            3: ['malware-scanner', 'process-monitor', 'ransomware-decryptor'], // Level 3: Malware Mayhem
+            4: ['vulnerability-scanner', 'terminal'], // Level 4: White Hat Test
+            5: ['files', 'terminal', 'logs'] // Level 5: Hunt for The Null
+        };
+
+        // Get level-specific icon IDs
+        const levelIconIds = levelIconMap[this.levelId] || [];
+        
+        // Filter all icons to only include those for this level
+        return this.allIcons.filter(icon => levelIconIds.includes(icon.id));
     }
 
     init() {
