@@ -140,8 +140,6 @@ def get_level_js_files(level_id):
             # Tutorials for Level 1
             'js/simulated-pc/tutorials/initial-tutorial.js',
             'js/simulated-pc/tutorials/browser-tutorial.js',
-            'js/simulated-pc/tutorials/email-tutorial.js',
-            'js/simulated-pc/tutorials/file-manager-tutorial.js',
         ]
     
     elif level_id == 2:
