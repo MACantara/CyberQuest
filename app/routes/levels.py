@@ -204,6 +204,10 @@ def get_level_js_files(level_id):
             'js/simulated-pc/desktop-components/desktop-applications/process-monitor-functions/process-renderer.js',
             'js/simulated-pc/desktop-components/desktop-applications/process-monitor-functions/process-sorter.js',
             
+            # Ransomware Decryptor Application (core Level 3 app for recovery)
+            'js/simulated-pc/desktop-components/desktop-applications/ransomware-decryptor-app.js',
+            'js/simulated-pc/desktop-components/desktop-applications/ransomware-decryptor-functions/ransomware-decryptor-activity-emitter.js',
+            
             # Tutorials for Level 3
             'js/simulated-pc/tutorials/malware-scanner-tutorial.js',
             'js/simulated-pc/tutorials/process-monitor-tutorial.js',
