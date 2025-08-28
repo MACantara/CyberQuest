@@ -1,16 +1,19 @@
+import { emailServerAPI } from './email-server-api.js';
+
 export class EmailReadTracker {
     constructor() {
         this.readEmails = new Set();
-        this.storageKey = 'cyberquest_read_emails';
-        this.loadFromLocalStorage();
+        this.isLoaded = false;
+        this.loadFromServer();
     }
 
     // Mark an email as read
-    markAsRead(emailId) {
+    async markAsRead(emailId) {
         if (!emailId) return false;
         
+        await this.ensureLoaded();
         this.readEmails.add(emailId);
-        this.saveToLocalStorage();
+        await this.saveToServer();
         
         // Emit event for any listeners
         document.dispatchEvent(new CustomEvent('email-marked-read', {
@@ -25,9 +28,10 @@ export class EmailReadTracker {
     }
 
     // Mark multiple emails as read
-    markMultipleAsRead(emailIds) {
+    async markMultipleAsRead(emailIds) {
         if (!Array.isArray(emailIds)) return false;
         
+        await this.ensureLoaded();
         let changed = false;
         emailIds.forEach(emailId => {
             if (emailId && !this.readEmails.has(emailId)) {
@@ -37,7 +41,7 @@ export class EmailReadTracker {
         });
         
         if (changed) {
-            this.saveToLocalStorage();
+            await this.saveToServer();
             
             // Emit bulk event
             document.dispatchEvent(new CustomEvent('emails-marked-read', {
@@ -58,11 +62,12 @@ export class EmailReadTracker {
     }
 
     // Mark an email as unread
-    markAsUnread(emailId) {
+    async markAsUnread(emailId) {
         if (!emailId || !this.readEmails.has(emailId)) return false;
         
+        await this.ensureLoaded();
         this.readEmails.delete(emailId);
-        this.saveToLocalStorage();
+        await this.saveToServer();
         
         // Emit event
         document.dispatchEvent(new CustomEvent('email-marked-unread', {
@@ -135,7 +140,8 @@ export class EmailReadTracker {
     }
 
     // Mark all emails as read
-    markAllAsRead(allEmails) {
+    async markAllAsRead(allEmails) {
+        await this.ensureLoaded();
         let changed = false;
         
         allEmails.forEach(email => {
@@ -146,7 +152,7 @@ export class EmailReadTracker {
         });
         
         if (changed) {
-            this.saveToLocalStorage();
+            await this.saveToServer();
             
             // Emit event
             document.dispatchEvent(new CustomEvent('all-emails-marked-read', {
@@ -162,7 +168,8 @@ export class EmailReadTracker {
     }
 
     // Mark all emails as unread
-    markAllAsUnread(allEmails) {
+    async markAllAsUnread(allEmails) {
+        await this.ensureLoaded();
         let changed = false;
         
         allEmails.forEach(email => {
@@ -173,7 +180,7 @@ export class EmailReadTracker {
         });
         
         if (changed) {
-            this.saveToLocalStorage();
+            await this.saveToServer();
             
             // Emit event
             document.dispatchEvent(new CustomEvent('all-emails-marked-unread', {
@@ -199,43 +206,46 @@ export class EmailReadTracker {
         }
     }
 
-    // Persistence methods
-    saveToLocalStorage() {
+    // Server-side persistence methods
+    async saveToServer() {
         try {
-            const readEmailsArray = Array.from(this.readEmails);
-            localStorage.setItem(this.storageKey, JSON.stringify(readEmailsArray));
-            
-            // Also save timestamp of last update
-            localStorage.setItem(`${this.storageKey}_updated`, new Date().toISOString());
-            
+            await emailServerAPI.saveEmailAction('batch_read_update', null, {
+                read_emails: Array.from(this.readEmails),
+                timestamp: new Date().toISOString()
+            });
             return true;
         } catch (error) {
-            console.error('Failed to save read emails to localStorage:', error);
+            console.error('Failed to save read emails to server:', error);
             return false;
         }
     }
 
-    loadFromLocalStorage() {
+    async loadFromServer() {
         try {
-            const stored = localStorage.getItem(this.storageKey);
-            if (stored) {
-                const readEmailsArray = JSON.parse(stored);
-                if (Array.isArray(readEmailsArray)) {
-                    this.readEmails = new Set(readEmailsArray);
-                }
+            const emailStates = await emailServerAPI.loadEmailActions();
+            if (emailStates.read_emails && Array.isArray(emailStates.read_emails)) {
+                this.readEmails = new Set(emailStates.read_emails);
             }
-            
+            this.isLoaded = true;
             return true;
         } catch (error) {
-            console.error('Failed to load read emails from localStorage:', error);
-            this.readEmails = new Set(); // Reset to empty set on error
+            console.error('Failed to load read emails from server:', error);
+            this.isLoaded = true; // Mark as loaded even on error
             return false;
+        }
+    }
+
+    // Ensure data is loaded before operations
+    async ensureLoaded() {
+        if (!this.isLoaded) {
+            await this.loadFromServer();
         }
     }
 
     // Get last update timestamp
     getLastUpdateTimestamp() {
-        return localStorage.getItem(`${this.storageKey}_updated`);
+        // Since we're now using server-side storage, this method can return the loaded timestamp
+        return this.loadedTimestamp || null;
     }
 
     // Export data for backup/migration
@@ -248,11 +258,11 @@ export class EmailReadTracker {
     }
 
     // Import data from backup
-    importData(data) {
+    async importData(data) {
         try {
             if (data && Array.isArray(data.readEmails)) {
                 this.readEmails = new Set(data.readEmails);
-                this.saveToLocalStorage();
+                await this.saveToServer();
                 
                 // Emit import event
                 document.dispatchEvent(new CustomEvent('read-emails-imported', {
@@ -272,10 +282,10 @@ export class EmailReadTracker {
     }
 
     // Clear all read status
-    clearAllReadStatus() {
+    async clearAllReadStatus() {
         const hadEmails = this.readEmails.size > 0;
         this.readEmails.clear();
-        this.saveToLocalStorage();
+        await this.saveToServer();
         
         if (hadEmails) {
             // Emit clear event
@@ -290,7 +300,7 @@ export class EmailReadTracker {
     }
 
     // Cleanup old read status for emails that no longer exist
-    cleanupOldReadStatus(currentEmailIds) {
+    async cleanupOldReadStatus(currentEmailIds) {
         const currentSet = new Set(currentEmailIds);
         let removed = 0;
         
@@ -302,7 +312,7 @@ export class EmailReadTracker {
         }
         
         if (removed > 0) {
-            this.saveToLocalStorage();
+            await this.saveToServer();
             
             // Emit cleanup event
             document.dispatchEvent(new CustomEvent('read-emails-cleaned', {
@@ -346,7 +356,7 @@ export class EmailReadTracker {
     }
 
     // Batch operations for performance
-    batchOperation(operations) {
+    async batchOperation(operations) {
         let changed = false;
         
         operations.forEach(({ action, emailId }) => {
@@ -367,7 +377,7 @@ export class EmailReadTracker {
         });
         
         if (changed) {
-            this.saveToLocalStorage();
+            await this.saveToServer();
         }
         
         return changed;
