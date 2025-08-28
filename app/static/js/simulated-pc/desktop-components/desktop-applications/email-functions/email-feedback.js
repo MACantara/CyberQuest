@@ -194,9 +194,6 @@ export class EmailFeedback {
         if (feedbackData.isCorrect) {
             this.sessionScore++;
         }
-
-        // Store in server-side session data
-        await this.saveSessionData();
     }
 
     /**

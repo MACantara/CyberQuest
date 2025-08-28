@@ -250,12 +250,14 @@ export class EmailCompletionTracker {
     }
 
     /**
-     * Load previous session data
+     * Load previous session data from in-memory storage
      */
     loadPreviousSessionData() {
-        // Completion data is now stored server-side and loaded via the main dashboard
-        // This method is kept for compatibility but no longer uses localStorage
-        console.log('Completion data is now managed server-side');
+        if (window.cyberQuestLevels && window.cyberQuestLevels[2]) {
+            console.log('Loaded Level 2 completion data from memory');
+            return window.cyberQuestLevels[2];
+        }
+        return null;
     }
 
     /**
@@ -314,40 +316,28 @@ export class EmailCompletionTracker {
     }
 
     /**
-     * Mark Level 2 as completed on the server
+     * Mark Level 2 as completed in memory
      */
     async markLevelCompletedOnServer(score) {
-        try {
-            const completionData = {
-                level_id: 2,
-                score: score,
-                time_spent: this.getTotalTimeSpent(),
-                xp_earned: 150, // Level 2 XP reward
-                completion_data: {
-                    sessionData: this.emailApp.actionHandler.feedback.getSessionStats(),
-                    overallScore: score,
-                    timestamp: new Date().toISOString()
-                }
-            };
-            
-            // Make API call to mark level as completed
-            const response = await fetch('/levels/api/complete/2', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(completionData)
-            });
-            
-            if (response.ok) {
-                const result = await response.json();
-                console.log('Level 2 completed successfully on server:', result);
-            } else {
-                console.error('Failed to mark Level 2 as completed on server:', response.status);
+        const completionData = {
+            level_id: 2,
+            score: score,
+            time_spent: this.getTotalTimeSpent(),
+            xp_earned: 150, // Level 2 XP reward
+            completion_data: {
+                sessionData: this.emailApp.actionHandler.feedback.getSessionStats(),
+                overallScore: score,
+                timestamp: new Date().toISOString()
             }
-        } catch (error) {
-            console.error('Error completing Level 2 on server:', error);
+        };
+        
+        // Store completion in memory
+        if (!window.cyberQuestLevels) {
+            window.cyberQuestLevels = {};
         }
+        window.cyberQuestLevels[2] = completionData;
+        
+        console.log('Level 2 completed successfully in memory:', completionData);
     }
 
     /**
