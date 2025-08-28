@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-001-01",
-    "module_name": "Home Page",
+    "module_name": "Home-Page",
     "screen_design_ref": "Figure 2.1: Home Page",
     "description": "Verify that the home page loads correctly when accessing the root URL",
     "scenario": "User navigates to the home page by typing the URL and expecting to see all content sections",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-001-02",
-    "module_name": "Home Page",
+    "module_name": "Home-Page",
     "screen_design_ref": "Figure 2.2: Home Page CTA - Authenticated",
     "description": "Verify authenticated user can navigate to levels overview from home page",
     "scenario": "Authenticated user clicks on learning buttons to continue their progress",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-001-03",
-    "module_name": "Home Page",
+    "module_name": "Home-Page",
     "screen_design_ref": "Figure 2.3: Home Page CTA - Unauthenticated",
     "description": "Verify unauthenticated user is directed to signup from home page",
     "scenario": "New user visits the site and wants to get started",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-001-04",
-    "module_name": "Home Page",
+    "module_name": "Home-Page",
     "screen_design_ref": "Figure 2.4: Home Page About Link",
     "description": "Verify navigation to about page from home page",
     "scenario": "User wants to learn more about the platform before signing up",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-001-05",
-    "module_name": "Home Page",
+    "module_name": "Home-Page",
     "screen_design_ref": "Figure 2.5: Home Page Dark Mode",
     "description": "Verify dark mode functionality on home page",
     "scenario": "User toggles between light and dark themes",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-001-06",
-    "module_name": "Home Page",
+    "module_name": "Home-Page",
     "screen_design_ref": "Figure 2.6: Home Page Mobile",
     "description": "Verify home page displays correctly on mobile devices",
     "scenario": "User accesses the site from a mobile device",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-001-07",
-    "module_name": "Home Page",
+    "module_name": "Home-Page",
     "screen_design_ref": "Figure 2.7: Learning Modules Section",
     "description": "Verify all learning module cards are displayed correctly",
     "scenario": "User scrolls down to explore available learning modules",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-001-08",
-    "module_name": "Home Page",
+    "module_name": "Home-Page",
     "screen_design_ref": "Figure 2.8: Features Section",
     "description": "Verify features section displays correctly with animations",
     "scenario": "User explores the key features of the platform",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-001-09",
-    "module_name": "Home Page",
+    "module_name": "Home-Page",
     "screen_design_ref": "Figure 2.9: Hero Section",
     "description": "Verify hero section loads with proper animations and floating elements",
     "scenario": "User lands on the home page and sees the main hero section",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-001-10",
-    "module_name": "Home Page",
+    "module_name": "Home-Page",
     "screen_design_ref": "Figure 2.10: CTA Section Unauthenticated",
     "description": "Verify CTA section shows signup and login options for unauthenticated users",
     "scenario": "New user reaches the bottom of the page and wants to take action",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-001-11",
-    "module_name": "Home Page",
+    "module_name": "Home-Page",
     "screen_design_ref": "Figure 2.11: CTA Section Authenticated",
     "description": "Verify CTA section shows continue learning option for authenticated users",
     "scenario": "Returning user scrolls to the bottom and wants to continue their journey",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-001-12",
-    "module_name": "Home Page",
+    "module_name": "Home-Page",
     "screen_design_ref": "Figure 2.12: Home Page Performance",
     "description": "Verify home page loads within acceptable time and resources",
     "scenario": "User accesses the site and expects fast loading times",

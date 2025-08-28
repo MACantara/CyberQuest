@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-016-01",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.1: Player Data Analytics Dashboard Layout",
     "description": "Verify that the Player Data Analytics page loads correctly when accessing /admin/player-analytics with authenticated admin user",
     "scenario": "Admin user navigates to the player analytics dashboard to view comprehensive player engagement and learning metrics",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-016-02",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.2: Admin Authentication Requirements",
     "description": "Verify player analytics page requires proper admin authentication and redirects non-admin users",
     "scenario": "Non-admin user or unauthenticated user attempts to access player analytics dashboard",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-016-03",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.3: General Usage Statistics Cards",
     "description": "Verify general usage statistics display correct player engagement metrics",
     "scenario": "Admin views overview statistics including DAU, WAU, MAU, and average session length",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-016-04",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.4: Analytics Header Component",
     "description": "Verify analytics dashboard header displays correctly with navigation buttons",
     "scenario": "Admin views analytics header with title and quick access to specialized analytics views",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-016-05",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.5: Retention Rates Component",
     "description": "Verify retention rates section displays player retention metrics with progress bars",
     "scenario": "Admin views player retention analysis with day 1, day 7, and day 30 retention rates",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-016-06",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.6: Engagement Quality Component",
     "description": "Verify engagement quality section displays NPS score, ratings, and engagement metrics",
     "scenario": "Admin views player engagement quality metrics including Net Promoter Score and average ratings",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-016-07",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.7: Level Completion Overview",
     "description": "Verify level completion rates display with circular progress indicators",
     "scenario": "Admin views level completion rates for all 5 cybersecurity levels with visual progress circles",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-016-08",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.8: Weekly Trends Chart",
     "description": "Verify weekly trends chart displays properly with Chart.js integration",
     "scenario": "Admin views weekly trends chart showing DAU, sessions, and completions over time",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-016-09",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.9: Quick Stats Grid",
     "description": "Verify quick stats grid displays performance, interaction, and security training metrics",
     "scenario": "Admin views summarized statistics for performance, interaction, and security training effectiveness",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-016-10",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.10: Data Analytics Integration",
     "description": "Verify analytics page integrates correctly with data_analytics.py backend logic",
     "scenario": "Analytics dashboard displays data from data_analytics.py route with proper dummy data generation",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-016-11",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.11: Animation Sequence",
     "description": "Verify analytics dashboard components animate correctly on page load",
     "scenario": "Admin observes dashboard sections appearing with staggered animations",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-016-12",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.12: Chart.js Dark Mode Integration",
     "description": "Verify Chart.js charts display correctly in both light and dark modes",
     "scenario": "Admin toggles dark mode and verifies chart text and elements adapt properly",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-016-13",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.13: Responsive Design",
     "description": "Verify analytics dashboard is responsive across different screen sizes",
     "scenario": "Admin accesses analytics dashboard on mobile, tablet, and desktop devices",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-016-14",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.14: Navigation Integration",
     "description": "Verify analytics dashboard navigation links work correctly",
     "scenario": "Admin navigates between different analytics views and returns to admin dashboard",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-016-15",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.15: Performance and Loading",
     "description": "Verify analytics dashboard loads efficiently with optimal performance",
     "scenario": "Admin accesses analytics dashboard and expects fast loading times with Chart.js",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-016-16",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.16: Chart.js Functionality",
     "description": "Verify Chart.js charts function correctly with interactive features",
     "scenario": "Admin interacts with analytics charts to view detailed data",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-016-17",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.17: Dummy Data Accuracy",
     "description": "Verify all displayed analytics data matches the dummy data structure from backend",
     "scenario": "Analytics dashboard reflects accurate dummy data for demonstration purposes",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-016-18",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.18: Dark Mode Compatibility",
     "description": "Verify analytics dashboard displays correctly in dark mode",
     "scenario": "Admin toggles dark mode and uses analytics interface",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-016-19",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.19: Icon and Visual Elements",
     "description": "Verify all icons and visual elements display correctly in analytics dashboard",
     "scenario": "Admin views dashboard with proper icon rendering and visual hierarchy",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-016-20",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.20: Error Handling and Resilience",
     "description": "Verify analytics dashboard handles errors gracefully when data cannot be loaded",
     "scenario": "Dashboard encounters issues loading analytics data or Chart.js",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-016-21",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.21: Data Visualization Accuracy",
     "description": "Verify data visualizations accurately represent the underlying metrics",
     "scenario": "Admin relies on visual representations to understand player analytics data",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-016-22",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.22: Browser Compatibility",
     "description": "Verify analytics dashboard works correctly across different browsers",
     "scenario": "Admin accesses analytics dashboard using various web browsers",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-016-23",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.23: Security Training Metrics",
     "description": "Verify cybersecurity-specific analytics display correctly",
     "scenario": "Admin views specialized cybersecurity training effectiveness metrics",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-016-24",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.24: Accessibility Compliance",
     "description": "Verify analytics dashboard meets accessibility standards (WCAG)",
     "scenario": "Admin with disabilities accesses analytics dashboard using assistive technologies",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-016-25",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.25: Template Integration",
     "description": "Verify analytics dashboard integrates correctly with base template and styling",
     "scenario": "Analytics dashboard extends base template and maintains consistent styling",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-016-26",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.26: Data Export Potential",
     "description": "Verify analytics data could be exported or further analyzed",
     "scenario": "Admin may need to export analytics data for external analysis",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-016-27",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.27: Time-based Data Visualization",
     "description": "Verify weekly trends chart displays time-based data correctly",
     "scenario": "Admin analyzes player engagement trends over weekly time periods",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-016-28",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.28: Educational Effectiveness Metrics",
     "description": "Verify analytics focus on educational cybersecurity learning outcomes",
     "scenario": "Admin evaluates effectiveness of cybersecurity education through analytics",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-016-29",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.29: System Performance Impact",
     "description": "Verify analytics dashboard doesn't negatively impact system performance",
     "scenario": "Analytics dashboard loads efficiently without affecting overall system performance",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-016-30",
-    "module_name": "Player Data Analytics Page",
+    "module_name": "Player-Data-Analytics-Page",
     "screen_design_ref": "Figure 16.30: Security Audit and Compliance",
     "description": "Verify analytics dashboard system meets security best practices",
     "scenario": "Security audit of analytics dashboard functionality and data handling",

@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-014-01",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.1: User Dashboard Page Layout",
     "description": "Verify that the User Dashboard page loads correctly when accessing /profile/dashboard with authenticated user",
     "scenario": "Logged-in user navigates to their dashboard to view learning progress and cybersecurity achievements",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-014-02",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.2: Dashboard Header Design",
     "description": "Verify the dashboard header displays correctly with welcome message and navigation",
     "scenario": "User views the dashboard header with personalized welcome and quick access buttons",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-014-03",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.3: Stats Overview Cards",
     "description": "Verify stats overview cards display user progress metrics correctly",
     "scenario": "User views four stat cards showing total XP, levels completed, learning streak, and current rank",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-014-04",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.4: Learning Progress Section",
     "description": "Verify learning progress section displays overall progress and level completion status",
     "scenario": "User views their overall learning progress with completion percentage and level grid",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-014-05",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.5: Quick Actions Panel",
     "description": "Verify quick actions panel provides easy access to next level and navigation",
     "scenario": "User views quick actions sidebar with buttons for next level, levels overview, and profile",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-014-06",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.6: Learning Recommendations Section",
     "description": "Verify learning recommendations section displays AI-powered suggestions",
     "scenario": "User views personalized learning recommendations from adaptive learning system",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-014-07",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.7: Skill Breakdown Section",
     "description": "Verify skill breakdown section displays user skill analysis and proficiency levels",
     "scenario": "User views their skill assessment breakdown with proficiency indicators",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-014-08",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.8: Learning Analytics Dashboard",
     "description": "Verify learning analytics section displays engagement metrics and insights",
     "scenario": "User views learning analytics with engagement score, session stats, and preferred time",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-014-09",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.9: Adaptive Learning Data Integration",
     "description": "Verify dashboard integrates properly with adaptive learning system data",
     "scenario": "Dashboard displays real user progress data from adaptive learning models",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-014-10",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.10: Level Progress Visualization",
     "description": "Verify level progress grid displays correct status for each cybersecurity level",
     "scenario": "User views level grid showing completed, unlocked, and locked levels with proper styling",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-014-11",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.11: Blue Team vs Red Team Integration",
     "description": "Verify Blue Team vs Red Team mode integration and unlock status",
     "scenario": "User views Blue Team vs Red Team progress and unlock requirements",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-014-12",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.12: JavaScript Progress Bar Animation",
     "description": "Verify JavaScript dashboard animations work correctly on page load",
     "scenario": "User observes smooth progress bar animations when dashboard loads",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-014-13",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.13: Adaptive Learning API Integration",
     "description": "Verify dashboard integrates with adaptive learning API endpoints",
     "scenario": "Dashboard makes AJAX requests to adaptive learning endpoints for dynamic data",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-014-14",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.14: Authentication Required Access",
     "description": "Verify dashboard page requires user authentication and redirects unauthenticated users",
     "scenario": "Unauthenticated user attempts to access dashboard page",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-014-15",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.15: Database Disabled Handling",
     "description": "Verify proper handling when database is disabled (Vercel environment)",
     "scenario": "User attempts to access dashboard in deployment environment with disabled database",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-014-16",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.16: Recommendation Interaction",
     "description": "Verify learning recommendation interaction and acceptance functionality",
     "scenario": "User interacts with learning recommendations and accepts suggestions",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-014-17",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.17: Next Activity Suggestions",
     "description": "Verify next activity suggestions load and display correctly",
     "scenario": "Dashboard loads personalized next activity suggestions from adaptive learning engine",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-014-18",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.18: Form Animation Sequence",
     "description": "Verify dashboard sections animate correctly on page load",
     "scenario": "User observes dashboard sections appearing with staggered animations",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-014-19",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.19: Dark Mode Compatibility",
     "description": "Verify dashboard displays correctly in dark mode",
     "scenario": "User toggles dark mode and uses dashboard page",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-014-20",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.20: Responsive Design",
     "description": "Verify dashboard is responsive across different screen sizes",
     "scenario": "User accesses dashboard on mobile, tablet, and desktop devices",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-014-21",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.21: Data Refresh and Updates",
     "description": "Verify dashboard data refreshes and updates correctly",
     "scenario": "Dashboard data updates when user completes activities or learning patterns change",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-014-22",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.22: Empty State Handling",
     "description": "Verify dashboard handles empty states gracefully for new users",
     "scenario": "New user with no progress views dashboard with appropriate empty state messages",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-014-23",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.23: Navigation Integration",
     "description": "Verify dashboard navigation links work correctly and maintain context",
     "scenario": "User navigates from dashboard to various sections and returns with preserved context",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-014-24",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.24: Performance and Loading",
     "description": "Verify dashboard page loads efficiently with optimal performance",
     "scenario": "User accesses dashboard and expects fast loading times with all data",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-014-25",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.25: Error Handling and Resilience",
     "description": "Verify dashboard handles errors gracefully when data cannot be loaded",
     "scenario": "Dashboard encounters errors loading progress data or API failures",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-014-26",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.26: Data Security and Privacy",
     "description": "Verify dashboard only displays data for authenticated user with proper security",
     "scenario": "Dashboard shows only current user's data and maintains privacy",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-014-27",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.27: CSS Asset Loading",
     "description": "Verify dashboard CSS assets load correctly and styling is applied",
     "scenario": "Dashboard loads with proper styling from CSS files",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-014-28",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.28: JavaScript Error Handling",
     "description": "Verify JavaScript components handle errors gracefully",
     "scenario": "Dashboard JavaScript encounters errors and provides graceful degradation",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-014-29",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.29: Accessibility Compliance",
     "description": "Verify dashboard meets accessibility standards (WCAG)",
     "scenario": "User with disabilities accesses dashboard using assistive technologies",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-014-30",
-    "module_name": "User Dashboard Page",
+    "module_name": "User-Dashboard-Page",
     "screen_design_ref": "Figure 14.30: Security Audit and Compliance",
     "description": "Verify dashboard system meets security best practices and compliance requirements",
     "scenario": "Security audit of dashboard functionality and data handling",

@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-035-01",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.1: Level Start and Authentication",
     "description": "Verify that Level 2 'Shadow in the Inbox' can be started correctly with proper authentication and prerequisite checking",
     "scenario": "User starts Level 2 from the levels page after completing Level 1 to begin email security training",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-035-02",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.2: Level Data Injection",
     "description": "Verify that Level 2 metadata is correctly passed to the simulation system",
     "scenario": "Simulation system receives and processes Level 2 data for proper email security training initialization",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-035-03",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.3: Level 2 Dialogue Introduction",
     "description": "Verify the Level 2 introduction dialogue displays correctly and provides proper email security context",
     "scenario": "User receives introduction to the email security challenge through instructor dialogue",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-035-04",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.4: Email Application Launch",
     "description": "Verify the email application launches correctly when starting Level 2 challenge",
     "scenario": "System automatically opens email client application to begin phishing detection training",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-035-05",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.5: Email Registry and Content",
     "description": "Verify the email registry contains diverse phishing and legitimate emails for comprehensive training",
     "scenario": "Email application displays variety of emails with progressive difficulty for skill development",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-035-06",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.6: Email List Interface",
     "description": "Verify the email list interface displays emails correctly with proper metadata and status indicators",
     "scenario": "User views email list to select and analyze emails for phishing detection",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-035-07",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.7: Email Detail View",
     "description": "Verify clicking on emails opens detailed view with full content and analysis options",
     "scenario": "User clicks on individual emails to analyze content for phishing indicators",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-035-08",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.8: Phishing Report Action",
     "description": "Verify the 'Report Phishing' action works correctly with confirmation and feedback",
     "scenario": "User identifies a phishing email and reports it through the email security interface",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-035-09",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.9: Legitimate Email Marking",
     "description": "Verify the 'Mark as Legitimate' action works correctly for genuine emails",
     "scenario": "User identifies a legitimate email and marks it as safe through the security interface",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-035-10",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.10: Email Security Manager",
     "description": "Verify the email security manager correctly tracks user actions and provides accurate scoring",
     "scenario": "Security manager monitors user decisions and provides real-time feedback on phishing detection accuracy",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-035-11",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.11: Folder Management System",
     "description": "Verify the folder system correctly segregates inbox and spam emails with proper navigation",
     "scenario": "User navigates between Inbox and Spam folders to analyze different categories of emails",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-035-12",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.12: Phishing Indicators Education",
     "description": "Verify the level effectively teaches phishing detection through realistic examples",
     "scenario": "User learns to identify phishing indicators through practical email analysis",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-035-13",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.13: Email Read Tracking",
     "description": "Verify the email read tracking system correctly monitors user email interactions",
     "scenario": "System tracks which emails have been read and updates visual indicators accordingly",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-035-14",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.14: Email Action Feedback System",
     "description": "Verify the feedback system provides educational responses to user email security decisions",
     "scenario": "User receives immediate feedback on email classification decisions to improve learning",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-035-15",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.15: Session Progress Tracking",
     "description": "Verify the system tracks overall session progress and completion criteria",
     "scenario": "System monitors user progress through email analysis challenges and determines completion",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-035-16",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.16: Level Completion Detection",
     "description": "Verify the system correctly detects when Level 2 is completed and triggers completion dialogue",
     "scenario": "System recognizes successful completion of email security analysis challenges",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-035-17",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.17: Level Completion API Call",
     "description": "Verify the level completion API endpoint is called correctly when Level 2 is finished",
     "scenario": "System makes API call to record Level 2 completion and unlock Level 3",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-035-18",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.18: LocalStorage Progress Tracking",
     "description": "Verify progress tracking through localStorage for level start, challenges, and completion",
     "scenario": "System tracks user progress through various localStorage keys for email security state management",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-035-19",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.19: Email Session Summary",
     "description": "Verify the email session summary provides comprehensive analysis of user performance",
     "scenario": "System generates detailed session summary showing email analysis performance and learning achievements",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-035-20",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.20: XP and Badge System",
     "description": "Verify the XP and badge award system works correctly for Level 2 completion",
     "scenario": "System awards appropriate XP and badges for email security skill development",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-035-21",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.21: Email Content Rendering",
     "description": "Verify email content renders correctly with proper HTML formatting and security",
     "scenario": "Email application displays email content with proper formatting while maintaining security",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-035-22",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.22: Error Handling and Recovery",
     "description": "Verify proper error handling when Level 2 simulation encounters issues",
     "scenario": "System handles various error conditions gracefully during email security training",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-035-23",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.23: Email Window Management",
     "description": "Verify email application window management and interaction within the simulation",
     "scenario": "Email application window provides proper window controls and integration with desktop simulation",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-035-24",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.24: Email Timing and Sorting",
     "description": "Verify email timestamps and sorting functionality work correctly",
     "scenario": "Email application correctly displays and sorts emails by timestamp",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-035-25",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.25: Responsive Design Testing",
     "description": "Verify Level 2 email interface adapts to different screen sizes and resolutions",
     "scenario": "Email application maintains usability and visual quality across various display configurations",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-035-26",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.26: Performance and Memory Management",
     "description": "Verify Level 2 simulation performs efficiently without memory leaks during email analysis",
     "scenario": "System maintains good performance throughout the email security challenge",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-035-27",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.27: Browser Compatibility Testing",
     "description": "Verify Level 2 simulation works correctly across different web browsers",
     "scenario": "Email security training functions properly in Chrome, Firefox, Safari, and Edge",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-035-28",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.28: Accessibility Compliance",
     "description": "Verify Level 2 email interface meets accessibility standards for screen readers and keyboard navigation",
     "scenario": "Email application is accessible to users with disabilities through proper accessibility features",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-035-29",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.29: Integration with Level Progression System",
     "description": "Verify Level 2 completion properly integrates with the overall level progression system",
     "scenario": "Completing Level 2 correctly updates progress and unlocks Level 3 in the main levels interface",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-035-30",
-    "module_name": "Shadow in the Inbox Level",
+    "module_name": "Shadow-in-the-Inbox-Level",
     "screen_design_ref": "Figure 35.30: Complete Email Security Workflow",
     "description": "Verify complete end-to-end workflow for Level 2 from start to completion with email security skill development",
     "scenario": "User completes entire email security training gaining phishing detection and email analysis skills",

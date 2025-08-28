@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-011-01",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.1: Email Verification Pending Page Layout",
     "description": "Verify that the Email Verification Pending page loads correctly after successful user registration",
     "scenario": "User completes registration and is redirected to verification pending page with email sent confirmation",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-011-02",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.2: Verification Pending Page Header Design",
     "description": "Verify the verification pending header displays correctly with success styling",
     "scenario": "User views the verification pending header with cybersecurity-themed design",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-011-03",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.3: Email Information Display",
     "description": "Verify email address information is displayed correctly in verification pending page",
     "scenario": "User views the verification pending page and sees their email address prominently displayed",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-011-04",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.4: Next Steps Instructions",
     "description": "Verify the step-by-step verification instructions display correctly",
     "scenario": "User views detailed instructions on how to complete email verification",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-011-05",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.5: Important Notes Section",
     "description": "Verify important notes and warnings display correctly",
     "scenario": "User views important information about email verification requirements",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-011-06",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.6: Resend Verification Email Feature",
     "description": "Verify resend verification email functionality works correctly",
     "scenario": "User clicks resend verification email button and receives new verification email",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-011-07",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.7: Action Buttons Navigation",
     "description": "Verify action buttons for navigation work correctly",
     "scenario": "User uses action buttons to navigate to login or home page",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-011-08",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.8: Auto-Verification Check",
     "description": "Verify automatic verification status checking works correctly",
     "scenario": "Page automatically checks if user has verified email and redirects accordingly",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-011-09",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.9: Email Verification Token Processing",
     "description": "Verify email verification token processing works correctly",
     "scenario": "User clicks verification link in email and token is processed successfully",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-011-10",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.10: Invalid Token Handling",
     "description": "Verify proper handling of invalid or malformed verification tokens",
     "scenario": "User attempts to access verification endpoint with invalid token",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-011-11",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.11: Expired Token Handling",
     "description": "Verify proper handling of expired verification tokens (24 hour limit)",
     "scenario": "User attempts to use verification token after 24 hour expiration period",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-011-12",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.12: Already Verified Token Handling",
     "description": "Verify proper handling when verification token has already been used",
     "scenario": "User clicks verification link that has already been used to verify email",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-011-13",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.13: Email Service Integration",
     "description": "Verify email service integration and HTML email template rendering",
     "scenario": "System sends verification email with proper HTML template and content",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-011-14",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.14: Email Service Error Handling",
     "description": "Verify proper error handling when email service fails",
     "scenario": "Email service is unavailable or misconfigured during verification email sending",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-011-15",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.15: CSRF Protection",
     "description": "Verify CSRF token integration and protection for resend functionality",
     "scenario": "User submits resend verification form with CSRF protection enabled",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-011-16",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.16: Login Attempt Context Handling",
     "description": "Verify proper handling when unverified user attempts to login",
     "scenario": "User with unverified email attempts to login and is redirected to verification page",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-011-17",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.17: Verification Status API Endpoint",
     "description": "Verify AJAX verification status checking API endpoint works correctly",
     "scenario": "JavaScript makes AJAX requests to check if user's email has been verified",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-011-18",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.18: User Account Association",
     "description": "Verify verification tokens are properly associated with correct user accounts",
     "scenario": "Multiple users register and each receives verification for correct account",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-011-19",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.19: Form Animation Sequence",
     "description": "Verify verification pending page elements animate correctly",
     "scenario": "User observes page appearance animations on verification pending page load",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-011-20",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.20: Dark Mode Compatibility",
     "description": "Verify verification pending page displays correctly in dark mode",
     "scenario": "User toggles dark mode and uses verification pending page",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-011-21",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.21: Responsive Design",
     "description": "Verify verification pending page is responsive across different screen sizes",
     "scenario": "User accesses verification pending page on mobile, tablet, and desktop devices",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-011-22",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.22: Email Template Security",
     "description": "Verify email verification template is secure and prevents attacks",
     "scenario": "Email template handles various inputs securely and prevents injection attacks",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-011-23",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.23: Token Generation Security",
     "description": "Verify verification token generation is cryptographically secure",
     "scenario": "System generates secure verification tokens that cannot be predicted or forged",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-011-24",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.24: Database Error Handling",
     "description": "Verify proper handling of database errors during verification process",
     "scenario": "Database errors occur during verification creation or validation",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-011-25",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.25: Performance and Loading",
     "description": "Verify verification pending page loads efficiently with optimal performance",
     "scenario": "User accesses verification pending page and expects fast loading times",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-011-26",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.26: Accessibility Compliance",
     "description": "Verify verification pending page meets accessibility standards (WCAG)",
     "scenario": "User with disabilities accesses verification pending page using assistive technologies",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-011-27",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.27: Multiple Verification Requests",
     "description": "Verify handling of multiple verification requests for same user",
     "scenario": "User requests multiple verification emails and system handles appropriately",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-011-28",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.28: Error Message Display",
     "description": "Verify error messages display correctly with proper styling and clarity",
     "scenario": "User encounters various errors and receives clear feedback",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-011-29",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.29: Browser Compatibility",
     "description": "Verify verification system works correctly across different browsers",
     "scenario": "User accesses verification features using different web browsers",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-011-30",
-    "module_name": "Email Verification System",
+    "module_name": "Email-Verification-System",
     "screen_design_ref": "Figure 11.30: Security Audit and Compliance",
     "description": "Verify email verification system meets security best practices and compliance requirements",
     "scenario": "Security audit of email verification functionality and implementation",

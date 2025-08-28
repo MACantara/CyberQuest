@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-012-01",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.1: User Profile Page Layout",
     "description": "Verify that the User Profile page loads correctly when accessing /profile with authenticated user",
     "scenario": "Logged-in user navigates to their profile page to view account information",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-012-02",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.2: Profile Header Design",
     "description": "Verify the profile header displays correctly with user icon and status badges",
     "scenario": "User views the profile header with cybersecurity-themed design and status information",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-012-03",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.3: Account Status Badge",
     "description": "Verify account status badge displays correctly based on user.is_active status",
     "scenario": "User views their account status badge showing active or inactive status",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-012-04",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.4: Member Since Badge",
     "description": "Verify member since badge displays correct registration date",
     "scenario": "User views their membership start date in a formatted badge",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-012-05",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.5: Username Display Field",
     "description": "Verify username is displayed correctly in styled read-only field",
     "scenario": "User views their username in a properly formatted display field",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-012-06",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.6: Email Address Display Field",
     "description": "Verify email address is displayed correctly in styled read-only field",
     "scenario": "User views their email address in a properly formatted display field",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-012-07",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.7: Last Login Information",
     "description": "Verify last login information displays correctly in profile actions section",
     "scenario": "User views their last login timestamp in the profile footer",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-012-08",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.8: Edit Profile Button",
     "description": "Verify edit profile button displays correctly and navigates to edit page",
     "scenario": "User clicks edit profile button to modify their account information",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-012-09",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.9: Authentication Required Access",
     "description": "Verify profile page requires user authentication and redirects unauthenticated users",
     "scenario": "Unauthenticated user attempts to access profile page",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-012-10",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.10: Database Disabled Handling",
     "description": "Verify proper handling when database is disabled (Vercel environment)",
     "scenario": "User attempts to access profile in deployment environment with disabled database",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-012-11",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.11: Form Animation Sequence",
     "description": "Verify profile page elements animate correctly on page load",
     "scenario": "User observes profile page appearance animations on load",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-012-12",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.12: Dark Mode Compatibility",
     "description": "Verify profile page displays correctly in dark mode",
     "scenario": "User toggles dark mode and uses profile page",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-012-13",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.13: Responsive Design",
     "description": "Verify profile page is responsive across different screen sizes",
     "scenario": "User accesses profile page on mobile, tablet, and desktop devices",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-012-14",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.14: Profile Data Security",
     "description": "Verify profile page only displays data for the authenticated user",
     "scenario": "User can only view their own profile information, not other users' data",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-012-15",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.15: Edit Profile Navigation",
     "description": "Verify edit profile functionality and navigation flow",
     "scenario": "User navigates from profile view to profile editing page",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-012-16",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.16: Profile Information Accuracy",
     "description": "Verify profile displays accurate and up-to-date user information",
     "scenario": "User views profile and sees current, accurate account information",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-012-17",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.17: Text Truncation Handling",
     "description": "Verify long usernames and emails are properly truncated and displayed",
     "scenario": "User with long username or email views profile page",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-012-18",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.18: Profile Page Performance",
     "description": "Verify profile page loads efficiently with optimal performance",
     "scenario": "User accesses profile page and expects fast loading times",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-012-19",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.19: Date and Time Formatting",
     "description": "Verify date and time information is properly formatted and localized",
     "scenario": "User views creation date and last login with proper formatting",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-012-20",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.20: Error Handling",
     "description": "Verify proper error handling when profile data cannot be loaded",
     "scenario": "System encounters errors when loading user profile information",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-012-21",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.21: Accessibility Compliance",
     "description": "Verify profile page meets accessibility standards (WCAG)",
     "scenario": "User with disabilities accesses profile page using assistive technologies",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-012-22",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.22: Browser Compatibility",
     "description": "Verify profile page works correctly across different browsers",
     "scenario": "User accesses profile page using different web browsers",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-012-23",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.23: CSS Grid Layout Testing",
     "description": "Verify CSS grid layout works correctly for profile information",
     "scenario": "Profile information fields are displayed in proper grid layout",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-012-24",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.24: Profile Actions Footer",
     "description": "Verify profile actions footer displays and functions correctly",
     "scenario": "User views and interacts with profile actions section at bottom of page",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-012-25",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.25: User Context Preservation",
     "description": "Verify user context is properly maintained throughout profile viewing session",
     "scenario": "User's session and context remain consistent while viewing profile",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-012-26",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.26: Profile Card Shadow and Styling",
     "description": "Verify profile card has proper shadow effects and styling",
     "scenario": "User views profile page with enhanced visual styling",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-012-27",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.27: Icon Integration and Styling",
     "description": "Verify all icons display correctly with proper styling and alignment",
     "scenario": "User views profile page with all icons properly rendered",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-012-28",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.28: Hover Effects and Transitions",
     "description": "Verify hover effects and transitions work correctly throughout profile page",
     "scenario": "User hovers over interactive elements and observes smooth transitions",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-012-29",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.29: SEO and Metadata",
     "description": "Verify profile page has proper SEO elements and security headers",
     "scenario": "Search engines and security scanners analyze profile page",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-012-30",
-    "module_name": "User Profile Page",
+    "module_name": "User-Profile-Page",
     "screen_design_ref": "Figure 12.30: Security Audit and Compliance",
     "description": "Verify user profile system meets security best practices and compliance requirements",
     "scenario": "Security audit of user profile functionality and implementation",

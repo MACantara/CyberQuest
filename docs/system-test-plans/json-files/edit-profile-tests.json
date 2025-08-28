@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-013-01",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.1: Edit Profile Page Layout",
     "description": "Verify that the Edit Profile page loads correctly when accessing /profile/edit with authenticated user",
     "scenario": "Logged-in user navigates to edit profile page to modify their account information",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-013-02",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.2: Edit Profile Header Design",
     "description": "Verify the edit profile header displays correctly with pencil-square icon and back button",
     "scenario": "User views the edit profile header with cybersecurity-themed design and navigation",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-013-03",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.3: Username Input Field",
     "description": "Verify username input field displays correctly with validation and pre-populated data",
     "scenario": "User views and edits username field with proper validation feedback",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-013-04",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.4: Email Address Input Field",
     "description": "Verify email address input field displays correctly with validation and pre-populated data",
     "scenario": "User views and edits email field with proper email validation",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-013-05",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.5: Password Change Section",
     "description": "Verify password change section displays correctly with proper labeling and optional behavior",
     "scenario": "User views password change section as optional part of profile editing",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-013-06",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.6: New Password Input Field",
     "description": "Verify new password input field displays correctly with validation guidance",
     "scenario": "User enters new password with proper validation feedback",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-013-07",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.7: Confirm Password Input Field",
     "description": "Verify confirm password input field displays correctly with matching validation",
     "scenario": "User enters password confirmation with real-time matching validation",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-013-08",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.8: Current Password Confirmation Field",
     "description": "Verify current password field displays correctly as required security measure",
     "scenario": "User must enter current password to confirm identity before making changes",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-013-09",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.9: Update Profile Button",
     "description": "Verify update profile button displays correctly with loading states and proper styling",
     "scenario": "User submits profile changes and observes button behavior",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-013-10",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.10: Successful Profile Update",
     "description": "Verify successful profile update with valid data and current password",
     "scenario": "User successfully updates username and/or email with correct current password",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-013-11",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.11: Password Change Functionality",
     "description": "Verify password change functionality works correctly with validation",
     "scenario": "User successfully changes password with proper validation and confirmation",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-013-12",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.12: Username Validation",
     "description": "Verify username validation enforces format and uniqueness requirements",
     "scenario": "User enters various username formats and receives appropriate validation feedback",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-013-13",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.13: Email Validation",
     "description": "Verify email validation enforces format and uniqueness requirements",
     "scenario": "User enters various email formats and receives appropriate validation feedback",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-013-14",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.14: Password Validation",
     "description": "Verify password validation enforces security requirements",
     "scenario": "User enters various password formats and receives appropriate validation feedback",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-013-15",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.15: Current Password Verification",
     "description": "Verify current password verification prevents unauthorized changes",
     "scenario": "User must provide correct current password to make any profile changes",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-013-16",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.16: Authentication Required Access",
     "description": "Verify edit profile page requires user authentication and redirects unauthenticated users",
     "scenario": "Unauthenticated user attempts to access edit profile page",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-013-17",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.17: Database Disabled Handling",
     "description": "Verify proper handling when database is disabled (Vercel environment)",
     "scenario": "User attempts to edit profile in deployment environment with disabled database",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-013-18",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.18: CSRF Protection",
     "description": "Verify CSRF token integration and protection for profile updates",
     "scenario": "User submits profile edit form with CSRF protection enabled",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-013-19",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.19: JavaScript Password Validation",
     "description": "Verify JavaScript password validation works correctly for real-time feedback",
     "scenario": "User experiences real-time password validation while typing",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-013-20",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.20: Form Animation Sequence",
     "description": "Verify edit profile form elements animate correctly on page load",
     "scenario": "User observes form appearance animations on edit profile page load",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-013-21",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.21: Dark Mode Compatibility",
     "description": "Verify edit profile page displays correctly in dark mode",
     "scenario": "User toggles dark mode and uses edit profile page",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-013-22",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.22: Responsive Design",
     "description": "Verify edit profile page is responsive across different screen sizes",
     "scenario": "User accesses edit profile page on mobile, tablet, and desktop devices",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-013-23",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.23: Database Error Handling",
     "description": "Verify proper handling of database errors during profile updates",
     "scenario": "Database errors occur during profile update process",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-013-24",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.24: Data Persistence and Pre-population",
     "description": "Verify form fields are properly pre-populated with current user data",
     "scenario": "User opens edit profile page and sees current information in form fields",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-013-25",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.25: Profile Update Security",
     "description": "Verify profile updates only affect the authenticated user's account",
     "scenario": "User can only update their own profile information, not other users' data",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-013-26",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.26: Navigation and Back Button",
     "description": "Verify navigation between profile and edit profile pages works correctly",
     "scenario": "User navigates between profile view and edit modes seamlessly",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-013-27",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.27: Input Field Validation States",
     "description": "Verify input fields display proper validation states and feedback",
     "scenario": "User sees visual feedback for field validation states",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-013-28",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.28: Performance and Loading",
     "description": "Verify edit profile page loads efficiently with optimal performance",
     "scenario": "User accesses edit profile page and expects fast loading times",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-013-29",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.29: Accessibility Compliance",
     "description": "Verify edit profile page meets accessibility standards (WCAG)",
     "scenario": "User with disabilities accesses edit profile page using assistive technologies",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-013-30",
-    "module_name": "Edit User Profile Page",
+    "module_name": "Edit-User-Profile-Page",
     "screen_design_ref": "Figure 13.30: Security Audit and Compliance",
     "description": "Verify edit profile system meets security best practices and compliance requirements",
     "scenario": "Security audit of profile editing functionality and implementation",

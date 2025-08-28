@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-015-01",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.1: Admin Dashboard Main Layout",
     "description": "Verify that the Admin Dashboard page loads correctly when accessing /admin/ with authenticated admin user",
     "scenario": "Admin user navigates to the admin dashboard to view system statistics and manage users",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-015-02",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.2: Admin Authentication Requirements",
     "description": "Verify admin dashboard requires proper admin authentication and redirects non-admin users",
     "scenario": "Non-admin user or unauthenticated user attempts to access admin dashboard",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-015-03",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.3: Stats Cards Overview",
     "description": "Verify statistics cards display correct user and system metrics",
     "scenario": "Admin views overview statistics including total users, new registrations, login attempts, and email verifications",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-015-04",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.4: Dashboard Header Component",
     "description": "Verify admin dashboard header displays correctly with navigation buttons",
     "scenario": "Admin views dashboard header with title and quick access management buttons",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-015-05",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.5: Recent Users Component",
     "description": "Verify recent users section displays latest user registrations correctly",
     "scenario": "Admin views recent users list with user details and status indicators",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-015-06",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.6: Login Activity Component",
     "description": "Verify recent login activity section displays login attempts with status",
     "scenario": "Admin views recent login activity to monitor system security",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-015-07",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.7: Quick Actions Component",
     "description": "Verify quick actions panel provides admin management shortcuts",
     "scenario": "Admin uses quick actions to access system management functions",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-015-08",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.8: Database Integration",
     "description": "Verify dashboard integrates correctly with database models for statistics",
     "scenario": "Dashboard retrieves and displays real data from User, LoginAttempt, EmailVerification, and Contact models",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-015-09",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.9: Database Disabled Handling",
     "description": "Verify proper handling when database is disabled (Vercel environment)",
     "scenario": "Admin attempts to access dashboard in deployment environment with disabled database",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-015-10",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.10: JavaScript Dashboard Functionality",
     "description": "Verify admin.js provides proper dashboard interaction and animations",
     "scenario": "Admin dashboard loads with JavaScript enhancements for better user experience",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-015-11",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.11: Cleanup Logs Functionality",
     "description": "Verify cleanup logs action works correctly with confirmation",
     "scenario": "Admin initiates cleanup of old logs and expired tokens through quick actions",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-015-12",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.12: Error Handling and Resilience",
     "description": "Verify dashboard handles errors gracefully when data cannot be loaded",
     "scenario": "Dashboard encounters database errors or connection issues",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-015-13",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.13: Animation Sequence",
     "description": "Verify dashboard components animate correctly on page load",
     "scenario": "Admin observes dashboard sections appearing with staggered animations",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-015-14",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.14: Responsive Design",
     "description": "Verify admin dashboard is responsive across different screen sizes",
     "scenario": "Admin accesses dashboard on mobile, tablet, and desktop devices",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-015-15",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.15: Dark Mode Compatibility",
     "description": "Verify admin dashboard displays correctly in dark mode",
     "scenario": "Admin toggles dark mode and uses dashboard interface",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-015-16",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.16: Navigation Integration",
     "description": "Verify dashboard navigation links work correctly and maintain admin context",
     "scenario": "Admin navigates from dashboard to various admin sections and returns",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-015-17",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.17: Statistics Data Accuracy",
     "description": "Verify dashboard statistics display accurate real-time data",
     "scenario": "Dashboard reflects current system state with accurate user and activity metrics",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-015-18",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.18: Admin API Endpoints",
     "description": "Verify admin API endpoints work correctly for dashboard data",
     "scenario": "Dashboard potentially uses API endpoints for dynamic data updates",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-015-19",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.19: Performance and Loading",
     "description": "Verify admin dashboard loads efficiently with optimal performance",
     "scenario": "Admin accesses dashboard and expects fast loading times with all data",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-015-20",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.20: Admin User Isolation",
     "description": "Verify admin dashboard respects user boundaries and shows system-wide data appropriately",
     "scenario": "Admin views system-wide statistics while maintaining proper data boundaries",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-015-21",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.21: Session Management",
     "description": "Verify admin dashboard handles session expiration and security properly",
     "scenario": "Admin session expires or encounters security issues while using dashboard",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-015-22",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.22: Icon and Visual Elements",
     "description": "Verify all icons and visual elements display correctly in admin dashboard",
     "scenario": "Admin views dashboard with proper icon rendering and visual hierarchy",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-015-23",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.23: Form Security and CSRF",
     "description": "Verify admin dashboard forms include proper CSRF protection",
     "scenario": "Admin submits forms through dashboard with security protection",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-015-24",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.24: Browser Compatibility",
     "description": "Verify admin dashboard works correctly across different browsers",
     "scenario": "Admin accesses dashboard using various web browsers",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-015-25",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.25: Data Refresh and Updates",
     "description": "Verify dashboard data refreshes and updates correctly",
     "scenario": "Dashboard data updates when system activity occurs",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-015-26",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.26: Accessibility Compliance",
     "description": "Verify admin dashboard meets accessibility standards (WCAG)",
     "scenario": "Admin with disabilities accesses dashboard using assistive technologies",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-015-27",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.27: Empty State Handling",
     "description": "Verify dashboard handles empty states gracefully for new installations",
     "scenario": "Admin views dashboard on new system installation with minimal data",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-015-28",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.28: Logging and Monitoring",
     "description": "Verify admin dashboard interactions are properly logged for security monitoring",
     "scenario": "Admin dashboard access and actions are logged for audit purposes",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-015-29",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.29: Component Integration",
     "description": "Verify dashboard components integrate correctly and maintain consistency",
     "scenario": "All dashboard components work together to provide cohesive admin experience",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-015-30",
-    "module_name": "Admin Dashboard Page",
+    "module_name": "Admin-Dashboard-Page",
     "screen_design_ref": "Figure 15.30: Security Audit and Compliance",
     "description": "Verify admin dashboard system meets security best practices and compliance requirements",
     "scenario": "Security audit of admin dashboard functionality and access control",

@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-008-01",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.1: Sign Up Page Layout",
     "description": "Verify that the Sign Up page loads correctly when accessing the /auth/signup URL",
     "scenario": "New user navigates to the signup page to create a CyberQuest account",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-008-02",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.2: Mission Header Design",
     "description": "Verify the mission header displays correctly with cybersecurity theme",
     "scenario": "User views the signup page header with gradient background and mission styling",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-008-03",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.3: Multi-Step Form Structure",
     "description": "Verify the multi-step form structure and navigation system",
     "scenario": "User interacts with the 4-step signup process and navigation controls",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-008-04",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.4: Step 1 - Agent Credentials",
     "description": "Verify Step 1 form fields for username and email input",
     "scenario": "User enters agent username and email credentials in Step 1",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-008-05",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.5: Step 2 - Password Security",
     "description": "Verify Step 2 password creation with strength checking and validation",
     "scenario": "User creates secure password with real-time strength feedback",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-008-06",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.6: Step 3 - Experience Level",
     "description": "Verify Step 3 experience level selection with focus options",
     "scenario": "User selects cybersecurity experience level and learning focus",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-008-07",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.7: Step 4 - Terms and Final Submission",
     "description": "Verify Step 4 terms acceptance, hCaptcha, and account creation",
     "scenario": "User reviews summary, accepts terms, completes hCaptcha, and creates account",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-008-08",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.8: Step Navigation and Validation",
     "description": "Verify step-by-step navigation with validation at each step",
     "scenario": "User navigates through steps with proper validation and error handling",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-008-09",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.9: Password Strength Checker Integration",
     "description": "Verify password strength checker component functionality",
     "scenario": "User enters various passwords and observes strength feedback",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-008-10",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.10: Password Validator Component",
     "description": "Verify password validation component with requirements checking",
     "scenario": "User enters password and sees validation requirements status",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-008-11",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.11: Real-Time Summary Updates",
     "description": "Verify real-time summary updates as user progresses through steps",
     "scenario": "User enters information and sees summary update in real-time",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-008-12",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.12: Form Data Persistence",
     "description": "Verify form data is saved and persists across step navigation",
     "scenario": "User navigates back and forth between steps without losing data",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-008-13",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.13: Successful Account Creation",
     "description": "Verify successful account creation flow with email verification",
     "scenario": "User completes all steps and successfully creates account",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-008-14",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.14: Username Validation",
     "description": "Verify comprehensive username validation and error handling",
     "scenario": "User enters various username formats and receives appropriate validation",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-008-15",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.15: Email Validation",
     "description": "Verify email format validation and duplicate checking",
     "scenario": "User enters various email formats and existing emails",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-008-16",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.16: Password Security Requirements",
     "description": "Verify password meets all security requirements with zxcvbn validation",
     "scenario": "User creates password that must meet complex security requirements",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-008-17",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.17: hCaptcha Integration",
     "description": "Verify hCaptcha integration and validation in Step 4",
     "scenario": "User completes hCaptcha verification before account creation",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-008-18",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.18: Database Disabled Handling",
     "description": "Verify proper handling when database is disabled (Vercel environment)",
     "scenario": "User attempts signup in deployment environment with disabled database",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-008-19",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.19: Already Logged In Redirect",
     "description": "Verify redirect behavior when user is already authenticated",
     "scenario": "Logged-in user tries to access signup page",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-008-20",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.20: Step Indicator System",
     "description": "Verify step indicator visual states and functionality",
     "scenario": "User observes step indicators as they progress through signup",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-008-21",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.21: Navigation Button States",
     "description": "Verify navigation button appearance and functionality across steps",
     "scenario": "User observes and uses navigation buttons throughout signup process",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-008-22",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.22: Notification System",
     "description": "Verify cyber-themed notification system for user feedback",
     "scenario": "User receives various notifications during signup process",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-008-23",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.23: Step Transition Animations",
     "description": "Verify smooth step transition animations and effects",
     "scenario": "User navigates between steps and observes transition animations",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-008-24",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.24: Error Handling and Recovery",
     "description": "Verify comprehensive error handling throughout signup process",
     "scenario": "User encounters various errors and recovers successfully",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-008-25",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.25: CSRF Protection",
     "description": "Verify CSRF token integration and protection",
     "scenario": "User submits signup form with CSRF protection enabled",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-008-26",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.26: Dark Mode Compatibility",
     "description": "Verify signup page displays correctly in dark mode",
     "scenario": "User toggles dark mode and completes signup process",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-008-27",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.27: Responsive Design",
     "description": "Verify signup page is responsive across different screen sizes",
     "scenario": "User accesses signup page on mobile, tablet, and desktop devices",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-008-28",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.28: Module Loading and Dependencies",
     "description": "Verify JavaScript modules load correctly with proper dependencies",
     "scenario": "User accesses signup page and all JavaScript components initialize",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-008-29",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.29: Accessibility Compliance",
     "description": "Verify signup page meets accessibility standards (WCAG)",
     "scenario": "User with disabilities accesses signup form using assistive technologies",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-008-30",
-    "module_name": "Sign Up Page",
+    "module_name": "Sign-Up-Page",
     "screen_design_ref": "Figure 8.30: Performance and Integration",
     "description": "Verify signup page performance and integration with system components",
     "scenario": "User completes signup process with optimal performance and proper system integration",

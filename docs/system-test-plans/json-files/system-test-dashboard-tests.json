@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-024-01",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.1: System Test Dashboard Page",
     "description": "Verify that the system test dashboard loads correctly with proper authentication",
     "scenario": "Admin user navigates to the system test dashboard to view test management overview",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-024-02",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.2: Dashboard Authentication Check",
     "description": "Verify that non-admin users cannot access the system test dashboard",
     "scenario": "Regular user attempts to access the system test management functionality",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-024-03",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.3: Summary Statistics Cards",
     "description": "Verify that summary statistics cards display accurate test counts and data",
     "scenario": "Admin views the statistics section to understand overall test status and progress",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-024-04",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.4: Statistics Card Styling",
     "description": "Verify that statistics cards display proper visual styling and icons",
     "scenario": "Admin reviews the visual presentation of test statistics for clear communication",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-024-05",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.5: Module Overview Table",
     "description": "Verify the module overview table displays test data by module correctly",
     "scenario": "Admin reviews test progress across different system modules to identify areas needing attention",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-024-06",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.6: Empty Module State",
     "description": "Verify the empty state display when no test modules are available",
     "scenario": "Admin views dashboard when no test plans have been created yet",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-024-07",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.7: Failed Tests Section",
     "description": "Verify the failed tests section displays tests requiring attention",
     "scenario": "Admin reviews failed tests to understand what issues need to be addressed",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-024-08",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.8: No Failed Tests State",
     "description": "Verify the display when no failed tests exist in the system",
     "scenario": "Admin views failed tests section when all tests are passing",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-024-09",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.9: Quick Actions Section",
     "description": "Verify the quick actions section provides easy access to common test management tasks",
     "scenario": "Admin uses quick actions to efficiently navigate to key test management functions",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-024-10",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.10: Quick Actions Navigation",
     "description": "Verify that quick action buttons navigate to correct destinations",
     "scenario": "Admin clicks each quick action button to verify proper routing and functionality",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-024-11",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.11: Recent Test Activity",
     "description": "Verify the recent test activity section displays latest test executions",
     "scenario": "Admin reviews recent test activity to monitor testing progress and execution history",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-024-12",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.12: Page Header Navigation",
     "description": "Verify the page header contains proper title, description, and navigation buttons",
     "scenario": "Admin reviews dashboard header for clear navigation and context",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-024-13",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.13: Error Handling",
     "description": "Verify proper error handling when dashboard data cannot be loaded",
     "scenario": "Dashboard encounters an error while loading test data from the database",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-024-14",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.14: Auto-refresh Functionality",
     "description": "Verify the dashboard auto-refreshes every 5 minutes to show current data",
     "scenario": "Admin leaves dashboard open to monitor ongoing test execution and system changes",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-024-15",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.15: Responsive Design",
     "description": "Verify the dashboard displays correctly on different screen sizes and devices",
     "scenario": "Admin accesses dashboard from various devices to ensure responsive design functionality",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-024-16",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.16: Dark Mode Compatibility",
     "description": "Verify the dashboard displays correctly in both light and dark themes",
     "scenario": "Admin switches between light and dark modes to ensure proper theming support",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-024-17",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.17: Performance Loading",
     "description": "Verify the dashboard loads within acceptable time limits with proper performance",
     "scenario": "Admin navigates to dashboard and measures loading performance with various data volumes",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-024-18",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.18: Data Accuracy Validation",
     "description": "Verify that all statistics and counts displayed on dashboard are accurate",
     "scenario": "Admin compares dashboard statistics with actual test data to ensure accuracy",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-024-19",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.19: Failed Tests Pagination",
     "description": "Verify proper handling of failed tests list when there are many failed tests",
     "scenario": "Dashboard displays failed tests with appropriate limiting and pagination for large numbers",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-024-20",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.20: Module Link Navigation",
     "description": "Verify that module names in overview table link to module-specific test views",
     "scenario": "Admin clicks on module names to view detailed test information for specific modules",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-024-21",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.21: Zero State Handling",
     "description": "Verify proper display when test statistics show zero values",
     "scenario": "Dashboard displays correctly when there are no tests or all counts are zero",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-024-22",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.22: Browser Compatibility",
     "description": "Verify dashboard works correctly across different web browsers",
     "scenario": "Admin accesses dashboard using various browsers to ensure cross-browser compatibility",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-024-23",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.23: Accessibility Compliance",
     "description": "Verify dashboard meets accessibility standards for screen readers and keyboard navigation",
     "scenario": "Admin and accessibility tools test dashboard for compliance with accessibility standards",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-024-24",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.24: Failed Test Reason Display",
     "description": "Verify failed test failure reasons are displayed correctly with proper truncation",
     "scenario": "Admin reviews failed tests to understand specific failure reasons and details",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-024-25",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.25: Priority Badge Display",
     "description": "Verify priority badges display correctly for failed tests with appropriate colors",
     "scenario": "Admin reviews failed test priorities to understand which issues are most critical",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-024-26",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.26: Animation and Transitions",
     "description": "Verify dashboard animations and transitions enhance user experience",
     "scenario": "Admin observes dashboard loading animations and hover effects for smooth user experience",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-024-27",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.27: Report Link Integration",
     "description": "Verify the 'Generate Report' link in module overview navigates correctly",
     "scenario": "Admin clicks report generation link to access detailed test reporting functionality",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-024-28",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.28: URL Route Validation",
     "description": "Verify dashboard URL routing works correctly with proper admin authentication",
     "scenario": "Admin accesses dashboard through various URL paths to ensure routing consistency",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-024-29",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.29: Memory Usage Optimization",
     "description": "Verify dashboard memory usage remains reasonable with large datasets",
     "scenario": "Dashboard performance with hundreds of test plans to ensure memory efficiency",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-024-30",
-    "module_name": "System Test Dashboard",
+    "module_name": "System-Test-Dashboard",
     "screen_design_ref": "Figure 24.30: Integration with Test Management",
     "description": "Verify dashboard integrates properly with all test management functionality",
     "scenario": "Admin uses dashboard as central hub for accessing all test management features",

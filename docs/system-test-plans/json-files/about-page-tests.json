@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-002-01",
-    "module_name": "About Page",
+    "module_name": "About-Page",
     "screen_design_ref": "Figure 2.1: About Page Layout",
     "description": "Verify that the About page loads correctly when accessing the /about URL",
     "scenario": "User navigates to the About page to learn about CyberQuest mission and team",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-002-02",
-    "module_name": "About Page",
+    "module_name": "About-Page",
     "screen_design_ref": "Figure 2.2: Page Header Section",
     "description": "Verify the page header section displays correctly with title and subtitle",
     "scenario": "User views the About page header with gradient background and animated elements",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-002-03",
-    "module_name": "About Page",
+    "module_name": "About-Page",
     "screen_design_ref": "Figure 2.3: Mission Section",
     "description": "Verify the Mission section displays content and Get Involved button functionality",
     "scenario": "User reads the mission statement and clicks on Get Involved button",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-002-04",
-    "module_name": "About Page",
+    "module_name": "About-Page",
     "screen_design_ref": "Figure 2.4: Learning Philosophy Section",
     "description": "Verify the Learning Philosophy section displays three methodology cards",
     "scenario": "User views the learning approach cards showcasing gamification, AI mentoring, and community features",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-002-05",
-    "module_name": "About Page",
+    "module_name": "About-Page",
     "screen_design_ref": "Figure 2.5: Team Members Section",
     "description": "Verify the team members section displays all four team members correctly",
     "scenario": "User views the team section to learn about CyberQuest team members",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-002-06",
-    "module_name": "About Page",
+    "module_name": "About-Page",
     "screen_design_ref": "Figure 2.6: Features Showcase Section",
     "description": "Verify the features showcase section displays correctly",
     "scenario": "User views the features section highlighting what makes CyberQuest different",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-002-07",
-    "module_name": "About Page",
+    "module_name": "About-Page",
     "screen_design_ref": "Figure 2.7: Dark Mode Compatibility",
     "description": "Verify the About page displays correctly in dark mode",
     "scenario": "User toggles to dark mode and views the About page",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-002-08",
-    "module_name": "About Page",
+    "module_name": "About-Page",
     "screen_design_ref": "Figure 2.8: Responsive Design",
     "description": "Verify the About page is responsive across different screen sizes",
     "scenario": "User views the About page on mobile, tablet, and desktop devices",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-002-09",
-    "module_name": "About Page",
+    "module_name": "About-Page",
     "screen_design_ref": "Figure 2.9: CSS and JavaScript Loading",
     "description": "Verify that external CSS and JavaScript files load correctly",
     "scenario": "User accesses the About page and all styling and interactive elements function",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-002-10",
-    "module_name": "About Page",
+    "module_name": "About-Page",
     "screen_design_ref": "Figure 2.10: Navigation Integration",
     "description": "Verify that navigation to and from the About page works correctly",
     "scenario": "User navigates to About page from different parts of the site and uses navigation menu",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-002-11",
-    "module_name": "About Page",
+    "module_name": "About-Page",
     "screen_design_ref": "Figure 2.11: Page Performance",
     "description": "Verify the About page loads within acceptable time limits",
     "scenario": "User accesses the About page and expects fast loading times",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-002-12",
-    "module_name": "About Page",
+    "module_name": "About-Page",
     "screen_design_ref": "Figure 2.12: SEO and Accessibility",
     "description": "Verify the About page meets SEO and accessibility standards",
     "scenario": "User with screen reader accesses the About page and search engines can index content",

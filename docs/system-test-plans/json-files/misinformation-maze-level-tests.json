@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-034-01",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.1: Level Start and Authentication",
     "description": "Verify that Level 1 'The Misinformation Maze' can be started correctly with proper authentication",
     "scenario": "User starts Level 1 from the levels page to begin the misinformation training simulation",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-034-02",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.2: Level Data Injection",
     "description": "Verify that Level 1 metadata is correctly passed to the simulation system",
     "scenario": "Simulation system receives and processes Level 1 data for proper initialization",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-034-03",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.3: Simulation Boot Sequence",
     "description": "Verify the simulated PC boot sequence works correctly for Level 1",
     "scenario": "User experiences realistic PC boot sequence when starting the misinformation maze simulation",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-034-04",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.4: Level 1 Dialogue Introduction",
     "description": "Verify the Level 1 introduction dialogue displays correctly and provides proper context",
     "scenario": "User receives introduction to the misinformation maze challenge through instructor dialogue",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-034-05",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.5: Browser Application Launch",
     "description": "Verify the browser application launches correctly when starting Level 1 challenge",
     "scenario": "System automatically opens browser application to begin the misinformation analysis challenge",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-034-06",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.6: News Website Navigation",
     "description": "Verify automatic navigation to the Daily Politico News website for the challenge",
     "scenario": "Browser automatically navigates to the fake news website to begin analysis challenge",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-034-07",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.7: Challenge 1 Dialogue Trigger",
     "description": "Verify Challenge1Dialogue triggers automatically after browser navigation",
     "scenario": "System presents detailed instructions for the interactive analysis challenge",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-034-08",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.8: Interactive Analysis System",
     "description": "Verify the interactive analysis system allows clicking and labeling of news article elements",
     "scenario": "User interacts with news article elements to practice misinformation detection skills",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-034-09",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.9: Analysis Panel Interface",
     "description": "Verify the Interactive Analysis panel provides proper guidance and feedback",
     "scenario": "User receives real-time guidance and progress tracking through the analysis panel",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-034-10",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.10: Label Modification System",
     "description": "Verify users can modify their labeling choices by re-clicking elements",
     "scenario": "User changes their mind about element classification and updates labels accordingly",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-034-11",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.11: Analysis Submission Process",
     "description": "Verify the analysis submission process provides detailed feedback on user performance",
     "scenario": "User completes article analysis and submits for evaluation and learning feedback",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-034-12",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.12: Multiple Article Progression",
     "description": "Verify progression through multiple news articles for comprehensive training",
     "scenario": "User analyzes multiple articles to build comprehensive misinformation detection skills",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-034-13",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.13: Critical Thinking Skills Development",
     "description": "Verify the level effectively teaches critical thinking, source verification, and fact checking skills",
     "scenario": "User develops cybersecurity-relevant analytical skills through misinformation detection practice",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-034-14",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.14: Level Completion Detection",
     "description": "Verify the system correctly detects when Level 1 is completed and triggers completion dialogue",
     "scenario": "System recognizes successful completion of all misinformation analysis challenges",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-034-15",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.15: Level Completion API Call",
     "description": "Verify the level completion API endpoint is called correctly when Level 1 is finished",
     "scenario": "System makes API call to record Level 1 completion and unlock Level 2",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-034-16",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.16: LocalStorage Progress Tracking",
     "description": "Verify progress tracking through localStorage for level start, challenges, and completion",
     "scenario": "System tracks user progress through various localStorage keys for state management",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-034-17",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.17: Browser Security Features",
     "description": "Verify browser application includes security monitoring and checker functionality",
     "scenario": "Browser provides security awareness features relevant to cybersecurity training",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-034-18",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.18: Simulation Exit and Shutdown",
     "description": "Verify proper simulation exit functionality with shutdown sequence",
     "scenario": "User exits the Level 1 simulation through proper shutdown sequence",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-034-19",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.19: Error Handling and Recovery",
     "description": "Verify proper error handling when Level 1 simulation encounters issues",
     "scenario": "System handles various error conditions gracefully during misinformation maze simulation",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-034-20",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.20: Keyboard and Accessibility",
     "description": "Verify keyboard shortcuts are disabled and accessibility features work correctly",
     "scenario": "System prevents common keyboard shortcuts that could break simulation while maintaining accessibility",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-034-21",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.21: Context Menu Prevention",
     "description": "Verify right-click context menu is disabled to maintain simulation integrity",
     "scenario": "System prevents right-click context menu to avoid breaking simulation immersion",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-034-22",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.22: Responsive Design and Scaling",
     "description": "Verify Level 1 simulation adapts to different screen sizes and resolutions",
     "scenario": "Simulation maintains usability and visual quality across various display configurations",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-034-23",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.23: Performance and Memory Management",
     "description": "Verify Level 1 simulation performs efficiently without memory leaks",
     "scenario": "System maintains good performance throughout the misinformation maze challenge",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-034-24",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.24: Browser Compatibility Testing",
     "description": "Verify Level 1 simulation works correctly across different web browsers",
     "scenario": "Misinformation maze training functions properly in Chrome, Firefox, Safari, and Edge",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-034-25",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.25: Session Management and Auto-start",
     "description": "Verify auto-start functionality and session management for Level 1",
     "scenario": "System properly manages session data and auto-start parameters when entering Level 1",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-034-26",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.26: AI Training Data Integration",
     "description": "Verify integration with AI-analyzed training data for misinformation detection",
     "scenario": "Level 1 utilizes AI-powered analysis to provide realistic misinformation scenarios",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-034-27",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.27: Dialogue State Management",
     "description": "Verify proper dialogue state management and transitions throughout Level 1",
     "scenario": "System manages dialogue states correctly preventing conflicts and ensuring proper progression",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-034-28",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.28: Window Management and Applications",
     "description": "Verify window manager correctly handles browser application and other desktop components",
     "scenario": "Desktop window manager provides proper window handling for the browser and other applications",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-034-29",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.29: Integration with Level Progression System",
     "description": "Verify Level 1 completion properly integrates with the overall level progression system",
     "scenario": "Completing Level 1 correctly updates progress and unlocks Level 2 in the main levels interface",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-034-30",
-    "module_name": "The Misinformation Maze Level",
+    "module_name": "The-Misinformation-Maze-Level",
     "screen_design_ref": "Figure 34.30: Complete Misinformation Maze Workflow",
     "description": "Verify complete end-to-end workflow for Level 1 from start to completion with skill development",
     "scenario": "User completes entire misinformation maze training gaining critical thinking and information literacy skills",

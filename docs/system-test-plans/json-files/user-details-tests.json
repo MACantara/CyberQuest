@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-020-01",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.1: User Details Page",
     "description": "Verify that the User Details page loads correctly with admin authentication for a valid user ID",
     "scenario": "Admin user navigates to a specific user's details page to view comprehensive user information and activity logs",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-020-02",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.2: Admin Authentication Requirement",
     "description": "Verify that non-admin users cannot access the User Details page",
     "scenario": "Regular user attempts to access user details page without admin privileges",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-020-03",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.3: User Not Found Handling",
     "description": "Verify proper error handling when attempting to access non-existent user details",
     "scenario": "Admin attempts to access user details for a user ID that doesn't exist in the database",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-020-04",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.4: User Information Display",
     "description": "Verify that the user information panel displays all user data correctly with proper formatting",
     "scenario": "Admin reviews user information panel to see status, registration details, and verification status",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-020-05",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.5: User Avatar Display",
     "description": "Verify that user avatar displays correctly with username initial and gradient background",
     "scenario": "Admin views user details header to check avatar generation and display",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-020-06",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.6: User Status Toggle Functionality",
     "description": "Verify that admin can toggle user active/inactive status correctly",
     "scenario": "Admin uses the toggle status button to activate or deactivate user accounts",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-020-07",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.7: Admin Privilege Toggle",
     "description": "Verify that admin can grant or revoke admin privileges for other users",
     "scenario": "Admin uses the admin toggle button to grant or revoke administrative privileges",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-020-08",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.8: Self-Modification Prevention",
     "description": "Verify that admin users cannot modify their own account status or admin privileges",
     "scenario": "Admin attempts to modify their own user account to test security restrictions",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-020-09",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.9: Activity Tabs Navigation",
     "description": "Verify that activity tabs function correctly for switching between different user activity views",
     "scenario": "Admin uses tab navigation to view different types of user activity data",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-020-10",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.10: Login Attempts Display",
     "description": "Verify that login attempts tab displays user's login history with proper formatting and status indicators",
     "scenario": "Admin reviews user's login attempts to monitor account security and access patterns",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-020-11",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.11: Email Verifications Display",
     "description": "Verify that email verifications tab displays verification history with proper status indicators",
     "scenario": "Admin reviews user's email verification history to monitor account verification status",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-020-12",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.12: Responsive Design Layout",
     "description": "Verify that the User Details page displays correctly on different screen sizes",
     "scenario": "Admin accesses the user details page on various devices and screen resolutions",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-020-13",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.13: Dark Mode Compatibility",
     "description": "Verify that the User Details page displays correctly in dark mode",
     "scenario": "Admin toggles dark mode and verifies all components display with appropriate dark theme styling",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-020-14",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.14: CSRF Protection Validation",
     "description": "Verify that user modification actions are protected against CSRF attacks",
     "scenario": "Admin modifies user status and privileges to ensure CSRF tokens are properly validated",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-020-15",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.15: Navigation Back to Users",
     "description": "Verify that the 'Back to Users' navigation button functions correctly",
     "scenario": "Admin uses the back navigation to return to the user management list",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-020-16",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.16: Date and Time Formatting",
     "description": "Verify that all date and time displays use consistent formatting throughout the user details interface",
     "scenario": "Admin reviews various date fields to ensure consistent formatting and timezone handling",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-020-17",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.17: Empty State Handling",
     "description": "Verify that appropriate empty state messages display when no activity data is available",
     "scenario": "Admin views user details for users with no login attempts or email verifications",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-020-18",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.18: Status Badge Color Coding",
     "description": "Verify that status badges use consistent color coding throughout the interface",
     "scenario": "Admin reviews status badges to ensure proper color coding and accessibility",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-020-19",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.19: Database Error Handling",
     "description": "Verify that the user details system handles database errors gracefully",
     "scenario": "Admin accesses user details when database connectivity issues occur",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-020-20",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.20: Animation and Transitions",
     "description": "Verify that page animations and transitions display correctly and enhance user experience",
     "scenario": "Admin observes page loading animations and interactive element transitions",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-020-21",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.21: User Agent Display",
     "description": "Verify that user agent strings are properly truncated and displayed in login attempts",
     "scenario": "Admin reviews login attempts to see browser and device information",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-020-22",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.22: Email Verification Status Logic",
     "description": "Verify that email verification status displays correctly based on verification state and expiration",
     "scenario": "Admin reviews email verification records with different states (verified, pending, expired)",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-020-23",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.23: Tab Responsive Behavior",
     "description": "Verify that activity tabs display correctly on mobile devices with appropriate text handling",
     "scenario": "Admin accesses activity tabs on mobile devices to test responsive behavior",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-020-24",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.24: Action Button Styling",
     "description": "Verify that action buttons display with appropriate colors and styling based on current user state",
     "scenario": "Admin reviews action button appearance for different user states and actions",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-020-25",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.25: Flash Message Integration",
     "description": "Verify that success and error flash messages display correctly for user modification actions",
     "scenario": "Admin performs various user modification actions and observes flash message behavior",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-020-26",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.26: URL Route Validation",
     "description": "Verify that user details URLs route correctly and handle invalid parameters",
     "scenario": "Admin tests various URL patterns for user details functionality",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-020-27",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.27: Session Management",
     "description": "Verify that admin session management works correctly when accessing user details",
     "scenario": "Admin session expires while viewing user details to test session handling",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-020-28",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.28: Cross-Browser Compatibility",
     "description": "Verify that user details functionality works correctly across different web browsers",
     "scenario": "Admin accesses user details using various browsers to test compatibility",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-020-29",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.29: Performance with Large Activity Data",
     "description": "Verify that user details performs efficiently when displaying users with extensive activity history",
     "scenario": "Admin accesses details for users with large numbers of login attempts and email verifications",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-020-30",
-    "module_name": "User Details",
+    "module_name": "User-Details",
     "screen_design_ref": "Figure 20.30: Accessibility Compliance",
     "description": "Verify that user details interface meets accessibility standards for screen readers and keyboard navigation",
     "scenario": "Admin uses accessibility tools to test user details compliance with WCAG guidelines",
