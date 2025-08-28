@@ -26,11 +26,38 @@ export class Level2ShadowInboxDialogue extends BaseDialogue {
         // Store completion in localStorage
         localStorage.setItem('cyberquest_level_2_started', 'true');
         
+        // Set fresh start flag for email app
+        localStorage.setItem('cyberquest_level_2_fresh_start', 'true');
+        
+        // Clear any previous Level 2 server-side data for fresh start
+        this.clearLevel2Data();
+        
         // Open the email application using application launcher
         if (window.applicationLauncher) {
             setTimeout(async () => {
                 await window.applicationLauncher.launchForLevel(2, 'email', 'Email Client');
             }, 500);
+        }
+    }
+
+    async clearLevel2Data() {
+        try {
+            // Clear server-side Level 2 data
+            const response = await fetch('/api/level/2/reset', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                }
+            });
+
+            if (response.ok) {
+                console.log('Level 2 server-side data cleared for fresh start');
+            } else {
+                console.warn('Failed to clear Level 2 server-side data');
+            }
+        } catch (error) {
+            console.warn('Failed to clear Level 2 server-side data:', error);
         }
     }
 

@@ -1,9 +1,10 @@
-import { emailServerAPI } from './email-server-api.js';
+import { EmailServerAPI } from './email-server-api.js';
 
 export class EmailReadTracker {
     constructor() {
         this.readEmails = new Set();
         this.isLoaded = false;
+        this.emailServerAPI = new EmailServerAPI();
         this.loadFromServer();
     }
 
@@ -209,7 +210,7 @@ export class EmailReadTracker {
     // Server-side persistence methods
     async saveToServer() {
         try {
-            await emailServerAPI.saveEmailAction('batch_read_update', null, {
+            await this.emailServerAPI.saveEmailAction('batch_read_update', null, {
                 read_emails: Array.from(this.readEmails),
                 timestamp: new Date().toISOString()
             });
@@ -222,7 +223,7 @@ export class EmailReadTracker {
 
     async loadFromServer() {
         try {
-            const emailStates = await emailServerAPI.loadEmailActions();
+            const emailStates = await this.emailServerAPI.loadEmailActions();
             if (emailStates.read_emails && Array.isArray(emailStates.read_emails)) {
                 this.readEmails = new Set(emailStates.read_emails);
             }
@@ -297,6 +298,28 @@ export class EmailReadTracker {
         }
         
         return hadEmails;
+    }
+
+    // Force reload from server (for debugging/testing)
+    async forceReload() {
+        this.isLoaded = false;
+        this.readEmails.clear();
+        await this.loadFromServer();
+        console.log('Forced reload completed. Read emails:', Array.from(this.readEmails));
+        return this.readEmails.size;
+    }
+
+    // Debug method to check current state
+    debugCurrentState() {
+        console.log('EmailReadTracker Debug Info:');
+        console.log('  isLoaded:', this.isLoaded);
+        console.log('  readEmails count:', this.readEmails.size);
+        console.log('  readEmails:', Array.from(this.readEmails));
+        return {
+            isLoaded: this.isLoaded,
+            readEmailsCount: this.readEmails.size,
+            readEmails: Array.from(this.readEmails)
+        };
     }
 
     // Cleanup old read status for emails that no longer exist

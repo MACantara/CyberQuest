@@ -469,6 +469,9 @@ export class EmailSessionSummary {
         // Reset email training state and restart
         document.querySelector('.fixed')?.remove();
         
+        // Set fresh start flag for next email app instance
+        localStorage.setItem('cyberquest_level_2_fresh_start', 'true');
+        
         // Reset the email app to allow retry
         if (this.emailApp && this.emailApp.reset) {
             this.emailApp.reset();
@@ -530,5 +533,12 @@ export class EmailSessionSummary {
         `;
         
         document.body.appendChild(modal);
+    }
+
+    // Reset session summary to initial state
+    reset() {
+        // EmailSessionSummary doesn't maintain persistent state,
+        // it generates reports from feedback data
+        console.log('EmailSessionSummary reset completed');
     }
 }

@@ -290,6 +290,3 @@ export class EmailServerAPI {
         }
     }
 }
-
-// Create a singleton instance for use across email functions
-export const emailServerAPI = new EmailServerAPI();

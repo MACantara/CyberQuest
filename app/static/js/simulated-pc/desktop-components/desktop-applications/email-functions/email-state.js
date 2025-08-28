@@ -71,4 +71,11 @@ export class EmailState {
     getSecurityManager() {
         return this.securityManager;
     }
+
+    // Reset email state to initial values
+    reset() {
+        this.currentFolder = 'inbox';
+        this.selectedEmailId = null;
+        // Note: security manager will be reset separately by the email app
+    }
 }

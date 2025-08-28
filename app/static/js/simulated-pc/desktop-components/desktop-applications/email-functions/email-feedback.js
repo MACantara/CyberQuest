@@ -430,4 +430,25 @@ export class EmailFeedback {
         
         document.body.appendChild(modal);
     }
+
+    // Reset feedback system to initial state
+    async reset() {
+        try {
+            this.feedbackHistory = [];
+            this.sessionScore = 0;
+            this.totalActions = 0;
+            this.dataLoaded = false;
+
+            // Clear server-side session data
+            await this.emailServerAPI.saveSessionData({
+                feedbackHistory: [],
+                sessionScore: 0,
+                totalActions: 0
+            });
+
+            console.log('EmailFeedback reset completed');
+        } catch (error) {
+            console.error('Failed to reset EmailFeedback:', error);
+        }
+    }
 }

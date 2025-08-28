@@ -1,5 +1,5 @@
 import { ALL_EMAILS } from '../../../levels/level-two/emails/email-registry.js';
-import { emailServerAPI } from './email-server-api.js';
+import { EmailServerAPI } from './email-server-api.js';
 
 export class EmailSecurityManager {
     constructor(emailApp) {
@@ -7,6 +7,7 @@ export class EmailSecurityManager {
         this.reportedPhishing = new Set();
         this.legitimateEmails = new Set();
         this.spamEmails = new Set();
+        this.emailServerAPI = new EmailServerAPI();
         this.isLoaded = false;
         this.loadFromServer();
     }
@@ -239,7 +240,7 @@ export class EmailSecurityManager {
                 timestamp: new Date().toISOString()
             };
             
-            await emailServerAPI.saveEmailActions(emailStates);
+            await this.emailServerAPI.saveEmailActions(emailStates);
         } catch (error) {
             console.error('Error saving to server:', error);
         }
@@ -247,7 +248,7 @@ export class EmailSecurityManager {
 
     async loadFromServer() {
         try {
-            const emailStates = await emailServerAPI.loadEmailActions();
+            const emailStates = await this.emailServerAPI.loadEmailActions();
             
             if (emailStates.reported_phishing) {
                 this.reportedPhishing = new Set(emailStates.reported_phishing);
@@ -407,5 +408,12 @@ export class EmailSecurityManager {
             this.spamEmails = new Set(data.spamEmails);
         }
         await this.saveToServer();
+    }
+
+    // Reset security manager to initial state
+    async reset() {
+        await this.clearAllSecurityData();
+        this.isLoaded = false;
+        console.log('EmailSecurityManager reset completed');
     }
 }

@@ -224,6 +224,27 @@ export class EmailActionHandler {
         window.emailActionHandler = this;
     }
 
+    // Reset email action handler to initial state
+    async reset() {
+        try {
+            // Reset feedback system
+            await this.feedback.reset();
+            
+            // Reset session summary
+            this.sessionSummary.reset();
+            
+            // Reset completion tracker
+            this.completionTracker.reset();
+            
+            // Reset session start time
+            this.sessionStartTime = new Date().toISOString();
+            
+            console.log('EmailActionHandler reset completed');
+        } catch (error) {
+            console.error('Failed to reset EmailActionHandler:', error);
+        }
+    }
+
     // Cleanup when email app is closed
     cleanup() {
         // Save current state

@@ -379,6 +379,24 @@ export class EmailCompletionTracker {
     }
 
     /**
+     * Reset completion tracker to initial state
+     */
+    reset() {
+        this.hasTriggeredCompletion = false;
+        
+        // Clear any existing completion check interval
+        if (this.completionCheckInterval) {
+            clearInterval(this.completionCheckInterval);
+            this.completionCheckInterval = null;
+        }
+        
+        // Close any open completion dialogues
+        this.closeLevelCompletionDialogue();
+        
+        console.log('EmailCompletionTracker reset completed');
+    }
+
+    /**
      * Clean up completion tracker
      */
     cleanup() {
