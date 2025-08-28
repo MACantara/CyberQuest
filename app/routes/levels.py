@@ -151,7 +151,11 @@ def get_level_js_files(level_id):
             'js/simulated-pc/levels/level-two/level-config.js',
             'js/simulated-pc/levels/level-two/apps/index.js',
             'js/simulated-pc/levels/level-two/data/index.js',
+            
+            # Level 2 dialogues
+            'js/simulated-pc/levels/level-two/dialogues/index.js',
             'js/simulated-pc/levels/level-two/dialogues/level2-shadow-inbox.js',
+            'js/simulated-pc/levels/level-two/dialogues/email-security-completion-dialogue.js',
             
             # Tutorials for Level 2
             'js/simulated-pc/tutorials/email-tutorial.js',
@@ -166,6 +170,9 @@ def get_level_js_files(level_id):
             'js/simulated-pc/levels/level-three/level-config.js',
             'js/simulated-pc/levels/level-three/apps/index.js',
             'js/simulated-pc/levels/level-three/data/index.js',
+            
+            # Level 3 dialogues
+            'js/simulated-pc/levels/level-three/dialogues/index.js',
             'js/simulated-pc/levels/level-three/dialogues/level3-malware-mayhem.js',
             
             # Tutorials for Level 3
@@ -181,6 +188,9 @@ def get_level_js_files(level_id):
             'js/simulated-pc/levels/level-four/level-config.js',
             'js/simulated-pc/levels/level-four/apps/index.js',
             'js/simulated-pc/levels/level-four/data/index.js',
+            
+            # Level 4 dialogues
+            'js/simulated-pc/levels/level-four/dialogues/index.js',
             'js/simulated-pc/levels/level-four/dialogues/level4-white-hat-test.js',
             
             # Tutorials for Level 4
@@ -196,6 +206,9 @@ def get_level_js_files(level_id):
             'js/simulated-pc/levels/level-five/level-config.js',
             'js/simulated-pc/levels/level-five/apps/index.js',
             'js/simulated-pc/levels/level-five/data/index.js',
+            
+            # Level 5 dialogues
+            'js/simulated-pc/levels/level-five/dialogues/index.js',
             'js/simulated-pc/levels/level-five/dialogues/level5-hunt-for-the-null.js',
             
             # Level 5 special features
