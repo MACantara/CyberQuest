@@ -186,7 +186,11 @@ def get_level_js_files(level_id):
             'js/simulated-pc/desktop-components/desktop-applications/browser-functions/security-popup.js',
             
             # System logs functionality
-            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/activity-monitor.js',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-filter.js',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-manager.js',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-renderer.js',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-ui.js',
             
             # Tutorials for Level 2
             'js/simulated-pc/tutorials/email-tutorial.js',
@@ -210,16 +214,36 @@ def get_level_js_files(level_id):
             'js/simulated-pc/desktop-components/desktop-applications/file-manager-app.js',
             
             # Malware scanner functionality
-            'js/simulated-pc/desktop-components/desktop-applications/malware-scanner-functions/',
+            'js/simulated-pc/desktop-components/desktop-applications/malware-scanner-functions/malware-database.js',
+            'js/simulated-pc/desktop-components/desktop-applications/malware-scanner-functions/malware-scanner-actions.js',
+            'js/simulated-pc/desktop-components/desktop-applications/malware-scanner-functions/malware-scanner-activity-emitter.js',
+            'js/simulated-pc/desktop-components/desktop-applications/malware-scanner-functions/malware-scanner-event-handler.js',
+            'js/simulated-pc/desktop-components/desktop-applications/malware-scanner-functions/malware-scanner-ui-manager.js',
+            'js/simulated-pc/desktop-components/desktop-applications/malware-scanner-functions/quarantine-manager.js',
+            'js/simulated-pc/desktop-components/desktop-applications/malware-scanner-functions/scan-engine.js',
             
             # Process monitor functionality
-            'js/simulated-pc/desktop-components/desktop-applications/process-monitor-functions/',
+            'js/simulated-pc/desktop-components/desktop-applications/process-monitor-functions/notification-manager.js',
+            'js/simulated-pc/desktop-components/desktop-applications/process-monitor-functions/process-data-manager.js',
+            'js/simulated-pc/desktop-components/desktop-applications/process-monitor-functions/process-event-handler.js',
+            'js/simulated-pc/desktop-components/desktop-applications/process-monitor-functions/process-monitor-activity-emitter.js',
+            'js/simulated-pc/desktop-components/desktop-applications/process-monitor-functions/process-renderer.js',
+            'js/simulated-pc/desktop-components/desktop-applications/process-monitor-functions/process-sorter.js',
             
             # System logs functionality
-            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/activity-monitor.js',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-filter.js',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-manager.js',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-renderer.js',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-ui.js',
             
             # File manager functionality
-            'js/simulated-pc/desktop-components/desktop-applications/file-manager-functions/',
+            'js/simulated-pc/desktop-components/desktop-applications/file-manager-functions/file-navigator.js',
+            'js/simulated-pc/desktop-components/desktop-applications/file-manager-functions/file-opener.js',
+            'js/simulated-pc/desktop-components/desktop-applications/file-manager-functions/file-type-detector.js',
+            'js/simulated-pc/desktop-components/desktop-applications/file-manager-functions/file-viewer.js',
+            'js/simulated-pc/desktop-components/desktop-applications/file-manager-functions/viewer-factory.js',
+            'js/simulated-pc/desktop-components/desktop-applications/file-manager-functions/window-tracker.js',
             
             # Tutorials for Level 3
             'js/simulated-pc/tutorials/malware-scanner-tutorial.js',
@@ -243,16 +267,36 @@ def get_level_js_files(level_id):
             'js/simulated-pc/desktop-components/desktop-applications/browser-app.js',
             
             # Vulnerability scanner functionality
-            'js/simulated-pc/desktop-components/desktop-applications/vulnerability-scanner-functions/',
+            'js/simulated-pc/desktop-components/desktop-applications/vulnerability-scanner-functions/nmap-integration-utility.js',
+            'js/simulated-pc/desktop-components/desktop-applications/vulnerability-scanner-functions/vulnerability-report-generator.js',
+            'js/simulated-pc/desktop-components/desktop-applications/vulnerability-scanner-functions/vulnerability-scanner-data-manager.js',
+            'js/simulated-pc/desktop-components/desktop-applications/vulnerability-scanner-functions/vulnerability-scanner-event-handler.js',
+            'js/simulated-pc/desktop-components/desktop-applications/vulnerability-scanner-functions/vulnerability-scanner-logic.js',
+            'js/simulated-pc/desktop-components/desktop-applications/vulnerability-scanner-functions/vulnerability-scanner-notification-manager.js',
+            'js/simulated-pc/desktop-components/desktop-applications/vulnerability-scanner-functions/vulnerability-scanner-tab-manager.js',
+            'js/simulated-pc/desktop-components/desktop-applications/vulnerability-scanner-functions/vulnerability-scanner-ui-renderer.js',
+            'js/simulated-pc/desktop-components/desktop-applications/vulnerability-scanner-functions/vulnerability-scanner-ui.js',
+            'js/simulated-pc/desktop-components/desktop-applications/vulnerability-scanner-functions/vulnerability-scanner.js',
+            'js/simulated-pc/desktop-components/desktop-applications/vulnerability-scanner-functions/web-target-registry.js',
             
             # Network monitor functionality
-            'js/simulated-pc/desktop-components/desktop-applications/network-monitor-functions/',
+            'js/simulated-pc/desktop-components/desktop-applications/network-monitor-functions/packet-capture.js',
+            'js/simulated-pc/desktop-components/desktop-applications/network-monitor-functions/packet-filter.js',
+            'js/simulated-pc/desktop-components/desktop-applications/network-monitor-functions/statistics.js',
+            'js/simulated-pc/desktop-components/desktop-applications/network-monitor-functions/traffic-correlator.js',
             
             # Terminal functionality
-            'js/simulated-pc/desktop-components/desktop-applications/terminal-functions/',
+            'js/simulated-pc/desktop-components/desktop-applications/terminal-functions/command-history.js',
+            'js/simulated-pc/desktop-components/desktop-applications/terminal-functions/command-processor.js',
+            'js/simulated-pc/desktop-components/desktop-applications/terminal-functions/command-registry.js',
+            'js/simulated-pc/desktop-components/desktop-applications/terminal-functions/file-system.js',
+            'js/simulated-pc/desktop-components/desktop-applications/terminal-functions/tab-completion.js',
             
             # Browser functionality
-            'js/simulated-pc/desktop-components/desktop-applications/browser-functions/',
+            'js/simulated-pc/desktop-components/desktop-applications/browser-functions/navigation.js',
+            'js/simulated-pc/desktop-components/desktop-applications/browser-functions/page-renderer.js',
+            'js/simulated-pc/desktop-components/desktop-applications/browser-functions/security-checker.js',
+            'js/simulated-pc/desktop-components/desktop-applications/browser-functions/security-popup.js',
             
             # Tutorials for Level 4
             'js/simulated-pc/tutorials/vulnerability-scanner-tutorial.js',
@@ -281,11 +325,39 @@ def get_level_js_files(level_id):
             'js/simulated-pc/desktop-components/desktop-applications/browser-app.js',
             
             # All functionality modules for comprehensive forensics
-            'js/simulated-pc/desktop-components/desktop-applications/file-manager-functions/',
-            'js/simulated-pc/desktop-components/desktop-applications/terminal-functions/',
-            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/',
-            'js/simulated-pc/desktop-components/desktop-applications/network-monitor-functions/',
-            'js/simulated-pc/desktop-components/desktop-applications/browser-functions/',
+            # File manager functionality
+            'js/simulated-pc/desktop-components/desktop-applications/file-manager-functions/file-navigator.js',
+            'js/simulated-pc/desktop-components/desktop-applications/file-manager-functions/file-opener.js',
+            'js/simulated-pc/desktop-components/desktop-applications/file-manager-functions/file-type-detector.js',
+            'js/simulated-pc/desktop-components/desktop-applications/file-manager-functions/file-viewer.js',
+            'js/simulated-pc/desktop-components/desktop-applications/file-manager-functions/viewer-factory.js',
+            'js/simulated-pc/desktop-components/desktop-applications/file-manager-functions/window-tracker.js',
+            
+            # Terminal functionality
+            'js/simulated-pc/desktop-components/desktop-applications/terminal-functions/command-history.js',
+            'js/simulated-pc/desktop-components/desktop-applications/terminal-functions/command-processor.js',
+            'js/simulated-pc/desktop-components/desktop-applications/terminal-functions/command-registry.js',
+            'js/simulated-pc/desktop-components/desktop-applications/terminal-functions/file-system.js',
+            'js/simulated-pc/desktop-components/desktop-applications/terminal-functions/tab-completion.js',
+            
+            # System logs functionality
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/activity-monitor.js',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-filter.js',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-manager.js',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-renderer.js',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-ui.js',
+            
+            # Network monitor functionality
+            'js/simulated-pc/desktop-components/desktop-applications/network-monitor-functions/packet-capture.js',
+            'js/simulated-pc/desktop-components/desktop-applications/network-monitor-functions/packet-filter.js',
+            'js/simulated-pc/desktop-components/desktop-applications/network-monitor-functions/statistics.js',
+            'js/simulated-pc/desktop-components/desktop-applications/network-monitor-functions/traffic-correlator.js',
+            
+            # Browser functionality
+            'js/simulated-pc/desktop-components/desktop-applications/browser-functions/navigation.js',
+            'js/simulated-pc/desktop-components/desktop-applications/browser-functions/page-renderer.js',
+            'js/simulated-pc/desktop-components/desktop-applications/browser-functions/security-checker.js',
+            'js/simulated-pc/desktop-components/desktop-applications/browser-functions/security-popup.js',
             
             # Tutorials for Level 5
             'js/simulated-pc/levels/level-five/tutorials/level5-forensics-tutorial.js',
