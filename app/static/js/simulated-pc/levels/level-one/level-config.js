@@ -10,16 +10,13 @@ export const Level1Config = {
     
     // Level-specific applications
     requiredApps: [
-        'browser-app',
-        'email-app',
-        'file-manager-app'
+        'browser-app'
     ],
     
     // Tutorial requirements
     tutorials: [
         'initial-tutorial',
-        'browser-tutorial',
-        'email-tutorial'
+        'browser-tutorial'
     ],
     
     // Dialogue files
