@@ -104,7 +104,7 @@
                                     <td class="py-3 px-2">
                                         <a href="{{ url_for('system_test.module_tests', module_name=module.module_name) }}" 
                                            class="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium">
-                                            {{ module.module_name }}
+                                            {{ module.module_name | format_module_name }}
                                         </a>
                                     </td>
                                     <td class="text-center py-3 px-2 dark:text-gray-300">{{ module.total_tests }}</td>
@@ -146,7 +146,7 @@
                         <div class="flex items-center justify-between p-3 bg-red-50 dark:bg-red-900/20 rounded-lg">
                             <div class="flex-1">
                                 <h4 class="font-medium text-gray-900 dark:text-white">{{ test.test_plan_no }}</h4>
-                                <p class="text-sm text-gray-600 dark:text-gray-300">{{ test.module_name }}</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">{{ test.module_name | format_module_name }}</p>
                                 {% if test.failure_reason %}
                                 <p class="text-xs text-red-600 dark:text-red-400 mt-1">{{ test.failure_reason[:50] }}{% if test.failure_reason|length > 50 %}...{% endif %}</p>
                                 {% endif %}
@@ -243,7 +243,7 @@
                                             {{ test.test_plan_no }}
                                         </a>
                                     </td>
-                                    <td class="py-3 px-2 dark:text-gray-300">{{ test.module_name }}</td>
+                                    <td class="py-3 px-2 dark:text-gray-300">{{ test.module_name | format_module_name }}</td>
                                     <td class="text-center py-3 px-2">
                                         {% set status = test.test_status or 'pending' %}
                                         {% if status == 'passed' %}
