@@ -76,6 +76,9 @@ export class ModalManager {
             this.labelingSystem.articleResults.length
         );
         
+        const minimumScore = 70; // 70% minimum to pass
+        const hasPassedLevel = overallScore >= minimumScore;
+        
         const overallClass = overallScore >= 75 ? 'text-green-400' : overallScore >= 50 ? 'text-yellow-400' : 'text-red-400';
         const batchAnalysisCount = this.labelingSystem.articleResults.filter(result => 
             result.articleData.clickable_elements || 
@@ -86,97 +89,80 @@ export class ModalManager {
             <div class="bg-gray-800 text-white rounded p-8 max-w-4xl mx-4 max-h-150 overflow-y-auto border border-gray-600">
                 <div class="text-center mb-8">
                     <div class="flex items-center justify-center gap-2 mb-4">
-                        <i class="bi bi-bullseye text-3xl text-blue-400"></i>
-                        <h1 class="text-3xl font-bold">Level 1 Complete!</h1>
+                        <i class="bi ${hasPassedLevel ? 'bi-trophy-fill text-yellow-400' : 'bi-arrow-clockwise text-orange-400'} text-3xl"></i>
+                        <h1 class="text-3xl font-bold">${hasPassedLevel ? 'Level 1 Complete!' : 'Level 1 - Try Again'}</h1>
                     </div>
                     <div class="text-6xl font-bold mb-4 ${overallClass}">${overallScore}%</div>
-                    <p class="text-lg">Overall Performance Across All Articles</p>
+                    <p class="text-lg">${hasPassedLevel ? 'Congratulations! You passed Level 1.' : 'You need 70% or higher to pass.'}</p>
                     <p class="text-sm text-gray-400 mt-2 flex items-center justify-center gap-1">
                         <i class="bi bi-cpu-fill text-blue-400"></i>
                         ${batchAnalysisCount} articles analyzed with AI-powered detection training
                     </p>
+                    
+                    ${hasPassedLevel ? '' : `
+                    <div class="bg-orange-900/30 border border-orange-600 rounded-lg p-4 mt-4">
+                        <div class="flex items-center justify-center gap-2 mb-2">
+                            <i class="bi bi-info-circle text-orange-400"></i>
+                            <h3 class="text-lg font-semibold text-orange-400">Keep Learning!</h3>
+                        </div>
+                        <p class="text-sm text-gray-300">
+                            Don't worry! Cybersecurity skills take practice. Review the detailed analysis below, 
+                            then try the level again to improve your score.
+                        </p>
+                    </div>
+                    `}
                 </div>
                 
                 <!-- Detailed Article Analysis -->
                 <div class="space-y-4 mb-8">
-                    <h2 class="text-xl font-semibold text-white mb-4 flex items-center">
-                        <i class="bi bi-clipboard-data text-blue-400 mr-2"></i>
-                        Detailed Article Analysis
+                    <h2 class="text-xl font-bold text-gray-200 flex items-center gap-2">
+                        <i class="bi bi-graph-up text-green-400"></i>
+                        Detailed Analysis
                     </h2>
-                    
-                    ${this.labelingSystem.articleResults.map((articleResult, index) => {
-                        const articleScoreClass = articleResult.results.percentage >= 75 ? 'text-green-400' : 
-                                                 articleResult.results.percentage >= 50 ? 'text-yellow-400' : 'text-red-400';
-                        return `
-                            <div class="bg-gray-700 border border-gray-600 rounded p-4">
-                                <div class="flex justify-between items-start mb-3">
-                                    <div class="flex-1">
-                                        <div class="font-semibold text-white mb-1 flex items-center gap-2">
-                                            <i class="bi bi-file-text text-gray-400"></i>
-                                            Article ${index + 1}: ${articleResult.articleData.title?.substring(0, 60) || articleResult.articleData.article_metadata?.title?.substring(0, 60) || 'Unknown Article'}...
-                                        </div>
-                                        <div class="text-gray-400 text-sm flex items-center gap-2">
-                                            <i class="bi bi-tag-fill text-gray-500"></i>
-                                            <strong>Type:</strong> ${articleResult.articleData.is_real ? 'Real News' : articleResult.articleData.article_metadata?.actual_label || 'Unknown'} • 
-                                            <i class="bi bi-globe text-gray-500"></i>
-                                            <strong>Source:</strong> ${articleResult.articleData.article_metadata?.source || 'Unknown'}
-                                        </div>
-                                    </div>
-                                    <div class="text-2xl font-bold ${articleScoreClass} ml-4">
-                                        ${articleResult.results.percentage}%
-                                    </div>
-                                </div>
-                                
-                                <!-- Element Breakdown -->
-                                <div class="grid grid-cols-3 gap-4 text-sm mb-3">
-                                    <div class="bg-green-900/30 border border-green-600/30 rounded p-2 text-center">
-                                        <div class="text-green-400 font-bold flex items-center justify-center gap-1">
-                                            <i class="bi bi-check-circle-fill"></i>
-                                            ${articleResult.results.correctLabels}
-                                        </div>
-                                        <div class="text-green-300 text-xs">Correct</div>
-                                    </div>
-                                    <div class="bg-red-900/30 border border-red-600/30 rounded p-2 text-center">
-                                        <div class="text-red-400 font-bold flex items-center justify-center gap-1">
-                                            <i class="bi bi-x-circle-fill"></i>
-                                            ${articleResult.results.incorrectLabels}
-                                        </div>
-                                        <div class="text-red-300 text-xs">Incorrect</div>
-                                    </div>
-                                    <div class="bg-yellow-900/30 border border-yellow-600/30 rounded p-2 text-center">
-                                        <div class="text-yellow-400 font-bold flex items-center justify-center gap-1">
-                                            <i class="bi bi-dash-circle-fill"></i>
-                                            ${articleResult.results.unlabeledElements}
-                                        </div>
-                                        <div class="text-yellow-300 text-xs">Unlabeled</div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Key Learning Points -->
-                                <div class="bg-gray-800 rounded p-3">
-                                    <div class="text-xs text-gray-400 mb-2 flex items-start gap-1">
-                                        <i class="bi bi-key-fill text-yellow-400 mt-0.5"></i>
-                                        <div>
-                                            <strong>Key Indicators:</strong> ${this.getKeyIndicators(articleResult.articleData)}
-                                        </div>
-                                    </div>
-                                    ${articleResult.results.percentage < 75 ? `
-                                        <div class="text-xs text-blue-300 flex items-start gap-1">
-                                            <i class="bi bi-lightbulb-fill text-blue-400 mt-0.5"></i>
-                                            <div>
-                                                <strong>Learning Tip:</strong> ${this.generateLearningTip(articleResult.results)}
-                                            </div>
-                                        </div>
-                                    ` : ''}
+                    ${this.labelingSystem.articleResults.map((result, index) => `
+                        <div class="bg-gray-700 border border-gray-600 rounded p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="font-semibold text-lg">Article ${index + 1}</h3>
+                                <div class="text-2xl font-bold ${result.results.percentage >= 75 ? 'text-green-400' : result.results.percentage >= 50 ? 'text-yellow-400' : 'text-red-400'}">
+                                    ${result.results.percentage}%
                                 </div>
                             </div>
-                        `;
-                    }).join('')}
+                            <div class="grid md:grid-cols-3 gap-4 mb-3">
+                                <div class="text-center">
+                                    <div class="text-green-400 font-bold flex items-center justify-center gap-1">
+                                        <i class="bi bi-check-circle-fill"></i>
+                                        ${result.results.correctLabels}
+                                    </div>
+                                    <div class="text-gray-400 text-sm">Correct</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-red-400 font-bold flex items-center justify-center gap-1">
+                                        <i class="bi bi-x-circle-fill"></i>
+                                        ${result.results.incorrectLabels}
+                                    </div>
+                                    <div class="text-gray-400 text-sm">Incorrect</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-yellow-400 font-bold flex items-center justify-center gap-1">
+                                        <i class="bi bi-dash-circle-fill"></i>
+                                        ${result.results.unlabeledElements}
+                                    </div>
+                                    <div class="text-gray-400 text-sm">Unlabeled</div>
+                                </div>
+                            </div>
+                            <div class="text-sm text-gray-300 bg-gray-800 rounded p-3">
+                                <strong>Key Indicators:</strong> ${this.getKeyIndicators(result.articleData)}
+                            </div>
+                            <div class="text-sm text-blue-300 mt-2">
+                                <strong>Learning Tip:</strong> ${this.generateLearningTip(result.results)}
+                            </div>
+                        </div>
+                    `).join('')}
                 </div>
                 
-                <!-- Performance Summary -->
-                <div class="bg-gray-700 border border-gray-600 rounded p-6 mb-6">
-                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                <!-- Overall Performance Summary -->
+                <div class="bg-gray-700 border border-gray-600 rounded p-6 mb-8">
+                    <h3 class="text-xl font-bold text-gray-200 mb-4 flex items-center gap-2">
                         <i class="bi bi-trophy text-yellow-400 mr-2"></i>
                         Performance Summary
                     </h3>
@@ -206,10 +192,17 @@ export class ModalManager {
                 </div>
                 
                 <div class="text-center">
-                    <button onclick="window.interactiveLabeling?.continueToNextLevel()" class="bg-green-600 text-white px-8 py-3 rounded hover:bg-green-700 transition-colors font-semibold text-lg cursor-pointer flex items-center justify-center gap-2 mx-auto">
-                        <i class="bi bi-rocket-takeoff-fill"></i>
-                        Continue to Level 2
-                    </button>
+                    ${hasPassedLevel ? `
+                        <button onclick="window.interactiveLabeling?.completeLevel()" class="bg-green-600 text-white px-8 py-3 rounded hover:bg-green-700 transition-colors font-semibold text-lg cursor-pointer flex items-center justify-center gap-2 mx-auto">
+                            <i class="bi bi-house-fill"></i>
+                            Return to Levels
+                        </button>
+                    ` : `
+                        <button onclick="window.interactiveLabeling?.retryLevel()" class="bg-orange-600 text-white px-8 py-3 rounded hover:bg-orange-700 transition-colors font-semibold text-lg cursor-pointer flex items-center justify-center gap-2 mx-auto">
+                            <i class="bi bi-arrow-repeat"></i>
+                            Try Level Again
+                        </button>
+                    `}
                 </div>
             </div>
         `;
