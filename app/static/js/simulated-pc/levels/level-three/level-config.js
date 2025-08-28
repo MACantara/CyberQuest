@@ -11,9 +11,7 @@ export const Level3Config = {
     // Level-specific applications
     requiredApps: [
         'malware-scanner-app',
-        'process-monitor-app',
-        'system-logs-app',
-        'file-manager-app'
+        'process-monitor-app'
     ],
     
     // Tutorial requirements
