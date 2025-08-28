@@ -39,8 +39,10 @@ class UserProgress:
         """Create or update progress for a level."""
         try:
             supabase = get_supabase()
-            
-            # Set default values
+            # Determine existing progress (if any) so we can accumulate fields
+            existing_progress = UserProgress.get_level_progress(user_id, level_id, data.get('level_type', 'simulation'))
+
+            # Base progress values (for new records)
             progress_data = {
                 'user_id': user_id,
                 'level_id': level_id,
@@ -50,19 +52,44 @@ class UserProgress:
                 'max_score': data.get('max_score', 100),
                 'completion_percentage': data.get('completion_percentage', 0.0),
                 'time_spent': data.get('time_spent', 0),
+                # For new records default attempts to 1, otherwise we'll accumulate below
                 'attempts': data.get('attempts', 1),
                 'xp_earned': data.get('xp_earned', 0),
                 'hints_used': data.get('hints_used', 0),
+                # For new records default mistakes to provided value or 0
                 'mistakes_made': data.get('mistakes_made', 0),
                 'updated_at': datetime.utcnow().isoformat()
             }
+
+            # If there is an existing record, accumulate attempts and mistakes_made instead
+            if existing_progress:
+                # Attempts: if caller provided an attempts field, add that amount; otherwise,
+                # if the caller is starting a new in-progress session, increment by 1.
+                if 'attempts' in data:
+                    progress_data['attempts'] = existing_progress.get('attempts', 0) + int(data.get('attempts', 0))
+                elif data.get('status') == 'in_progress':
+                    progress_data['attempts'] = existing_progress.get('attempts', 0) + 1
+                else:
+                    progress_data['attempts'] = existing_progress.get('attempts', 0)
+
+                # If caller provided mistakes_made, accumulate; otherwise keep existing
+                if 'mistakes_made' in data:
+                    progress_data['mistakes_made'] = existing_progress.get('mistakes_made', 0) + int(data.get('mistakes_made', 0))
+                else:
+                    progress_data['mistakes_made'] = existing_progress.get('mistakes_made', 0)
+
+                # Optionally accumulate xp_earned if provided (keep previous behavior otherwise)
+                if 'xp_earned' in data:
+                    progress_data['xp_earned'] = existing_progress.get('xp_earned', 0) + int(data.get('xp_earned', 0))
+                else:
+                    progress_data['xp_earned'] = existing_progress.get('xp_earned', 0)
             
             # Set completion timestamp if completed
             if data.get('status') == 'completed':
                 progress_data['completed_at'] = data.get('completed_at', datetime.utcnow().isoformat())
             
-            # Set start timestamp if starting
-            if data.get('status') == 'in_progress' and not UserProgress.get_level_progress(user_id, level_id):
+            # Set start timestamp if starting and there was no previous progress
+            if data.get('status') == 'in_progress' and not existing_progress:
                 progress_data['started_at'] = datetime.utcnow().isoformat()
             
             # Use upsert to handle both create and update
