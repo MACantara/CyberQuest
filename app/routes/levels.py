@@ -3,7 +3,7 @@
 from flask import Blueprint, render_template, current_app, flash, redirect, url_for, request, session, jsonify
 from flask_login import login_required, current_user
 from app.models.user_progress import UserProgress, LearningAnalytics, SkillAssessment
-from app.database import DatabaseError
+from app.database import DatabaseError, handle_supabase_error
 import json
 import uuid
 import logging
@@ -665,3 +665,128 @@ def log_analytics():
     except Exception as e:
         logger.error(f"Error logging analytics: {e}")
         return jsonify({'success': False, 'error': 'Failed to log analytics'}), 500
+
+# Level 2 specific API endpoints for email tracking
+@levels_bp.route('/api/level/2/email-actions', methods=['POST'])
+@login_required
+def save_email_actions():
+    """API endpoint to save Level 2 email actions (phishing reports, legitimate marks, etc.)."""
+    try:
+        data = request.get_json() or {}
+        session_id = session.get('level_session_id', str(uuid.uuid4()))
+        
+        # Log the email action for analytics
+        LearningAnalytics.log_action(
+            user_id=current_user.id,
+            session_id=session_id,
+            level_id=2,
+            action_type='email_action',
+            action_data=data
+        )
+        
+        return jsonify({'success': True})
+        
+    except Exception as e:
+        logger.error(f"Error saving email actions: {e}")
+        return jsonify({'success': False, 'error': 'Failed to save email actions'}), 500
+
+@levels_bp.route('/api/level/2/email-actions', methods=['GET'])
+@login_required
+def get_email_actions():
+    """API endpoint to get Level 2 email actions for current user."""
+    try:
+        # Get all email actions for this user and level
+        from app.database import get_supabase
+        supabase = get_supabase()
+        
+        response = supabase.table('learning_analytics').select('*').eq('user_id', current_user.id).eq('level_id', 2).eq('action_type', 'email_action').execute()
+        
+        # Process and return the most recent actions
+        actions = response.data if response.data else []
+        
+        # Extract email actions from the action_data
+        email_states = {
+            'reported_phishing': [],
+            'marked_legitimate': [],
+            'spam_emails': [],
+            'read_emails': []
+        }
+        
+        for action in actions:
+            action_data = action.get('action_data', {})
+            if 'reported_phishing' in action_data:
+                email_states['reported_phishing'] = action_data['reported_phishing']
+            if 'marked_legitimate' in action_data:
+                email_states['marked_legitimate'] = action_data['marked_legitimate']
+            if 'spam_emails' in action_data:
+                email_states['spam_emails'] = action_data['spam_emails']
+            if 'read_emails' in action_data:
+                email_states['read_emails'] = action_data['read_emails']
+        
+        return jsonify({
+            'success': True,
+            'email_states': email_states
+        })
+        
+    except Exception as e:
+        logger.error(f"Error fetching email actions: {e}")
+        return jsonify({'success': False, 'error': 'Failed to fetch email actions'}), 500
+
+@levels_bp.route('/api/level/2/session-data', methods=['POST'])
+@login_required
+def save_level2_session_data():
+    """API endpoint to save Level 2 session data (feedback, progress, etc.)."""
+    try:
+        data = request.get_json() or {}
+        session_id = session.get('level_session_id', str(uuid.uuid4()))
+        
+        # Update level progress with session data
+        progress_data = {
+            'status': 'in_progress',
+            'completion_percentage': data.get('completion_percentage', 0),
+            'session_data': data
+        }
+        
+        UserProgress.create_or_update_progress(
+            user_id=current_user.id,
+            level_id=2,
+            data=progress_data
+        )
+        
+        # Also log for analytics
+        LearningAnalytics.log_action(
+            user_id=current_user.id,
+            session_id=session_id,
+            level_id=2,
+            action_type='session_data_update',
+            action_data=data
+        )
+        
+        return jsonify({'success': True})
+        
+    except Exception as e:
+        logger.error(f"Error saving Level 2 session data: {e}")
+        return jsonify({'success': False, 'error': 'Failed to save session data'}), 500
+
+@levels_bp.route('/api/level/2/session-data', methods=['GET'])
+@login_required
+def get_level2_session_data():
+    """API endpoint to get Level 2 session data for current user."""
+    try:
+        # Get current progress for Level 2
+        progress = UserProgress.get_level_progress(current_user.id, 2)
+        
+        if progress and progress.get('session_data'):
+            return jsonify({
+                'success': True,
+                'session_data': progress['session_data']
+            })
+        else:
+            return jsonify({
+                'success': True,
+                'session_data': {}
+            })
+        
+    except Exception as e:
+        logger.error(f"Error fetching Level 2 session data: {e}")
+        return jsonify({'success': False, 'error': 'Failed to fetch session data'}), 500
