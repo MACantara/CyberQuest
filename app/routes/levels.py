@@ -626,14 +626,19 @@ def update_level_progress(level_id):
         data = request.get_json() or {}
         session_id = session.get('level_session_id', str(uuid.uuid4()))
         
-        # Update progress
+        # Get current progress to accumulate values
+        current_progress = UserProgress.get_level_progress(current_user.id, level_id) or {}
+        current_xp = current_progress.get('xp_earned', 0)
+        
+        # Update progress with accumulated values
         progress_data = {
             'status': data.get('status', 'in_progress'),
             'score': data.get('score', 0),
             'completion_percentage': data.get('completion_percentage', 0),
             'time_spent': data.get('time_spent', 0),
             'hints_used': data.get('hints_used', 0),
-            'mistakes_made': data.get('mistakes_made', 0)
+            'mistakes_made': data.get('mistakes_made', 0),
+            'xp_earned': current_xp + data.get('xp_earned', 0)  # Accumulate XP
         }
         
         progress = UserProgress.create_or_update_progress(
