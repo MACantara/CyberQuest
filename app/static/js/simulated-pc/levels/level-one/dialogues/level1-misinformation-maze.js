@@ -1,8 +1,8 @@
-import { BaseDialogue } from '../base-dialogue.js';
+import { BaseDialogue } from '../../../dialogues/base-dialogue.js';
 import { 
     Challenge1Dialogue, 
     LevelCompletionDialogue 
-} from './level-one/index.js';
+} from './index.js';
 
 export class Level1MisinformationMazeDialogue extends BaseDialogue {
     constructor(desktop, character = 'instructor') {
@@ -134,8 +134,7 @@ export class Level1MisinformationMazeDialogue extends BaseDialogue {
     async startLevelDialogue(levelDialogueName, character = 'instructor') {
         console.log(`[DialogueManager] Starting level dialogue: ${levelDialogueName}`);
         try {
-            // Use proper import path - remove the leading slash and use relative path
-            const modulePath = `./levels/${levelDialogueName}.js`;
+            const modulePath = `../../../dialogues/levels/${levelDialogueName}.js`;
             console.log(`[DialogueManager] Importing module from: ${modulePath}`);
             const module = await import(modulePath);
             
