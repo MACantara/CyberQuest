@@ -20,17 +20,71 @@
                 <i class="bi bi-shield-exclamation text-6xl text-red-500"></i>
             {% elif error_title == 'Fetch Error' %}
                 <i class="bi bi-wifi-off text-6xl text-red-500"></i>
+            {% elif error_code == 400 %}
+                <i class="bi bi-exclamation-triangle text-6xl text-orange-500"></i>
+            {% elif error_code == 401 %}
+                <i class="bi bi-person-x text-6xl text-red-500"></i>
+            {% elif error_code == 403 %}
+                <i class="bi bi-shield-x text-6xl text-red-500"></i>
+            {% elif error_code == 404 %}
+                <i class="bi bi-file-earmark-x text-6xl text-gray-500"></i>
+            {% elif error_code == 405 %}
+                <i class="bi bi-x-circle text-6xl text-orange-500"></i>
+            {% elif error_code == 408 %}
+                <i class="bi bi-clock-history text-6xl text-yellow-500"></i>
+            {% elif error_code == 413 %}
+                <i class="bi bi-file-earmark-arrow-up text-6xl text-orange-500"></i>
+            {% elif error_code == 429 %}
+                <i class="bi bi-speedometer2 text-6xl text-red-500"></i>
+            {% elif error_code == 500 %}
+                <i class="bi bi-bug text-6xl text-red-500"></i>
+            {% elif error_code == 502 %}
+                <i class="bi bi-router text-6xl text-red-500"></i>
+            {% elif error_code == 503 %}
+                <i class="bi bi-tools text-6xl text-yellow-600"></i>
+            {% elif error_code == 504 %}
+                <i class="bi bi-stopwatch text-6xl text-red-500"></i>
             {% else %}
                 <i class="bi bi-x-circle text-6xl text-red-500"></i>
             {% endif %}
         </div>
         
         <!-- Error Title -->
-        <h1 class="text-2xl font-bold text-gray-800 mb-4">{{ error_title }}</h1>
+        <h1 class="text-2xl font-bold text-gray-800 mb-4">
+            {% if error_title %}{{ error_title }}{% else %}{{ error_code }} Error{% endif %}
+        </h1>
         
         <!-- Error Message -->
         <div class="text-gray-600 mb-6">
-            <p>{{ error_message }}</p>
+            {% if error_message %}
+                <p>{{ error_message }}</p>
+            {% elif error_code == 400 %}
+                <p>The request could not be understood by the server due to invalid syntax.</p>
+            {% elif error_code == 401 %}
+                <p>You need to be authenticated to access this resource.</p>
+            {% elif error_code == 403 %}
+                <p>You don't have permission to access this resource.</p>
+            {% elif error_code == 404 %}
+                <p>The page you're looking for could not be found.</p>
+            {% elif error_code == 405 %}
+                <p>The request method is not allowed for this resource.</p>
+            {% elif error_code == 408 %}
+                <p>The server timed out waiting for the request.</p>
+            {% elif error_code == 413 %}
+                <p>The file or data you're trying to upload is too large.</p>
+            {% elif error_code == 429 %}
+                <p>Too many requests. Please wait a moment before trying again.</p>
+            {% elif error_code == 500 %}
+                <p>An internal server error occurred. Please try again later.</p>
+            {% elif error_code == 502 %}
+                <p>The server received an invalid response from an upstream server.</p>
+            {% elif error_code == 503 %}
+                <p>The service is temporarily unavailable. Please try again later.</p>
+            {% elif error_code == 504 %}
+                <p>The server timed out waiting for a response from an upstream server.</p>
+            {% else %}
+                <p>An unexpected error occurred.</p>
+            {% endif %}
         </div>
         
         <!-- Additional Information -->
@@ -55,27 +109,83 @@
                     </div>
                 </div>
             </div>
+        {% elif error_code == 404 %}
+            <div class="bg-gray-50 border-l-4 border-gray-400 p-4 mb-6 text-left">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="bi bi-lightbulb text-gray-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-gray-700">
+                            Try checking the URL for typos or browse our available pages:
+                        </p>
+                        <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
+                            <li><a href="{{ url_for('main.home') }}" class="text-blue-600 hover:text-blue-800">Home</a></li>
+                            <li><a href="{{ url_for('main.about') }}" class="text-blue-600 hover:text-blue-800">About</a></li>
+                            <li><a href="{{ url_for('levels.levels_overview') }}" class="text-blue-600 hover:text-blue-800">Levels</a></li>
+                            <li><a href="{{ url_for('contact.contact_page') }}" class="text-blue-600 hover:text-blue-800">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        {% elif error_code == 500 %}
+            <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-6 text-left">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="bi bi-exclamation-triangle text-red-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-red-700">
+                            Our team has been notified about this issue. If the problem persists, please contact support.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% elif error_code == 429 %}
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6 text-left">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <i class="bi bi-clock text-yellow-400"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-yellow-700">
+                            You've made too many requests in a short period. Please wait a few minutes before trying again.
+                        </p>
+                    </div>
+                </div>
+            </div>
         {% endif %}
         
         <!-- Action Buttons -->
         <div class="space-y-3">
             <button onclick="window.history.back()" 
-                    class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors">
+                    class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors cursor-pointer">
                 <i class="bi bi-arrow-left mr-2"></i>Go Back
             </button>
             
             <a href="{{ url_for('main.home') }}" 
-               class="block w-full bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition-colors">
+               class="block w-full bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition-colors cursor-pointer">
                 <i class="bi bi-house mr-2"></i>Return to Home
             </a>
+            
+            {% if error_code in [500, 502, 503, 504] %}
+            <button onclick="window.location.reload()" 
+                    class="w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors cursor-pointer">
+                <i class="bi bi-arrow-clockwise mr-2"></i>Try Again
+            </button>
+            {% elif error_code == 429 %}
+            <div class="w-full bg-gray-400 text-white px-4 py-2 rounded cursor-not-allowed">
+                <i class="bi bi-clock mr-2"></i>Please Wait
+            </div>
+            {% endif %}
         </div>
         
         <!-- Footer -->
         <div class="mt-8 text-xs text-gray-500">
-            <p>CyberQuest Web Fetcher Service</p>
+            <p>CyberQuest</p>
             <p class="mt-1">
                 <i class="bi bi-shield-check mr-1"></i>
-                Secure and controlled web content access
+                {% if error_code %}Error {{ error_code }}{% else %}System Error{% endif %}
             </p>
         </div>
     </div>
