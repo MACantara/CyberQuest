@@ -369,14 +369,11 @@ def get_level_js_files(level_id):
             
             # System Logs Application (core Level 5 app)
             'js/simulated-pc/desktop-components/desktop-applications/system-logs-app.js',
-            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-analyzer.js',
-            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-data-manager.js',
-            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-entry-renderer.js',
-            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-export-manager.js',
-            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-filter-manager.js',
-            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-search-manager.js',
-            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-tab-manager.js',
-            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-ui-manager.js',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/activity-monitor.js',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-filter.js',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-manager.js',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-renderer.js',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-ui.js',
             
             # Terminal Application (shared with Level 4)
             'js/simulated-pc/desktop-components/desktop-applications/terminal-app.js',
