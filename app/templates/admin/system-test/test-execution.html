@@ -87,9 +87,9 @@
                             <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 border-l-3 border-green-500">
                                 <div class="flex items-start space-x-3">
                                     <input type="checkbox" 
-                                           class="mt-1 step-checkbox w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                           class="mt-1 step-checkbox w-4 h-4 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 dark:focus:ring-green-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 cursor-pointer"
                                            id="step_{{ loop.index }}">
-                                    <label for="step_{{ loop.index }}" class="text-gray-900 dark:text-white flex-1">
+                                    <label for="step_{{ loop.index }}" class="text-gray-900 dark:text-white flex-1 cursor-pointer">
                                         {{ step }}
                                     </label>
                                 </div>
@@ -125,21 +125,21 @@
                                     <button type="button" 
                                             id="passBtn"
                                             onclick="setStatus('passed')"
-                                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg transition-colors duration-200 text-center">
+                                            class="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg transition-colors duration-200 text-center cursor-pointer">
                                         <i class="bi bi-check-circle"></i><br>
                                         <span class="text-sm">Pass</span>
                                     </button>
                                     <button type="button" 
                                             id="failBtn"
                                             onclick="setStatus('failed')"
-                                            class="bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg transition-colors duration-200 text-center">
+                                            class="bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg transition-colors duration-200 text-center cursor-pointer">
                                         <i class="bi bi-x-circle"></i><br>
                                         <span class="text-sm">Fail</span>
                                     </button>
                                     <button type="button" 
                                             id="skipBtn"
                                             onclick="setStatus('skipped')"
-                                            class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-3 rounded-lg transition-colors duration-200 text-center">
+                                            class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-3 rounded-lg transition-colors duration-200 text-center cursor-pointer">
                                         <i class="bi bi-skip-forward-circle"></i><br>
                                         <span class="text-sm">Skip</span>
                                     </button>
@@ -160,8 +160,8 @@
                                            name="proceed_to_next" 
                                            {% if test_context and test_context.has_next_pending %}checked{% endif %}
                                            {% if not test_context or not test_context.has_next_pending %}disabled{% endif %}
-                                           class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                    <label for="proceed_to_next" class="text-sm {% if test_context and test_context.has_next_pending %}text-blue-700 dark:text-blue-300{% else %}text-gray-500 dark:text-gray-400{% endif %}">
+                                           class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 {% if test_context and test_context.has_next_pending %}cursor-pointer{% else %}cursor-not-allowed{% endif %}">
+                                    <label for="proceed_to_next" class="text-sm {% if test_context and test_context.has_next_pending %}text-blue-700 dark:text-blue-300 cursor-pointer{% else %}text-gray-500 dark:text-gray-400 cursor-not-allowed{% endif %}">
                                         <i class="bi bi-arrow-right-circle mr-1"></i>
                                         {% if test_context and test_context.has_next_pending %}
                                             Automatically proceed to next pending test
@@ -173,7 +173,7 @@
 
                                 <button type="submit" 
                                         id="submitResult"
-                                        class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg transition-colors duration-200 flex items-center justify-center"
+                                        class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg transition-colors duration-200 flex items-center justify-center cursor-pointer disabled:cursor-not-allowed"
                                         disabled>
                                     <i class="bi bi-save mr-2"></i> Submit Result
                                 </button>

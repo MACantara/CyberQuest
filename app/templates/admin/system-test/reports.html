@@ -17,13 +17,13 @@
                 <a href="{{ url_for('system_test.dashboard') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center">
                     <i class="bi bi-arrow-left mr-2"></i> Back to Dashboard
                 </a>
-                <a href="{{ url_for('system_test.export_test_plans_docx') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center">
+                <a href="{{ url_for('system_test.export_test_plans_docx') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center cursor-pointer">
                     <i class="bi bi-file-earmark-word mr-2"></i> Export DOCX
                 </a>
-                <button onclick="exportJSON()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center">
+                <button onclick="exportJSON()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center cursor-pointer">
                     <i class="bi bi-download mr-2"></i> Export JSON
                 </button>
-                <button onclick="window.print()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center">
+                <button onclick="window.print()" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center cursor-pointer">
                     <i class="bi bi-printer mr-2"></i> Print Report
                 </button>
             </div>

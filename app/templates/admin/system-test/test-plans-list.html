@@ -29,14 +29,14 @@
                 <form method="GET" class="grid grid-cols-1 md:grid-cols-5 gap-4">
                     <div>
                         <label for="module" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Module</label>
-                        <select class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white" id="module" name="module">
+                        <select class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white cursor-pointer" id="module" name="module">
                             <option value="">All Modules</option>
                             <!-- Module options will be populated dynamically -->
                         </select>
                     </div>
                     <div>
                         <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status</label>
-                        <select class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white" id="status" name="status">
+                        <select class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white cursor-pointer" id="status" name="status">
                             <option value="">All Status</option>
                             <option value="pending">Pending</option>
                             <option value="passed">Passed</option>
@@ -46,7 +46,7 @@
                     </div>
                     <div>
                         <label for="priority" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Priority</label>
-                        <select class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white" id="priority" name="priority">
+                        <select class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white cursor-pointer" id="priority" name="priority">
                             <option value="">All Priorities</option>
                             <option value="low">Low</option>
                             <option value="medium">Medium</option>
@@ -56,7 +56,7 @@
                     </div>
                     <div>
                         <label for="category" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category</label>
-                        <select class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white" id="category" name="category">
+                        <select class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white cursor-pointer" id="category" name="category">
                             <option value="">All Categories</option>
                             <option value="functional">Functional</option>
                             <option value="ui">UI</option>
@@ -66,7 +66,7 @@
                         </select>
                     </div>
                     <div class="flex items-end">
-                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center justify-center">
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center justify-center cursor-pointer">
                             <i class="bi bi-search mr-2"></i> Filter
                         </button>
                     </div>
@@ -171,7 +171,7 @@
                                             <i class="bi bi-pencil"></i>
                                         </a>
                                         <button onclick="confirmDelete({{ test.id }}, '{{ test.test_plan_no }}')" 
-                                                class="text-red-600 hover:text-red-700 dark:text-red-400 text-sm" title="Delete Test">
+                                                class="text-red-600 hover:text-red-700 dark:text-red-400 text-sm cursor-pointer" title="Delete Test">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </div>
@@ -211,10 +211,10 @@
             <p class="text-gray-600 dark:text-gray-400 mb-2">Are you sure you want to delete test plan <strong id="deleteTestPlanNo"></strong>?</p>
             <p class="text-red-600 dark:text-red-400 text-sm mb-6">This action cannot be undone.</p>
             <div class="flex justify-end space-x-3">
-                <button type="button" class="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-600 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors" onclick="closeDeleteModal()">Cancel</button>
+                <button type="button" class="px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-600 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors cursor-pointer" onclick="closeDeleteModal()">Cancel</button>
                 <form id="deleteForm" method="POST" style="display: inline;">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                    <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors">Delete</button>
+                    <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors cursor-pointer">Delete</button>
                 </form>
             </div>
         </div>
