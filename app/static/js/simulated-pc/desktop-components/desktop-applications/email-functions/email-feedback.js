@@ -1,13 +1,15 @@
-import { EmailServerAPI } from './email-server-api.js';
-
+/**
+ * EmailFeedback - Handles feedback and scoring for email interactions
+ * Now uses in-memory state management only, with no server persistence
+ */
 export class EmailFeedback {
     constructor(emailApp) {
         this.emailApp = emailApp;
+        // Initialize feedback tracking
         this.feedbackHistory = [];
         this.sessionScore = 0;
         this.totalActions = 0;
-        this.emailServerAPI = new EmailServerAPI();
-        this.dataLoaded = false;
+        this.dataLoaded = true; // Always loaded since we're not waiting for server
     }
 
     /**
@@ -304,68 +306,24 @@ export class EmailFeedback {
     }
 
     /**
-     * Reset session data
+     * Clear all feedback data (in-memory only)
+     * @returns {boolean} Always returns true
      */
-    async resetSession() {
+    async clearAllFeedback() {
         this.feedbackHistory = [];
         this.sessionScore = 0;
         this.totalActions = 0;
-        
-        // Clear server-side session data
-        await this.emailServerAPI.saveSessionData({
-            feedback_history: [],
-            session_score: 0,
-            total_actions: 0
-        });
+        return true;
     }
 
     /**
-     * Load session data from server
+     * Save feedback to memory
+     * @param {Object} feedback - Feedback data to save
+     * @returns {boolean} Always returns true since we're not persisting
      */
-    async loadSessionData() {
-        if (this.dataLoaded) return;
-        
-        try {
-            const sessionData = await this.emailServerAPI.loadSessionData();
-            
-            if (sessionData.feedback_history) {
-                this.feedbackHistory = Array.isArray(sessionData.feedback_history) 
-                    ? sessionData.feedback_history 
-                    : JSON.parse(sessionData.feedback_history);
-            }
-            
-            if (sessionData.session_score !== undefined) {
-                this.sessionScore = parseInt(sessionData.session_score) || 0;
-            }
-            
-            if (sessionData.total_actions !== undefined) {
-                this.totalActions = parseInt(sessionData.total_actions) || 0;
-            }
-            
-            this.dataLoaded = true;
-        } catch (error) {
-            console.warn('Could not load session data from server:', error);
-            // Initialize with defaults
-            this.feedbackHistory = [];
-            this.sessionScore = 0;
-            this.totalActions = 0;
-            this.dataLoaded = true;
-        }
-    }
-
-    /**
-     * Save session data to server
-     */
-    async saveSessionData() {
-        try {
-            await this.emailServerAPI.saveSessionData({
-                feedback_history: this.feedbackHistory,
-                session_score: this.sessionScore,
-                total_actions: this.totalActions
-            });
-        } catch (error) {
-            console.error('Failed to save session data:', error);
-        }
+    async saveFeedbackToServer(feedback) {
+        // No-op since we're not persisting feedback
+        return true;
     }
 
     /**

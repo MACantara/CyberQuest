@@ -1,8 +1,19 @@
-import { EmailServerAPI } from './email-server-api.js';
-
+/**
+ * EmailSessionSummary - Handles displaying session summary and performance metrics
+ * Now uses in-memory state management only, with no server persistence
+ */
 export class EmailSessionSummary {
+    /**
+     * Create a new EmailSessionSummary instance
+     * @param {Object} emailApp - Reference to the main email application instance
+     */
     constructor(emailApp) {
         this.emailApp = emailApp;
+        this.sessionData = {
+            startTime: new Date().toISOString(),
+            lastUpdated: new Date().toISOString(),
+            totalSessions: 1
+        };
     }
 
     /**
@@ -11,6 +22,9 @@ export class EmailSessionSummary {
      * @param {Array} feedbackHistory - Array of all feedback interactions
      */
     showSessionSummary(sessionStats, feedbackHistory = []) {
+        // Update session data
+        this.sessionData.lastUpdated = new Date().toISOString();
+        this.sessionData.totalSessions = (this.sessionData.totalSessions || 0) + 1;
         const modal = document.createElement('div');
         modal.className = 'fixed inset-0 bg-black/75 flex items-center justify-center z-50';
         
@@ -499,40 +513,43 @@ export class EmailSessionSummary {
             localStorage.setItem('cyberquest_level_2_retry', 'true');
             
             // Reload the level with retry flag
-            const response = await fetch('/levels/2/start?retry=true', {
-                method: 'GET',
-                headers: {
-                    'Accept': 'text/html',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-Retry-Attempt': 'true'
-                },
-                credentials: 'same-origin'
-            });
-            
-            if (!response.ok) throw new Error('Failed to reload level');
-            
-            // Replace the entire page content
-            const html = await response.text();
-            document.open();
-            document.write(html);
-            document.close();
-            
-        } catch (error) {
-            console.error('Error during retry:', error);
-            
-            // Show error message
             loadingModal.innerHTML = `
-                <div class="bg-gray-800 p-8 rounded-lg text-center max-w-md mx-4 border border-red-600/50">
-                    <div class="text-red-500 text-4xl mb-4">
-                        <i class="bi bi-exclamation-triangle-fill"></i>
+                <div class="bg-gray-800 p-8 rounded-lg text-center max-w-md mx-4">
+                    <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500 mx-auto mb-6"></div>
+                    <h3 class="text-xl font-semibold text-white mb-2">Preparing Your Training Session</h3>
+                    <p class="text-gray-300">Loading your progress and resetting the simulation...</p>
+                    <div class="w-full bg-gray-700 rounded-full h-2.5 mt-6">
+                        <div class="bg-blue-600 h-2.5 rounded-full animate-pulse" style="width: 80%"></div>
                     </div>
-                    <h3 class="text-xl font-semibold text-white mb-2">Failed to Restart Training</h3>
                     <p class="text-gray-300 mb-6">There was an error preparing your training session. Please try again or refresh the page.</p>
                     <button onclick="window.location.reload()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors">
                         <i class="bi bi-arrow-clockwise mr-2"></i> Refresh Page
                     </button>
                 </div>
             `;
+        } catch (error) {
+            console.error('Error during retry training:', error);
+            if (loadingModal && loadingModal.parentNode) {
+                loadingModal.innerHTML = `
+                    <div class="bg-gray-800 p-8 rounded-lg text-center max-w-md mx-4">
+                        <div class="text-red-500 text-5xl mb-4">⚠️</div>
+                        <h3 class="text-xl font-semibold text-white mb-2">Error Resetting Training</h3>
+                        <p class="text-gray-300 mb-4">There was an error preparing your training session. Please try again or refresh the page.</p>
+                        <button onclick="window.location.reload()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-colors">
+                            <i class="bi bi-arrow-clockwise mr-2"></i> Refresh Page
+                        </button>
+                    </div>
+                `;
+            }
+        } finally {
+            // Ensure loading modal is removed if still present after a short delay
+            if (loadingModal && loadingModal.parentNode) {
+                setTimeout(() => {
+                    if (loadingModal.parentNode) {
+                        loadingModal.remove();
+                    }
+                }, 5000);
+            }
         }
     }
 

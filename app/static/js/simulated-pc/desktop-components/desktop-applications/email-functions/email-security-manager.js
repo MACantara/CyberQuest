@@ -1,5 +1,4 @@
 import { ALL_EMAILS } from '../../../levels/level-two/emails/email-registry.js';
-import { EmailServerAPI } from './email-server-api.js';
 
 export class EmailSecurityManager {
     constructor(emailApp) {
@@ -7,9 +6,7 @@ export class EmailSecurityManager {
         this.reportedPhishing = new Set();
         this.legitimateEmails = new Set();
         this.spamEmails = new Set();
-        this.emailServerAPI = new EmailServerAPI();
-        this.isLoaded = false;
-        this.loadFromServer();
+        this.isLoaded = true; // Always loaded since we're not waiting for server
     }
 
     // Phishing reporting methods
@@ -19,12 +16,13 @@ export class EmailSecurityManager {
         // Remove from legitimate if previously marked
         this.legitimateEmails.delete(emailId);
         
-        // Save to server
-        await this.saveToServer();
-        
-        // Emit event for network monitoring
+        // Emit event for UI updates
         document.dispatchEvent(new CustomEvent('email-reported-phishing', {
-            detail: { emailId, timestamp: new Date().toISOString() }
+            detail: { 
+                emailId, 
+                timestamp: new Date().toISOString(),
+                totalReported: this.reportedPhishing.size
+            }
         }));
     }
 
@@ -35,18 +33,20 @@ export class EmailSecurityManager {
         this.reportedPhishing.delete(emailId);
         
         // Save to server
-        await this.saveToServer();
-        
-        // Emit event for network monitoring
+        // Emit event for UI updates
         document.dispatchEvent(new CustomEvent('email-marked-legitimate', {
-            detail: { emailId, timestamp: new Date().toISOString() }
+            detail: { 
+                emailId, 
+                timestamp: new Date().toISOString(),
+                totalLegitimate: this.legitimateEmails.size
+            }
         }));
     }
 
     // Spam folder management
     async moveToSpam(emailId) {
         this.spamEmails.add(emailId);
-        await this.saveToServer();
+        // No server persistence needed - in-memory only
     }
 
     // Email action methods - refactored from email-app.js
@@ -112,11 +112,13 @@ export class EmailSecurityManager {
 
         // Move to spam/trash folder
         this.spamEmails.add(emailId);
-        await this.saveToServer();
-        
-        // Emit event for network monitoring
-        document.dispatchEvent(new CustomEvent('email-deleted', {
-            detail: { emailId, timestamp: new Date().toISOString() }
+        // Emit event for UI updates
+        document.dispatchEvent(new CustomEvent('email-marked-spam', {
+            detail: { 
+                emailId, 
+                timestamp: new Date().toISOString(),
+                totalSpam: this.spamEmails.size
+            }
         }));
         
         if (emailApp && emailApp.actionHandler) {
@@ -230,48 +232,33 @@ export class EmailSecurityManager {
         }
     }
 
-    // Server-side persistence methods
-    async saveToServer() {
-        try {
-            const emailStates = {
-                reported_phishing: Array.from(this.reportedPhishing),
-                marked_legitimate: Array.from(this.legitimateEmails),
-                spam_emails: Array.from(this.spamEmails),
-                timestamp: new Date().toISOString()
-            };
-            
-            await this.emailServerAPI.saveEmailActions(emailStates);
-        } catch (error) {
-            console.error('Error saving to server:', error);
+    // Clear all security states (for testing or reset)
+    clearAll() {
+        const hadData = this.reportedPhishing.size > 0 || 
+                       this.legitimateEmails.size > 0 || 
+                       this.spamEmails.size > 0;
+        
+        this.reportedPhishing.clear();
+        this.legitimateEmails.clear();
+        this.spamEmails.clear();
+        
+        if (hadData) {
+            document.dispatchEvent(new CustomEvent('email-security-cleared', {
+                detail: { timestamp: new Date().toISOString() }
+            }));
         }
+        
+        return hadData;
     }
 
-    async loadFromServer() {
-        try {
-            const emailStates = await this.emailServerAPI.loadEmailActions();
-            
-            if (emailStates.reported_phishing) {
-                this.reportedPhishing = new Set(emailStates.reported_phishing);
-            }
-            if (emailStates.marked_legitimate) {
-                this.legitimateEmails = new Set(emailStates.marked_legitimate);
-            }
-            if (emailStates.spam_emails) {
-                this.spamEmails = new Set(emailStates.spam_emails);
-            }
-            
-            this.isLoaded = true;
-        } catch (error) {
-            console.error('Error loading from server:', error);
-            this.isLoaded = true; // Mark as loaded even on error to prevent infinite loading
-        }
-    }
-
-    // Ensure data is loaded before operations
-    async ensureLoaded() {
-        if (!this.isLoaded) {
-            await this.loadFromServer();
-        }
+    // Get current security state (for UI updates)
+    getCurrentState() {
+        return {
+            reportedPhishing: Array.from(this.reportedPhishing),
+            legitimateEmails: Array.from(this.legitimateEmails),
+            spamEmails: Array.from(this.spamEmails),
+            lastUpdated: new Date().toISOString()
+        };
     }
 
     // Statistics and analytics methods
@@ -385,7 +372,7 @@ export class EmailSecurityManager {
         this.reportedPhishing.clear();
         this.legitimateEmails.clear();
         this.spamEmails.clear();
-        await this.saveToServer();
+        // No server persistence needed - in-memory only
     }
 
     exportSecurityData() {

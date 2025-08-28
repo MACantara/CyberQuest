@@ -11,8 +11,7 @@ export class EmailActionHandler {
         this.completionTracker = new EmailCompletionTracker(emailApp);
         this.sessionStartTime = new Date().toISOString();
         
-        // Load previous session data
-        this.feedback.loadSessionData();
+        // Initialize completion tracker
         this.completionTracker.initialize();
     }
 
