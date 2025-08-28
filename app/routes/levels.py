@@ -225,9 +225,66 @@ def get_level_js_files(level_id):
             'js/simulated-pc/levels/level-four/dialogues/index.js',
             'js/simulated-pc/levels/level-four/dialogues/level4-white-hat-test.js',
             
+            # Level 4 nmap target hosts (moved to level-four)
+            'js/simulated-pc/levels/level-four/nmap-target-hosts/base-target-host.js',
+            'js/simulated-pc/levels/level-four/nmap-target-hosts/municipality-network.js',
+            'js/simulated-pc/levels/level-four/nmap-target-hosts/target-host-registry.js',
+            'js/simulated-pc/levels/level-four/nmap-target-hosts/vote-admin-server.js',
+            'js/simulated-pc/levels/level-four/nmap-target-hosts/vote-database-server.js',
+            'js/simulated-pc/levels/level-four/nmap-target-hosts/vote-main-server.js',
+            
+            # Level 4 terminal commands (moved to level-four)
+            'js/simulated-pc/levels/level-four/terminal-commands/base-command.js',
+            'js/simulated-pc/levels/level-four/terminal-commands/cat-command.js',
+            'js/simulated-pc/levels/level-four/terminal-commands/cd-command.js',
+            'js/simulated-pc/levels/level-four/terminal-commands/clear-command.js',
+            'js/simulated-pc/levels/level-four/terminal-commands/date-command.js',
+            'js/simulated-pc/levels/level-four/terminal-commands/echo-command.js',
+            'js/simulated-pc/levels/level-four/terminal-commands/find-command.js',
+            'js/simulated-pc/levels/level-four/terminal-commands/grep-command.js',
+            'js/simulated-pc/levels/level-four/terminal-commands/help-command.js',
+            'js/simulated-pc/levels/level-four/terminal-commands/history-command.js',
+            'js/simulated-pc/levels/level-four/terminal-commands/ls-command.js',
+            'js/simulated-pc/levels/level-four/terminal-commands/nmap-command.js',
+            'js/simulated-pc/levels/level-four/terminal-commands/ping-command.js',
+            'js/simulated-pc/levels/level-four/terminal-commands/pwd-command.js',
+            'js/simulated-pc/levels/level-four/terminal-commands/uname-command.js',
+            'js/simulated-pc/levels/level-four/terminal-commands/whoami-command.js',
+            
+            # Level 4 vulnerability scanner targets (moved to level-four)
+            'js/simulated-pc/levels/level-four/vulnerability-scanner-targets/index.js',
+            'js/simulated-pc/levels/level-four/vulnerability-scanner-targets/web-target-base.js',
+            'js/simulated-pc/levels/level-four/vulnerability-scanner-targets/municipality-voting/index.js',
+            'js/simulated-pc/levels/level-four/vulnerability-scanner-targets/municipality-voting/municipality-voting-group.js',
+            'js/simulated-pc/levels/level-four/vulnerability-scanner-targets/municipality-voting/vote-admin-target.js',
+            'js/simulated-pc/levels/level-four/vulnerability-scanner-targets/municipality-voting/vote-api-target.js',
+            'js/simulated-pc/levels/level-four/vulnerability-scanner-targets/municipality-voting/vote-database-target.js',
+            'js/simulated-pc/levels/level-four/vulnerability-scanner-targets/municipality-voting/vote-portal-target.js',
+            
+            # Vulnerability Scanner Application (core Level 4 app)
+            'js/simulated-pc/desktop-components/desktop-applications/vulnerability-scanner-app.js',
+            'js/simulated-pc/desktop-components/desktop-applications/vulnerability-scanner-functions/nmap-integration-utility.js',
+            'js/simulated-pc/desktop-components/desktop-applications/vulnerability-scanner-functions/vulnerability-report-generator.js',
+            'js/simulated-pc/desktop-components/desktop-applications/vulnerability-scanner-functions/vulnerability-scanner-data-manager.js',
+            'js/simulated-pc/desktop-components/desktop-applications/vulnerability-scanner-functions/vulnerability-scanner-event-handler.js',
+            'js/simulated-pc/desktop-components/desktop-applications/vulnerability-scanner-functions/vulnerability-scanner-logic.js',
+            'js/simulated-pc/desktop-components/desktop-applications/vulnerability-scanner-functions/vulnerability-scanner-notification-manager.js',
+            'js/simulated-pc/desktop-components/desktop-applications/vulnerability-scanner-functions/vulnerability-scanner-tab-manager.js',
+            'js/simulated-pc/desktop-components/desktop-applications/vulnerability-scanner-functions/vulnerability-scanner-ui-renderer.js',
+            'js/simulated-pc/desktop-components/desktop-applications/vulnerability-scanner-functions/vulnerability-scanner-ui.js',
+            'js/simulated-pc/desktop-components/desktop-applications/vulnerability-scanner-functions/vulnerability-scanner.js',
+            'js/simulated-pc/desktop-components/desktop-applications/vulnerability-scanner-functions/web-target-registry.js',
+            
+            # Terminal Application (core Level 4 app)
+            'js/simulated-pc/desktop-components/desktop-applications/terminal-app.js',
+            'js/simulated-pc/desktop-components/desktop-applications/terminal-functions/command-history.js',
+            'js/simulated-pc/desktop-components/desktop-applications/terminal-functions/command-processor.js',
+            'js/simulated-pc/desktop-components/desktop-applications/terminal-functions/command-registry.js',
+            'js/simulated-pc/desktop-components/desktop-applications/terminal-functions/file-system.js',
+            'js/simulated-pc/desktop-components/desktop-applications/terminal-functions/tab-completion.js',
+            
             # Tutorials for Level 4
             'js/simulated-pc/tutorials/vulnerability-scanner-tutorial.js',
-            'js/simulated-pc/tutorials/network-monitor-tutorial.js',
             'js/simulated-pc/tutorials/terminal-tutorial.js',
         ]
     
