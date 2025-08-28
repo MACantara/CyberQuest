@@ -212,10 +212,6 @@ export class EmailActionHandler {
             // If level completion criteria not met, just show training completion
             this.completionTracker.showTrainingCompletionOnly(sessionStats, feedbackHistory);
         }
-        
-        // Mark email training as completed regardless of level completion
-        localStorage.setItem('cyberquest_email_training_completed', 'true');
-        localStorage.setItem('cyberquest_email_training_score', sessionStats.accuracy.toString());
     }
 
     // Initialize action handler
