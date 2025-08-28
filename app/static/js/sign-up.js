@@ -84,6 +84,59 @@ class CyberQuestSignup {
         this.form.addEventListener('submit', (e) => this.handleSubmit(e));
     }
 
+    // Debounce validation to avoid excessive API calls
+    debounceValidation(fieldName) {
+        // Clear existing timeout
+        if (this.validationTimeouts[fieldName]) {
+            clearTimeout(this.validationTimeouts[fieldName]);
+        }
+        
+        // Set new timeout
+        this.validationTimeouts[fieldName] = setTimeout(() => {
+            if (fieldName === 'username') {
+                this.validateUsernameRealTime();
+            } else if (fieldName === 'email') {
+                this.validateEmailRealTime();
+            }
+        }, 500); // 500ms delay
+    }
+
+    // Check if username/email exists in database
+    async checkAvailability(fieldName, value) {
+        const cacheKey = `${fieldName}:${value}`;
+        
+        // Check cache first
+        if (this.validationCache[cacheKey] !== undefined) {
+            return this.validationCache[cacheKey];
+        }
+        
+        try {
+            const response = await fetch('/auth/check-availability', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.getElementById('csrf_token').value
+                },
+                body: JSON.stringify({
+                    field: fieldName,
+                    value: value
+                })
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                // Cache the result
+                this.validationCache[cacheKey] = result.available;
+                return result.available;
+            }
+        } catch (error) {
+            console.error('Availability check failed:', error);
+        }
+        
+        // If check fails, assume available to not block user
+        return true;
+    }
+
     updateUserInputs() {
         const userInputs = [];
         if (this.usernameInput.value) userInputs.push(this.usernameInput.value);
