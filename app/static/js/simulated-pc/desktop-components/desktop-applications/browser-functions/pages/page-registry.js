@@ -5,11 +5,11 @@ import { PhishingBankPage } from './bank.js';
 import { NewsSitePage } from './news-site.js';
 
 // Import Level 1 Challenge Pages
-import { Challenge1Page } from '../../../levels/level-one/tools/challenge1/challenge1-page.js';
+import { Challenge1Page } from '../../../../levels/level-one/tools/challenge1/challenge1-page.js';
 
 // Import Level 1 Tool Pages
-import { CrossReferenceToolPage } from '../../../levels/level-one/tools/cross-reference-tool.js';
-import { ReverseImageSearchPage } from '../../../levels/level-one/tools/reverse-image-search.js';
+import { CrossReferenceToolPage } from '../../../../levels/level-one/tools/cross-reference-tool.js';
+import { ReverseImageSearchPage } from '../../../../levels/level-one/tools/reverse-image-search.js';
 
 export class PageRegistry {
     constructor() {
