@@ -1,19 +1,9 @@
-import { BrowserApp } from './desktop-applications/browser-app.js';
-import { TerminalApp } from './desktop-applications/terminal-app.js';
-import { FileManagerApp } from './desktop-applications/file-manager-app.js';
-import { EmailApp } from './desktop-applications/email-app.js';
-import { NetworkMonitorApp } from './desktop-applications/network-monitor-app.js';
-import { SystemLogsApp } from './desktop-applications/system-logs-app.js';
-import { ProcessMonitorApp } from './desktop-applications/process-monitor-app.js';
-import { MalwareScannerApp } from './desktop-applications/malware-scanner-app.js';
-import { RansomwareDecryptorApp } from './desktop-applications/ransomware-decryptor-app.js';
-import { VulnerabilityScannerApp } from './desktop-applications/vulnerability-scanner-app.js';
-
 export class ApplicationRegistry {
     constructor() {
         this.registry = {
             'browser': {
-                class: BrowserApp,
+                module: './desktop-applications/browser-app.js',
+                className: 'BrowserApp',
                 storageKey: 'cyberquest_browser_opened',
                 tutorialMethod: 'shouldAutoStartBrowser',
                 startMethod: 'startBrowserTutorial',
@@ -21,7 +11,8 @@ export class ApplicationRegistry {
                 title: 'Web Browser'
             },
             'terminal': {
-                class: TerminalApp,
+                module: './desktop-applications/terminal-app.js',
+                className: 'TerminalApp',
                 storageKey: 'cyberquest_terminal_opened',
                 tutorialMethod: 'shouldAutoStartTerminal',
                 startMethod: 'startTerminalTutorial',
@@ -29,7 +20,8 @@ export class ApplicationRegistry {
                 title: 'Terminal'
             },
             'files': {
-                class: FileManagerApp,
+                module: './desktop-applications/file-manager-app.js',
+                className: 'FileManagerApp',
                 storageKey: 'cyberquest_filemanager_opened',
                 tutorialMethod: 'shouldAutoStartFileManager',
                 startMethod: 'startFileManagerTutorial',
@@ -37,7 +29,8 @@ export class ApplicationRegistry {
                 title: 'File Manager'
             },
             'email': {
-                class: EmailApp,
+                module: './desktop-applications/email-app.js',
+                className: 'EmailApp',
                 storageKey: 'cyberquest_email_opened',
                 tutorialMethod: 'shouldAutoStartEmail',
                 startMethod: 'startEmailTutorial',
@@ -45,7 +38,8 @@ export class ApplicationRegistry {
                 title: 'Email Client'
             },
             'wireshark': {
-                class: NetworkMonitorApp,
+                module: './desktop-applications/network-monitor-app.js',
+                className: 'NetworkMonitorApp',
                 storageKey: 'cyberquest_networkmonitor_opened',
                 tutorialMethod: 'shouldAutoStartNetworkMonitor',
                 startMethod: 'startNetworkMonitorTutorial',
@@ -53,7 +47,8 @@ export class ApplicationRegistry {
                 title: 'Network Monitor'
             },
             'logs': {
-                class: SystemLogsApp,
+                module: './desktop-applications/system-logs-app.js',
+                className: 'SystemLogsApp',
                 storageKey: 'cyberquest_systemlogs_opened',
                 tutorialMethod: 'shouldAutoStartSystemLogs',
                 startMethod: 'startSystemLogsTutorial',
@@ -61,7 +56,8 @@ export class ApplicationRegistry {
                 title: 'System Logs'
             },
             'process-monitor': {
-                class: ProcessMonitorApp,
+                module: './desktop-applications/process-monitor-app.js',
+                className: 'ProcessMonitorApp',
                 storageKey: 'cyberquest_processmonitor_opened',
                 tutorialMethod: 'shouldAutoStartProcessMonitor',
                 startMethod: 'startProcessMonitorTutorial',
@@ -69,7 +65,8 @@ export class ApplicationRegistry {
                 title: 'Process Monitor'
             },
             'malware-scanner': {
-                class: MalwareScannerApp,
+                module: './desktop-applications/malware-scanner-app.js',
+                className: 'MalwareScannerApp',
                 storageKey: 'cyberquest_malwarescanner_opened',
                 tutorialMethod: 'shouldAutoStartMalwareScanner',
                 startMethod: 'startMalwareScannerTutorial',
@@ -77,7 +74,8 @@ export class ApplicationRegistry {
                 title: 'Malware Scanner'
             },
             'ransomware-decryptor': {
-                class: RansomwareDecryptorApp,
+                module: './desktop-applications/ransomware-decryptor-app.js',
+                className: 'RansomwareDecryptorApp',
                 storageKey: 'cyberquest_ransomwaredecryptor_opened',
                 tutorialMethod: 'shouldAutoStartRansomwareDecryptor',
                 startMethod: 'startRansomwareDecryptorTutorial',
@@ -85,7 +83,8 @@ export class ApplicationRegistry {
                 title: 'Ransomware Decryptor'
             },
             'vulnerability-scanner': {
-                class: VulnerabilityScannerApp,
+                module: './desktop-applications/vulnerability-scanner-app.js',
+                className: 'VulnerabilityScannerApp',
                 storageKey: 'cyberquest_vulnerabilityscanner_opened',
                 tutorialMethod: 'shouldAutoStartVulnerabilityScanner',
                 startMethod: 'startVulnerabilityScannerTutorial',
@@ -93,6 +92,34 @@ export class ApplicationRegistry {
                 title: 'Vulnerability Scanner'
             }
         };
+        this.loadedModules = new Map(); // Cache for loaded modules
+    }
+
+    // Dynamically load application class
+    async loadAppClass(appId) {
+        const appConfig = this.registry[appId];
+        if (!appConfig) {
+            throw new Error(`Application ${appId} not found`);
+        }
+
+        // Check if already loaded
+        if (this.loadedModules.has(appId)) {
+            return this.loadedModules.get(appId);
+        }
+
+        try {
+            const module = await import(appConfig.module);
+            const AppClass = module[appConfig.className];
+            this.loadedModules.set(appId, AppClass);
+            
+            // Also update the registry to include the class for backwards compatibility
+            appConfig.class = AppClass;
+            
+            return AppClass;
+        } catch (error) {
+            console.error(`Failed to load application ${appId}:`, error);
+            throw error;
+        }
     }
 
     // Get application configuration by ID
@@ -204,14 +231,16 @@ export class ApplicationRegistry {
     }
 
     // Create application instance
-    createAppInstance(appId) {
+    async createAppInstance(appId) {
         const config = this.registry[appId];
         if (!config) {
             throw new Error(`Application '${appId}' not found in registry`);
         }
 
         try {
-            return new config.class();
+            // Load the class if not already loaded
+            const AppClass = await this.loadAppClass(appId);
+            return new AppClass();
         } catch (error) {
             throw new Error(`Failed to create instance of application '${appId}': ${error.message}`);
         }
