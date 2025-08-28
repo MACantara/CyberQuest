@@ -7,6 +7,8 @@ class CyberQuestSignup {
         this.currentStep = 1;
         this.totalSteps = 4;
         this.formData = {};
+        this.validationTimeouts = {}; // For debouncing validation
+        this.validationCache = {}; // Cache validation results
         
         this.initializeComponents();
         this.setupEventListeners();
@@ -55,14 +57,14 @@ class CyberQuestSignup {
         this.nextBtn.addEventListener('click', (e) => this.handleNext(e));
         this.prevBtn.addEventListener('click', () => this.goToPreviousStep());
         
-        // Form inputs for live validation
+        // Form inputs for live validation with debouncing
         this.usernameInput.addEventListener('input', () => {
             this.updateUserInputs();
-            this.validateUsernameRealTime();
+            this.debounceValidation('username');
         });
         this.emailInput.addEventListener('input', () => {
             this.updateUserInputs();
-            this.validateEmailRealTime();
+            this.debounceValidation('email');
         });
         
         // Add focus and blur events for better UX
