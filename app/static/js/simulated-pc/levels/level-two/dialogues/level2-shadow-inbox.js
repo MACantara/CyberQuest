@@ -43,7 +43,7 @@ export class Level2ShadowInboxDialogue extends BaseDialogue {
     async startNewSession() {
         try {
             // Start a new session without clearing previous attempts
-            const response = await fetch('/api/level/2/new-session', {
+            const response = await fetch('/levels/api/level/2/new-session', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
