@@ -5,6 +5,10 @@ export class EmailCompletionTracker {
     constructor(emailApp) {
         this.emailApp = emailApp;
         this.sessionSummary = new EmailSessionSummary(emailApp);
+        // If the email app maintains a feedbackStore, attach it so session summary uses the same in-memory data
+        if (emailApp && emailApp.feedbackStore) {
+            this.sessionSummary.attachFeedbackStore(emailApp.feedbackStore);
+        }
         this.hasTriggeredCompletion = false;
         this.completionCheckInterval = null;
     }
@@ -81,23 +85,25 @@ export class EmailCompletionTracker {
 
         // Calculate completion score based on session performance
         const completionScore = await this.calculateLevelScore();
-        
-        // Mark level as completed on server
+        // Capture session stats and history to pass through to the dialogue
+        const sessionStats = this.emailApp.actionHandler.feedback.getSessionStats();
+        const feedbackHistory = Array.isArray(sessionStats.feedbackHistory) ? sessionStats.feedbackHistory : [];
+
+        // Mark level as completed on server (in-memory for now)
         await this.markLevelCompletedOnServer(completionScore);
 
-        
-        // Delay before showing completion dialogue
+        // Delay before showing completion dialogue and pass the session data
         setTimeout(() => {
-            this.showLevelCompletionDialogue();
+            this.showLevelCompletionDialogue(sessionStats, feedbackHistory);
         }, 2000);
     }
 
-    showLevelCompletionDialogue() {
+        showLevelCompletionDialogue(sessionStats = null, feedbackHistory = []) {
         // Import and trigger the Level 2 completion dialogue
         import('../../../levels/level-two/dialogues/email-security-completion-dialogue.js').then(module => {
             const EmailSecurityCompletionDialogue = module.EmailSecurityCompletionDialogue;
             if (EmailSecurityCompletionDialogue.startCompletionDialogue && window.desktop) {
-                EmailSecurityCompletionDialogue.startCompletionDialogue(window.desktop);
+                EmailSecurityCompletionDialogue.startCompletionDialogue(window.desktop, { sessionStats, feedbackHistory });
             }
         }).catch(error => {
             console.error('Failed to load Level 2 completion dialogue:', error);

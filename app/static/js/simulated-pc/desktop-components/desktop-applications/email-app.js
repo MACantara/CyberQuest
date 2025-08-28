@@ -5,6 +5,7 @@ import { EmailReadTracker } from './email-functions/email-read-tracker.js';
 import { EmailCompletionTracker } from './email-functions/email-completion-tracker.js';
 import { ALL_EMAILS } from '../../levels/level-two/emails/email-registry.js';
 import { NavigationUtil } from '../shared-utils/navigation-util.js';
+import { InMemoryFeedbackStore } from './email-functions/email-session-summary.js';
 
 export class EmailApp extends WindowBase {
     constructor() {
@@ -14,6 +15,8 @@ export class EmailApp extends WindowBase {
         });
         this.state = new EmailState();
         this.readTracker = new EmailReadTracker();
+        // Shared in-memory feedback store for this email app session
+        this.feedbackStore = new InMemoryFeedbackStore();
         this.actionHandler = new EmailActionHandler(this);
         this.completionTracker = new EmailCompletionTracker(this);
         

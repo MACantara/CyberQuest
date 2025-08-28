@@ -14,6 +14,16 @@ export class EmailSessionSummary {
             lastUpdated: new Date().toISOString(),
             totalSessions: 1
         };
+
+        // In-memory feedback store used for the session UI (not persisted server-side)
+        this.feedbackStore = new InMemoryFeedbackStore();
+    }
+
+    // Allow external code (email app) to attach its feedback store
+    attachFeedbackStore(store) {
+        if (store && typeof store.getAll === 'function') {
+            this.feedbackStore = store;
+        }
     }
 
     /**
@@ -22,6 +32,39 @@ export class EmailSessionSummary {
      * @param {Array} feedbackHistory - Array of all feedback interactions
      */
     showSessionSummary(sessionStats, feedbackHistory = []) {
+        // If no explicit history passed, use the in-memory feedback store
+        if ((!feedbackHistory || feedbackHistory.length === 0) && this.feedbackStore) {
+            feedbackHistory = this.feedbackStore.getAll();
+        }
+        // If sessionStats is missing or appears empty, try to derive it from feedbackHistory or attached app feedback
+        const isEmptyStats = !sessionStats || (typeof sessionStats === 'object' && (sessionStats.totalActions === 0 || sessionStats.totalActions === undefined) && (sessionStats.accuracy === 0 || sessionStats.accuracy === undefined));
+        if (isEmptyStats) {
+            // Try derive from passed feedbackHistory
+            if (feedbackHistory && feedbackHistory.length > 0) {
+                const totalActions = feedbackHistory.length;
+                const correctActions = feedbackHistory.filter(f => f.isCorrect).length;
+                const accuracy = totalActions > 0 ? Math.round((correctActions / totalActions) * 100) : 0;
+                sessionStats = {
+                    totalActions,
+                    correctActions,
+                    accuracy,
+                    feedbackHistory
+                };
+            } else if (this.feedbackStore && typeof this.feedbackStore.getAll === 'function') {
+                const fb = this.feedbackStore.getAll();
+                if (fb && fb.length > 0) {
+                    const totalActions = fb.length;
+                    const correctActions = fb.filter(f => f.isCorrect).length;
+                    const accuracy = totalActions > 0 ? Math.round((correctActions / totalActions) * 100) : 0;
+                    sessionStats = { totalActions, correctActions, accuracy, feedbackHistory: fb };
+                }
+            } else if (this.emailApp && this.emailApp.actionHandler && this.emailApp.actionHandler.feedback && typeof this.emailApp.actionHandler.feedback.getSessionStats === 'function') {
+                sessionStats = this.emailApp.actionHandler.feedback.getSessionStats();
+                feedbackHistory = feedbackHistory.length > 0 ? feedbackHistory : (sessionStats.feedbackHistory || []);
+            } else {
+                sessionStats = sessionStats || { totalActions: 0, correctActions: 0, accuracy: 0, feedbackHistory: [] };
+            }
+        }
         // Update session data
         this.sessionData.lastUpdated = new Date().toISOString();
         this.sessionData.totalSessions = (this.sessionData.totalSessions || 0) + 1;
@@ -634,5 +677,30 @@ export class EmailSessionSummary {
         // EmailSessionSummary doesn't maintain persistent state,
         // it generates reports from feedback data
         console.log('EmailSessionSummary reset completed');
+    }
+}
+
+/**
+ * Simple in-memory feedback store for a single session.
+ * Methods: add(feedback), getAll(), clear()
+ */
+export class InMemoryFeedbackStore {
+    constructor() {
+        this.items = [];
+    }
+
+    add(feedback) {
+        if (!feedback) return;
+        // Ensure timestamp
+        if (!feedback.timestamp) feedback.timestamp = new Date().toISOString();
+        this.items.push(feedback);
+    }
+
+    getAll() {
+        return Array.from(this.items);
+    }
+
+    clear() {
+        this.items = [];
     }
 }

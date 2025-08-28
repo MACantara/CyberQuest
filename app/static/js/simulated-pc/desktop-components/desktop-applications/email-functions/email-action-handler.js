@@ -8,6 +8,9 @@ export class EmailActionHandler {
         this.emailApp = emailApp;
         this.feedback = new EmailFeedback(emailApp);
         this.sessionSummary = new EmailSessionSummary(emailApp);
+        if (emailApp && emailApp.feedbackStore) {
+            this.sessionSummary.attachFeedbackStore(emailApp.feedbackStore);
+        }
         this.completionTracker = new EmailCompletionTracker(emailApp);
         this.sessionStartTime = new Date().toISOString();
         
