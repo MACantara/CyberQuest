@@ -1,4 +1,4 @@
-import { BaseDialogue } from '../base-dialogue.js';
+import { BaseDialogue } from '../../../dialogues/base-dialogue.js';
 
 export class Level5CompletionDialogue extends BaseDialogue {
     constructor(desktop, character = 'the-null') {

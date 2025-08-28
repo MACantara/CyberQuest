@@ -1,4 +1,4 @@
-import { BaseDialogue } from '../../base-dialogue.js';
+import { BaseDialogue } from '../../../dialogues/base-dialogue.js';
 import { EmailSessionSummary } from '../../../desktop-components/desktop-applications/email-functions/email-session-summary.js';
 
 export class EmailSecurityCompletionDialogue extends BaseDialogue {
