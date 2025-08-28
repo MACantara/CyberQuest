@@ -144,11 +144,11 @@ def dashboard():
             level_data['time_spent'] = 0
             level_data['xp_earned'] = 0
         
-        # Determine if level is unlocked (first level or previous level completed)
-        level_data['unlocked'] = i == 0 or (i > 0 and levels_progress[i-1]['completed'])
+        # All levels are always unlocked
+        level_data['unlocked'] = True
         
         # Get adaptive difficulty recommendation
-        if level_data['unlocked'] and not level_data['completed']:
+        if not level_data['completed']:
             level_data['recommended_difficulty'] = AdaptiveLearningEngine.calculate_adaptive_difficulty(
                 current_user.id, level['id'], 'simulation'
             )
@@ -158,13 +158,13 @@ def dashboard():
     # Find next available level
     next_level = None
     for level in levels_progress:
-        if level['unlocked'] and not level['completed']:
+        if not level['completed']:
             next_level = level
             break
     
     # Get Blue Team vs Red Team progress
     blue_team_progress = UserProgress.get_by_user_and_level(current_user.id, 1, 'blue_team_vs_red_team')
-    blue_team_unlocked = completed_levels >= 1  # Unlock after completing first simulation level
+    blue_team_unlocked = True  # Always unlocked
     
     # Prepare skill analysis
     skill_analysis = []
