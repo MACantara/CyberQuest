@@ -37,7 +37,7 @@ CYBERSECURITY_LEVELS = [
         'category': 'Email Security',
         'estimated_time': '20 minutes',
         'skills': ['Phishing Detection', 'Email Analysis', 'Social Engineering'],
-        'unlocked': False,
+        'unlocked': True,
         'coming_soon': False
     },
     {
@@ -50,7 +50,7 @@ CYBERSECURITY_LEVELS = [
         'category': 'Threat Detection',
         'estimated_time': '25 minutes',
         'skills': ['Malware Recognition', 'System Security', 'Threat Analysis'],
-        'unlocked': False,
+        'unlocked': True,
         'coming_soon': False
     },
     {
@@ -63,7 +63,7 @@ CYBERSECURITY_LEVELS = [
         'category': 'Ethical Hacking',
         'estimated_time': '30 minutes',
         'skills': ['Penetration Testing', 'Vulnerability Assessment', 'Ethical Hacking'],
-        'unlocked': False,
+        'unlocked': True,
         'coming_soon': False
     },
     {
@@ -76,7 +76,7 @@ CYBERSECURITY_LEVELS = [
         'category': 'Digital Forensics',
         'estimated_time': '40 minutes',
         'skills': ['Digital Forensics', 'Evidence Analysis', 'Advanced Investigation'],
-        'unlocked': False,
+        'unlocked': True,
         'coming_soon': False
     }
 ]

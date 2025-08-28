@@ -67,8 +67,7 @@
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 level-content
                     {% if level.user_progress.completed %}border-green-400 dark:border-green-500
                     {% elif level.coming_soon %}border-purple-400 dark:border-purple-500
-                    {% elif level.unlocked %}border-blue-400 dark:border-blue-500
-                    {% else %}opacity-60{% endif %}">
+                    {% else %}border-blue-400 dark:border-blue-500{% endif %}">
                     
                     <!-- Level Card Content -->
                     <div class="p-6">
@@ -78,8 +77,7 @@
                                 <div class="level-icon w-12 h-12 rounded-lg flex items-center justify-center text-white text-xl mr-4 
                                     {% if level.user_progress.completed %}bg-gradient-to-br from-green-500 to-emerald-600
                                     {% elif level.coming_soon %}bg-gradient-to-br from-purple-500 to-indigo-600
-                                    {% elif level.unlocked %}bg-gradient-to-br from-blue-500 to-purple-600
-                                    {% else %}bg-gray-400 dark:bg-gray-600{% endif %}">
+                                    {% else %}bg-gradient-to-br from-blue-500 to-purple-600{% endif %}">
                                     <i class="{{ level.icon }}"></i>
                                 </div>
                                 <div>
@@ -101,8 +99,7 @@
                             <i class="level-lock-icon 
                                 {% if level.user_progress.completed %}bi bi-check-circle text-green-500 text-xl
                                 {% elif level.coming_soon %}bi bi-clock text-purple-500 text-xl
-                                {% elif level.unlocked %}bi bi-unlock text-blue-500 text-xl
-                                {% else %}bi bi-lock text-gray-400 text-xl{% endif %}"></i>
+                                {% else %}bi bi-unlock text-blue-500 text-xl{% endif %}"></i>
                         </div>
 
                         <!-- Level Description -->
@@ -157,19 +154,13 @@
                                 <i class="bi bi-clock mr-2"></i>
                                 Coming Soon
                             </button>
-                        {% elif level.unlocked %}
+                        {% else %}
                             <a href="{{ url_for('levels.start_level', level_id=level.id) }}" 
                                class="level-button w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-500/25 shadow-lg hover:shadow-xl"
                                data-level-id="{{ level.id }}">
                                 <i class="bi bi-play-circle mr-2"></i>
                                 {% if level.user_progress.status == 'in_progress' %}Continue Level{% else %}Start Level{% endif %}
                             </a>
-                        {% else %}
-                            <button class="level-button w-full inline-flex items-center justify-center px-4 py-3 bg-gray-400 dark:bg-gray-600 text-white font-semibold rounded-lg cursor-not-allowed opacity-60"
-                                    disabled onclick="showLockedLevelModal({{ level.id }})">
-                                <i class="bi bi-lock mr-2"></i>
-                                Locked
-                            </button>
                         {% endif %}
                     </div>
                 </div>
@@ -200,28 +191,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Navigate to level start URL
         window.location.href = `/levels/${levelId}/start?autostart=true`;
-    }
-    
-    function showLockedLevelModal(levelId) {
-        const previousLevel = levelId - 1;
-        const modal = document.createElement('div');
-        modal.className = 'fixed inset-0 bg-black/75 flex items-center justify-center z-50';
-        modal.innerHTML = `
-            <div class="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md mx-4">
-                <div class="text-center">
-                    <i class="bi bi-lock text-6xl text-gray-400 mb-4"></i>
-                    <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4">🔒 Level ${levelId} Locked</h2>
-                    <p class="text-gray-700 dark:text-gray-300 mb-4">
-                        Complete Level ${previousLevel} first to unlock this level.
-                    </p>
-                    <button onclick="this.closest('.fixed').remove()" 
-                            class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition-colors">
-                        Got it!
-                    </button>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(modal);
     }
     
     function showComingSoonModal(levelId) {
@@ -351,7 +320,6 @@ document.addEventListener('DOMContentLoaded', function() {
     updateProgressDisplay();
     
     // Make functions available globally for template use
-    window.showLockedLevelModal = showLockedLevelModal;
     window.showComingSoonModal = showComingSoonModal;
     window.startLevel = startLevel;
     

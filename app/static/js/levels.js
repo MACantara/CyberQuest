@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     levelCards.forEach((card, index) => {
         card.style.animationDelay = `${index * 0.1}s`;
         
-        // Add hover effects for unlocked/completed levels
+        // Add hover effects for accessible/completed levels
         if (!card.classList.contains('cursor-not-allowed')) {
             card.addEventListener('mouseenter', function() {
                 this.style.transform = 'scale(1.02)';
