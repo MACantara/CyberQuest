@@ -1,3 +1,5 @@
+import { EmailServerAPI } from './email-server-api.js';
+
 export class EmailSessionSummary {
     constructor(emailApp) {
         this.emailApp = emailApp;
@@ -388,16 +390,37 @@ export class EmailSessionSummary {
      * Action handlers for buttons
      */
     async completeLevel2() {
-        // Mark Level 2 as completed
-        localStorage.setItem('cyberquest_level_2_completed', 'true');
-        localStorage.setItem('cyberquest_email_training_completed', 'true');
-        localStorage.setItem('cyberquest_email_training_score', this.lastSessionStats.accuracy.toString());
-        
-        console.log('Level 2 marked as completed:', {
-            level_completed: localStorage.getItem('cyberquest_level_2_completed'),
-            training_completed: localStorage.getItem('cyberquest_email_training_completed'),
-            score: localStorage.getItem('cyberquest_email_training_score')
-        });
+        try {
+            // Mark Level 2 as completed via server API call
+            const completionData = {
+                level_id: 2,
+                score: this.lastSessionStats.accuracy,
+                time_spent: 1800, // 30 minutes estimate
+                xp_earned: 150,
+                completion_data: {
+                    sessionStats: this.lastSessionStats,
+                    timestamp: new Date().toISOString()
+                }
+            };
+            
+            // Make API call to complete the level
+            const response = await fetch('/levels/api/complete/2', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(completionData)
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Level 2 marked as completed:', result);
+            } else {
+                console.error('Failed to mark Level 2 as completed');
+            }
+        } catch (error) {
+            console.error('Error completing Level 2:', error);
+        }
         
         // Close modal first
         document.querySelector('.fixed')?.remove();
