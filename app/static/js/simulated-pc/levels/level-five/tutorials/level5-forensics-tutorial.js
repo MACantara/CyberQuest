@@ -1,6 +1,6 @@
-import { BaseTutorial } from './base-tutorial.js';
-import { initializeEvidenceTracker } from '../level5/evidence-tracker.js';
-import '../level5/scoring-system.js';
+import { BaseTutorial } from '../../../tutorials/base-tutorial.js';
+import { initializeEvidenceTracker } from '../evidence-tracker.js';
+import '../scoring-system.js';
 
 export class Level5ForensicsTutorial extends BaseTutorial {
     constructor() {

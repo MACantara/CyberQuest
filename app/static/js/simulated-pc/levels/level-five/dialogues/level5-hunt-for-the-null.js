@@ -1,7 +1,7 @@
 // TODO: Fix grep terminal command not working for directories
 // TODO: Fix find terminal command not find files with partial name matches
 
-import { BaseDialogue } from '../base-dialogue.js';
+import { BaseDialogue } from '../../../dialogues/base-dialogue.js';
 
 export class Level5HuntForTheNullDialogue extends BaseDialogue {
     constructor(desktop, character = 'instructor') {
