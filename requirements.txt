@@ -47,3 +47,6 @@ python-docx
 
 # Supabase (PostgreSQL database)
 supabase
+
+# Additional production dependencies
+psycopg2-binary

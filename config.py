@@ -144,6 +144,32 @@ class VercelConfig(ProductionConfig):
     SUPABASE_SERVICE_ROLE_KEY = os.environ.get('SUPABASE_SERVICE_ROLE_KEY')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+class RenderConfig(ProductionConfig):
+    """Render.com-specific production configuration."""
+    DEBUG = False
+    TESTING = False
+    
+    # Production-ready settings for Render
+    SECRET_KEY = os.environ.get('SECRET_KEY')
+    
+    # Render CSRF settings
+    WTF_CSRF_SSL_STRICT = True  # Render provides proper SSL
+    WTF_CSRF_TIME_LIMIT = 3600  # 1 hour
+    WTF_CSRF_METHODS = ['POST', 'PUT', 'PATCH', 'DELETE']
+    
+    # Render session settings
+    SESSION_COOKIE_SECURE = True  # Render uses HTTPS
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = 'Lax'
+    SESSION_COOKIE_NAME = 'cyberquest_session'
+    PERMANENT_SESSION_LIFETIME = timedelta(days=7)  # Full server can handle longer sessions
+    
+    # Enable database functionality with supabase credentials
+    DISABLE_DATABASE = False
+    SUPABASE_URL = os.environ.get('SUPABASE_URL')
+    SUPABASE_SERVICE_ROLE_KEY = os.environ.get('SUPABASE_SERVICE_ROLE_KEY')
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+
 class TestingConfig(Config):
     """Testing configuration."""
     DEBUG = True
@@ -166,6 +192,7 @@ config = {
     'development': DevelopmentConfig,
     'production': ProductionConfig,
     'vercel': VercelConfig,
+    'render': RenderConfig,
     'testing': TestingConfig,
     'default': DevelopmentConfig
 }
@@ -174,6 +201,8 @@ def get_config():
     """Get the appropriate configuration based on environment."""
     if os.environ.get('VERCEL') == '1':
         return VercelConfig
+    elif os.environ.get('RENDER') == '1':
+        return RenderConfig
     elif os.environ.get('FLASK_ENV') == 'production':
         return ProductionConfig
     elif os.environ.get('FLASK_ENV') == 'testing':
