@@ -481,10 +481,16 @@ def export_test_plans_docx():
             for test_plan in test_plans:
                 row_cells = table.add_row().cells
 
+                # Format module name by replacing hyphens and underscores with spaces, then capitalizing
+                formatted_module_name = 'N/A'
+                if test_plan.module_name:
+                    formatted_module_name = test_plan.module_name.replace('-', ' ').replace('_', ' ')
+                    formatted_module_name = ' '.join(word.capitalize() for word in formatted_module_name.split())
+
                 # Populate row data
                 row_data = [
                     test_plan.test_plan_no or 'N/A',
-                    test_plan.module_name or 'N/A',
+                    formatted_module_name,
                     test_plan.description or 'N/A',
                     test_plan.failure_reason or 'Passed' if test_plan.test_status == 'passed' else 'N/A'
                 ]

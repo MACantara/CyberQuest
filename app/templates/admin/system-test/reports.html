@@ -100,7 +100,7 @@
                                 <h4 class="font-medium text-gray-900 dark:text-white">
                                     <a href="{{ url_for('system_test.module_tests', module_name=module.module_name) }}" 
                                        class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                                        {{ module.module_name }}
+                                        {{ module.module_name | format_module_name }}
                                     </a>
                                 </h4>
                                 <span class="text-sm text-gray-500 dark:text-gray-400">{{ module.total_tests }} tests</span>
@@ -169,7 +169,7 @@
                                         </span>
                                     {% endif %}
                                 </div>
-                                <p class="text-sm text-gray-600 dark:text-gray-300">{{ test.module_name }}</p>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">{{ test.module_name | format_module_name }}</p>
                                 {% if test.execution_date %}
                                 <p class="text-xs text-gray-500 dark:text-gray-400">
                                     {{ test.execution_date.strftime('%m/%d/%Y %I:%M %p') }}
@@ -223,7 +223,7 @@
                                         {{ test.test_plan_no }}
                                     </a>
                                 </td>
-                                <td class="py-3 px-2">{{ test.module_name }}</td>
+                                <td class="py-3 px-2">{{ test.module_name | format_module_name }}</td>
                                 <td class="py-3 px-2">
                                     {% if test.failure_reason %}
                                     <div class="max-w-xs">
@@ -323,7 +323,7 @@ function exportJSON() {
         modules: [
             {% for module in modules_summary %}
             {
-                name: "{{ module.module_name }}",
+                name: "{{ module.module_name | format_module_name }}",
                 total: {{ module.total_tests }},
                 passed: {{ module.passed_tests }},
                 failed: {{ module.failed_tests }},
@@ -336,7 +336,7 @@ function exportJSON() {
             {% for test in failed_tests %}
             {
                 test_plan_no: "{{ test.test_plan_no }}",
-                module: "{{ test.module_name }}",
+                module: "{{ test.module_name | format_module_name }}",
                 failure_reason: "{{ test.failure_reason or '' }}",
                 priority: "{{ test.priority or 'medium' }}"
             }{% if not loop.last %},{% endif %}

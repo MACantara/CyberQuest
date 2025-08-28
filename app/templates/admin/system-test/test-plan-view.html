@@ -11,7 +11,7 @@
         <div class="flex justify-between items-center mb-8 opacity-0 animate-fade-in-up">
             <div>
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Test Plan Details</h1>
-                <p class="text-gray-600 dark:text-gray-400 mt-2">{{ test_plan.test_plan_no }} - {{ test_plan.module_name }}</p>
+                <p class="text-gray-600 dark:text-gray-400 mt-2">{{ test_plan.test_plan_no }} - {{ test_plan.module_name | format_module_name }}</p>
             </div>
             <div class="flex space-x-3">
                 <a href="{{ url_for('system_test.test_plans_list') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center">
@@ -43,7 +43,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Module</label>
-                                <p class="text-gray-900 dark:text-white font-medium">{{ test_plan.module_name }}</p>
+                                <p class="text-gray-900 dark:text-white font-medium">{{ test_plan.module_name | format_module_name }}</p>
                             </div>
                         </div>
                         {% if test_plan.screen_design_ref %}
