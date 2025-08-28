@@ -460,7 +460,7 @@ def levels_overview():
 @levels_bp.route('/<int:level_id>/start')
 @login_required
 def start_level(level_id):
-    """Start the interactive simulation for a specific level."""
+    """Start or retry a level, maintaining existing progress."""
     level = next((l for l in CYBERSECURITY_LEVELS if l['id'] == level_id), None)
     
     if not level:
@@ -468,21 +468,33 @@ def start_level(level_id):
         return redirect(url_for('levels.levels_overview'))
     
     try:
+        # Check for existing progress
+        existing_progress = UserProgress.get_level_progress(current_user.id, level_id)
+        is_retry = existing_progress and existing_progress.get('status') in ['in_progress', 'completed']
+        
         # Generate session ID for analytics tracking
         session_id = str(uuid.uuid4())
         session['level_session_id'] = session_id
         
-        # Log level start action
+        # Log level start or retry action
+        action_type = 'retry' if is_retry else 'start'
         LearningAnalytics.log_action(
             user_id=current_user.id,
             session_id=session_id,
             level_id=level_id,
-            action_type='start',
-            action_data={'level_name': level['name']}
+            action_type=action_type,
+            action_data={
+                'level_name': level['name'],
+                'previous_attempts': existing_progress.get('attempts', 0) if existing_progress else 0,
+                'previous_status': existing_progress.get('status') if existing_progress else 'new'
+            }
         )
         
-        # Mark level as started in progress tracking
-        UserProgress.start_level(current_user.id, level_id)
+        # Increment attempt counter without clearing previous data
+        UserProgress.increment_level_attempt(current_user.id, level_id)
+        
+        # Get existing progress data to maintain state
+        level_progress = existing_progress or {}
         
         # Prepare level data for simulation
         level_data = {
@@ -492,7 +504,11 @@ def start_level(level_id):
             'category': level['category'],
             'difficulty': level['difficulty'],
             'skills': level['skills'],
-            'session_id': session_id
+            'session_id': session_id,
+            'is_retry': is_retry,
+            'previous_attempts': level_progress.get('attempts', 0),
+            'previous_score': level_progress.get('score', 0),
+            'previous_status': level_progress.get('status', 'not_started')
         }
         
         # Define level-specific JavaScript files to load
@@ -689,6 +705,52 @@ def save_email_actions():
     except Exception as e:
         logger.error(f"Error saving email actions: {e}")
         return jsonify({'success': False, 'error': 'Failed to save email actions'}), 500
+
+@levels_bp.route('/api/level/<int:level_id>/new-session', methods=['POST'])
+@login_required
+def start_new_level_session(level_id):
+    """API endpoint to start a new session for a level (used for retries)."""
+    try:
+        # Get existing progress
+        existing_progress = UserProgress.get_level_progress(current_user.id, level_id)
+        
+        if not existing_progress:
+            return jsonify({
+                'success': False,
+                'error': 'No existing progress found for this level',
+                'started_new': False
+            }), 404
+        
+        # Increment the attempt counter
+        UserProgress.increment_level_attempt(current_user.id, level_id)
+        
+        # Log the retry action
+        session_id = session.get('level_session_id', str(uuid.uuid4()))
+        LearningAnalytics.log_action(
+            user_id=current_user.id,
+            session_id=session_id,
+            level_id=level_id,
+            action_type='retry_attempt',
+            action_data={
+                'previous_attempts': existing_progress.get('attempts', 0),
+                'previous_status': existing_progress.get('status')
+            }
+        )
+        
+        return jsonify({
+            'success': True,
+            'level_id': level_id,
+            'attempts': existing_progress.get('attempts', 0) + 1,
+            'message': 'New session started for retry'
+        })
+        
+    except Exception as e:
+        logger.error(f"Error starting new session for level {level_id}: {e}")
+        return jsonify({
+            'success': False,
+            'error': 'Failed to start new session',
+            'details': str(e)
+        }), 500
 
 @levels_bp.route('/api/level/2/email-actions', methods=['GET'])
 @login_required
