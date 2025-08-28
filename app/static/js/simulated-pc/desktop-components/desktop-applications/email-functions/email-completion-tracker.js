@@ -90,7 +90,7 @@ export class EmailCompletionTracker {
 
     showLevelCompletionDialogue() {
         // Import and trigger the Level 2 completion dialogue
-        import('../../../dialogues/levels/level-two/email-security-completion-dialogue.js').then(module => {
+        import('../../../levels/level-two/dialogues/email-security-completion-dialogue.js').then(module => {
             const EmailSecurityCompletionDialogue = module.EmailSecurityCompletionDialogue;
             if (EmailSecurityCompletionDialogue.startCompletionDialogue && window.desktop) {
                 EmailSecurityCompletionDialogue.startCompletionDialogue(window.desktop);
