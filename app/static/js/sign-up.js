@@ -191,7 +191,7 @@ class CyberQuestSignup {
         }
     }
 
-    validateStep1() {
+    async validateStep1() {
         const username = this.usernameInput.value.trim();
         const email = this.emailInput.value.trim();
         
