@@ -148,6 +148,19 @@ class UserProgress:
                 'level_progress': {}
             }
 
+    @staticmethod
+    def clear_level_progress(user_id: int, level_id: int, level_type: str = 'simulation') -> bool:
+        """Clear all progress data for a specific level."""
+        try:
+            supabase = get_supabase()
+            response = supabase.table('user_progress').delete().eq('user_id', user_id).eq('level_id', level_id).eq('level_type', level_type).execute()
+            handle_supabase_error(response)
+            logger.info(f"Cleared progress for user {user_id}, level {level_id}")
+            return True
+        except Exception as e:
+            logger.error(f"Error clearing level progress for user {user_id}, level {level_id}: {e}")
+            return False
+
 class LearningAnalytics:
     """Model for tracking detailed learning analytics."""
     
