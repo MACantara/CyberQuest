@@ -1,5 +1,5 @@
 import { BaseCommand } from './base-command.js';
-import { targetHostRegistry } from './target-hosts/target-host-registry.js';
+import { targetHostRegistry } from '../nmap-target-hosts/target-host-registry.js';
 
 export class PingCommand extends BaseCommand {
     constructor(processor) {
