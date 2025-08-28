@@ -254,11 +254,27 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Function to detect current theme
+    function isDarkMode() {
+        return document.documentElement.classList.contains('dark');
+    }
+    
+    // Function to get theme-appropriate colors
+    function getThemeColors() {
+        const isDark = isDarkMode();
+        return {
+            textColor: isDark ? '#ffffff' : '#000000',
+            gridColor: isDark ? 'rgba(156, 163, 175, 0.3)' : 'rgba(107, 114, 128, 0.2)',
+            legendColor: isDark ? '#ffffff' : '#374151'
+        };
+    }
+    
     // Weekly Trends Chart
     const ctx = document.getElementById('weeklyTrendsChart').getContext('2d');
     const weeklyData = {{ weekly_trends | tojson }};
+    const themeColors = getThemeColors();
     
-    new Chart(ctx, {
+    const chart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: weeklyData.map(d => new Date(d.date).toLocaleDateString()),
@@ -292,23 +308,83 @@ document.addEventListener('DOMContentLoaded', function() {
             plugins: {
                 legend: {
                     display: true,
-                    position: 'top'
+                    position: 'top',
+                    labels: {
+                        color: themeColors.legendColor,
+                        font: {
+                            size: 12
+                        }
+                    }
                 }
             },
             scales: {
                 y: {
                     beginAtZero: true,
                     grid: {
-                        color: 'rgba(107, 114, 128, 0.2)'
+                        color: themeColors.gridColor
+                    },
+                    ticks: {
+                        color: themeColors.textColor,
+                        font: {
+                            size: 11
+                        }
+                    },
+                    title: {
+                        color: themeColors.textColor
                     }
                 },
                 x: {
                     grid: {
-                        color: 'rgba(107, 114, 128, 0.2)'
+                        color: themeColors.gridColor
+                    },
+                    ticks: {
+                        color: themeColors.textColor,
+                        font: {
+                            size: 11
+                        }
+                    },
+                    title: {
+                        color: themeColors.textColor
                     }
                 }
             }
         }
+    });
+    
+    // Function to update chart colors when theme changes
+    function updateChartTheme() {
+        const newThemeColors = getThemeColors();
+        
+        // Update legend colors
+        chart.options.plugins.legend.labels.color = newThemeColors.legendColor;
+        
+        // Update scale colors
+        chart.options.scales.y.grid.color = newThemeColors.gridColor;
+        chart.options.scales.y.ticks.color = newThemeColors.textColor;
+        chart.options.scales.y.title.color = newThemeColors.textColor;
+        
+        chart.options.scales.x.grid.color = newThemeColors.gridColor;
+        chart.options.scales.x.ticks.color = newThemeColors.textColor;
+        chart.options.scales.x.title.color = newThemeColors.textColor;
+        
+        // Update the chart
+        chart.update('none'); // 'none' for instant update without animation
+    }
+    
+    // Listen for theme changes
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                // Theme changed, update chart colors
+                updateChartTheme();
+            }
+        });
+    });
+    
+    // Start observing the document element for class changes
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class']
     });
 });
 </script>
