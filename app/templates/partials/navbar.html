@@ -19,6 +19,14 @@
                     Contact
                     <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-full transition-all duration-300"></span>
                 </a>
+
+                <!-- Levels for Authenticated Users -->
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('levels.levels_overview') }}" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-all duration-300 font-medium relative group">
+                        Levels
+                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 group-hover:w-full transition-all duration-300"></span>
+                    </a>
+                {% endif %}
                 
                 <!-- Blue Team vs Red Team Mode for Authenticated Users -->
                 {% if current_user.is_authenticated %}
@@ -143,6 +151,11 @@
             <a href="{{ url_for('main.home') }}" class="block px-3 py-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-gray-800/50 transition-all duration-300 rounded-lg font-medium">Home</a>
             <a href="{{ url_for('main.about') }}" class="block px-3 py-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-gray-800/50 transition-all duration-300 rounded-lg font-medium">About</a>
             <a href="{{ url_for('contact.contact_page') }}" class="block px-3 py-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-gray-800/50 transition-all duration-300 rounded-lg font-medium">Contact</a>
+
+            <!-- Levels for Mobile Authenticated Users -->
+            {% if current_user.is_authenticated %}
+                <a href="{{ url_for('levels.levels_overview') }}" class="block px-3 py-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-gray-800/50 transition-all duration-300 rounded-lg font-medium">Levels</a>
+            {% endif %}
             
             <!-- Blue Team vs Red Team Mode for Mobile Authenticated Users -->
             {% if current_user.is_authenticated %}
