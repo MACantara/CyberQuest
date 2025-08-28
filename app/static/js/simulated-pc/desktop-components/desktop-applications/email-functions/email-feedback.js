@@ -184,68 +184,174 @@ export class EmailFeedback {
     }
 
     /**
+     * Update the UI to show the current score and XP
+     * @param {number} xp - Current XP
+     * @param {number} score - Current score
+     */
+    updateScoreUI(xp, score) {
+        // Find and update the score display in the UI
+        const scoreElements = document.querySelectorAll('.score-display, [data-score]');
+        const xpElements = document.querySelectorAll('.xp-display, [data-xp]');
+        
+        scoreElements.forEach(el => {
+            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                el.value = score;
+            } else {
+                el.textContent = score;
+            }
+        });
+        
+        xpElements.forEach(el => {
+            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                el.value = xp;
+            } else {
+                el.textContent = xp;
+            }
+        });
+        
+        // Dispatch event for other components to listen to
+        document.dispatchEvent(new CustomEvent('score-updated', {
+            detail: { xp, score }
+        }));
+    }
+
+    /**
      * Record feedback for session tracking
      * @param {Object} feedbackData - Feedback data to record
      */
     async recordFeedback(feedbackData) {
-        // Add timestamp for tracking time spent
-        feedbackData.timestamp = Date.now();
-        this.feedbackHistory.push(feedbackData);
-        this.totalActions++;
-        
-        // Update score and track mistakes
-        if (feedbackData.isCorrect) {
-            this.sessionScore++;
-            // Award XP for correct actions
-            this.awardXP(10); // Base XP for correct action
-        } else {
-            // Track mistakes for learning analytics
-            this.trackMistake(feedbackData);
+        try {
+            // Add timestamp for tracking time spent
+            feedbackData.timestamp = Date.now();
+            this.feedbackHistory.push(feedbackData);
+            this.totalActions++;
+            
+            // Initialize progress if it doesn't exist
+            if (!window.cyberQuestProgress?.lessons?.[2]) {
+                window.cyberQuestProgress = window.cyberQuestProgress || {
+                    level: 1,
+                    xp: 0,
+                    totalXp: 0,
+                    levelThreshold: 100,
+                    lessons: {}
+                };
+                window.cyberQuestProgress.lessons[2] = {
+                    attempts: 0,
+                    xpEarned: 0,
+                    timeSpent: 0,
+                    mistakes: 0,
+                    lastAttempt: null,
+                    _cumulativeXp: 0,
+                    _cumulativeScore: 0,
+                    _lastUpdateTime: Date.now(),
+                    totalScore: 0  // Add totalScore to track overall score
+                };
+            }
+            
+            const lesson = window.cyberQuestProgress.lessons[2];
+            
+            // Update score and track mistakes
+            if (feedbackData.isCorrect) {
+                this.sessionScore++;
+                // Award XP for correct actions and force UI update
+                await this.awardXP(10, true);
+            } else {
+                // Track mistakes for learning analytics
+                this.trackMistake(feedbackData);
+            }
+            
+            // Update session stats
+            this.updateSessionStats();
+            
+            // Update UI with current values
+            this.updateScoreUI(lesson.xpEarned, lesson.totalScore);
+        } catch (error) {
+            console.error('Error in recordFeedback:', error);
         }
-        
-        // Update session stats
-        this.updateSessionStats();
     }
 
     /**
      * Award XP for correct actions and update level progress
      * @param {number} xp - Amount of XP to award
+     * @param {boolean} forceUpdate - Whether to force update server immediately
      */
-    awardXP(xp) {
-        if (!window.cyberQuestProgress) {
-            window.cyberQuestProgress = {
-                level: 1,
-                xp: 0,
-                totalXp: 0,
-                levelThreshold: 100,
-                lessons: {}
-            };
-        }
+    async awardXP(xp, forceUpdate = false) {
+        try {
+            if (!window.cyberQuestProgress) {
+                window.cyberQuestProgress = {
+                    level: 1,
+                    xp: 0,
+                    totalXp: 0,
+                    levelThreshold: 100,
+                    lessons: {}
+                };
+            }
 
-        // Initialize lesson 2 progress if it doesn't exist
-        if (!window.cyberQuestProgress.lessons[2]) {
-            window.cyberQuestProgress.lessons[2] = {
-                attempts: 0,
-                xpEarned: 0,
-                timeSpent: 0, // in seconds
-                mistakes: 0,
-                lastAttempt: null
-            };
-        }
+            // Initialize lesson 2 progress if it doesn't exist
+            if (!window.cyberQuestProgress.lessons[2]) {
+                window.cyberQuestProgress.lessons[2] = { 
+                    attempts: 0,
+                    xpEarned: 0,
+                    timeSpent: 0, // in seconds
+                    mistakes: 0,
+                    lastAttempt: null,
+                    // Track cumulative values for server updates
+                    _cumulativeXp: 0,
+                    _cumulativeScore: 0,
+                    _lastUpdateTime: Date.now(),
+                    totalScore: 0  // Track total score across all updates
+                };
+            }
 
-        const lesson = window.cyberQuestProgress.lessons[2];
-        
-        // Update XP and level progress
-        window.cyberQuestProgress.xp += xp;
-        window.cyberQuestProgress.totalXp += xp;
-        lesson.xpEarned += xp;
-        
-        // Check for level up
-        if (window.cyberQuestProgress.xp >= window.cyberQuestProgress.levelThreshold) {
-            this.levelUp();
+            const lesson = window.cyberQuestProgress.lessons[2];
+            
+            // Update XP and level progress
+            window.cyberQuestProgress.xp += xp;
+            window.cyberQuestProgress.totalXp += xp;
+            lesson.xpEarned += xp;
+            lesson._cumulativeXp += xp;
+            
+            // Initialize totalScore if it doesn't exist
+            if (typeof lesson.totalScore !== 'number') {
+                lesson.totalScore = 0;
+            }
+            
+            // Calculate points for this action (10 points per correct answer)
+            const pointsEarned = 10;
+            lesson._cumulativeScore += pointsEarned;
+            lesson.totalScore += pointsEarned;
+            
+            // Update UI immediately with the total score
+            this.updateScoreUI(lesson.xpEarned, lesson.totalScore);
+            
+            // Check for level up
+            if (window.cyberQuestProgress.xp >= window.cyberQuestProgress.levelThreshold) {
+                await this.levelUp();
+            }
+            
+            console.log(`Awarded ${xp} XP for Lesson 2. Total XP: ${lesson.xpEarned}, Score: ${lesson.totalScore}`);
+            
+            // Update server progress (throttled)
+            const now = Date.now();
+            if (forceUpdate || now - lesson._lastUpdateTime > 5000) { // Update at most every 5 seconds
+                try {
+                    await this.updateServerProgress(2, {
+                        xp_earned: lesson._cumulativeXp,
+                        score: lesson.totalScore,
+                        time_spent: Math.floor(lesson.timeSpent / 1000) // Convert to seconds
+                    });
+                    lesson._lastUpdateTime = now;
+                    // Reset cumulative counters after successful update
+                    lesson._cumulativeXp = 0;
+                    lesson._cumulativeScore = 0;
+                } catch (error) {
+                    console.error('Error updating server progress:', error);
+                    // Don't update _lastUpdateTime on error so we'll retry next time
+                }
+            }
+        } catch (error) {
+            console.error('Error in awardXP:', error);
         }
-        
-        console.log(`Awarded ${xp} XP for Lesson 2. Total XP: ${window.cyberQuestProgress.xp}`);
     }
 
     /**
@@ -463,9 +569,66 @@ export class EmailFeedback {
     }
 
     /**
-     * Show final session summary
+     * Update server with the latest progress
+     * @param {number} levelId - The level ID
+     * @param {Object} data - Progress data to update
      */
-    showSessionSummary() {
+    async updateServerProgress(levelId, data) {
+        try {
+            const response = await fetch(`/levels/api/level/${levelId}/progress`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('meta[name="csrf-token"]')?.content || ''
+                },
+                body: JSON.stringify({
+                    status: 'in_progress',
+                    score: data.score,
+                    completion_percentage: Math.min(100, Math.floor((this.sessionScore / this.totalActions) * 100)),
+                    time_spent: data.time_spent,
+                    xp_earned: data.xp_earned,
+                    mistakes_made: window.cyberQuestProgress?.lessons[2]?.mistakes || 0
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update progress on server');
+            }
+
+            const result = await response.json();
+            console.log('Progress updated on server:', result);
+            
+            // Reset cumulative counters after successful update
+            if (window.cyberQuestProgress?.lessons[2]) {
+                window.cyberQuestProgress.lessons[2]._cumulativeXp = 0;
+                window.cyberQuestProgress.lessons[2]._cumulativeScore = 0;
+            }
+            
+            return result;
+        } catch (error) {
+            console.error('Error updating progress:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    /**
+     * Show final session summary and update server with final progress
+     */
+    async showSessionSummary() {
+        // Final update to server with all progress
+        if (window.cyberQuestProgress?.lessons[2]) {
+            const lesson = window.cyberQuestProgress.lessons[2];
+            try {
+                await this.updateServerProgress(2, {
+                    xp_earned: lesson.xpEarned,
+                    score: lesson.xpEarned * 10, // Convert XP to score (10 points per XP)
+                    time_spent: Math.floor(lesson.timeSpent / 1000), // Convert to seconds
+                    status: 'completed'
+                });
+            } catch (error) {
+                console.error('Failed to save final progress:', error);
+            }
+        }
         const stats = this.getSessionStats();
         const modal = document.createElement('div');
         modal.className = 'fixed inset-0 bg-black/85 flex items-center justify-center z-50';
