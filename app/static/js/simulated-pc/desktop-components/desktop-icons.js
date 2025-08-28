@@ -31,7 +31,7 @@ export class DesktopIcons {
             2: ['email'], // Level 2: Shadow in the Inbox
             3: ['malware-scanner', 'process-monitor', 'ransomware-decryptor'], // Level 3: Malware Mayhem
             4: ['vulnerability-scanner', 'terminal'], // Level 4: White Hat Test
-            5: ['files', 'terminal', 'logs', 'wireshark', 'browser'] // Level 5: Hunt for The Null
+            5: ['files', 'terminal', 'logs'] // Level 5: Hunt for The Null
         };
 
         // Get level-specific icon IDs
