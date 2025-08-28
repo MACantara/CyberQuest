@@ -1,4 +1,4 @@
-import { BasePage } from '../../../desktop-components/desktop-applications/browser-functions/pages/base-page.js';
+import { BasePage } from '../pages/base-page.js';
 
 class CrossReferenceToolPageClass extends BasePage {
     constructor() {

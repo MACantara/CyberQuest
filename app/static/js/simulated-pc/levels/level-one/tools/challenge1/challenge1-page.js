@@ -1,4 +1,4 @@
-import { BasePage } from '../../../../desktop-components/desktop-applications/browser-functions/pages/base-page.js';
+import { BasePage } from '../../pages/base-page.js';
 import { EventHandlers } from './utils/event-handlers.js';
 import { ArticleFormatter } from './utils/article-formatter.js';
 import { ArticleImage } from './components/article-image.js';
