@@ -162,6 +162,49 @@ class UserProgress:
             return False
 
     @staticmethod
+    def increment_level_attempt(user_id: int, level_id: int, level_type: str = 'simulation') -> bool:
+        """Increment the attempt count for a level without clearing previous data."""
+        try:
+            supabase = get_supabase()
+            
+            # Get existing progress
+            existing_progress = UserProgress.get_level_progress(user_id, level_id, level_type)
+            
+            if existing_progress:
+                # Increment attempts and update started_at for new session
+                new_attempts = existing_progress.get('attempts', 0) + 1
+                update_data = {
+                    'attempts': new_attempts,
+                    'started_at': datetime.utcnow().isoformat(),
+                    'updated_at': datetime.utcnow().isoformat()
+                }
+                
+                response = supabase.table('user_progress').update(update_data).eq('user_id', user_id).eq('level_id', level_id).eq('level_type', level_type).execute()
+                handle_supabase_error(response)
+            else:
+                # Create new progress record with attempt count 1
+                progress_data = {
+                    'user_id': user_id,
+                    'level_id': level_id,
+                    'level_type': level_type,
+                    'status': 'in_progress',
+                    'attempts': 1,
+                    'started_at': datetime.utcnow().isoformat(),
+                    'updated_at': datetime.utcnow().isoformat(),
+                    'created_at': datetime.utcnow().isoformat()
+                }
+                
+                response = supabase.table('user_progress').insert(progress_data).execute()
+                handle_supabase_error(response)
+            
+            logger.info(f"Incremented attempt count for user {user_id}, level {level_id}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error incrementing level attempt for user {user_id}, level {level_id}: {e}")
+            return False
+
+    @staticmethod
     def get_analytics_data():
         """Get comprehensive analytics data for admin dashboard."""
         try:
