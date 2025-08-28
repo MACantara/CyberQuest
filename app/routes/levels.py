@@ -791,20 +791,29 @@ def get_level2_session_data():
         logger.error(f"Error fetching Level 2 session data: {e}")
         return jsonify({'success': False, 'error': 'Failed to fetch session data'}), 500
 
-@levels_bp.route('/api/level/2/reset', methods=['POST'])
+@levels_bp.route('/api/level/2/new-session', methods=['POST'])
 @login_required
-def reset_level2_data():
-    """API endpoint to reset all Level 2 data for fresh start."""
+def start_new_level2_session():
+    """API endpoint to start a new Level 2 session (preserving previous data)."""
     try:
-        # Clear all Level 2 progress data
-        UserProgress.clear_level_progress(current_user.id, 2)
+        session_id = str(uuid.uuid4())
+        session['level_session_id'] = session_id
         
-        # Clear Level 2 analytics data (optional - comment out if you want to keep analytics)
-        # LearningAnalytics.clear_level_analytics(current_user.id, 2)
+        # Increment attempts for this level (don't clear previous data)
+        UserProgress.increment_level_attempt(current_user.id, 2)
         
-        logger.info(f"Level 2 data reset for user {current_user.id}")
-        return jsonify({'success': True, 'message': 'Level 2 data reset successfully'})
+        # Log new session start for analytics
+        LearningAnalytics.log_action(
+            user_id=current_user.id,
+            session_id=session_id,
+            level_id=2,
+            action_type='session_start',
+            action_data={'attempt_type': 'new_session'}
+        )
+        
+        logger.info(f"New Level 2 session started for user {current_user.id}")
+        return jsonify({'success': True, 'session_id': session_id, 'message': 'New session started'})
         
     except Exception as e:
-        logger.error(f"Error resetting Level 2 data: {e}")
-        return jsonify({'success': False, 'error': 'Failed to reset Level 2 data'}), 500
+        logger.error(f"Error starting new Level 2 session: {e}")
+        return jsonify({'success': False, 'error': 'Failed to start new session'}), 500
