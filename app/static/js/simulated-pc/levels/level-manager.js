@@ -33,6 +33,7 @@ export class LevelManager {
         }
         
         console.log(`Loading Level ${levelId}: ${config.name}`);
+        console.log(`Level-specific modules will be loaded dynamically for optimal performance`);
         
         try {
             // Load level-specific modules
