@@ -67,11 +67,9 @@ class CyberQuestSignup {
             this.debounceValidation('email');
         });
         
-        // Add focus and blur events for better UX
+        // Add focus events for better UX
         this.usernameInput.addEventListener('focus', () => this.handleFieldFocus('username'));
-        this.usernameInput.addEventListener('blur', () => this.handleFieldBlur('username'));
         this.emailInput.addEventListener('focus', () => this.handleFieldFocus('email'));
-        this.emailInput.addEventListener('blur', () => this.handleFieldBlur('email'));
         
         // Real-time summary updates
         this.usernameInput.addEventListener('input', () => this.updateSummary());
