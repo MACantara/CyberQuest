@@ -188,14 +188,153 @@ export class EmailFeedback {
      * @param {Object} feedbackData - Feedback data to record
      */
     async recordFeedback(feedbackData) {
+        // Add timestamp for tracking time spent
+        feedbackData.timestamp = Date.now();
         this.feedbackHistory.push(feedbackData);
         this.totalActions++;
         
+        // Update score and track mistakes
         if (feedbackData.isCorrect) {
             this.sessionScore++;
+            // Award XP for correct actions
+            this.awardXP(10); // Base XP for correct action
+        } else {
+            // Track mistakes for learning analytics
+            this.trackMistake(feedbackData);
         }
+        
+        // Update session stats
+        this.updateSessionStats();
     }
 
+    /**
+     * Award XP for correct actions and update level progress
+     * @param {number} xp - Amount of XP to award
+     */
+    awardXP(xp) {
+        if (!window.cyberQuestProgress) {
+            window.cyberQuestProgress = {
+                level: 1,
+                xp: 0,
+                totalXp: 0,
+                levelThreshold: 100,
+                lessons: {}
+            };
+        }
+
+        // Initialize lesson 2 progress if it doesn't exist
+        if (!window.cyberQuestProgress.lessons[2]) {
+            window.cyberQuestProgress.lessons[2] = {
+                attempts: 0,
+                xpEarned: 0,
+                timeSpent: 0, // in seconds
+                mistakes: 0,
+                lastAttempt: null
+            };
+        }
+
+        const lesson = window.cyberQuestProgress.lessons[2];
+        
+        // Update XP and level progress
+        window.cyberQuestProgress.xp += xp;
+        window.cyberQuestProgress.totalXp += xp;
+        lesson.xpEarned += xp;
+        
+        // Check for level up
+        if (window.cyberQuestProgress.xp >= window.cyberQuestProgress.levelThreshold) {
+            this.levelUp();
+        }
+        
+        console.log(`Awarded ${xp} XP for Lesson 2. Total XP: ${window.cyberQuestProgress.xp}`);
+    }
+
+    /**
+     * Track and categorize mistakes for learning analytics
+     * @param {Object} feedbackData - Feedback data containing mistake information
+     */
+    trackMistake() {
+        // Initialize progress tracking structure if it doesn't exist
+        if (!window.cyberQuestProgress) {
+            window.cyberQuestProgress = {
+                level: 1,
+                xp: 0,
+                totalXp: 0,
+                levelThreshold: 100,
+                lessons: {}
+            };
+        }
+        if (!window.cyberQuestProgress.lessons) {
+            window.cyberQuestProgress.lessons = {};
+        }
+        if (!window.cyberQuestProgress.lessons[2]) {
+            window.cyberQuestProgress.lessons[2] = { 
+                mistakes: 0
+            };
+        }
+
+        // Increment total mistakes
+        window.cyberQuestProgress.lessons[2].mistakes += 1;
+        
+        console.log(`Mistake recorded. Total mistakes: ${window.cyberQuestProgress.lessons[2].mistakes}`);
+    }
+
+    /**
+     * Categorize the type of mistake made
+     * @param {Object} feedbackData - Feedback data from the action
+     * @returns {string} Category of mistake
+     */
+    categorizeMistake(feedbackData) {
+        if (!feedbackData.isSuspicious && feedbackData.playerAction === 'report') {
+            return 'false_positive';
+        } else if (feedbackData.isSuspicious && feedbackData.playerAction === 'trust') {
+            return 'false_negative';
+        } else if (feedbackData.isSuspicious && feedbackData.playerAction === 'ignore') {
+            return 'missed_threat';
+        }
+        return 'other';
+    }
+
+    /**
+     * Handle level up logic
+     */
+    levelUp() {
+        window.cyberQuestProgress.level++;
+        window.cyberQuestProgress.xp -= window.cyberQuestProgress.levelThreshold;
+        window.cyberQuestProgress.levelThreshold = Math.floor(window.cyberQuestProgress.levelThreshold * 1.5);
+        
+        console.log(`Level Up! You are now level ${window.cyberQuestProgress.level}`);
+        
+        // Trigger level up event
+        document.dispatchEvent(new CustomEvent('level-up', {
+            detail: {
+                level: window.cyberQuestProgress.level,
+                xp: window.cyberQuestProgress.xp,
+                nextLevelThreshold: window.cyberQuestProgress.levelThreshold
+            }
+        }));
+    }
+
+    /**
+     * Update session statistics including time spent
+     */
+    updateSessionStats() {
+        if (!this.feedbackHistory.length) return;
+        
+        const now = Date.now();
+        const firstAction = this.feedbackHistory[0].timestamp;
+        const timeSpentSeconds = Math.floor((now - firstAction) / 1000);
+        
+        // Update lesson 2 time spent
+        if (!window.cyberQuestProgress?.lessons) window.cyberQuestProgress.lessons = {};
+        if (!window.cyberQuestProgress.lessons[2]) window.cyberQuestProgress.lessons[2] = {};
+        
+        window.cyberQuestProgress.lessons[2].timeSpent = timeSpentSeconds;
+        window.cyberQuestProgress.lessons[2].lastAttempt = now;
+        window.cyberQuestProgress.lessons[2].attempts = (window.cyberQuestProgress.lessons[2].attempts || 0) + 1;
+        
+        console.log(`Session stats updated - Time spent: ${timeSpentSeconds}s, Attempts: ${window.cyberQuestProgress.lessons[2].attempts}`);
+    }
+    
     /**
      * Show feedback modal to the user
      * @param {Object} feedbackData - Feedback data to display
