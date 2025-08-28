@@ -485,7 +485,7 @@ class CyberQuestSignup {
     }
 
     // Real-time username validation
-    validateUsernameRealTime() {
+    async validateUsernameRealTime() {
         const username = this.usernameInput.value.trim();
         
         if (username.length === 0) {
@@ -493,20 +493,34 @@ class CyberQuestSignup {
             return;
         }
         
+        // Format validation first
         if (username.length < 3) {
             this.showFieldError('username', 'Username must be at least 3 characters');
+            return;
         } else if (username.length > 30) {
             this.showFieldError('username', 'Username must be 30 characters or less');
+            return;
         } else if (!/^[a-zA-Z0-9_]+$/.test(username)) {
             this.showFieldError('username', 'Username can only contain letters, numbers, and underscores');
+            return;
+        }
+        
+        // Show loading state
+        this.showFieldLoading('username', 'Checking username availability...');
+        
+        // Check availability in database
+        const isAvailable = await this.checkAvailability('username', username);
+        
+        if (!isAvailable) {
+            this.showFieldError('username', 'Username is already taken');
         } else {
             this.clearFieldError('username');
-            this.showFieldSuccess('username', 'Username format is valid');
+            this.showFieldSuccess('username', 'Username is available');
         }
     }
 
     // Real-time email validation
-    validateEmailRealTime() {
+    async validateEmailRealTime() {
         const email = this.emailInput.value.trim();
         
         if (email.length === 0) {
@@ -514,32 +528,64 @@ class CyberQuestSignup {
             return;
         }
         
-        // Check for basic email structure first
+        // Format validation first
         if (!email.includes('@')) {
             this.showFieldError('email', 'Email must contain @ symbol');
             return;
         }
         
-        // Check for domain
         const parts = email.split('@');
         if (parts.length !== 2 || parts[0].length === 0 || parts[1].length === 0) {
             this.showFieldError('email', 'Email format is incomplete');
             return;
         }
         
-        // Check domain has dot
         if (!parts[1].includes('.')) {
             this.showFieldError('email', 'Email domain must contain a dot');
             return;
         }
         
-        // Full backend-compliant validation
         if (!this.isValidEmailBackendCompliant(email)) {
             this.showFieldError('email', 'Please enter a valid email address');
+            return;
+        }
+        
+        // Show loading state
+        this.showFieldLoading('email', 'Checking email availability...');
+        
+        // Check availability in database
+        const isAvailable = await this.checkAvailability('email', email);
+        
+        if (!isAvailable) {
+            this.showFieldError('email', 'Email is already registered');
         } else {
             this.clearFieldError('email');
-            this.showFieldSuccess('email', 'Email format is valid');
+            this.showFieldSuccess('email', 'Email is available');
         }
+    }
+
+    // Show field loading state
+    showFieldLoading(fieldName, message) {
+        const field = document.getElementById(fieldName);
+        const errorContainer = this.getOrCreateErrorContainer(fieldName);
+        
+        // Update field styling to neutral
+        field.classList.remove('border-red-500', 'dark:border-red-500');
+        if (fieldName === 'username') {
+            field.classList.add('border-green-300', 'dark:border-green-500/30');
+        } else if (fieldName === 'email') {
+            field.classList.add('border-blue-300', 'dark:border-blue-500/30');
+        }
+        
+        // Show loading message
+        errorContainer.className = 'mt-2 text-xs text-gray-600 dark:text-gray-400 flex items-center field-error';
+        errorContainer.innerHTML = `
+            <svg class="animate-spin -ml-1 mr-2 h-3 w-3 text-gray-600 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            ${message}
+        `;
     }
 
     // Show field-specific error
@@ -552,11 +598,11 @@ class CyberQuestSignup {
         field.classList.add('border-red-500', 'dark:border-red-500');
         
         // Show error message
-        errorContainer.className = 'mt-2 text-xs text-red-600 dark:text-red-400 flex items-center';
+        errorContainer.className = 'mt-2 text-xs text-red-600 dark:text-red-400 flex items-center field-error';
         errorContainer.innerHTML = `<i class="bi bi-exclamation-circle mr-1"></i>${message}`;
     }
 
-    // Show field success
+    // Show field success (improved to prevent stacking)
     showFieldSuccess(fieldName, message) {
         const field = document.getElementById(fieldName);
         const errorContainer = this.getOrCreateErrorContainer(fieldName);
@@ -569,17 +615,16 @@ class CyberQuestSignup {
             field.classList.add('border-blue-300', 'dark:border-blue-500/30');
         }
         
-        // Show success message
-        errorContainer.className = 'mt-2 text-xs text-green-600 dark:text-green-400 flex items-center';
+        // Show success message (replace any existing content)
+        errorContainer.className = 'mt-2 text-xs text-green-600 dark:text-green-400 flex items-center field-error';
         errorContainer.innerHTML = `<i class="bi bi-check-circle mr-1"></i>${message}`;
         
-        // Auto-hide success message after 2 seconds
+        // Auto-hide success message after 3 seconds
         setTimeout(() => {
             if (errorContainer.classList.contains('text-green-600')) {
-                errorContainer.innerHTML = '';
-                errorContainer.className = 'mt-2 text-xs';
+                this.clearFieldError(fieldName);
             }
-        }, 2000);
+        }, 3000);
     }
 
     // Clear field error
@@ -595,17 +640,19 @@ class CyberQuestSignup {
             field.classList.add('border-blue-300', 'dark:border-blue-500/30');
         }
         
-        // Clear error message
+        // Clear all content and reset classes
         errorContainer.innerHTML = '';
-        errorContainer.className = 'mt-2 text-xs';
+        errorContainer.className = 'mt-2 text-xs field-error';
+        errorContainer.style.display = 'none';
     }
 
-    // Get or create error container for field
+    // Get or create error container for field (improved to prevent duplicates)
     getOrCreateErrorContainer(fieldName) {
         const field = document.getElementById(fieldName);
         let existingError = field.parentNode.querySelector('.field-error');
         
         if (existingError) {
+            existingError.style.display = 'block'; // Make sure it's visible when reused
             return existingError;
         }
         
