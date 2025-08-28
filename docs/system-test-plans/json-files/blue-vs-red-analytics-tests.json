@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-018-01",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.1: Blue vs Red Team Analytics Dashboard",
     "description": "Verify that the Blue vs Red Team Analytics page loads correctly with admin authentication",
     "scenario": "Admin user navigates to the Blue vs Red Team analytics dashboard to view cybersecurity simulation performance metrics",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-018-02",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.2: Admin Authentication Requirement",
     "description": "Verify that non-admin users cannot access the Blue vs Red Team Analytics page",
     "scenario": "Regular user attempts to access the Blue vs Red Team analytics dashboard without admin privileges",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-018-03",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.3: Overview Statistics Cards",
     "description": "Verify that the overview statistics section displays correct data format and values",
     "scenario": "Admin views the overview statistics cards showing total games, average duration, player win rate, and asset protection rate",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-018-04",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.4: Defense Performance Metrics",
     "description": "Verify that the Defense Performance section displays all cybersecurity defense metrics correctly",
     "scenario": "Admin reviews defense performance metrics including threat detection speed, incident response effectiveness, security control optimization, and alert prioritization accuracy",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-018-05",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.5: Attack Metrics Display",
     "description": "Verify that the Attack Metrics section displays all AI attack performance data correctly",
     "scenario": "Admin analyzes attack metrics including AI attack success rate, player action efficiency, and response time metrics",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-018-06",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.6: Asset Protection Breakdown",
     "description": "Verify that the Asset Protection section displays circular progress indicators for all protected assets",
     "scenario": "Admin views asset protection rates for different cybersecurity simulation assets using SVG circular progress charts",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-018-07",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.7: Attack Pattern Analysis Table",
     "description": "Verify that the Attack Pattern Analysis table displays all attack phases with success and detection rates",
     "scenario": "Admin reviews the comprehensive attack pattern analysis table showing each attack phase performance",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-018-08",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.8: Navigation Button Functionality",
     "description": "Verify that the navigation buttons in the header function correctly",
     "scenario": "Admin uses the navigation buttons to move between different admin sections",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-018-09",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.9: Responsive Design Layout",
     "description": "Verify that the Blue vs Red Team Analytics page displays correctly on different screen sizes",
     "scenario": "Admin accesses the analytics page on various devices and screen resolutions",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-018-10",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.10: Dark Mode Compatibility",
     "description": "Verify that the Blue vs Red Team Analytics page displays correctly in dark mode",
     "scenario": "Admin toggles dark mode and verifies all components display with appropriate dark theme styling",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-018-11",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.11: Performance Metrics Data Validation",
     "description": "Verify that all performance metrics display realistic and properly formatted cybersecurity data",
     "scenario": "Admin reviews all performance metrics to ensure data integrity and proper formatting",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-018-12",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.12: SVG Circular Progress Indicators",
     "description": "Verify that SVG circular progress indicators render correctly and display accurate percentages",
     "scenario": "Admin examines the asset protection circular progress charts for proper rendering and accuracy",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-018-13",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.13: Hover Effects and Animations",
     "description": "Verify that hover effects and animations work correctly throughout the page",
     "scenario": "Admin hovers over various interactive elements to test animation and hover states",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-018-14",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.14: Defense Effectiveness Badge Logic",
     "description": "Verify that defense effectiveness badges display correct colors and text based on effectiveness calculations",
     "scenario": "Admin reviews defense effectiveness badges in the attack pattern table to ensure proper logic implementation",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-018-15",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.15: Progress Bar Visual Accuracy",
     "description": "Verify that all progress bars accurately represent their corresponding percentage values",
     "scenario": "Admin examines progress bars throughout the page to ensure visual representation matches numerical values",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-018-16",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.16: Table Responsive Design",
     "description": "Verify that the attack pattern analysis table displays correctly on mobile devices",
     "scenario": "Admin accesses the attack pattern table on mobile devices to test responsive behavior",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-018-17",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.17: Icon and Emoji Display",
     "description": "Verify that all icons and emojis display correctly across different browsers and devices",
     "scenario": "Admin reviews all icons and emojis used throughout the Blue vs Red Team Analytics page",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-018-18",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.18: Data Loading Performance",
     "description": "Verify that the Blue vs Red Team Analytics page loads efficiently with all data",
     "scenario": "Admin monitors page loading performance when accessing the analytics dashboard",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-018-19",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.19: Animation Timing and Sequence",
     "description": "Verify that fade-in animations display in correct sequence with appropriate timing delays",
     "scenario": "Admin observes page loading animations to ensure proper timing and visual flow",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-018-20",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.20: Color Scheme Consistency",
     "description": "Verify that color schemes throughout the page maintain consistency and proper contrast",
     "scenario": "Admin reviews color usage across all components to ensure design consistency and accessibility",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-018-21",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.21: Time Format Conversion",
     "description": "Verify that time values are correctly converted from seconds to minutes where appropriate",
     "scenario": "Admin checks that average game duration displays in minutes format while other time metrics remain in seconds",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-018-22",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.22: Attack Phase Naming Convention",
     "description": "Verify that attack phase names display with proper formatting and capitalization",
     "scenario": "Admin reviews attack phase names in the analysis table to ensure proper title case formatting",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-018-23",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.23: Player Action Efficiency Calculation",
     "description": "Verify that player action efficiency displays as a percentage with proper calculation",
     "scenario": "Admin checks that player action efficiency value (0.73) is correctly converted to percentage format",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-018-24",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.24: Database Integration",
     "description": "Verify that the analytics page handles database connectivity and displays appropriate messages if data is unavailable",
     "scenario": "Admin accesses the page when database is disabled or unavailable to test error handling",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-018-25",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.25: URL Route Validation",
     "description": "Verify that the Blue vs Red analytics page is accessible via the correct URL route",
     "scenario": "Admin navigates to the analytics page using the direct URL to test routing",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-018-26",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.26: Session Management",
     "description": "Verify that admin session management works correctly when accessing the analytics page",
     "scenario": "Admin session expires while viewing the analytics page to test session handling",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-018-27",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.27: Asset Protection Color Coding",
     "description": "Verify that asset protection circular indicators use distinct colors for each asset type",
     "scenario": "Admin examines asset protection section to ensure each asset has unique color coding",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-018-28",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.28: Content Accessibility",
     "description": "Verify that the Blue vs Red analytics page meets accessibility standards for screen readers and keyboard navigation",
     "scenario": "Admin uses accessibility tools to test page compliance with WCAG guidelines",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-018-29",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.29: Error State Handling",
     "description": "Verify that the page handles various error states gracefully without breaking functionality",
     "scenario": "Admin tests page behavior when encountering various error conditions",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-018-30",
-    "module_name": "Blue vs Red Team Analytics",
+    "module_name": "Blue-vs-Red-Team-Analytics",
     "screen_design_ref": "Figure 18.30: Cross-Browser Compatibility",
     "description": "Verify that the Blue vs Red Team Analytics page functions correctly across different web browsers",
     "scenario": "Admin accesses the analytics page using various browsers to test compatibility",

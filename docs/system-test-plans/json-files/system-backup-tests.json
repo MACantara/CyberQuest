@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-022-01",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.1: System Backup Management Page",
     "description": "Verify that the System Backup page loads correctly with proper authentication",
     "scenario": "Admin user navigates to the system backup management page to view backup options and status",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-022-02",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.2: Admin Authentication Check",
     "description": "Verify that non-admin users cannot access the system backup page",
     "scenario": "Regular user attempts to access the system backup management functionality",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-022-03",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.3: Statistics Cards Display",
     "description": "Verify that backup statistics cards display accurate database counts and backup information",
     "scenario": "Admin views the statistics section to understand current system data and backup status",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-022-04",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.4: Create Backup Form",
     "description": "Verify the create backup form displays properly with warning information",
     "scenario": "Admin reviews the create backup section before initiating a backup operation",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-022-05",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.5: Create Backup Process",
     "description": "Verify that creating a new backup works correctly and generates proper backup file",
     "scenario": "Admin initiates a full system backup to preserve current database state",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-022-06",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.6: Backup Creation Error Handling",
     "description": "Verify proper error handling when backup creation fails due to database or file system issues",
     "scenario": "Backup creation fails due to database connection error or insufficient disk space",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-022-07",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.7: Restore Backup Form",
     "description": "Verify the restore backup form displays with file upload and restore type options",
     "scenario": "Admin prepares to restore system from a backup file with appropriate configuration options",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-022-08",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.8: Restore Type Selection",
     "description": "Verify that changing restore type updates warnings and button text appropriately",
     "scenario": "Admin selects different restore types to understand the implications of each option",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-022-09",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.9: Backup List Table",
     "description": "Verify the backup list table displays backup files with correct metadata and formatting",
     "scenario": "Admin reviews available backup files to select one for download or restore operations",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-022-10",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.10: Empty Backup State",
     "description": "Verify the empty state display when no backup files are available",
     "scenario": "Admin views backup page when no backup files have been created yet",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-022-11",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.11: Download Backup Functionality",
     "description": "Verify that backup files can be downloaded successfully with proper security checks",
     "scenario": "Admin downloads a backup file for external storage or transfer to another system",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-022-12",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.12: Download Security Validation",
     "description": "Verify that download requests are properly validated to prevent unauthorized file access",
     "scenario": "Admin attempts to download backup with security validation checks",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-022-13",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.13: Delete Backup Functionality",
     "description": "Verify that backup files can be deleted with appropriate confirmation and logging",
     "scenario": "Admin removes old backup files to free up storage space",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-022-14",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.14: Delete Security Validation",
     "description": "Verify that delete operations include proper security checks and error handling",
     "scenario": "Admin attempts to delete backup files with various security scenarios",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-022-15",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.15: Upload Restore Process",
     "description": "Verify restore functionality works correctly when uploading a backup file in merge mode",
     "scenario": "Admin restores system from uploaded backup file using merge mode to preserve existing data",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-022-16",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.16: Upload Restore Replace Mode",
     "description": "Verify restore functionality works correctly in replace mode with proper warnings",
     "scenario": "Admin performs complete database replacement from backup file understanding data loss implications",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-022-17",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.17: Restore File Validation",
     "description": "Verify proper validation of uploaded backup files including format and content checks",
     "scenario": "Admin uploads various file types to test restore validation and error handling",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-022-18",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.18: Server Restore Modal",
     "description": "Verify the server restore modal displays correctly with backup details and options",
     "scenario": "Admin clicks restore button for a server backup file to open restore configuration modal",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-022-19",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.19: Server Restore Execution",
     "description": "Verify server restore functionality works correctly for backups already on the server",
     "scenario": "Admin restores database from a backup file stored on the server using the modal interface",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-022-20",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.20: Modal Warning Updates",
     "description": "Verify that modal warnings update dynamically when changing restore type in server restore",
     "scenario": "Admin changes restore type in server restore modal to see different warning levels",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-022-21",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.21: Backup Schedule Page",
     "description": "Verify the backup schedule configuration page loads and displays current settings",
     "scenario": "Admin navigates to backup schedule page to configure automated backup settings",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-022-22",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.22: Schedule Status Display",
     "description": "Verify the schedule status section shows current configuration and next backup information",
     "scenario": "Admin reviews current backup schedule settings and timing information",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-022-23",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.23: Backup Metadata Display",
     "description": "Verify backup metadata is correctly extracted and displayed for each backup file",
     "scenario": "Admin reviews backup file details including table counts, record counts, and backup version information",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-022-24",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.24: File Size Formatting",
     "description": "Verify file sizes are displayed in appropriate units (bytes, KB, MB, GB) based on size",
     "scenario": "Admin reviews backup file sizes displayed in human-readable format",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-022-25",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.25: Responsive Design",
     "description": "Verify the backup page displays correctly on different screen sizes and devices",
     "scenario": "Admin accesses backup management from various devices to ensure responsive design functionality",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-022-26",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.26: Database Connection Error",
     "description": "Verify proper error handling when database connections fail during backup operations",
     "scenario": "Backup operations are attempted when database is unavailable or connection is interrupted",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-022-27",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.27: Backup Process Logging",
     "description": "Verify all backup operations are properly logged with admin user information and timestamps",
     "scenario": "Admin performs various backup operations which should be tracked for audit purposes",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-022-28",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.28: Concurrent Access Handling",
     "description": "Verify system handles multiple admin users accessing backup functionality simultaneously",
     "scenario": "Multiple admin users perform backup operations at the same time to test concurrency handling",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-022-29",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.29: Large Database Backup",
     "description": "Verify backup functionality works correctly with large datasets and extended processing times",
     "scenario": "Admin creates backup of system with large amount of data to test performance and timeout handling",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-022-30",
-    "module_name": "System Backup",
+    "module_name": "System-Backup",
     "screen_design_ref": "Figure 22.30: Data Integrity Validation",
     "description": "Verify backup and restore operations maintain complete data integrity across all database tables",
     "scenario": "Admin creates backup, modifies data, then restores to verify all data is preserved correctly",

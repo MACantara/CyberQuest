@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-039-01",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.1: Introduction Page Load and Navigation",
     "description": "Verify that the Blue Team vs Red Team introduction page loads correctly with all content sections",
     "scenario": "User navigates to Blue vs Red Team mode introduction page to learn about the simulation",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-039-02",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.2: Introduction Page Interactive Elements",
     "description": "Verify interactive elements and animations work correctly on the introduction page",
     "scenario": "User interacts with various elements on the introduction page to explore features",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-039-03",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.3: Tutorial Page Content and Navigation",
     "description": "Verify the tutorial page displays comprehensive educational content about Blue vs Red Team concepts",
     "scenario": "User accesses tutorial to learn about Blue Team defense and Red Team attack methodologies",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-039-04",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.4: Tutorial to Dashboard Navigation Flow",
     "description": "Verify navigation flow from tutorial to dashboard works correctly with next parameter handling",
     "scenario": "User completes tutorial and proceeds to dashboard simulation with proper parameter forwarding",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-039-05",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.5: Dashboard Initialization and Layout",
     "description": "Verify the dashboard loads correctly with all simulation components and proper layout",
     "scenario": "User accesses the main simulation dashboard to begin Blue vs Red Team training",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-039-06",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.6: Game Controller Initialization",
     "description": "Verify the Game Controller initializes correctly with proper game state and component integration",
     "scenario": "Game Controller orchestrates the simulation by initializing AI engine, UI manager, and game state",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-039-07",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.7: AI Engine Q-Learning System",
     "description": "Verify the AI Engine implements Q-Learning algorithm correctly for adaptive Red Team attacks",
     "scenario": "AI Engine uses Q-Learning to adapt attack strategies based on Blue Team defensive responses",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-039-08",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.8: Adaptive Learning Integration",
     "description": "Verify adaptive learning system adjusts difficulty based on player performance",
     "scenario": "Adaptive learning monitors player actions and adjusts AI difficulty to maintain appropriate challenge level",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-039-09",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.9: Game State Management",
     "description": "Verify game state management handles start, pause, stop, and reset operations correctly",
     "scenario": "Game Controller manages simulation lifecycle through various game states and transitions",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-039-10",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.10: Network Defense Map Visualization",
     "description": "Verify the network defense map displays assets correctly with real-time status updates",
     "scenario": "Network map visualizes Project Sentinel Academy infrastructure with dynamic asset status indicators",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-039-11",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.11: Alert Center and Notification System",
     "description": "Verify the alert center displays security alerts with proper severity classification and real-time updates",
     "scenario": "Alert center receives and displays security alerts from AI attacks with appropriate severity levels",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-039-12",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.12: Defense Command Terminal",
     "description": "Verify the Defense Command Terminal accepts commands and provides interactive Blue Team defense capabilities",
     "scenario": "Blue Team defender uses terminal commands to analyze threats, implement defenses, and respond to incidents",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-039-13",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.13: AI Attack Execution and Detection",
     "description": "Verify AI attacks are executed correctly with proper detection mechanisms and impact assessment",
     "scenario": "AI engine launches various attack types against assets with realistic detection probabilities",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-039-14",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.14: Security Controls Management",
     "description": "Verify security controls can be toggled and affect attack success rates appropriately",
     "scenario": "Blue Team manages security controls (firewall, endpoint protection, access control) to improve defenses",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-039-15",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.15: Real-time Timer and Game Duration",
     "description": "Verify the simulation timer counts down correctly and triggers game end conditions",
     "scenario": "Timer manages simulation duration with visual countdown and automatic game termination",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-039-16",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.16: Incident Response System",
     "description": "Verify incident response system logs and tracks security incidents with proper categorization",
     "scenario": "System records security incidents from AI attacks and provides incident management capabilities",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-039-17",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.17: Player Action Recording and Analytics",
     "description": "Verify player actions are recorded correctly for performance analysis and adaptive learning",
     "scenario": "System tracks all player defensive actions, response times, and decision quality for learning optimization",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-039-18",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.18: Game Results and Scoring System",
     "description": "Verify game completion generates accurate results with comprehensive scoring metrics",
     "scenario": "Game end calculates final score based on asset integrity, detection rate, and response effectiveness",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-039-19",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.19: API Endpoints and State Management",
     "description": "Verify backend API endpoints handle game state operations correctly",
     "scenario": "Frontend communicates with backend APIs for game state management, session tracking, and result storage",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-039-20",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.20: Error Handling and Recovery",
     "description": "Verify proper error handling when simulation encounters issues or invalid states",
     "scenario": "System handles various error conditions gracefully during simulation operations",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-039-21",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.21: Performance Under Load",
     "description": "Verify simulation maintains performance during intensive AI operations and real-time updates",
     "scenario": "System performance remains stable during high-frequency AI attacks and UI updates",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-039-22",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.22: UI Manager Real-time Updates",
     "description": "Verify UI Manager correctly updates all interface elements in real-time during simulation",
     "scenario": "UI Manager coordinates updates across all dashboard components based on game state changes",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-039-23",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.23: Session Persistence and Recovery",
     "description": "Verify simulation state persistence across browser sessions and page refreshes",
     "scenario": "Game state is maintained and recoverable during browser navigation and session interruptions",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-039-24",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.24: Educational Feedback System",
     "description": "Verify educational feedback system provides appropriate guidance and learning support",
     "scenario": "System provides contextual hints, explanations, and learning feedback during simulation",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-039-25",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.25: Browser Compatibility Testing",
     "description": "Verify Blue Team vs Red Team mode works correctly across different web browsers",
     "scenario": "Simulation functions properly in Chrome, Firefox, Safari, and Edge browsers",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-039-26",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.26: Accessibility Compliance",
     "description": "Verify Blue Team vs Red Team interface meets accessibility standards for screen readers and keyboard navigation",
     "scenario": "Simulation interface is accessible to users with disabilities through proper accessibility features",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-039-27",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.27: Security Implementation",
     "description": "Verify security measures protect against client-side vulnerabilities and data exposure",
     "scenario": "Simulation implements proper security controls to protect user data and prevent exploitation",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-039-28",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.28: Mobile Responsiveness",
     "description": "Verify Blue Team vs Red Team interface adapts properly to mobile devices and smaller screens",
     "scenario": "Interface remains functional and usable on tablets and mobile devices with responsive design",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-039-29",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.29: Integration with Main CyberQuest System",
     "description": "Verify Blue Team vs Red Team mode integrates properly with main CyberQuest platform",
     "scenario": "Mode integrates seamlessly with user authentication, progress tracking, and navigation system",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-039-30",
-    "module_name": "Blue Team vs Red Team Mode",
+    "module_name": "Blue-Team-vs-Red-Team-Mode",
     "screen_design_ref": "Figure 39.30: Complete Blue vs Red Team Workflow",
     "description": "Verify complete end-to-end workflow from introduction through simulation completion with comprehensive cybersecurity training",
     "scenario": "User experiences complete Blue Team vs Red Team training from introduction to advanced simulation mastery",

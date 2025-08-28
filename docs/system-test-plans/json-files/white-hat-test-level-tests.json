@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-037-01",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.1: Level Start and Authentication",
     "description": "Verify that Level 4 'The White Hat Test' can be started correctly with proper authentication and prerequisite checking",
     "scenario": "User starts Level 4 from the levels page after completing Level 3 to begin ethical hacking training",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-037-02",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.2: Level Data Injection",
     "description": "Verify that Level 4 metadata is correctly passed to the simulation system",
     "scenario": "Simulation system receives and processes Level 4 data for proper ethical hacking training initialization",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-037-03",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.3: Ethical Hacking Context Setup",
     "description": "Verify the ethical hacking scenario context is properly established for the penetration testing challenge",
     "scenario": "User receives introduction to the ethical hacking environment with authorized testing scope and legal boundaries",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-037-04",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.4: Penetration Testing Interface",
     "description": "Verify the penetration testing interface provides comprehensive tools for ethical vulnerability assessment",
     "scenario": "System provides professional-grade penetration testing tools, scanners, and exploitation frameworks",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-037-05",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.5: Vulnerability Assessment Dashboard",
     "description": "Verify the vulnerability assessment dashboard displays comprehensive security analysis and findings",
     "scenario": "Assessment dashboard provides systematic view of target vulnerabilities, risk levels, and remediation priorities",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-037-06",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.6: Ethical Hacking Methodology Training",
     "description": "Verify the level effectively teaches ethical hacking methodology through structured penetration testing approach",
     "scenario": "User learns systematic penetration testing methodology including reconnaissance, scanning, enumeration, exploitation, and reporting",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-037-07",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.7: Network Reconnaissance Tools",
     "description": "Verify network reconnaissance tools provide comprehensive target discovery and analysis capabilities",
     "scenario": "User employs passive and active reconnaissance techniques to gather information about authorized target systems",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-037-08",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.8: Vulnerability Exploitation Framework",
     "description": "Verify vulnerability exploitation framework provides controlled environment for ethical penetration testing",
     "scenario": "User practices controlled exploitation techniques in authorized lab environment with proper safeguards",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-037-09",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.9: Responsible Disclosure Protocol",
     "description": "Verify responsible disclosure protocol training covers proper vulnerability reporting and communication",
     "scenario": "User learns industry-standard responsible disclosure practices for reporting security vulnerabilities to organizations",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-037-10",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.10: Penetration Testing Reporting System",
     "description": "Verify penetration testing reporting system generates comprehensive professional security assessment reports",
     "scenario": "Reporting system compiles findings, risk assessments, and recommendations into executive and technical reports",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-037-11",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.11: Legal and Ethical Guidelines Framework",
     "description": "Verify legal and ethical guidelines framework provides comprehensive understanding of penetration testing boundaries",
     "scenario": "Framework educates users on legal requirements, ethical standards, and professional responsibilities in cybersecurity",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-037-12",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.12: Advanced Exploitation Techniques",
     "description": "Verify advanced exploitation techniques training covers sophisticated attack vectors and defensive considerations",
     "scenario": "Expert-level training in advanced penetration testing techniques including privilege escalation and persistence",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-037-13",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.13: Web Application Security Testing",
     "description": "Verify web application security testing covers comprehensive OWASP methodology and common vulnerabilities",
     "scenario": "Systematic web application penetration testing following OWASP Testing Guide and Top 10 vulnerabilities",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-037-14",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.14: Network Infrastructure Assessment",
     "description": "Verify network infrastructure assessment covers comprehensive network security evaluation",
     "scenario": "Systematic network penetration testing including protocol analysis, service enumeration, and infrastructure hardening assessment",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-037-15",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.15: Social Engineering Assessment",
     "description": "Verify social engineering assessment training covers human factor security evaluation within ethical boundaries",
     "scenario": "Controlled social engineering testing focused on awareness training and policy effectiveness evaluation",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-037-16",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.16: Level Completion Criteria",
     "description": "Verify level completion criteria accurately determine when ethical hacking challenge is successfully completed",
     "scenario": "System recognizes successful completion when penetration testing methodology is demonstrated and ethical standards maintained",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-037-17",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.17: Level Completion API Call",
     "description": "Verify the level completion API endpoint is called correctly when Level 4 is finished",
     "scenario": "System makes API call to record Level 4 completion and unlock Level 5",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-037-18",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.18: LocalStorage Progress Tracking",
     "description": "Verify progress tracking through localStorage for level start, challenges, and completion",
     "scenario": "System tracks user progress through various localStorage keys for ethical hacking training state management",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-037-19",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.19: XP and Badge System",
     "description": "Verify the XP and badge award system works correctly for Level 4 completion",
     "scenario": "System awards appropriate XP and badges for ethical hacking and penetration testing skill development",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-037-20",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.20: Performance Under Intensive Operations",
     "description": "Verify Level 4 simulation maintains performance during intensive penetration testing operations",
     "scenario": "System performance remains stable during resource-intensive vulnerability scanning and exploitation testing",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-037-21",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.21: Error Handling and Recovery",
     "description": "Verify proper error handling when Level 4 simulation encounters issues during penetration testing operations",
     "scenario": "System handles various error conditions gracefully during ethical hacking and vulnerability assessment activities",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-037-22",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.22: Educational Feedback System",
     "description": "Verify the feedback system provides educational responses to user ethical hacking decisions and maintains ethical standards",
     "scenario": "User receives immediate feedback on penetration testing decisions with emphasis on ethical practices and learning",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-037-23",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.23: Security Tool Integration",
     "description": "Verify security tools integrate seamlessly for comprehensive penetration testing and vulnerability assessment",
     "scenario": "Multiple penetration testing tools work together providing unified assessment and reporting capabilities",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-037-24",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.24: Professional Ethics Environment",
     "description": "Verify the professional ethics environment provides realistic context for ethical hacking decision-making",
     "scenario": "Professional environment creates authentic ethical challenges and decision-making scenarios",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-037-25",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.25: Advanced Vulnerability Research",
     "description": "Verify advanced vulnerability research capabilities identify zero-day vulnerabilities and novel attack vectors",
     "scenario": "Research tools enable discovery and analysis of previously unknown vulnerabilities through systematic testing",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-037-26",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.26: Compliance and Regulatory Framework",
     "description": "Verify compliance and regulatory framework addresses industry standards and legal requirements",
     "scenario": "Framework ensures penetration testing activities comply with industry regulations and legal standards",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-037-27",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.27: Browser Compatibility Testing",
     "description": "Verify Level 4 simulation works correctly across different web browsers",
     "scenario": "Ethical hacking training functions properly in Chrome, Firefox, Safari, and Edge",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-037-28",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.28: Accessibility Compliance",
     "description": "Verify Level 4 penetration testing interfaces meet accessibility standards for screen readers and keyboard navigation",
     "scenario": "Penetration testing tools and interfaces are accessible to users with disabilities through proper accessibility features",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-037-29",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.29: Integration with Level Progression System",
     "description": "Verify Level 4 completion properly integrates with the overall level progression system",
     "scenario": "Completing Level 4 correctly updates progress and unlocks Level 5 in the main levels interface",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-037-30",
-    "module_name": "The White Hat Test Level",
+    "module_name": "The-White-Hat-Test-Level",
     "screen_design_ref": "Figure 37.30: Complete Ethical Hacking Workflow",
     "description": "Verify complete end-to-end workflow for Level 4 from start to completion with comprehensive ethical hacking skill development",
     "scenario": "User completes entire ethical hacking training gaining penetration testing, vulnerability assessment, and professional ethics skills",

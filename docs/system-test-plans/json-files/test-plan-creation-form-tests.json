@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-028-01",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.1: Create Test Plan Page",
     "description": "Verify that the create test plan page loads correctly with proper authentication",
     "scenario": "Admin user navigates to the test plan creation form to create a new test plan",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-028-02",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.2: Form Authentication Check",
     "description": "Verify that non-admin users cannot access the test plan creation form",
     "scenario": "Regular user attempts to access test plan creation functionality",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-028-03",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.3: Page Header Layout",
     "description": "Verify the page header displays correct title, description, and navigation",
     "scenario": "Admin views the page header to understand context and navigation options",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-028-04",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.4: Form Layout Structure",
     "description": "Verify the form layout uses proper grid structure and responsive design",
     "scenario": "Admin views form layout on different screen sizes to ensure proper organization",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-028-05",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.5: Basic Information Section",
     "description": "Verify the basic information section displays all required fields correctly",
     "scenario": "Admin fills out basic information fields to create test plan foundation",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-028-06",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.6: Required Field Validation",
     "description": "Verify that required fields are properly marked and validated",
     "scenario": "Admin observes required field indicators and attempts form submission with missing data",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-028-07",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.7: Test Details Section",
     "description": "Verify the test details section displays description, scenario, and expected results fields",
     "scenario": "Admin fills out test details to define test objectives and expectations",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-028-08",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.8: Test Procedure Section",
     "description": "Verify the test procedure section provides proper textarea for step-by-step instructions",
     "scenario": "Admin enters detailed test procedure steps with proper formatting assistance",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-028-09",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.9: Test Configuration Section",
     "description": "Verify the test configuration section provides dropdowns for status, priority, and category",
     "scenario": "Admin configures test plan properties using dropdown selections",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-028-10",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.10: Dropdown Default Values",
     "description": "Verify that dropdown fields have appropriate default values selected",
     "scenario": "Admin views form with pre-selected sensible defaults for new test plans",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-028-11",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.11: Help Guidelines Section",
     "description": "Verify the help guidelines section provides useful tips for form completion",
     "scenario": "Admin references guidelines to understand form completion best practices",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-028-12",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.12: Form Actions Section",
     "description": "Verify the form actions section provides proper submit and cancel buttons",
     "scenario": "Admin completes form and uses action buttons to submit or cancel",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-028-13",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.13: Form Submission Process",
     "description": "Verify that form submission creates new test plan correctly",
     "scenario": "Admin fills out complete form and submits to create new test plan",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-028-14",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.14: Form Validation on Submit",
     "description": "Verify that form validation prevents submission with missing required fields",
     "scenario": "Admin attempts to submit form with missing required information",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-028-15",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.15: Client-side Validation",
     "description": "Verify that client-side JavaScript validation works correctly",
     "scenario": "Admin experiences real-time form validation and assistance",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-028-16",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.16: Auto-generation Features",
     "description": "Verify that test plan number auto-generation works when module is selected",
     "scenario": "Admin selects module and observes test plan number suggestion",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-028-17",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.17: Procedure Formatting Assistance",
     "description": "Verify that procedure textarea provides auto-numbering assistance",
     "scenario": "Admin enters procedure steps and receives formatting assistance",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-028-18",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.18: Field Placeholder Text",
     "description": "Verify that form fields have appropriate placeholder text and help information",
     "scenario": "Admin views form fields to understand expected input format and content",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-028-19",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.19: Error Handling and Messages",
     "description": "Verify proper error handling when form submission fails",
     "scenario": "Form submission encounters server-side errors or validation issues",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-028-20",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.20: CSRF Protection",
     "description": "Verify that CSRF token is properly included and validated",
     "scenario": "Form submission includes proper CSRF protection against attacks",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-028-21",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.21: Section Border Styling",
     "description": "Verify that form sections have appropriate colored borders and visual hierarchy",
     "scenario": "Admin views form sections to understand organization and visual structure",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-028-22",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.22: Input Field Styling",
     "description": "Verify that all input fields have consistent styling and focus states",
     "scenario": "Admin interacts with form fields to ensure consistent user experience",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-028-23",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.23: Dark Mode Compatibility",
     "description": "Verify that the form displays correctly in both light and dark themes",
     "scenario": "Admin switches between light and dark modes to ensure proper theming support",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-028-24",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.24: Page Title Display",
     "description": "Verify that the page title shows 'Create Test Plan' in browser tab",
     "scenario": "Admin views browser tab title to understand current page context",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-028-25",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.25: Form Accessibility",
     "description": "Verify that the form meets accessibility standards for screen readers and keyboard navigation",
     "scenario": "Admin and accessibility tools test form for compliance with accessibility standards",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-028-26",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.26: Browser Compatibility",
     "description": "Verify form works correctly across different web browsers",
     "scenario": "Admin accesses form using various browsers to ensure cross-browser compatibility",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-028-27",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.27: Form Performance",
     "description": "Verify that form loads and responds quickly with good performance",
     "scenario": "Admin measures form loading time and interaction responsiveness",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-028-28",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.28: Navigation Integration",
     "description": "Verify that form integrates properly with site navigation and workflow",
     "scenario": "Admin navigates to and from form as part of test management workflow",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-028-29",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.29: Form Data Persistence",
     "description": "Verify that form data is properly handled during navigation and errors",
     "scenario": "Admin fills form, encounters issues, and expects data preservation",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-028-30",
-    "module_name": "Test Plan Creation Form",
+    "module_name": "Test-Plan-Creation-Form",
     "screen_design_ref": "Figure 28.30: Success Flow Integration",
     "description": "Verify complete success flow from form creation to test plan list",
     "scenario": "Admin completes entire workflow from form creation to viewing created test plan",

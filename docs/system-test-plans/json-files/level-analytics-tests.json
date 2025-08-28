@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-017-01",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.1: Level Analytics Dashboard Layout",
     "description": "Verify that the Level Analytics page loads correctly when accessing /admin/player-analytics/levels with authenticated admin user",
     "scenario": "Admin user navigates to the level analytics page to view detailed performance metrics for each cybersecurity level",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-017-02",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.2: Admin Authentication Requirements",
     "description": "Verify level analytics page requires proper admin authentication and redirects non-admin users",
     "scenario": "Non-admin user or unauthenticated user attempts to access level analytics dashboard",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-017-03",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.3: Level Analytics Header Component",
     "description": "Verify level analytics header displays correctly with navigation buttons",
     "scenario": "Admin views level analytics header with title and navigation options",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-017-04",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.4: Level Performance Overview",
     "description": "Verify level performance overview displays circular progress indicators for all levels",
     "scenario": "Admin views overview of all 5 cybersecurity levels with completion rates and average times",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-017-05",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.5: Level 1 Detailed Metrics",
     "description": "Verify Level 1 (The Misinformation Maze) detailed metrics display correctly",
     "scenario": "Admin views detailed analytics for Level 1 focusing on information literacy and source verification skills",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-017-06",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.6: Level 2 Detailed Metrics",
     "description": "Verify Level 2 (Shadow in the Inbox) detailed metrics display correctly",
     "scenario": "Admin views detailed analytics for Level 2 focusing on email security and social engineering protection",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-017-07",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.7: Level 3 Detailed Metrics",
     "description": "Verify Level 3 (Malware Mayhem) detailed metrics display correctly",
     "scenario": "Admin views detailed analytics for Level 3 focusing on threat detection and network security",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-017-08",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.8: Level 4 Detailed Metrics",
     "description": "Verify Level 4 (The White Hat Test) detailed metrics display correctly",
     "scenario": "Admin views detailed analytics for Level 4 focusing on ethical hacking and assessment quality",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-017-09",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.9: Level 5 Detailed Metrics",
     "description": "Verify Level 5 (The Hunt for The Null) detailed metrics display correctly",
     "scenario": "Admin views detailed analytics for Level 5 focusing on digital forensics and investigation skills",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-017-10",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.10: Data Integration",
     "description": "Verify level analytics page integrates correctly with data_analytics.py backend",
     "scenario": "Level analytics dashboard displays data from player_analytics_levels route with proper dummy data",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-017-11",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.11: Circular Progress Indicators",
     "description": "Verify circular SVG progress indicators display accurate completion percentages",
     "scenario": "Admin views level completion rates with visual circular progress representations",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-017-12",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.12: Animation Sequence",
     "description": "Verify level analytics components animate correctly on page load",
     "scenario": "Admin observes level analytics sections appearing with staggered animations",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-017-13",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.13: Responsive Design",
     "description": "Verify level analytics page is responsive across different screen sizes",
     "scenario": "Admin accesses level analytics on mobile, tablet, and desktop devices",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-017-14",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.14: Navigation Integration",
     "description": "Verify level analytics navigation links work correctly",
     "scenario": "Admin navigates between level analytics and other admin sections",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-017-15",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.15: Cybersecurity Education Metrics",
     "description": "Verify level analytics focus on cybersecurity education effectiveness",
     "scenario": "Admin evaluates cybersecurity education progression and skill development through level analytics",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-017-16",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.16: Level Name Display",
     "description": "Verify cybersecurity level names display correctly with proper formatting",
     "scenario": "Admin views level names and ensures they match the cybersecurity curriculum themes",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-017-17",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.17: Metric Color Coding",
     "description": "Verify metric values use consistent color coding for different types of data",
     "scenario": "Admin views level metrics with color-coded values for easy interpretation",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-017-18",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.18: Dark Mode Compatibility",
     "description": "Verify level analytics displays correctly in dark mode",
     "scenario": "Admin toggles dark mode and uses level analytics interface",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-017-19",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.19: Performance Optimization",
     "description": "Verify level analytics page loads efficiently with optimal performance",
     "scenario": "Admin accesses level analytics and expects fast loading times with all level data",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-017-20",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.20: Data Accuracy Validation",
     "description": "Verify all displayed level analytics data matches the dummy data from backend",
     "scenario": "Level analytics reflects accurate dummy data for demonstration and testing purposes",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-017-21",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.21: Template Conditional Logic",
     "description": "Verify template conditional logic displays level-specific metrics correctly",
     "scenario": "Level analytics template renders different metrics for each level based on conditional logic",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-017-22",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.22: Icon Integration",
     "description": "Verify all icons and visual elements display correctly in level analytics",
     "scenario": "Admin views level analytics with proper icon rendering and visual hierarchy",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-017-23",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.23: Error Handling and Resilience",
     "description": "Verify level analytics handles errors gracefully when data cannot be loaded",
     "scenario": "Level analytics encounters issues loading level data or template rendering",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-017-24",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.24: Browser Compatibility",
     "description": "Verify level analytics works correctly across different browsers",
     "scenario": "Admin accesses level analytics using various web browsers",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-017-25",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.25: Accessibility Compliance",
     "description": "Verify level analytics meets accessibility standards (WCAG)",
     "scenario": "Admin with disabilities accesses level analytics using assistive technologies",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-017-26",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.26: Time Format Conversion",
     "description": "Verify time values are correctly converted from seconds to minutes display",
     "scenario": "Admin views average completion times in user-friendly minute format",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-017-27",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.27: Template Integration",
     "description": "Verify level analytics integrates correctly with base template and styling",
     "scenario": "Level analytics extends base template and maintains consistent styling",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-017-28",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.28: Educational Progression Visualization",
     "description": "Verify level analytics effectively visualize educational progression and difficulty",
     "scenario": "Admin analyzes cybersecurity education effectiveness through level progression data",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-017-29",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.29: Card Layout and Spacing",
     "description": "Verify level analytics cards display with proper layout and spacing",
     "scenario": "Admin views level analytics with consistent card design and spacing",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-017-30",
-    "module_name": "Level Analytics Page",
+    "module_name": "Level-Analytics-Page",
     "screen_design_ref": "Figure 17.30: Security Audit and Compliance",
     "description": "Verify level analytics system meets security best practices",
     "scenario": "Security audit of level analytics functionality and data handling",

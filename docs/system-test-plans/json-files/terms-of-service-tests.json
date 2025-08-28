@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-005-01",
-    "module_name": "Terms of Service Page",
+    "module_name": "Terms-of-Service-Page",
     "screen_design_ref": "Figure 5.1: Terms of Service Page Layout",
     "description": "Verify that the Terms of Service page loads correctly when accessing the /terms-of-service URL",
     "scenario": "User navigates to the Terms of Service page to read the legal terms and conditions",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-005-02",
-    "module_name": "Terms of Service Page",
+    "module_name": "Terms-of-Service-Page",
     "screen_design_ref": "Figure 5.2: Page Header Section",
     "description": "Verify the terms of service header displays correctly with dates and document icon",
     "scenario": "User views the Terms of Service header with gradient background and legal information",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-005-03",
-    "module_name": "Terms of Service Page",
+    "module_name": "Terms-of-Service-Page",
     "screen_design_ref": "Figure 5.3: Date Helper Function Integration",
     "description": "Verify the terms dates are calculated correctly using the shared get_policy_dates() helper function",
     "scenario": "System generates consistent policy dates across all policy pages including terms of service",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-005-04",
-    "module_name": "Terms of Service Page",
+    "module_name": "Terms-of-Service-Page",
     "screen_design_ref": "Figure 5.4: Acceptance of Terms Section",
     "description": "Verify the acceptance of terms section displays correctly with binding language",
     "scenario": "User reads the opening terms section to understand binding nature of agreement",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-005-05",
-    "module_name": "Terms of Service Page",
+    "module_name": "Terms-of-Service-Page",
     "screen_design_ref": "Figure 5.5: User Accounts Section",
     "description": "Verify the user accounts section displays account creation and security requirements",
     "scenario": "User wants to understand account requirements and responsibilities",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-005-06",
-    "module_name": "Terms of Service Page",
+    "module_name": "Terms-of-Service-Page",
     "screen_design_ref": "Figure 5.6: Acceptable Use Policy Section",
     "description": "Verify the acceptable use policy displays permitted uses and prohibited activities",
     "scenario": "User needs to understand what activities are allowed and forbidden",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-005-07",
-    "module_name": "Terms of Service Page",
+    "module_name": "Terms-of-Service-Page",
     "screen_design_ref": "Figure 5.7: Prohibited Activities Warning Box",
     "description": "Verify the prohibited activities section displays in a prominent red warning box",
     "scenario": "User needs clear visual indication of activities that are not allowed",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-005-08",
-    "module_name": "Terms of Service Page",
+    "module_name": "Terms-of-Service-Page",
     "screen_design_ref": "Figure 5.8: Intellectual Property Rights Section",
     "description": "Verify intellectual property rights section displays our rights and user rights",
     "scenario": "User wants to understand intellectual property ownership and licensing",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-005-09",
-    "module_name": "Terms of Service Page",
+    "module_name": "Terms-of-Service-Page",
     "screen_design_ref": "Figure 5.9: Privacy and Data Protection Section",
     "description": "Verify privacy section references the Privacy Policy and RA 10173 compliance",
     "scenario": "User wants to understand how their privacy is protected",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-005-10",
-    "module_name": "Terms of Service Page",
+    "module_name": "Terms-of-Service-Page",
     "screen_design_ref": "Figure 5.10: Service Availability Section",
     "description": "Verify service availability section explains uptime and maintenance policies",
     "scenario": "User wants to understand service availability expectations",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-005-11",
-    "module_name": "Terms of Service Page",
+    "module_name": "Terms-of-Service-Page",
     "screen_design_ref": "Figure 5.11: Limitation of Liability Section",
     "description": "Verify limitation of liability section displays in prominent yellow warning box",
     "scenario": "User needs to understand liability limitations and legal disclaimers",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-005-12",
-    "module_name": "Terms of Service Page",
+    "module_name": "Terms-of-Service-Page",
     "screen_design_ref": "Figure 5.12: Termination Section",
     "description": "Verify termination section displays both user and company termination rights",
     "scenario": "User wants to understand how accounts can be terminated",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-005-13",
-    "module_name": "Terms of Service Page",
+    "module_name": "Terms-of-Service-Page",
     "screen_design_ref": "Figure 5.13: Governing Law Section",
     "description": "Verify governing law section specifies Philippine jurisdiction",
     "scenario": "User needs to understand which laws and courts govern the terms",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-005-14",
-    "module_name": "Terms of Service Page",
+    "module_name": "Terms-of-Service-Page",
     "screen_design_ref": "Figure 5.14: Terms Change Notice Period",
     "description": "Verify the terms change section displays 14-day notice period in yellow box",
     "scenario": "User wants to understand how changes to terms will be communicated",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-005-15",
-    "module_name": "Terms of Service Page",
+    "module_name": "Terms-of-Service-Page",
     "screen_design_ref": "Figure 5.15: Contact Information Section",
     "description": "Verify contact information section displays legal contact details",
     "scenario": "User needs to contact the company about legal matters or terms questions",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-005-16",
-    "module_name": "Terms of Service Page",
+    "module_name": "Terms-of-Service-Page",
     "screen_design_ref": "Figure 5.16: Route Integration",
     "description": "Verify the terms of service route works correctly in main.py blueprint",
     "scenario": "User accesses terms of service through direct URL and navigation links",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-005-17",
-    "module_name": "Terms of Service Page",
+    "module_name": "Terms-of-Service-Page",
     "screen_design_ref": "Figure 5.17: Dark Mode Compatibility",
     "description": "Verify the Terms of Service page displays correctly in dark mode",
     "scenario": "User toggles to dark mode and reads the terms of service",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-005-18",
-    "module_name": "Terms of Service Page",
+    "module_name": "Terms-of-Service-Page",
     "screen_design_ref": "Figure 5.18: Responsive Design",
     "description": "Verify the Terms of Service page is responsive across different screen sizes",
     "scenario": "User views terms of service on mobile, tablet, and desktop devices",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-005-19",
-    "module_name": "Terms of Service Page",
+    "module_name": "Terms-of-Service-Page",
     "screen_design_ref": "Figure 5.19: Content Structure and Completeness",
     "description": "Verify all required terms of service sections are present and properly numbered",
     "scenario": "Legal review to ensure terms of service meets standard requirements",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-005-20",
-    "module_name": "Terms of Service Page",
+    "module_name": "Terms-of-Service-Page",
     "screen_design_ref": "Figure 5.20: Legal Compliance Footer",
     "description": "Verify the legal compliance footer displays terms update date and jurisdiction",
     "scenario": "User needs confirmation of terms validity and governing law",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-005-21",
-    "module_name": "Terms of Service Page",
+    "module_name": "Terms-of-Service-Page",
     "screen_design_ref": "Figure 5.21: Animation and Visual Effects",
     "description": "Verify page animations, transitions, and visual effects work properly",
     "scenario": "User interacts with terms of service page and observes visual feedback",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-005-22",
-    "module_name": "Terms of Service Page",
+    "module_name": "Terms-of-Service-Page",
     "screen_design_ref": "Figure 5.22: SEO and Metadata",
     "description": "Verify terms of service page has proper SEO elements and metadata",
     "scenario": "Search engines and social media platforms index the terms of service correctly",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-005-23",
-    "module_name": "Terms of Service Page",
+    "module_name": "Terms-of-Service-Page",
     "screen_design_ref": "Figure 5.23: Print Functionality",
     "description": "Verify terms of service page can be printed properly for legal records",
     "scenario": "User wants to print the terms of service for offline legal reference",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-005-24",
-    "module_name": "Terms of Service Page",
+    "module_name": "Terms-of-Service-Page",
     "screen_design_ref": "Figure 5.24: Accessibility Compliance",
     "description": "Verify terms of service page meets accessibility standards (WCAG)",
     "scenario": "User with disabilities accesses terms of service using assistive technologies",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-005-25",
-    "module_name": "Terms of Service Page",
+    "module_name": "Terms-of-Service-Page",
     "screen_design_ref": "Figure 5.25: Performance and Loading",
     "description": "Verify terms of service page loads efficiently despite extensive legal content",
     "scenario": "User accesses terms of service and expects reasonable loading times",

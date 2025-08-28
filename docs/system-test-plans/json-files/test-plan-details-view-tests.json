@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-027-01",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.1: Test Plan Details Page",
     "description": "Verify that the test plan details page loads correctly with proper authentication",
     "scenario": "Admin user navigates to a specific test plan's details page to view comprehensive test information",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-027-02",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.2: Test Plan Authentication Check",
     "description": "Verify that non-admin users cannot access the test plan details page",
     "scenario": "Regular user attempts to access test plan viewing functionality",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-027-03",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.3: Test Plan Not Found Handling",
     "description": "Verify proper handling when test plan ID does not exist",
     "scenario": "Admin attempts to view a test plan that doesn't exist in the database",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-027-04",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.4: Page Header Navigation",
     "description": "Verify the page header contains proper title, subtitle, and navigation buttons",
     "scenario": "Admin reviews page header for clear navigation and context",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-027-05",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.5: Test Information Section",
     "description": "Verify the test information section displays all test plan details correctly",
     "scenario": "Admin views test information to understand test plan specifications",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-027-06",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.6: Screen Design Reference Display",
     "description": "Verify that screen design reference is shown only when available",
     "scenario": "Admin views test plans with and without screen design references",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-027-07",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.7: Scenario Display Handling",
     "description": "Verify that scenario is shown only when available",
     "scenario": "Admin views test plans with and without scenario descriptions",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-027-08",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.8: Test Procedure Section",
     "description": "Verify the test procedure section displays steps in numbered format",
     "scenario": "Admin reviews test procedure to understand execution steps",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-027-09",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.9: Empty Procedure Steps Handling",
     "description": "Verify that empty lines in procedures are properly filtered out",
     "scenario": "Admin views test plan with procedure containing empty lines or whitespace",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-027-10",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.10: Test Status Section",
     "description": "Verify the test status section displays current execution status correctly",
     "scenario": "Admin reviews test status to understand current execution state",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-027-11",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.11: Execution Information Display",
     "description": "Verify that execution information is displayed when available",
     "scenario": "Admin views executed test plan to see execution history and details",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-027-12",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.12: Failure Reason Display",
     "description": "Verify that failure reason is displayed correctly for failed tests",
     "scenario": "Admin views failed test plan to understand failure details",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-027-13",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.13: Properties Section",
     "description": "Verify the properties section displays priority, category, and timestamps correctly",
     "scenario": "Admin reviews test plan properties to understand metadata and characteristics",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-027-14",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.14: Priority Badge Display",
     "description": "Verify that priority badges display with correct colors for all priority levels",
     "scenario": "Admin reviews priority badges to understand test criticality through visual indicators",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-027-15",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.15: Category Badge Display",
     "description": "Verify that category badge displays consistently with purple styling",
     "scenario": "Admin reviews category badge to understand test type classification",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-027-16",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.16: Quick Actions Section",
     "description": "Verify the quick actions section provides easy access to test plan operations",
     "scenario": "Admin uses quick actions to efficiently perform test plan operations",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-027-17",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.17: Quick Actions Navigation",
     "description": "Verify that quick action buttons navigate to correct destinations",
     "scenario": "Admin clicks quick action buttons to perform test plan operations",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-027-18",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.18: Delete Confirmation Functionality",
     "description": "Verify that delete confirmation works correctly with proper user confirmation",
     "scenario": "Admin attempts to delete test plan and is presented with confirmation dialog",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-027-19",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.19: Responsive Layout Design",
     "description": "Verify that the test plan details page adapts correctly to different screen sizes",
     "scenario": "Admin accesses test plan details from various devices to ensure responsive design",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-027-20",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.20: Section Border Styling",
     "description": "Verify that sections have appropriate border colors and styling",
     "scenario": "Admin views page sections to ensure proper visual hierarchy and organization",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-027-21",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.21: Dark Mode Compatibility",
     "description": "Verify that the test plan details page displays correctly in both light and dark themes",
     "scenario": "Admin switches between light and dark modes to ensure proper theming support",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-027-22",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.22: Page Title Dynamic Update",
     "description": "Verify that the page title includes the test plan number dynamically",
     "scenario": "Admin views page title to understand which test plan is being viewed",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-027-23",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.23: Animation and Transitions",
     "description": "Verify smooth animations and transitions enhance user experience",
     "scenario": "Admin observes page animations and button transitions for professional appearance",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-027-24",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.24: Timestamp Formatting",
     "description": "Verify that timestamps are formatted correctly for display",
     "scenario": "Admin views created and updated timestamps to understand test plan history",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-027-25",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.25: Error Handling",
     "description": "Verify proper error handling when test plan data cannot be loaded",
     "scenario": "Test plan details page encounters an error while loading data from the database",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-027-26",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.26: Browser Compatibility",
     "description": "Verify test plan details page works correctly across different web browsers",
     "scenario": "Admin accesses test plan details using various browsers to ensure cross-browser compatibility",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-027-27",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.27: Accessibility Compliance",
     "description": "Verify test plan details page meets accessibility standards for screen readers and keyboard navigation",
     "scenario": "Admin and accessibility tools test test plan details for compliance with accessibility standards",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-027-28",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.28: Content Text Formatting",
     "description": "Verify that all text content is properly formatted and readable",
     "scenario": "Admin reviews all text content for proper formatting and readability",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-027-29",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.29: Grid Layout Responsiveness",
     "description": "Verify that grid layouts adapt correctly on different screen sizes",
     "scenario": "Admin views test plan details on various screen sizes to ensure proper grid behavior",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-027-30",
-    "module_name": "Test Plan Details View",
+    "module_name": "Test-Plan-Details-View",
     "screen_design_ref": "Figure 27.30: Integration with Test Management Workflow",
     "description": "Verify test plan details page integrates properly with broader test management functionality",
     "scenario": "Admin uses test plan details as part of complete test management workflow",

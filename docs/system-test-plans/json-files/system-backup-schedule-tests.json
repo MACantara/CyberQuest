@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-023-01",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.1: Backup Schedule Configuration Page",
     "description": "Verify that the backup schedule configuration page loads correctly with proper authentication",
     "scenario": "Admin user navigates to the backup schedule configuration page to manage automated backup settings",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-023-02",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.2: Schedule Page Authentication",
     "description": "Verify that non-admin users cannot access the backup schedule configuration page",
     "scenario": "Regular user attempts to access the backup schedule management functionality",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-023-03",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.3: Schedule Status Section",
     "description": "Verify the schedule status section displays current configuration accurately",
     "scenario": "Admin views the schedule status to understand current backup automation settings",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-023-04",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.4: Next Backup Display",
     "description": "Verify the next backup section shows correct scheduling information",
     "scenario": "Admin checks when the next automatic backup is scheduled to occur",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-023-05",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.5: Auto Backup Toggle",
     "description": "Verify the automatic backup enable/disable toggle functions correctly",
     "scenario": "Admin enables or disables automatic backup functionality using the toggle switch",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-023-06",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.6: Backup Frequency Selection",
     "description": "Verify the backup frequency dropdown provides correct options and selection",
     "scenario": "Admin selects different backup frequency options to configure schedule timing",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-023-07",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.7: Backup Time Configuration",
     "description": "Verify the backup time input allows proper time selection in 24-hour format",
     "scenario": "Admin sets specific time for automated backups to occur during low traffic hours",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-023-08",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.8: Retention Period Setting",
     "description": "Verify the backup retention period input allows valid day values with proper constraints",
     "scenario": "Admin configures how long backup files should be kept before automatic deletion",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-023-09",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.9: Storage Location Options",
     "description": "Verify backup storage location radio buttons display with proper states and future options",
     "scenario": "Admin selects where backup files should be stored for automated backups",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-023-10",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.10: Email Notification Settings",
     "description": "Verify email notification checkboxes for backup success and failure alerts",
     "scenario": "Admin configures email notifications to be informed about backup operation outcomes",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-023-11",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.11: Save Settings Button",
     "description": "Verify the save schedule settings button displays correctly and submits form",
     "scenario": "Admin saves backup schedule configuration after making changes to settings",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-023-12",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.12: Production Deployment Info",
     "description": "Verify the information box displays production deployment requirements clearly",
     "scenario": "Admin reads information about implementing automated backups in production environment",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-023-13",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.13: Back Navigation",
     "description": "Verify the back to backup button navigates correctly to main backup page",
     "scenario": "Admin returns to main backup management page from schedule configuration",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-023-14",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.14: Form Validation",
     "description": "Verify form validation for schedule configuration inputs with invalid data",
     "scenario": "Admin enters invalid data in schedule form to test client-side validation",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-023-15",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.15: CSRF Token Protection",
     "description": "Verify the schedule configuration form includes CSRF protection token",
     "scenario": "Security check to ensure form submissions are protected against CSRF attacks",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-023-16",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.16: Responsive Layout",
     "description": "Verify the schedule configuration page displays correctly on different screen sizes",
     "scenario": "Admin accesses schedule configuration from various devices to ensure responsive design",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-023-17",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.17: Dark Mode Compatibility",
     "description": "Verify the schedule page displays correctly in both light and dark themes",
     "scenario": "Admin switches between light and dark modes to ensure proper theming support",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-023-18",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.18: Keyboard Navigation",
     "description": "Verify all interactive elements support proper keyboard navigation and accessibility",
     "scenario": "Admin navigates through schedule configuration using only keyboard input",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-023-19",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.19: Schedule Data Persistence",
     "description": "Verify that schedule configuration data persists correctly between page visits",
     "scenario": "Admin configures schedule settings, navigates away, then returns to verify persistence",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-023-20",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.20: Schedule Info Integration",
     "description": "Verify schedule info object displays accurate current configuration values",
     "scenario": "Admin views schedule page to see current configuration reflected from backend data",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-023-21",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.21: Form Reset Functionality",
     "description": "Verify ability to reset form to default values when needed",
     "scenario": "Admin makes changes to schedule configuration and wants to revert to defaults",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-023-22",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.22: Error Handling",
     "description": "Verify proper error handling when schedule configuration fails to save",
     "scenario": "Schedule configuration save operation encounters an error during processing",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-023-23",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.23: Page Loading Performance",
     "description": "Verify the schedule configuration page loads within acceptable time limits",
     "scenario": "Admin navigates to schedule page and measures loading performance",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-023-24",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.24: Form Security Validation",
     "description": "Verify schedule form properly validates and sanitizes all input data",
     "scenario": "Admin attempts to submit malicious or unexpected data in schedule form",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-023-25",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.25: Component Integration",
     "description": "Verify all schedule page components integrate properly with consistent styling",
     "scenario": "Admin reviews complete schedule page for visual consistency and component integration",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-023-26",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.26: URL Route Validation",
     "description": "Verify schedule page URL routing works correctly with proper admin authentication",
     "scenario": "Admin accesses schedule page through direct URL and navigation to ensure routing works",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-023-27",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.27: Browser Compatibility",
     "description": "Verify schedule configuration page works correctly across different web browsers",
     "scenario": "Admin accesses schedule page using various browsers to ensure cross-browser compatibility",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-023-28",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.28: Session Management",
     "description": "Verify schedule page properly handles admin session timeouts and renewals",
     "scenario": "Admin has extended session on schedule page to test session management",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-023-29",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.29: Documentation Accuracy",
     "description": "Verify all help text and documentation on schedule page is accurate and helpful",
     "scenario": "Admin reads all help text and instructions to understand schedule configuration",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-023-30",
-    "module_name": "System Backup Schedule",
+    "module_name": "System-Backup-Schedule",
     "screen_design_ref": "Figure 23.30: Integration with Main Backup",
     "description": "Verify schedule configuration integrates properly with main backup management functionality",
     "scenario": "Admin configures schedule settings and verifies integration with main backup system",

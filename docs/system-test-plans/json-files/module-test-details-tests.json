@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-025-01",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.1: Module Test Details Page",
     "description": "Verify that the module test details page loads correctly with proper authentication",
     "scenario": "Admin user navigates to a specific module's test details page to view module-specific tests",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-025-02",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.2: Module Authentication Check",
     "description": "Verify that non-admin users cannot access the module test details page",
     "scenario": "Regular user attempts to access module-specific test management functionality",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-025-03",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.3: Module Statistics Cards",
     "description": "Verify that module statistics cards display accurate test counts for the specific module",
     "scenario": "Admin views module statistics to understand test progress and status for the selected module",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-025-04",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.4: Module Statistics Calculation",
     "description": "Verify that module statistics calculations are accurate and match actual test data",
     "scenario": "Admin compares displayed statistics with actual test data to ensure calculation accuracy",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-025-05",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.5: Module Progress Bar",
     "description": "Verify the module progress bar displays correct completion percentage and visual indicators",
     "scenario": "Admin views progress bar to quickly assess module test completion status",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-025-06",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.6: Test Plans List Header",
     "description": "Verify the test plans list header displays correct count and filter options",
     "scenario": "Admin views test plans list to understand available tests and filtering capabilities",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-025-07",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.7: Search Functionality",
     "description": "Verify the search input filters test plans based on test plan number and description",
     "scenario": "Admin searches for specific test plans using the search input field",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-025-08",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.8: Filter Combinations",
     "description": "Verify that status, priority, and search filters work correctly in combination",
     "scenario": "Admin uses multiple filters simultaneously to find specific test plans",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-025-09",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.9: Test Plan Cards Display",
     "description": "Verify that test plan cards display all required information with proper formatting",
     "scenario": "Admin reviews test plan cards to understand test details and current status",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-025-10",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.10: Failure Reason Display",
     "description": "Verify that failure reasons are displayed correctly for failed tests with proper truncation",
     "scenario": "Admin reviews failed test cards to understand specific failure reasons",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-025-11",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.11: Action Buttons Functionality",
     "description": "Verify that action buttons on test plan cards navigate to correct destinations",
     "scenario": "Admin uses action buttons to view, execute, and edit test plans",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-025-12",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.12: Empty Module State",
     "description": "Verify the empty state display when no test plans exist for the module",
     "scenario": "Admin views module page when no test plans have been created for that module",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-025-13",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.13: No Search Results State",
     "description": "Verify the no results state when search/filter criteria match no test plans",
     "scenario": "Admin applies search or filter criteria that match no existing test plans",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-025-14",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.14: Page Header Navigation",
     "description": "Verify the page header contains proper title, description, and navigation buttons",
     "scenario": "Admin reviews module page header for clear navigation and context",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-025-15",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.15: Responsive Grid Layout",
     "description": "Verify the test plan cards grid adapts correctly to different screen sizes",
     "scenario": "Admin accesses module page from various devices to ensure responsive design",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-025-16",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.16: Real-time Filter Updates",
     "description": "Verify that filter changes update the display immediately without page reload",
     "scenario": "Admin changes filter options and observes real-time updates to test plan visibility",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-025-17",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.17: Status Badge Color Coding",
     "description": "Verify that status badges display with correct colors and text for all status types",
     "scenario": "Admin reviews test plan cards to quickly identify test status through color coding",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-025-18",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.18: Priority Badge Color Coding",
     "description": "Verify that priority badges display with correct colors and text for all priority levels",
     "scenario": "Admin reviews test plan priorities to understand criticality through visual indicators",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-025-19",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.19: Description Truncation",
     "description": "Verify that long test plan descriptions are properly truncated in card view",
     "scenario": "Admin views test plan cards with varying description lengths",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-025-20",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.20: Error Handling",
     "description": "Verify proper error handling when module data cannot be loaded",
     "scenario": "Module page encounters an error while loading test data from the database",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-025-21",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.21: URL Parameter Validation",
     "description": "Verify that module name URL parameters are properly validated and handled",
     "scenario": "Admin navigates to module pages with various URL parameters including invalid ones",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-025-22",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.22: Performance with Large Datasets",
     "description": "Verify module page performance with large numbers of test plans",
     "scenario": "Admin views module page with hundreds of test plans to ensure performance",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-025-23",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.23: Dark Mode Compatibility",
     "description": "Verify the module page displays correctly in both light and dark themes",
     "scenario": "Admin switches between light and dark modes to ensure proper theming support",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-025-24",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.24: Filter State Persistence",
     "description": "Verify that filter states are maintained during navigation and actions",
     "scenario": "Admin sets filters, navigates away, then returns to verify filter persistence",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-025-25",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.25: Execution Information Display",
     "description": "Verify that test execution information is displayed correctly when available",
     "scenario": "Admin reviews test plan cards to see execution history and executor information",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-025-26",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.26: Animation and Transitions",
     "description": "Verify smooth animations and transitions enhance user experience",
     "scenario": "Admin observes page animations and card transitions for professional appearance",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-025-27",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.27: Browser Compatibility",
     "description": "Verify module page works correctly across different web browsers",
     "scenario": "Admin accesses module page using various browsers to ensure cross-browser compatibility",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-025-28",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.28: Accessibility Compliance",
     "description": "Verify module page meets accessibility standards for screen readers and keyboard navigation",
     "scenario": "Admin and accessibility tools test module page for compliance with accessibility standards",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-025-29",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.29: Card Hover Effects",
     "description": "Verify that test plan cards have appropriate hover effects and visual feedback",
     "scenario": "Admin hovers over test plan cards to see interactive feedback",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-025-30",
-    "module_name": "Module Test Details",
+    "module_name": "Module-Test-Details",
     "screen_design_ref": "Figure 25.30: Integration with Test Management",
     "description": "Verify module page integrates properly with broader test management workflow",
     "scenario": "Admin uses module page as part of complete test management workflow",

@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-031-01",
-    "module_name": "Execute Test Plan",
+    "module_name": "Execute-Test-Plan",
     "screen_design_ref": "Figure 31.1: Test Execution Page",
     "description": "Verify that the test execution page loads correctly with proper authentication and test plan data",
     "scenario": "Admin user navigates to execute a specific test plan using the execution functionality",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-031-02",
-    "module_name": "Execute Test Plan",
+    "module_name": "Execute-Test-Plan",
     "screen_design_ref": "Figure 31.2: Authentication Security Check",
     "description": "Verify that non-admin users cannot access the test execution functionality",
     "scenario": "Regular user attempts to access test execution functionality directly",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-031-03",
-    "module_name": "Execute Test Plan",
+    "module_name": "Execute-Test-Plan",
     "screen_design_ref": "Figure 31.3: Non-existent Test Plan Handling",
     "description": "Verify proper error handling when attempting to execute a non-existent test plan",
     "scenario": "Admin attempts to execute a test plan that doesn't exist in the system",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-031-04",
-    "module_name": "Execute Test Plan",
+    "module_name": "Execute-Test-Plan",
     "screen_design_ref": "Figure 31.4: Page Header Context",
     "description": "Verify the page header displays correct execution context with test plan details",
     "scenario": "Admin views execution page header to understand which test plan is being executed",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-031-05",
-    "module_name": "Execute Test Plan",
+    "module_name": "Execute-Test-Plan",
     "screen_design_ref": "Figure 31.5: Test Information Display",
     "description": "Verify the test information section displays all relevant test plan details",
     "scenario": "Admin views test information to understand test objectives before execution",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-031-06",
-    "module_name": "Execute Test Plan",
+    "module_name": "Execute-Test-Plan",
     "screen_design_ref": "Figure 31.6: Test Procedure Section",
     "description": "Verify the test procedure section displays steps with progress tracking",
     "scenario": "Admin views procedure steps and tracks completion progress during execution",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-031-07",
-    "module_name": "Execute Test Plan",
+    "module_name": "Execute-Test-Plan",
     "screen_design_ref": "Figure 31.11: Step Checkbox Functionality",
     "description": "Verify procedure step checkboxes update progress tracking correctly",
     "scenario": "Admin checks off completed steps during test execution",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-031-08",
-    "module_name": "Execute Test Plan",
+    "module_name": "Execute-Test-Plan",
     "screen_design_ref": "Figure 31.12: Progress Bar Color Changes",
     "description": "Verify progress bar changes color based on completion percentage",
     "scenario": "Admin completes various percentages of steps and observes visual feedback",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-031-09",
-    "module_name": "Execute Test Plan",
+    "module_name": "Execute-Test-Plan",
     "screen_design_ref": "Figure 31.13: Test Result Selection",
     "description": "Verify test result buttons (Pass, Fail, Skip) function correctly",
     "scenario": "Admin selects test result status after executing test procedures",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-031-10",
-    "module_name": "Execute Test Plan",
+    "module_name": "Execute-Test-Plan",
     "screen_design_ref": "Figure 31.14: Failure Reason Handling",
     "description": "Verify failure reason textarea appears when test is marked as failed",
     "scenario": "Admin marks test as failed and provides failure reason",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-031-11",
-    "module_name": "Execute Test Plan",
+    "module_name": "Execute-Test-Plan",
     "screen_design_ref": "Figure 31.15: Submit Button State Management",
     "description": "Verify submit button is enabled only when test status is selected",
     "scenario": "Admin observes submit button state based on form completion",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-031-12",
-    "module_name": "Execute Test Plan",
+    "module_name": "Execute-Test-Plan",
     "screen_design_ref": "Figure 31.16: Form Validation Before Submission",
     "description": "Verify form validation prevents submission without required fields",
     "scenario": "Admin attempts to submit form with missing required information",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-031-13",
-    "module_name": "Execute Test Plan",
+    "module_name": "Execute-Test-Plan",
     "screen_design_ref": "Figure 31.17: Successful Test Execution Submission",
     "description": "Verify successful test execution submission saves data and redirects appropriately",
     "scenario": "Admin completes test execution and submits result successfully",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-031-14",
-    "module_name": "Execute Test Plan",
+    "module_name": "Execute-Test-Plan",
     "screen_design_ref": "Figure 31.18: Submission Confirmation Dialog",
     "description": "Verify confirmation dialog appears before final submission",
     "scenario": "Admin submits test result and expects confirmation before saving",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-031-15",
-    "module_name": "Execute Test Plan",
+    "module_name": "Execute-Test-Plan",
     "screen_design_ref": "Figure 31.20: Error Handling During Submission",
     "description": "Verify proper error handling when test execution submission fails",
     "scenario": "Test execution submission encounters server-side errors",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-031-16",
-    "module_name": "Execute Test Plan",
+    "module_name": "Execute-Test-Plan",
     "screen_design_ref": "Figure 31.21: CSRF Protection Validation",
     "description": "Verify that CSRF token is properly included and validated during execution submission",
     "scenario": "Test execution form submission includes proper CSRF protection against attacks",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-031-17",
-    "module_name": "Execute Test Plan",
+    "module_name": "Execute-Test-Plan",
     "screen_design_ref": "Figure 31.22: Responsive Layout Design",
     "description": "Verify the execution page layout adapts properly to different screen sizes",
     "scenario": "Admin accesses test execution page on various devices and screen sizes",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-031-18",
-    "module_name": "Execute Test Plan",
+    "module_name": "Execute-Test-Plan",
     "screen_design_ref": "Figure 31.23: Page Title Display",
     "description": "Verify that browser page title shows 'Execute Test Plan'",
     "scenario": "Admin views browser tab title to understand current page context",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-031-19",
-    "module_name": "Execute Test Plan",
+    "module_name": "Execute-Test-Plan",
     "screen_design_ref": "Figure 31.24: Navigation Integration",
     "description": "Verify proper integration with test management navigation workflow",
     "scenario": "Admin navigates to and from execution page as part of test management workflow",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-031-20",
-    "module_name": "Execute Test Plan",
+    "module_name": "Execute-Test-Plan",
     "screen_design_ref": "Figure 31.25: Browser Compatibility Testing",
     "description": "Verify test execution functionality works across different web browsers",
     "scenario": "Admin accesses test execution using various browsers to ensure cross-browser compatibility",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-031-21",
-    "module_name": "Execute Test Plan",
+    "module_name": "Execute-Test-Plan",
     "screen_design_ref": "Figure 31.26: Dark Mode Compatibility",
     "description": "Verify that test execution page displays correctly in both light and dark themes",
     "scenario": "Admin switches between light and dark modes to ensure proper theming support",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-031-22",
-    "module_name": "Execute Test Plan",
+    "module_name": "Execute-Test-Plan",
     "screen_design_ref": "Figure 31.27: Accessibility Compliance",
     "description": "Verify that test execution page meets accessibility standards for screen readers and keyboard navigation",
     "scenario": "Admin and accessibility tools test page for compliance with accessibility standards",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-031-23",
-    "module_name": "Execute Test Plan",
+    "module_name": "Execute-Test-Plan",
     "screen_design_ref": "Figure 31.28: Performance During Execution",
     "description": "Verify that test execution page performs efficiently with interactive elements",
     "scenario": "Admin measures execution page performance including form responsiveness",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-031-24",
-    "module_name": "Execute Test Plan",
+    "module_name": "Execute-Test-Plan",
     "screen_design_ref": "Figure 31.29: Data Persistence and Tracking",
     "description": "Verify that execution data is properly tracked and saved to database",
     "scenario": "Admin executes test and verifies all execution metadata is properly recorded",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-031-25",
-    "module_name": "Execute Test Plan",
+    "module_name": "Execute-Test-Plan",
     "screen_design_ref": "Figure 31.30: Complete Execution Workflow Integration",
     "description": "Verify complete test execution workflow from navigation through result submission",
     "scenario": "Admin completes entire test execution workflow including progress tracking and result submission",

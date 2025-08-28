@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-003-01",
-    "module_name": "Contact Page",
+    "module_name": "Contact-Page",
     "screen_design_ref": "Figure 3.1: Contact Page Layout",
     "description": "Verify that the Contact page loads correctly when accessing the /contact URL",
     "scenario": "User navigates to the Contact page to send a message to CyberQuest team",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-003-02",
-    "module_name": "Contact Page",
+    "module_name": "Contact-Page",
     "screen_design_ref": "Figure 3.2: Page Header Section",
     "description": "Verify the contact page header displays correctly with title and subtitle",
     "scenario": "User views the Contact page header with gradient background and animated elements",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-003-03",
-    "module_name": "Contact Page",
+    "module_name": "Contact-Page",
     "screen_design_ref": "Figure 3.3: Contact Form Validation",
     "description": "Verify form validation works correctly for all required fields",
     "scenario": "User submits contact form with invalid or missing data",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-003-04",
-    "module_name": "Contact Page",
+    "module_name": "Contact-Page",
     "screen_design_ref": "Figure 3.4: Contact Form Submission",
     "description": "Verify successful contact form submission with valid data",
     "scenario": "User fills out contact form with valid information and submits",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-003-05",
-    "module_name": "Contact Page",
+    "module_name": "Contact-Page",
     "screen_design_ref": "Figure 3.5: Field Length Validation",
     "description": "Verify form field length validation works correctly",
     "scenario": "User enters data exceeding maximum field lengths",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-003-06",
-    "module_name": "Contact Page",
+    "module_name": "Contact-Page",
     "screen_design_ref": "Figure 3.6: Email Format Validation",
     "description": "Verify email address format validation using regex pattern",
     "scenario": "User enters various email formats to test validation",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-003-07",
-    "module_name": "Contact Page",
+    "module_name": "Contact-Page",
     "screen_design_ref": "Figure 3.7: hCaptcha Integration",
     "description": "Verify hCaptcha integration works correctly when enabled",
     "scenario": "User submits form with and without completing hCaptcha verification",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-003-08",
-    "module_name": "Contact Page",
+    "module_name": "Contact-Page",
     "screen_design_ref": "Figure 3.8: Contact Information Display",
     "description": "Verify contact information panel displays correctly",
     "scenario": "User views contact information section for business details",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-003-09",
-    "module_name": "Contact Page",
+    "module_name": "Contact-Page",
     "screen_design_ref": "Figure 3.9: Form Animation and UX",
     "description": "Verify form animations, transitions, and user experience elements",
     "scenario": "User interacts with form elements and observes visual feedback",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-003-10",
-    "module_name": "Contact Page",
+    "module_name": "Contact-Page",
     "screen_design_ref": "Figure 3.10: CSRF Protection",
     "description": "Verify CSRF token protection is implemented correctly",
     "scenario": "Form submissions include proper CSRF token for security",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-003-11",
-    "module_name": "Contact Page",
+    "module_name": "Contact-Page",
     "screen_design_ref": "Figure 3.11: Email Notification System",
     "description": "Verify email notifications are sent correctly after form submission",
     "scenario": "User submits contact form and expects email notifications to admin and user",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-003-12",
-    "module_name": "Contact Page",
+    "module_name": "Contact-Page",
     "screen_design_ref": "Figure 3.12: Database Storage",
     "description": "Verify contact submissions are stored correctly in database",
     "scenario": "Contact form data is saved to database when submitted",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-003-13",
-    "module_name": "Contact Page",
+    "module_name": "Contact-Page",
     "screen_design_ref": "Figure 3.13: Error Handling",
     "description": "Verify error handling for various failure scenarios",
     "scenario": "Test contact form behavior during database errors, email failures, and other exceptions",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-003-14",
-    "module_name": "Contact Page",
+    "module_name": "Contact-Page",
     "screen_design_ref": "Figure 3.14: Responsive Design",
     "description": "Verify contact page is responsive across different screen sizes",
     "scenario": "User views contact page on mobile, tablet, and desktop devices",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-003-15",
-    "module_name": "Contact Page",
+    "module_name": "Contact-Page",
     "screen_design_ref": "Figure 3.15: Dark Mode Compatibility",
     "description": "Verify contact page displays correctly in dark mode",
     "scenario": "User toggles to dark mode and uses contact form",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-003-16",
-    "module_name": "Contact Page",
+    "module_name": "Contact-Page",
     "screen_design_ref": "Figure 3.16: Performance and Loading",
     "description": "Verify contact page loads efficiently with external resources",
     "scenario": "User accesses contact page and expects fast loading with all assets",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-003-17",
-    "module_name": "Contact Page",
+    "module_name": "Contact-Page",
     "screen_design_ref": "Figure 3.17: Input Sanitization",
     "description": "Verify form inputs are properly sanitized and validated",
     "scenario": "User attempts to submit potentially malicious input through contact form",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-003-18",
-    "module_name": "Contact Page",
+    "module_name": "Contact-Page",
     "screen_design_ref": "Figure 3.18: Accessibility Compliance",
     "description": "Verify contact page meets accessibility standards (WCAG)",
     "scenario": "User with disabilities accesses contact page using assistive technologies",

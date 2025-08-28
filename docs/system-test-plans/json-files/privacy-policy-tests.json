@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-004-01",
-    "module_name": "Privacy Policy Page",
+    "module_name": "Privacy-Policy-Page",
     "screen_design_ref": "Figure 4.1: Privacy Policy Page Layout",
     "description": "Verify that the Privacy Policy page loads correctly when accessing the /privacy-policy URL",
     "scenario": "User navigates to the Privacy Policy page to read about data protection and privacy rights",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-004-02",
-    "module_name": "Privacy Policy Page",
+    "module_name": "Privacy-Policy-Page",
     "screen_design_ref": "Figure 4.2: Page Header Section",
     "description": "Verify the privacy policy header displays correctly with dates and shield icon",
     "scenario": "User views the Privacy Policy header with gradient background and policy information",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-004-03",
-    "module_name": "Privacy Policy Page",
+    "module_name": "Privacy-Policy-Page",
     "screen_design_ref": "Figure 4.3: Date Helper Function",
     "description": "Verify the policy dates are calculated correctly using the get_policy_dates() helper function",
     "scenario": "System generates consistent policy dates across all policy pages",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-004-04",
-    "module_name": "Privacy Policy Page",
+    "module_name": "Privacy-Policy-Page",
     "screen_design_ref": "Figure 4.4: RA 10173 Compliance Content",
     "description": "Verify all sections required by Republic Act 10173 (Data Privacy Act) are present",
     "scenario": "User reads privacy policy to understand their rights under Philippine data protection law",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-004-05",
-    "module_name": "Privacy Policy Page",
+    "module_name": "Privacy-Policy-Page",
     "screen_design_ref": "Figure 4.5: Data Subject Rights Section",
     "description": "Verify the data subject rights section displays all rights under Section 16 of RA 10173",
     "scenario": "User wants to understand their privacy rights under Philippine law",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-004-06",
-    "module_name": "Privacy Policy Page",
+    "module_name": "Privacy-Policy-Page",
     "screen_design_ref": "Figure 4.6: Legal Basis for Processing",
     "description": "Verify the legal basis section displays four lawful grounds under Section 12 of RA 10173",
     "scenario": "User wants to understand why their data is being processed",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-004-07",
-    "module_name": "Privacy Policy Page",
+    "module_name": "Privacy-Policy-Page",
     "screen_design_ref": "Figure 4.7: Security Measures Section",
     "description": "Verify the security measures section displays technical and organizational measures",
     "scenario": "User wants to understand how their data is protected",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-004-08",
-    "module_name": "Privacy Policy Page",
+    "module_name": "Privacy-Policy-Page",
     "screen_design_ref": "Figure 4.8: National Privacy Commission Information",
     "description": "Verify contact information for the National Privacy Commission is displayed correctly",
     "scenario": "User needs to know how to file a complaint with the privacy regulator",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-004-09",
-    "module_name": "Privacy Policy Page",
+    "module_name": "Privacy-Policy-Page",
     "screen_design_ref": "Figure 4.9: Definitions Section",
     "description": "Verify the definitions section displays key terms from RA 10173",
     "scenario": "User wants to understand privacy terminology used in the policy",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-004-10",
-    "module_name": "Privacy Policy Page",
+    "module_name": "Privacy-Policy-Page",
     "screen_design_ref": "Figure 4.10: Route Integration",
     "description": "Verify the privacy policy route works correctly in main.py blueprint",
     "scenario": "User accesses privacy policy through direct URL and navigation links",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-004-11",
-    "module_name": "Privacy Policy Page",
+    "module_name": "Privacy-Policy-Page",
     "screen_design_ref": "Figure 4.11: Dark Mode Compatibility",
     "description": "Verify the Privacy Policy page displays correctly in dark mode",
     "scenario": "User toggles to dark mode and reads the privacy policy",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-004-12",
-    "module_name": "Privacy Policy Page",
+    "module_name": "Privacy-Policy-Page",
     "screen_design_ref": "Figure 4.12: Responsive Design",
     "description": "Verify the Privacy Policy page is responsive across different screen sizes",
     "scenario": "User views privacy policy on mobile, tablet, and desktop devices",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-004-13",
-    "module_name": "Privacy Policy Page",
+    "module_name": "Privacy-Policy-Page",
     "screen_design_ref": "Figure 4.13: Content Completeness",
     "description": "Verify all required privacy policy content sections are present and complete",
     "scenario": "Legal review to ensure privacy policy meets regulatory requirements",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-004-14",
-    "module_name": "Privacy Policy Page",
+    "module_name": "Privacy-Policy-Page",
     "screen_design_ref": "Figure 4.14: Animation and Visual Effects",
     "description": "Verify page animations, transitions, and visual effects work properly",
     "scenario": "User interacts with privacy policy page and observes visual feedback",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-004-15",
-    "module_name": "Privacy Policy Page",
+    "module_name": "Privacy-Policy-Page",
     "screen_design_ref": "Figure 4.15: SEO and Metadata",
     "description": "Verify privacy policy page has proper SEO elements and metadata",
     "scenario": "Search engines and social media platforms index the privacy policy correctly",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-004-16",
-    "module_name": "Privacy Policy Page",
+    "module_name": "Privacy-Policy-Page",
     "screen_design_ref": "Figure 4.16: Print Functionality",
     "description": "Verify privacy policy page can be printed properly",
     "scenario": "User wants to print the privacy policy for offline reference",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-004-17",
-    "module_name": "Privacy Policy Page",
+    "module_name": "Privacy-Policy-Page",
     "screen_design_ref": "Figure 4.17: Accessibility Compliance",
     "description": "Verify privacy policy page meets accessibility standards (WCAG)",
     "scenario": "User with disabilities accesses privacy policy using assistive technologies",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-004-18",
-    "module_name": "Privacy Policy Page",
+    "module_name": "Privacy-Policy-Page",
     "screen_design_ref": "Figure 4.18: Performance and Loading",
     "description": "Verify privacy policy page loads efficiently despite substantial content",
     "scenario": "User accesses privacy policy and expects reasonable loading times",

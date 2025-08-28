@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-007-01",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.1: Login Page Layout",
     "description": "Verify that the Login page loads correctly when accessing the /auth/login URL",
     "scenario": "User navigates to the login page to access the agent portal",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-007-02",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.2: Agent Portal Header Design",
     "description": "Verify the agent portal header displays correctly with cybersecurity theme",
     "scenario": "User views the login page header with gradient background and security styling",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-007-03",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.3: Form Input Fields",
     "description": "Verify login form input fields display correctly with cybersecurity styling",
     "scenario": "User views and interacts with username/email and password input fields",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-007-04",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.4: Remember Me and Forgot Password",
     "description": "Verify remember me checkbox and forgot password link functionality",
     "scenario": "User interacts with remember me option and forgot password link",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-007-05",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.5: hCaptcha Integration",
     "description": "Verify hCaptcha displays and functions correctly when enabled",
     "scenario": "User encounters hCaptcha verification during login process",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-007-06",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.6: Login Button States",
     "description": "Verify login button displays correctly in different states (normal, loading, locked)",
     "scenario": "User observes login button behavior during various interaction states",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-007-07",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.7: Create Account Link",
     "description": "Verify create account link displays and functions correctly",
     "scenario": "New user needs to navigate to signup page from login page",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-007-08",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.8: Successful Login Flow",
     "description": "Verify successful login process with valid credentials",
     "scenario": "Registered user logs in with correct username/email and password",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-007-09",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.9: Invalid Credentials Handling",
     "description": "Verify proper error handling for invalid login credentials",
     "scenario": "User attempts login with incorrect username/email or password",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-007-10",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.10: Email Verification Check",
     "description": "Verify email verification status check before password validation",
     "scenario": "User with unverified email attempts to login with correct credentials",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-007-11",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.11: IP Lockout Protection",
     "description": "Verify IP lockout functionality after multiple failed login attempts",
     "scenario": "Malicious user makes multiple failed login attempts triggering IP lockout",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-007-12",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.12: Session Expiry Handling",
     "description": "Verify session expiry message display from auth state validator",
     "scenario": "User with expired session is redirected to login page with expiry message",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-007-13",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.13: Database Disabled Handling",
     "description": "Verify proper handling when database is disabled (Vercel environment)",
     "scenario": "User attempts login in deployment environment with disabled database",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-007-14",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.14: CSRF Protection",
     "description": "Verify CSRF token integration and protection",
     "scenario": "User submits login form with CSRF protection enabled",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-007-15",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.15: Input Validation",
     "description": "Verify client-side and server-side input validation",
     "scenario": "User submits login form with various input combinations",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-007-16",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.16: Already Logged In Redirect",
     "description": "Verify redirect behavior when user is already authenticated",
     "scenario": "Logged-in user tries to access login page",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-007-17",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.17: Animated Background Elements",
     "description": "Verify animated background elements display correctly",
     "scenario": "User views login page with animated cybersecurity-themed background",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-007-18",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.18: Dark Mode Compatibility",
     "description": "Verify login page displays correctly in dark mode",
     "scenario": "User toggles dark mode and uses login page",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-007-19",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.19: Responsive Design",
     "description": "Verify login page is responsive across different screen sizes",
     "scenario": "User accesses login page on mobile, tablet, and desktop devices",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-007-20",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.20: Form Animation Sequence",
     "description": "Verify login form elements animate in proper sequence",
     "scenario": "User observes form appearance animations on page load",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-007-21",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.21: User Account Status Validation",
     "description": "Verify login behavior with different user account statuses",
     "scenario": "Users with different account statuses attempt to login",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-007-22",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.22: Username and Email Login",
     "description": "Verify login functionality works with both username and email",
     "scenario": "User logs in using either username or email address",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-007-23",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.23: Password Security Handling",
     "description": "Verify password handling and security measures",
     "scenario": "User enters password and system handles it securely",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-007-24",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.24: JavaScript and CSS Loading",
     "description": "Verify proper loading of JavaScript and CSS resources",
     "scenario": "User accesses login page and all resources load correctly",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-007-25",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.25: SEO and Metadata",
     "description": "Verify login page has proper SEO elements and metadata",
     "scenario": "Search engines and social media platforms index login page appropriately",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-007-26",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.26: Form Accessibility",
     "description": "Verify login form meets accessibility standards (WCAG)",
     "scenario": "User with disabilities accesses login form using assistive technologies",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-007-27",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.27: Performance and Loading",
     "description": "Verify login page loads efficiently with optimal performance",
     "scenario": "User accesses login page and expects fast loading times",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-007-28",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.28: Browser Compatibility",
     "description": "Verify login page works correctly across different browsers",
     "scenario": "User accesses login page using different web browsers",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-007-29",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.29: Error Message Display",
     "description": "Verify error messages display correctly with proper styling and positioning",
     "scenario": "User encounters various error conditions and views error messages",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-007-30",
-    "module_name": "Login Page",
+    "module_name": "Login-Page",
     "screen_design_ref": "Figure 7.30: Integration Testing",
     "description": "Verify login page integration with other system components",
     "scenario": "User login process integrates correctly with authentication system, database, and other modules",

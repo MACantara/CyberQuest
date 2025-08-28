@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-030-01",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.1: Bulk Import Page",
     "description": "Verify that the bulk import page loads correctly with proper authentication",
     "scenario": "Admin user navigates to the bulk import functionality to import multiple test plans",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-030-02",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.2: Authentication Security Check",
     "description": "Verify that non-admin users cannot access the bulk import functionality",
     "scenario": "Regular user attempts to access bulk import functionality directly",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-030-03",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.3: Page Header Layout",
     "description": "Verify the page header displays correct title, description, and navigation",
     "scenario": "Admin views the page header to understand bulk import context and navigation options",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-030-04",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.4: Import Form Structure",
     "description": "Verify the import form displays correctly with proper layout and components",
     "scenario": "Admin views import form to understand data input requirements and available actions",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-030-05",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.5: JSON Textarea Field",
     "description": "Verify the JSON data textarea accepts input and handles formatting correctly",
     "scenario": "Admin enters JSON data into the textarea for validation and import",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-030-06",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.6: JSON Validation Function",
     "description": "Verify the JSON validation function correctly validates data structure and content",
     "scenario": "Admin uses validate JSON button to check data before import",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-030-07",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.7: Invalid JSON Format Handling",
     "description": "Verify proper error handling when JSON format is invalid",
     "scenario": "Admin enters malformed JSON data and attempts validation",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-030-08",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.8: Required Field Validation",
     "description": "Verify validation detects missing required fields in test plan objects",
     "scenario": "Admin submits JSON data with missing required fields for validation",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-030-09",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.9: Duplicate Test Plan Number Detection",
     "description": "Verify validation detects duplicate test plan numbers within import data",
     "scenario": "Admin submits JSON data with duplicate test_plan_no values",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-030-10",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.10: Enum Field Validation",
     "description": "Verify validation checks enum fields for valid values (status, priority, category)",
     "scenario": "Admin submits JSON data with invalid enum field values",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-030-11",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.11: Load Example Function",
     "description": "Verify the load example function populates textarea with valid sample data",
     "scenario": "Admin uses load example feature to understand proper JSON format",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-030-12",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.12: Auto-formatting on Paste",
     "description": "Verify that pasted JSON data is automatically formatted for readability",
     "scenario": "Admin pastes compressed JSON data and expects proper formatting",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-030-13",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.13: Form Submission Validation",
     "description": "Verify form validation prevents submission of empty or invalid data",
     "scenario": "Admin attempts to submit form without data or with invalid data",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-030-14",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.14: Import Confirmation Dialog",
     "description": "Verify confirmation dialog appears before actual import submission",
     "scenario": "Admin submits valid data and expects confirmation before import",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-030-15",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.15: Successful Import Process",
     "description": "Verify successful import process creates test plans and redirects appropriately",
     "scenario": "Admin submits valid JSON data and completes successful import",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-030-16",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.16: Import Error Handling",
     "description": "Verify proper error handling when import process fails",
     "scenario": "Import process encounters server-side errors or data issues",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-030-17",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.17: Empty Array Handling",
     "description": "Verify proper handling when JSON array is empty",
     "scenario": "Admin submits valid JSON format but with empty array",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-030-18",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.18: Non-Array JSON Handling",
     "description": "Verify proper handling when JSON is valid but not an array",
     "scenario": "Admin submits valid JSON object instead of array",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-030-19",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.19: Instructions Section Display",
     "description": "Verify the instructions section provides clear guidance for JSON formatting",
     "scenario": "Admin reviews instructions to understand import data requirements",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-030-20",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.20: Example JSON Section",
     "description": "Verify the example JSON section displays properly formatted sample data",
     "scenario": "Admin references example JSON to understand correct data format",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-030-21",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.21: Field Reference Section",
     "description": "Verify the field reference section provides complete field information",
     "scenario": "Admin references field guide to understand available fields and values",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-030-22",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.22: Responsive Layout Design",
     "description": "Verify the page layout adapts properly to different screen sizes",
     "scenario": "Admin accesses bulk import page on various devices and screen sizes",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-030-23",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.23: CSRF Protection Validation",
     "description": "Verify that CSRF token is properly included and validated during import",
     "scenario": "Import form submission includes proper CSRF protection against attacks",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-030-24",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.24: Large Dataset Import",
     "description": "Verify system handles import of large numbers of test plans efficiently",
     "scenario": "Admin attempts to import large dataset (50+ test plans) to test performance",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-030-25",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.25: Page Title and Meta Information",
     "description": "Verify that browser page title shows 'Bulk Import Test Plans'",
     "scenario": "Admin views browser tab title to understand current page context",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-030-26",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.26: Navigation Integration",
     "description": "Verify proper integration with admin navigation and workflow",
     "scenario": "Admin navigates to and from bulk import page as part of test management workflow",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-030-27",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.27: Browser Compatibility Testing",
     "description": "Verify bulk import functionality works across different web browsers",
     "scenario": "Admin accesses bulk import using various browsers to ensure cross-browser compatibility",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-030-28",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.28: Dark Mode Compatibility",
     "description": "Verify that bulk import page displays correctly in both light and dark themes",
     "scenario": "Admin switches between light and dark modes to ensure proper theming support",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-030-29",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.29: Accessibility Compliance",
     "description": "Verify that bulk import page meets accessibility standards for screen readers and keyboard navigation",
     "scenario": "Admin and accessibility tools test page for compliance with accessibility standards",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-030-30",
-    "module_name": "Bulk Import Test Plans",
+    "module_name": "Bulk-Import-Test-Plans",
     "screen_design_ref": "Figure 30.30: Complete Import Workflow Integration",
     "description": "Verify complete import workflow from navigation through successful test plan creation",
     "scenario": "Admin completes entire bulk import workflow including preparation, validation, and confirmation",

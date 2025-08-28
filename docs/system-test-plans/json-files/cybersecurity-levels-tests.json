@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-033-01",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.1: Levels Overview Page",
     "description": "Verify that the cybersecurity levels page loads correctly with proper authentication and displays all level information",
     "scenario": "User navigates to the levels page to view available cybersecurity training levels",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-033-02",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.2: Authentication Required Check",
     "description": "Verify that unauthenticated users are redirected to login when accessing levels page",
     "scenario": "Unauthenticated user attempts to access the levels page directly",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-033-03",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.3: Page Header Display",
     "description": "Verify the page header displays correct title and description with proper styling",
     "scenario": "User views the levels page header to understand the purpose and context",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-033-04",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.4: Progress Overview Section",
     "description": "Verify the progress overview section displays accurate completion statistics and progress bar",
     "scenario": "User views overall progress to understand their advancement through the cybersecurity levels",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-033-05",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.5: Level Cards Grid Layout",
     "description": "Verify the levels are displayed in a responsive grid layout with proper card structure",
     "scenario": "User views the levels grid to see all available cybersecurity training levels",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-033-06",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.6: Level 1 Card Details",
     "description": "Verify Level 1 'The Misinformation Maze' displays correct information and is unlocked by default",
     "scenario": "User views Level 1 card to see details about the first cybersecurity challenge",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-033-07",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.7: Level 2 Card Details",
     "description": "Verify Level 2 'Shadow in the Inbox' displays correct information and locked state",
     "scenario": "User views Level 2 card to see details about the email security challenge",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-033-08",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.8: Level 3 Card Details",
     "description": "Verify Level 3 'Malware Mayhem' displays correct information with intermediate difficulty",
     "scenario": "User views Level 3 card to see details about the malware detection challenge",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-033-09",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.9: Level 4 Card Details",
     "description": "Verify Level 4 'The White Hat Test' displays correct information with expert difficulty",
     "scenario": "User views Level 4 card to see details about the ethical hacking challenge",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-033-10",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.10: Level 5 Card Details",
     "description": "Verify Level 5 'The Hunt for The Null' displays correct information with master difficulty",
     "scenario": "User views Level 5 card to see details about the final digital forensics challenge",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-033-11",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.11: Level Unlocking Logic",
     "description": "Verify the level unlocking mechanism works correctly using localStorage",
     "scenario": "User completes levels and sees subsequent levels unlock in proper sequence",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-033-12",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.12: Completed Level Visual State",
     "description": "Verify completed levels display proper visual indicators and replay functionality",
     "scenario": "User views completed levels to see their accomplishments and replay options",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-033-13",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.13: Locked Level Modal",
     "description": "Verify clicking locked levels shows appropriate modal with unlock requirements",
     "scenario": "User clicks on a locked level to understand unlock requirements",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-033-14",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.14: Coming Soon Modal",
     "description": "Verify coming soon levels display appropriate modal when clicked",
     "scenario": "User clicks on a level marked as coming soon to see development status",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-033-15",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.15: Level Start Navigation",
     "description": "Verify starting a level navigates correctly to the simulation page",
     "scenario": "User clicks start level button to begin cybersecurity training",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-033-16",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.16: Progress Statistics Updates",
     "description": "Verify progress statistics update correctly when levels are completed",
     "scenario": "User completes levels and sees accurate progress statistics",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-033-17",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.17: Difficulty Badge Styling",
     "description": "Verify difficulty badges display with appropriate color coding for different levels",
     "scenario": "User identifies level difficulty through visual color-coded badges",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-033-18",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.18: Skills Tags Display",
     "description": "Verify skills tags display correctly with proper formatting and styling",
     "scenario": "User views skills tags to understand what they will learn in each level",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-033-19",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.19: Responsive Design Testing",
     "description": "Verify the levels page adapts properly to different screen sizes and devices",
     "scenario": "User accesses levels page on various devices and screen sizes",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-033-20",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.20: Animation and Transition Effects",
     "description": "Verify fade-in animations and hover effects work correctly throughout the page",
     "scenario": "User observes smooth animations and transitions while interacting with the levels page",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-033-21",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.21: Dark Mode Compatibility",
     "description": "Verify the levels page displays correctly in dark mode theme",
     "scenario": "User switches to dark mode to ensure proper theme support",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-033-22",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.22: LocalStorage Persistence",
     "description": "Verify level completion data persists correctly in browser localStorage",
     "scenario": "User completes levels and expects progress to persist across browser sessions",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-033-23",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.23: Level Completion API",
     "description": "Verify the level completion API endpoint functions correctly",
     "scenario": "System calls API to mark levels as completed and unlock subsequent levels",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-033-24",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.24: Error Handling and Recovery",
     "description": "Verify proper error handling when levels page encounters issues",
     "scenario": "Levels page encounters various error conditions during loading or interaction",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-033-25",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.25: Performance and Loading",
     "description": "Verify the levels page loads efficiently with good performance",
     "scenario": "User measures levels page performance and loading times",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-033-26",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.26: Browser Compatibility",
     "description": "Verify levels functionality works across different web browsers",
     "scenario": "User accesses levels using various browsers to ensure cross-browser compatibility",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-033-27",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.27: Accessibility Compliance",
     "description": "Verify the levels page meets accessibility standards for screen readers and keyboard navigation",
     "scenario": "Users with disabilities test page for compliance with accessibility standards",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-033-28",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.28: Debug Functions Testing",
     "description": "Verify debug functions for testing level completion states work correctly",
     "scenario": "Developer uses debug functions to test level completion and reset functionality",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-033-29",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.29: Integration with Simulation System",
     "description": "Verify seamless integration between levels page and simulation system",
     "scenario": "User navigates from levels page to simulation and back as part of training workflow",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-033-30",
-    "module_name": "Cybersecurity Levels",
+    "module_name": "Cybersecurity-Levels",
     "screen_design_ref": "Figure 33.30: Complete Levels Workflow",
     "description": "Verify complete cybersecurity levels workflow from initial access through full progression",
     "scenario": "User completes entire cybersecurity training progression from first level to final master level",

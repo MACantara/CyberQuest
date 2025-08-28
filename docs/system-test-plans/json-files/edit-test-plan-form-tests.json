@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-029-01",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.1: Edit Test Plan Page",
     "description": "Verify that the edit test plan page loads correctly with proper authentication and existing data",
     "scenario": "Admin user navigates to edit an existing test plan using the edit functionality",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-029-02",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.2: Authentication Security Check",
     "description": "Verify that non-admin users cannot access the edit test plan functionality",
     "scenario": "Regular user attempts to access edit test plan functionality directly",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-029-03",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.3: Non-existent Test Plan Handling",
     "description": "Verify proper error handling when attempting to edit a non-existent test plan",
     "scenario": "Admin attempts to edit a test plan that doesn't exist in the system",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-029-04",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.4: Page Header Context",
     "description": "Verify the page header displays correct edit context with test plan number",
     "scenario": "Admin views edit page header to understand which test plan is being edited",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-029-05",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.5: Form Data Pre-population",
     "description": "Verify that all form fields are correctly pre-populated with existing test plan data",
     "scenario": "Admin views edit form to see current test plan values before making changes",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-029-06",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.6: Dropdown Selection States",
     "description": "Verify that dropdown fields show correct selected values for existing test plan",
     "scenario": "Admin views configuration dropdowns to see current test plan settings",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-029-07",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.7: Execute Test Button",
     "description": "Verify that the Execute Test button is available when editing existing test plans",
     "scenario": "Admin views edit form and has option to execute the test plan being edited",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-029-08",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.8: Form Update Submission",
     "description": "Verify that form submission correctly updates existing test plan data",
     "scenario": "Admin modifies test plan fields and submits to save changes",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-029-09",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.9: Update Button Text",
     "description": "Verify that the submit button shows 'Update Test Plan' instead of 'Create Test Plan'",
     "scenario": "Admin views form actions to understand available operations",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-029-10",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.10: Required Field Validation",
     "description": "Verify that required field validation works correctly when updating test plans",
     "scenario": "Admin attempts to update test plan with missing required information",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-029-11",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.11: Success Redirect Flow",
     "description": "Verify that successful update redirects to test plan view page instead of list",
     "scenario": "Admin successfully updates test plan and expects to see the updated test plan details",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-029-12",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.12: Error Handling During Update",
     "description": "Verify proper error handling when update operation fails",
     "scenario": "Form submission encounters server-side errors during update process",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-029-13",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.13: Page Title Context",
     "description": "Verify that browser page title shows 'Edit Test Plan' context",
     "scenario": "Admin views browser tab title to understand current editing context",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-029-14",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.14: Form Layout Consistency",
     "description": "Verify that edit form layout matches create form layout exactly",
     "scenario": "Admin compares edit and create forms for consistent user experience",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-029-15",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.15: JavaScript Enhancement Compatibility",
     "description": "Verify that JavaScript enhancements work correctly with pre-populated data",
     "scenario": "Admin uses JavaScript features like auto-numbering and validation with existing data",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-029-16",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.16: Cancel Operation Behavior",
     "description": "Verify that cancel operation returns to test plans list without saving changes",
     "scenario": "Admin makes changes but decides to cancel without saving",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-029-17",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.17: CSRF Protection Validation",
     "description": "Verify that CSRF token is properly validated during edit operations",
     "scenario": "Edit form submission includes proper CSRF protection against attacks",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-029-18",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.18: Field Modification Tracking",
     "description": "Verify that all form fields can be modified and updated correctly",
     "scenario": "Admin systematically modifies each field to ensure proper update functionality",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-029-19",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.19: Textarea Content Preservation",
     "description": "Verify that textarea fields preserve formatting and content correctly",
     "scenario": "Admin edits test plans with complex procedure steps and scenario descriptions",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-029-20",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.20: Navigation Integration",
     "description": "Verify proper integration with test management navigation workflow",
     "scenario": "Admin navigates to edit form from various entry points and returns appropriately",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-029-21",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.21: Auto-generation Disabled Check",
     "description": "Verify that auto-generation features are disabled when editing existing test plans",
     "scenario": "Admin edits existing test plan and auto-generation should not interfere with current values",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-029-22",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.22: Form Accessibility in Edit Mode",
     "description": "Verify that edit form maintains accessibility standards with pre-populated data",
     "scenario": "Admin and accessibility tools test edit form for compliance with accessibility standards",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-029-23",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.23: Concurrent Edit Protection",
     "description": "Verify behavior when multiple admins attempt to edit the same test plan",
     "scenario": "Two admin users attempt to edit the same test plan simultaneously",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-029-24",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.24: Update Timestamp Tracking",
     "description": "Verify that test plan update timestamps are properly recorded",
     "scenario": "Admin edits test plan and system tracks modification time",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-029-25",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.25: Browser Compatibility Testing",
     "description": "Verify edit form works correctly across different web browsers",
     "scenario": "Admin accesses edit form using various browsers to ensure cross-browser compatibility",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-029-26",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.26: Mobile Responsiveness Check",
     "description": "Verify that edit form maintains responsiveness on mobile devices",
     "scenario": "Admin accesses edit form on mobile devices and expects proper layout adaptation",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-029-27",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.27: Performance During Edit",
     "description": "Verify that edit form loads and performs efficiently with existing data",
     "scenario": "Admin measures edit form performance including data loading and form responsiveness",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-029-28",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.28: Data Validation Consistency",
     "description": "Verify that data validation rules are consistent between create and edit operations",
     "scenario": "Admin tests validation rules on edit form to ensure consistency with create form",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-029-29",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.29: Help Guidelines Relevance",
     "description": "Verify that help guidelines section remains relevant for edit operations",
     "scenario": "Admin references guidelines while editing test plan to ensure they apply to edit context",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-029-30",
-    "module_name": "Edit Test Plan Form",
+    "module_name": "Edit-Test-Plan-Form",
     "screen_design_ref": "Figure 29.30: Complete Edit Workflow Integration",
     "description": "Verify complete edit workflow from test plan list through successful update",
     "scenario": "Admin completes entire edit workflow including navigation, editing, and confirmation",

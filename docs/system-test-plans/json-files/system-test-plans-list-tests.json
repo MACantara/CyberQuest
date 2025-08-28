@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-026-01",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.1: System Test Plans List Page",
     "description": "Verify that the test plans list page loads correctly with proper authentication",
     "scenario": "Admin user navigates to the system test plans list to view and manage all test plans",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-026-02",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.2: Test Plans Authentication Check",
     "description": "Verify that non-admin users cannot access the test plans list page",
     "scenario": "Regular user attempts to access the test plans management functionality",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-026-03",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.3: Filter Section Layout",
     "description": "Verify that the filters section displays all filter options correctly",
     "scenario": "Admin views the filters section to understand available filtering options",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-026-04",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.4: Module Filter Functionality",
     "description": "Verify that the module filter displays available modules and filters correctly",
     "scenario": "Admin uses module filter to view test plans for specific modules",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-026-05",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.5: Status Filter Functionality",
     "description": "Verify that the status filter correctly filters test plans by execution status",
     "scenario": "Admin uses status filter to view test plans with specific execution status",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-026-06",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.6: Priority Filter Functionality",
     "description": "Verify that the priority filter correctly filters test plans by priority level",
     "scenario": "Admin uses priority filter to view test plans with specific priority levels",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-026-07",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.7: Category Filter Functionality",
     "description": "Verify that the category filter correctly filters test plans by test category",
     "scenario": "Admin uses category filter to view test plans of specific test categories",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-026-08",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.8: Combined Filters Functionality",
     "description": "Verify that multiple filters work correctly when used in combination",
     "scenario": "Admin uses multiple filters simultaneously to find specific test plans",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-026-09",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.9: Test Plans Table Layout",
     "description": "Verify that the test plans table displays all required columns and information",
     "scenario": "Admin reviews test plans table to understand test plan details and status",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-026-10",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.10: Test Plan Links",
     "description": "Verify that test plan numbers are clickable links that navigate to test plan details",
     "scenario": "Admin clicks on test plan numbers to view detailed test plan information",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-026-11",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.11: Description Truncation",
     "description": "Verify that long test plan descriptions are properly truncated in table view",
     "scenario": "Admin views test plans with varying description lengths in the table",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-026-12",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.12: Status Badges Display",
     "description": "Verify that status badges display with correct colors and text for all status types",
     "scenario": "Admin reviews test plan status badges to quickly identify test execution status",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-026-13",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.13: Priority Badges Display",
     "description": "Verify that priority badges display with correct colors and text for all priority levels",
     "scenario": "Admin reviews test plan priority badges to understand test criticality",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-026-14",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.14: Category Badges Display",
     "description": "Verify that category badges display consistently with blue styling",
     "scenario": "Admin reviews test plan category badges to understand test types",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-026-15",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.15: Action Buttons Functionality",
     "description": "Verify that action buttons (Execute, Edit, Delete) work correctly for each test plan",
     "scenario": "Admin uses action buttons to execute, edit, and delete test plans",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-026-16",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.16: Search Functionality",
     "description": "Verify that the search input filters test plans in real-time",
     "scenario": "Admin uses search input to find specific test plans by text content",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-026-17",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.17: Delete Confirmation Modal",
     "description": "Verify that the delete confirmation modal displays correctly and functions properly",
     "scenario": "Admin attempts to delete a test plan and is presented with confirmation dialog",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-026-18",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.18: Empty State Display",
     "description": "Verify the empty state display when no test plans exist or match filters",
     "scenario": "Admin views test plans list when no test plans exist or filters return no results",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-026-19",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.19: Test Plans Count Display",
     "description": "Verify that the test plans count is displayed correctly in the table header",
     "scenario": "Admin views the test plans count to understand total number of test plans",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-026-20",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.20: Page Header Navigation",
     "description": "Verify the page header contains proper title, description, and navigation buttons",
     "scenario": "Admin reviews page header for clear navigation and context",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-026-21",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.21: Table Row Hover Effects",
     "description": "Verify that table rows have appropriate hover effects for better user experience",
     "scenario": "Admin hovers over table rows to see visual feedback",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-026-22",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.22: Filter State Persistence",
     "description": "Verify that filter states are maintained in URL parameters and can be bookmarked",
     "scenario": "Admin applies filters and wants to bookmark or share the filtered view",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-026-23",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.23: Responsive Table Design",
     "description": "Verify that the test plans table adapts correctly to different screen sizes",
     "scenario": "Admin accesses test plans list from various devices to ensure responsive design",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-026-24",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.24: Error Handling",
     "description": "Verify proper error handling when test plans data cannot be loaded",
     "scenario": "Test plans list encounters an error while loading data from the database",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-026-25",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.25: Quick Status Update API",
     "description": "Verify that the quick status update functionality works via AJAX API",
     "scenario": "Admin uses quick status update feature to change test plan status without page reload",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-026-26",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.26: Dark Mode Compatibility",
     "description": "Verify that the test plans list displays correctly in both light and dark themes",
     "scenario": "Admin switches between light and dark modes to ensure proper theming support",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-026-27",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.27: Performance with Large Datasets",
     "description": "Verify test plans list performance with large numbers of test plans",
     "scenario": "Admin views test plans list with hundreds of test plans to ensure performance",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-026-28",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.28: Browser Compatibility",
     "description": "Verify test plans list works correctly across different web browsers",
     "scenario": "Admin accesses test plans list using various browsers to ensure cross-browser compatibility",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-026-29",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.29: Accessibility Compliance",
     "description": "Verify test plans list meets accessibility standards for screen readers and keyboard navigation",
     "scenario": "Admin and accessibility tools test test plans list for compliance with accessibility standards",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-026-30",
-    "module_name": "System Test Plans List",
+    "module_name": "System-Test-Plans-List",
     "screen_design_ref": "Figure 26.30: Integration with Test Management Workflow",
     "description": "Verify test plans list integrates properly with broader test management functionality",
     "scenario": "Admin uses test plans list as part of complete test management workflow",

@@ -1,7 +1,7 @@
 [
   {
     "test_plan_no": "STP-032-01",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.1: Reports Dashboard Page",
     "description": "Verify that the test execution reports page loads correctly with proper authentication and comprehensive data display",
     "scenario": "Admin user navigates to view comprehensive test execution reports and analytics",
@@ -13,7 +13,7 @@
   },
   {
     "test_plan_no": "STP-032-02",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.2: Authentication Security Check",
     "description": "Verify that non-admin users cannot access the test execution reports functionality",
     "scenario": "Regular user attempts to access test execution reports directly",
@@ -25,7 +25,7 @@
   },
   {
     "test_plan_no": "STP-032-03",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.3: Page Header and Navigation",
     "description": "Verify the page header displays correct title and provides proper navigation options",
     "scenario": "Admin views reports page header to understand context and access navigation options",
@@ -37,7 +37,7 @@
   },
   {
     "test_plan_no": "STP-032-04",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.4: Summary Statistics Cards",
     "description": "Verify the summary statistics section displays accurate test counts and percentages",
     "scenario": "Admin views overall test execution statistics for quick overview of test status",
@@ -49,7 +49,7 @@
   },
   {
     "test_plan_no": "STP-032-05",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.5: Module-wise Test Results Section",
     "description": "Verify the module-wise results section displays comprehensive statistics for each module",
     "scenario": "Admin views detailed breakdown of test results organized by module",
@@ -61,7 +61,7 @@
   },
   {
     "test_plan_no": "STP-032-06",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.6: Recent Test Executions Timeline",
     "description": "Verify the recent test executions section displays tests from the last 30 days",
     "scenario": "Admin views recent test execution history to track testing activity",
@@ -73,7 +73,7 @@
   },
   {
     "test_plan_no": "STP-032-07",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.7: Failed Tests Analysis Table",
     "description": "Verify the failed tests analysis section displays detailed information about failed tests",
     "scenario": "Admin reviews failed tests to identify issues requiring attention",
@@ -85,7 +85,7 @@
   },
   {
     "test_plan_no": "STP-032-08",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.8: No Data States Handling",
     "description": "Verify proper display when no test data is available",
     "scenario": "Admin views reports page when no test modules or recent executions exist",
@@ -97,7 +97,7 @@
   },
   {
     "test_plan_no": "STP-032-09",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.9: Export DOCX Functionality",
     "description": "Verify the DOCX export functionality generates proper document with all test plans",
     "scenario": "Admin exports test plans to DOCX format for documentation purposes",
@@ -109,7 +109,7 @@
   },
   {
     "test_plan_no": "STP-032-10",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.10: Export JSON Functionality",
     "description": "Verify the JSON export functionality generates proper report data",
     "scenario": "Admin exports report data to JSON format for data analysis",
@@ -121,7 +121,7 @@
   },
   {
     "test_plan_no": "STP-032-11",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.11: Print Report Functionality",
     "description": "Verify the print functionality provides properly formatted printable report",
     "scenario": "Admin prints report for physical documentation or archival purposes",
@@ -133,7 +133,7 @@
   },
   {
     "test_plan_no": "STP-032-12",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.12: Report Generation Information",
     "description": "Verify the report generation information section displays accurate metadata",
     "scenario": "Admin views report generation details to understand data currency and scope",
@@ -145,7 +145,7 @@
   },
   {
     "test_plan_no": "STP-032-13",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.13: Progress Bar Visual Feedback",
     "description": "Verify module progress bars accurately represent pass rates with proper visual feedback",
     "scenario": "Admin observes progress bars to quickly assess module performance",
@@ -157,7 +157,7 @@
   },
   {
     "test_plan_no": "STP-032-14",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.14: Status Badge Color Coding",
     "description": "Verify status badges use proper color coding for different test statuses",
     "scenario": "Admin identifies test statuses quickly through visual color coding",
@@ -169,7 +169,7 @@
   },
   {
     "test_plan_no": "STP-032-15",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.15: Priority Badge Styling",
     "description": "Verify priority badges in failed tests table use appropriate color coding",
     "scenario": "Admin identifies test priorities through visual indicators in failed tests analysis",
@@ -181,7 +181,7 @@
   },
   {
     "test_plan_no": "STP-032-16",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.16: Responsive Layout Adaptation",
     "description": "Verify the reports page layout adapts properly to different screen sizes",
     "scenario": "Admin accesses reports page on various devices and screen sizes",
@@ -193,7 +193,7 @@
   },
   {
     "test_plan_no": "STP-032-17",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.17: Navigation Link Integration",
     "description": "Verify all navigation links within reports page function correctly",
     "scenario": "Admin navigates through various links to access related functionality",
@@ -205,7 +205,7 @@
   },
   {
     "test_plan_no": "STP-032-18",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.18: Data Accuracy and Calculations",
     "description": "Verify all calculated values and percentages are accurate based on underlying data",
     "scenario": "Admin reviews report calculations to ensure data integrity and accuracy",
@@ -217,7 +217,7 @@
   },
   {
     "test_plan_no": "STP-032-19",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.19: Error Handling and Recovery",
     "description": "Verify proper error handling when reports generation encounters issues",
     "scenario": "Reports page encounters various error conditions during data loading",
@@ -229,7 +229,7 @@
   },
   {
     "test_plan_no": "STP-032-20",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.20: Page Performance and Loading",
     "description": "Verify the reports page loads efficiently with good performance",
     "scenario": "Admin measures reports page performance with various amounts of test data",
@@ -241,7 +241,7 @@
   },
   {
     "test_plan_no": "STP-032-21",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.21: Date and Time Formatting",
     "description": "Verify date and time information is displayed in consistent, readable formats",
     "scenario": "Admin views various date/time fields to ensure consistent formatting",
@@ -253,7 +253,7 @@
   },
   {
     "test_plan_no": "STP-032-22",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.22: Text Truncation and Tooltips",
     "description": "Verify long text content is properly truncated with tooltips for full content",
     "scenario": "Admin views reports with long failure reasons and test descriptions",
@@ -265,7 +265,7 @@
   },
   {
     "test_plan_no": "STP-032-23",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.23: Dark Mode Compatibility",
     "description": "Verify the reports page displays correctly in dark mode theme",
     "scenario": "Admin switches to dark mode to ensure proper theme support",
@@ -277,7 +277,7 @@
   },
   {
     "test_plan_no": "STP-032-24",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.24: Accessibility Compliance",
     "description": "Verify the reports page meets accessibility standards for screen readers and keyboard navigation",
     "scenario": "Admin and accessibility tools test page for compliance with accessibility standards",
@@ -289,7 +289,7 @@
   },
   {
     "test_plan_no": "STP-032-25",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.25: Browser Compatibility Testing",
     "description": "Verify reports functionality works across different web browsers",
     "scenario": "Admin accesses reports using various browsers to ensure cross-browser compatibility",
@@ -301,7 +301,7 @@
   },
   {
     "test_plan_no": "STP-032-26",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.26: Table Overflow and Scrolling",
     "description": "Verify failed tests table handles overflow content with proper scrolling",
     "scenario": "Admin views failed tests table with many entries or on narrow screens",
@@ -313,7 +313,7 @@
   },
   {
     "test_plan_no": "STP-032-27",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.27: Icon Display and Styling",
     "description": "Verify all icons display correctly with proper sizing and alignment",
     "scenario": "Admin observes various icons throughout the reports interface",
@@ -325,7 +325,7 @@
   },
   {
     "test_plan_no": "STP-032-28",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.28: Data Refresh and Currency",
     "description": "Verify reports data reflects current state of test plans and executions",
     "scenario": "Admin views reports after test executions to ensure data currency",
@@ -337,7 +337,7 @@
   },
   {
     "test_plan_no": "STP-032-29",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.29: Integration with Test Management Workflow",
     "description": "Verify reports page integrates seamlessly with overall test management workflow",
     "scenario": "Admin uses reports as part of comprehensive test management activities",
@@ -349,7 +349,7 @@
   },
   {
     "test_plan_no": "STP-032-30",
-    "module_name": "Test Execution Reports",
+    "module_name": "Test-Execution-Reports",
     "screen_design_ref": "Figure 32.30: Complete Reports Analytics Workflow",
     "description": "Verify complete test execution reports and analytics workflow from access through data export",
     "scenario": "Admin completes comprehensive reports review including analysis, navigation, and export functions",
