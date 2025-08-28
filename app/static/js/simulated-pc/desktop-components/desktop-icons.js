@@ -27,7 +27,7 @@ export class DesktopIcons {
     getLevelSpecificIcons() {
         // Define which icons are available for each level
         const levelIconMap = {
-            1: ['browser', 'email', 'files'], // Level 1: Misinformation Maze
+            1: ['browser'], // Level 1: Misinformation Maze
             2: ['email', 'browser', 'logs'], // Level 2: Shadow in the Inbox
             3: ['malware-scanner', 'process-monitor', 'logs', 'files'], // Level 3: Malware Mayhem
             4: ['vulnerability-scanner', 'wireshark', 'terminal', 'browser'], // Level 4: White Hat Test
