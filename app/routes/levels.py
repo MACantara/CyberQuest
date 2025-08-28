@@ -1,8 +1,14 @@
 # TODO: Add server-side tracking of level completion and XP
 
-from flask import Blueprint, render_template, current_app, flash, redirect, url_for, request, session
-from flask_login import login_required
+from flask import Blueprint, render_template, current_app, flash, redirect, url_for, request, session, jsonify
+from flask_login import login_required, current_user
+from app.models.user_progress import UserProgress, LearningAnalytics, SkillAssessment
+from app.database import DatabaseError
 import json
+import uuid
+import logging
+
+logger = logging.getLogger(__name__)
 
 levels_bp = Blueprint('levels', __name__, url_prefix='/levels')
 
@@ -394,8 +400,62 @@ def get_level_js_files(level_id):
 @levels_bp.route('/')
 @login_required
 def levels_overview():
-    """Display all cybersecurity levels."""
-    return render_template('levels/levels.html', levels=CYBERSECURITY_LEVELS)
+    """Display all cybersecurity levels with user progress."""
+    try:
+        # Get user progress and stats
+        user_stats = UserProgress.get_user_stats(current_user.id)
+        level_progress = user_stats.get('level_progress', {})
+        
+        # Enhance level data with user progress
+        enhanced_levels = []
+        for level in CYBERSECURITY_LEVELS:
+            level_data = level.copy()
+            level_id = level['id']
+            
+            # Get progress for this specific level
+            progress = level_progress.get(level_id)
+            if progress:
+                level_data['user_progress'] = {
+                    'status': progress.get('status', 'not_started'),
+                    'completed': progress.get('status') == 'completed',
+                    'score': progress.get('score', 0),
+                    'completion_percentage': progress.get('completion_percentage', 0),
+                    'xp_earned': progress.get('xp_earned', 0),
+                    'time_spent': progress.get('time_spent', 0),
+                    'attempts': progress.get('attempts', 0),
+                    'completed_at': progress.get('completed_at'),
+                    'started_at': progress.get('started_at')
+                }
+            else:
+                level_data['user_progress'] = {
+                    'status': 'not_started',
+                    'completed': False,
+                    'score': 0,
+                    'completion_percentage': 0,
+                    'xp_earned': 0,
+                    'time_spent': 0,
+                    'attempts': 0,
+                    'completed_at': None,
+                    'started_at': None
+                }
+            
+            enhanced_levels.append(level_data)
+        
+        return render_template('levels/levels.html', 
+                             levels=enhanced_levels, 
+                             user_stats=user_stats)
+                             
+    except Exception as e:
+        logger.error(f"Error loading levels overview: {e}")
+        flash('Error loading level data. Please try again.', 'error')
+        return render_template('levels/levels.html', 
+                             levels=CYBERSECURITY_LEVELS, 
+                             user_stats={
+                                 'total_levels': 5,
+                                 'completed_levels': 0,
+                                 'total_xp': 0,
+                                 'completion_percentage': 0
+                             })
 
 @levels_bp.route('/<int:level_id>/start')
 @login_required
@@ -406,28 +466,51 @@ def start_level(level_id):
     if not level:
         flash('Level not found.', 'error')
         return redirect(url_for('levels.levels_overview'))
-
-    # Prepare level data for simulation
-    level_data = {
-        'id': level['id'],
-        'name': level['name'],
-        'description': level['description'],
-        'category': level['category'],
-        'difficulty': level['difficulty'],
-        'skills': level['skills']
-    }
     
-    # Define level-specific JavaScript files to load
-    level_js_files = get_level_js_files(level_id)
-    
-    # Convert level data to JSON string for direct JavaScript usage
-    level_json = json.dumps(level_data, default=str)
-    
-    return render_template('simulated-pc/simulation.html', 
-                         level=level, 
-                         level_data=level_data,
-                         level_json=level_json,
-                         level_js_files=level_js_files)
+    try:
+        # Generate session ID for analytics tracking
+        session_id = str(uuid.uuid4())
+        session['level_session_id'] = session_id
+        
+        # Log level start action
+        LearningAnalytics.log_action(
+            user_id=current_user.id,
+            session_id=session_id,
+            level_id=level_id,
+            action_type='start',
+            action_data={'level_name': level['name']}
+        )
+        
+        # Mark level as started in progress tracking
+        UserProgress.start_level(current_user.id, level_id)
+        
+        # Prepare level data for simulation
+        level_data = {
+            'id': level['id'],
+            'name': level['name'],
+            'description': level['description'],
+            'category': level['category'],
+            'difficulty': level['difficulty'],
+            'skills': level['skills'],
+            'session_id': session_id
+        }
+        
+        # Define level-specific JavaScript files to load
+        level_js_files = get_level_js_files(level_id)
+        
+        # Convert level data to JSON string for direct JavaScript usage
+        level_json = json.dumps(level_data, default=str)
+        
+        return render_template('simulated-pc/simulation.html', 
+                             level=level, 
+                             level_data=level_data,
+                             level_json=level_json,
+                             level_js_files=level_js_files)
+                             
+    except Exception as e:
+        logger.error(f"Error starting level {level_id}: {e}")
+        flash('Error starting level. Please try again.', 'error')
+        return redirect(url_for('levels.levels_overview'))
 
 @levels_bp.route('/api/complete/<int:level_id>', methods=['POST'])
 @login_required
@@ -436,30 +519,149 @@ def complete_level(level_id):
     try:
         level = next((l for l in CYBERSECURITY_LEVELS if l['id'] == level_id), None)
         if not level:
-            return {'success': False, 'error': 'Level not found'}, 404
+            return jsonify({'success': False, 'error': 'Level not found'}), 404
         
-        # Simulate marking level as completed
-        completion_data = {
-            'level_id': level_id,
-            'completed': True,
-            'timestamp': request.json.get('timestamp') if request.json else None,
-            'score': request.json.get('score') if request.json else None
-        }
+        # Get completion data from request
+        data = request.get_json() or {}
+        score = data.get('score', 100)
+        time_spent = data.get('time_spent', 0)
+        mistakes_made = data.get('mistakes_made', 0)
+        hints_used = data.get('hints_used', 0)
+        session_id = session.get('level_session_id', str(uuid.uuid4()))
         
-        # Determine next unlocked level
-        next_level_id = None
-        if level_id == 1:
-            next_level_id = 2  # Unlock Level 2 after completing Level 1
-        elif level_id == 2:
-            next_level_id = 3  # Unlock Level 3 after completing Level 2
-        # etc.
+        # Mark level as completed
+        progress = UserProgress.mark_level_completed(
+            user_id=current_user.id,
+            level_id=level_id,
+            score=score,
+            xp_earned=level['xp_reward'],
+            time_spent=time_spent
+        )
         
-        return {
+        # Log completion action
+        LearningAnalytics.log_action(
+            user_id=current_user.id,
+            session_id=session_id,
+            level_id=level_id,
+            action_type='complete',
+            action_data={
+                'score': score,
+                'time_spent': time_spent,
+                'mistakes_made': mistakes_made,
+                'hints_used': hints_used,
+                'xp_earned': level['xp_reward']
+            }
+        )
+        
+        # Update skill assessments for level skills
+        if score > 0:
+            for skill in level.get('skills', []):
+                SkillAssessment.update_skill_assessment(
+                    user_id=current_user.id,
+                    skill_name=skill,
+                    level_id=level_id,
+                    assessment_score=score
+                )
+        
+        # Get updated user stats
+        user_stats = UserProgress.get_user_stats(current_user.id)
+        
+        return jsonify({
             'success': True,
             'level_completed': level_id,
-            'next_level_unlocked': next_level_id,
-            'xp_earned': level['xp_reward']
+            'xp_earned': level['xp_reward'],
+            'score': score,
+            'total_xp': user_stats.get('total_xp', 0),
+            'completed_levels': user_stats.get('completed_levels', 0),
+            'completion_percentage': user_stats.get('completion_percentage', 0),
+            'progress_data': progress
+        })
+        
+    except DatabaseError as e:
+        logger.error(f"Database error completing level {level_id}: {e}")
+        return jsonify({'success': False, 'error': 'Database error occurred'}), 500
+    except Exception as e:
+        logger.error(f"Unexpected error completing level {level_id}: {e}")
+        return jsonify({'success': False, 'error': 'Unexpected error occurred'}), 500
+
+@levels_bp.route('/api/progress', methods=['GET'])
+@login_required
+def get_user_progress():
+    """API endpoint to get user progress data."""
+    try:
+        user_stats = UserProgress.get_user_stats(current_user.id)
+        return jsonify({
+            'success': True,
+            'stats': user_stats
+        })
+    except Exception as e:
+        logger.error(f"Error fetching user progress: {e}")
+        return jsonify({'success': False, 'error': 'Failed to fetch progress'}), 500
+
+@levels_bp.route('/api/level/<int:level_id>/progress', methods=['POST'])
+@login_required
+def update_level_progress(level_id):
+    """API endpoint to update level progress during gameplay."""
+    try:
+        level = next((l for l in CYBERSECURITY_LEVELS if l['id'] == level_id), None)
+        if not level:
+            return jsonify({'success': False, 'error': 'Level not found'}), 404
+        
+        data = request.get_json() or {}
+        session_id = session.get('level_session_id', str(uuid.uuid4()))
+        
+        # Update progress
+        progress_data = {
+            'status': data.get('status', 'in_progress'),
+            'score': data.get('score', 0),
+            'completion_percentage': data.get('completion_percentage', 0),
+            'time_spent': data.get('time_spent', 0),
+            'hints_used': data.get('hints_used', 0),
+            'mistakes_made': data.get('mistakes_made', 0)
         }
         
+        progress = UserProgress.create_or_update_progress(
+            user_id=current_user.id,
+            level_id=level_id,
+            data=progress_data
+        )
+        
+        # Log progress update action
+        LearningAnalytics.log_action(
+            user_id=current_user.id,
+            session_id=session_id,
+            level_id=level_id,
+            action_type='progress_update',
+            action_data=data
+        )
+        
+        return jsonify({
+            'success': True,
+            'progress': progress
+        })
+        
     except Exception as e:
-        return {'success': False, 'error': str(e)}, 500
+        logger.error(f"Error updating level progress: {e}")
+        return jsonify({'success': False, 'error': 'Failed to update progress'}), 500
+
+@levels_bp.route('/api/analytics', methods=['POST'])
+@login_required
+def log_analytics():
+    """API endpoint to log user actions for analytics."""
+    try:
+        data = request.get_json() or {}
+        session_id = session.get('level_session_id', str(uuid.uuid4()))
+        
+        LearningAnalytics.log_action(
+            user_id=current_user.id,
+            session_id=session_id,
+            level_id=data.get('level_id'),
+            action_type=data.get('action_type'),
+            action_data=data.get('action_data', {})
+        )
+        
+        return jsonify({'success': True})
+        
+    except Exception as e:
+        logger.error(f"Error logging analytics: {e}")
+        return jsonify({'success': False, 'error': 'Failed to log analytics'}), 500
