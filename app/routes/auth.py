@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
+from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
 from app.models.user import User
 from app.models.email_verification import EmailVerification
@@ -214,3 +214,44 @@ def logout():
     logout_user()
     flash('You have been logged out successfully.', 'success')
     return redirect(url_for('main.home'))
+
+@auth_bp.route('/check-availability', methods=['POST'])
+def check_availability():
+    """Check if username or email is available."""
+    try:
+        data = request.get_json()
+        field = data.get('field')
+        value = data.get('value', '').strip().lower()
+        
+        if not field or not value:
+            return jsonify({'error': 'Invalid request'}), 400
+        
+        # Check if database is disabled (Vercel environment)
+        if current_app.config.get('DISABLE_DATABASE', False):
+            # In disabled database mode, always return available
+            return jsonify({'available': True})
+        
+        available = True
+        
+        if field == 'username':
+            if not is_valid_username(value):
+                available = False
+            else:
+                existing_user = User.find_by_username(value)
+                available = existing_user is None
+                
+        elif field == 'email':
+            if not is_valid_email(value):
+                available = False
+            else:
+                existing_user = User.find_by_email(value)
+                available = existing_user is None
+        else:
+            return jsonify({'error': 'Invalid field'}), 400
+        
+        return jsonify({'available': available})
+        
+    except Exception as e:
+        current_app.logger.error(f"Availability check error: {e}")
+        # On error, return available=true to not block user experience
+        return jsonify({'available': True})
