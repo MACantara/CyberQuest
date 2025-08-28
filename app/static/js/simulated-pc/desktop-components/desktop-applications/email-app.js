@@ -51,6 +51,14 @@ export class EmailApp extends WindowBase {
             console.log('Detected fresh Level 2 start - resetting email app state...');
             await this.reset();
             
+            // Clear read states for a fresh start
+            try {
+                await this.readTracker.clearReadStates();
+                console.log('Email read states cleared for new session');
+            } catch (error) {
+                console.error('Failed to clear email read states:', error);
+            }
+            
             // Clear the fresh start flag
             localStorage.removeItem('cyberquest_level_2_fresh_start');
         }

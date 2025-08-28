@@ -196,6 +196,25 @@ export class EmailReadTracker {
         return changed;
     }
 
+    /**
+     * Clear all read states and update the server
+     */
+    async clearReadStates() {
+        this.readEmails.clear();
+        await this.saveToServer();
+        this.isLoaded = true; // Mark as loaded to prevent race conditions
+        console.log('Email read states cleared');
+        
+        // Emit event to update UI
+        document.dispatchEvent(new CustomEvent('read-states-cleared', {
+            detail: {
+                timestamp: new Date().toISOString()
+            }
+        }));
+        
+        return true;
+    }
+
     // Auto-mark as read when email is opened (with delay)
     autoMarkAsRead(emailId, delay = 0) {
         if (delay > 0) {
