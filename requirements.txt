@@ -10,7 +10,7 @@ Flask-WTF
 WTForms
 
 # Email support (for contact forms and password reset)
-Flask-Mail
+Flask-Mailman
 
 # Authentication and password hashing
 argon2-cffi
