@@ -130,7 +130,12 @@ def get_level_js_files(level_id):
             'js/simulated-pc/levels/level-one/level-config.js',
             'js/simulated-pc/levels/level-one/apps/index.js',
             'js/simulated-pc/levels/level-one/data/index.js',
+            
+            # Level 1 dialogues
+            'js/simulated-pc/levels/level-one/dialogues/index.js',
             'js/simulated-pc/levels/level-one/dialogues/level1-misinformation-maze.js',
+            'js/simulated-pc/levels/level-one/dialogues/challenge1-dialogue.js',
+            'js/simulated-pc/levels/level-one/dialogues/level-completion-dialogue.js',
             
             # Required applications for Level 1
             'js/simulated-pc/desktop-components/desktop-applications/browser-app.js',
