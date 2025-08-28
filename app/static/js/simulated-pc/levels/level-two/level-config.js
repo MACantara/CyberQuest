@@ -8,12 +8,12 @@ export const Level2Config = {
     name: "Shadow in the Inbox",
     description: "Spot phishing attempts and practice safe email protocols",
     
-    // Level-specific applications - email only for focused experience
+    // Level-specific applications
     requiredApps: [
         'email-app'
     ],
     
-    // Tutorial requirements - email only
+    // Tutorial requirements
     tutorials: [
         'email-tutorial'
     ],
