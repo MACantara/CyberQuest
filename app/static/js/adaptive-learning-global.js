@@ -243,7 +243,7 @@ class CyberQuestAdaptiveLearning {
         let achievements = adaptiveResult?.achievements || [];
         
         feedbackElement.innerHTML = `
-            <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
                 <div class="bg-white dark:bg-gray-800 rounded-xl p-8 max-w-md mx-4 text-center">
                     <div class="text-6xl mb-4">🎉</div>
                     <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
