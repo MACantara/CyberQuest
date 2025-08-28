@@ -1,4 +1,4 @@
-import { PageRegistry } from './pages/page-registry.js';
+import { PageRegistry } from '../../../levels/level-one/pages/page-registry.js';
 import { InteractiveLabeling } from '../../../levels/level-one/tools/interactive-labeling.js';
 
 export class PageRenderer {

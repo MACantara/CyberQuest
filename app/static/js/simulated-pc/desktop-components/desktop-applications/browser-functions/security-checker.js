@@ -1,5 +1,5 @@
 import { SecurityPopup } from './security-popup.js';
-import { PageRegistry } from './pages/page-registry.js';
+import { PageRegistry } from '../../../levels/level-one/pages/page-registry.js';
 
 export class SecurityChecker {
     constructor(browserApp) {
