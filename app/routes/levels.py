@@ -304,6 +304,88 @@ def get_level_js_files(level_id):
             'js/simulated-pc/levels/level-five/evidence-tracker.js',
             'js/simulated-pc/levels/level-five/scoring-system.js',
             
+            # Level 5 directories (moved to level-five)
+            'js/simulated-pc/levels/level-five/directories/base-directory.js',
+            'js/simulated-pc/levels/level-five/directories/desktop-directory.js',
+            'js/simulated-pc/levels/level-five/directories/directory-registry.js',
+            'js/simulated-pc/levels/level-five/directories/documents-directory.js',
+            'js/simulated-pc/levels/level-five/directories/downloads-directory.js',
+            'js/simulated-pc/levels/level-five/directories/evidence-directory.js',
+            'js/simulated-pc/levels/level-five/directories/home-directory.js',
+            'js/simulated-pc/levels/level-five/directories/logs-directory.js',
+            'js/simulated-pc/levels/level-five/directories/pictures-directory.js',
+            
+            # Level 5 files (moved to level-five)
+            'js/simulated-pc/levels/level-five/files/base-file.js',
+            
+            # Level 5 documents files
+            'js/simulated-pc/levels/level-five/files/documents/documents-files.js',
+            'js/simulated-pc/levels/level-five/files/documents/incident-report.js',
+            'js/simulated-pc/levels/level-five/files/documents/security-report.js',
+            'js/simulated-pc/levels/level-five/files/documents/training-notes.js',
+            
+            # Level 5 downloads files
+            'js/simulated-pc/levels/level-five/files/downloads-files/downloads-files.js',
+            'js/simulated-pc/levels/level-five/files/downloads-files/installer-deb.js',
+            'js/simulated-pc/levels/level-five/files/downloads-files/malware-sample.js',
+            'js/simulated-pc/levels/level-five/files/downloads-files/network-diagram.js',
+            'js/simulated-pc/levels/level-five/files/downloads-files/profile-photo.js',
+            
+            # Level 5 evidence files
+            'js/simulated-pc/levels/level-five/files/evidence/evidence-files.js',
+            
+            # Level 5 home files
+            'js/simulated-pc/levels/level-five/files/home/bashrc-file.js',
+            'js/simulated-pc/levels/level-five/files/home/home-files.js',
+            'js/simulated-pc/levels/level-five/files/home/readme-file.js',
+            'js/simulated-pc/levels/level-five/files/home/security-audit.js',
+            'js/simulated-pc/levels/level-five/files/home/suspicious-file.js',
+            'js/simulated-pc/levels/level-five/files/home/system-screenshot.js',
+            
+            # Level 5 log files
+            'js/simulated-pc/levels/level-five/files/logs/application-debug.js',
+            'js/simulated-pc/levels/level-five/files/logs/auth-failures.js',
+            'js/simulated-pc/levels/level-five/files/logs/firewall-blocks.js',
+            'js/simulated-pc/levels/level-five/files/logs/logs-files.js',
+            'js/simulated-pc/levels/level-five/files/logs/network-traffic.js',
+            'js/simulated-pc/levels/level-five/files/logs/security-events.js',
+            'js/simulated-pc/levels/level-five/files/logs/system-access.js',
+            
+            # File Manager Application (core Level 5 app)
+            'js/simulated-pc/desktop-components/desktop-applications/file-manager-app.js',
+            'js/simulated-pc/desktop-components/desktop-applications/file-manager-functions/file-navigator.js',
+            'js/simulated-pc/desktop-components/desktop-applications/file-manager-functions/file-opener.js',
+            'js/simulated-pc/desktop-components/desktop-applications/file-manager-functions/file-type-detector.js',
+            'js/simulated-pc/desktop-components/desktop-applications/file-manager-functions/file-viewer.js',
+            'js/simulated-pc/desktop-components/desktop-applications/file-manager-functions/viewer-factory.js',
+            'js/simulated-pc/desktop-components/desktop-applications/file-manager-functions/window-tracker.js',
+            
+            # File Viewer Applications (for file types)
+            'js/simulated-pc/desktop-components/desktop-applications/file-viewer-apps/text-viewer-app.js',
+            'js/simulated-pc/desktop-components/desktop-applications/file-viewer-apps/log-viewer-app.js',
+            'js/simulated-pc/desktop-components/desktop-applications/file-viewer-apps/image-viewer-app.js',
+            'js/simulated-pc/desktop-components/desktop-applications/file-viewer-apps/pdf-viewer-app.js',
+            'js/simulated-pc/desktop-components/desktop-applications/file-viewer-apps/executable-viewer-app.js',
+            
+            # System Logs Application (core Level 5 app)
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-app.js',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-analyzer.js',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-data-manager.js',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-entry-renderer.js',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-export-manager.js',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-filter-manager.js',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-search-manager.js',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-tab-manager.js',
+            'js/simulated-pc/desktop-components/desktop-applications/system-logs-functions/log-ui-manager.js',
+            
+            # Terminal Application (shared with Level 4)
+            'js/simulated-pc/desktop-components/desktop-applications/terminal-app.js',
+            'js/simulated-pc/desktop-components/desktop-applications/terminal-functions/command-history.js',
+            'js/simulated-pc/desktop-components/desktop-applications/terminal-functions/command-processor.js',
+            'js/simulated-pc/desktop-components/desktop-applications/terminal-functions/command-registry.js',
+            'js/simulated-pc/desktop-components/desktop-applications/terminal-functions/file-system.js',
+            'js/simulated-pc/desktop-components/desktop-applications/terminal-functions/tab-completion.js',
+            
             # Tutorials for Level 5
             'js/simulated-pc/levels/level-five/tutorials/level5-forensics-tutorial.js',
             'js/simulated-pc/tutorials/file-manager-tutorial.js',
