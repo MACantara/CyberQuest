@@ -790,3 +790,21 @@ def get_level2_session_data():
     except Exception as e:
         logger.error(f"Error fetching Level 2 session data: {e}")
         return jsonify({'success': False, 'error': 'Failed to fetch session data'}), 500
+
+@levels_bp.route('/api/level/2/reset', methods=['POST'])
+@login_required
+def reset_level2_data():
+    """API endpoint to reset all Level 2 data for fresh start."""
+    try:
+        # Clear all Level 2 progress data
+        UserProgress.clear_level_progress(current_user.id, 2)
+        
+        # Clear Level 2 analytics data (optional - comment out if you want to keep analytics)
+        # LearningAnalytics.clear_level_analytics(current_user.id, 2)
+        
+        logger.info(f"Level 2 data reset for user {current_user.id}")
+        return jsonify({'success': True, 'message': 'Level 2 data reset successfully'})
+        
+    except Exception as e:
+        logger.error(f"Error resetting Level 2 data: {e}")
+        return jsonify({'success': False, 'error': 'Failed to reset Level 2 data'}), 500
