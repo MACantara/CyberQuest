@@ -29,8 +29,8 @@ export class Level2ShadowInboxDialogue extends BaseDialogue {
         // Set fresh start flag for email app
         localStorage.setItem('cyberquest_level_2_fresh_start', 'true');
         
-        // Clear any previous Level 2 server-side data for fresh start
-        this.clearLevel2Data();
+        // Start new session (don't clear previous data - keep for analytics)
+        this.startNewSession();
         
         // Open the email application using application launcher
         if (window.applicationLauncher) {
@@ -40,10 +40,10 @@ export class Level2ShadowInboxDialogue extends BaseDialogue {
         }
     }
 
-    async clearLevel2Data() {
+    async startNewSession() {
         try {
-            // Clear server-side Level 2 data
-            const response = await fetch('/api/level/2/reset', {
+            // Start a new session without clearing previous attempts
+            const response = await fetch('/api/level/2/new-session', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -52,12 +52,12 @@ export class Level2ShadowInboxDialogue extends BaseDialogue {
             });
 
             if (response.ok) {
-                console.log('Level 2 server-side data cleared for fresh start');
+                console.log('New Level 2 session started (previous data preserved)');
             } else {
-                console.warn('Failed to clear Level 2 server-side data');
+                console.warn('Failed to start new Level 2 session');
             }
         } catch (error) {
-            console.warn('Failed to clear Level 2 server-side data:', error);
+            console.warn('Failed to start new Level 2 session:', error);
         }
     }
 

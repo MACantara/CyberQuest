@@ -245,6 +245,23 @@ export class EmailActionHandler {
         }
     }
 
+    // Reset CLIENT-SIDE action handler state only (preserve server analytics)
+    resetClientState() {
+        try {
+            console.log('Resetting client-side action handler state (preserving server analytics)...');
+            
+            // Reset completion tracker (client-side only)
+            this.completionTracker.reset();
+            
+            // Reset session start time
+            this.sessionStartTime = new Date().toISOString();
+            
+            console.log('Client-side action handler state reset completed');
+        } catch (error) {
+            console.error('Failed to reset client-side action handler state:', error);
+        }
+    }
+
     // Cleanup when email app is closed
     cleanup() {
         // Save current state

@@ -387,22 +387,22 @@ export class EmailApp extends WindowBase {
         this.updateContent();
     }
 
-    // Reset method to clear all email app state for fresh session
+    // Reset method to clear CLIENT-SIDE email app state only (preserve server data)
     async reset() {
         try {
-            console.log('Resetting email app state...');
+            console.log('Resetting email app CLIENT-SIDE state (preserving server data)...');
             
-            // Clear all read tracking
-            await this.readTracker.clearAllReadStatus();
+            // Clear all read tracking (client-side only)
+            this.readTracker.clearClientState();
             
             // Reset email state (folder, selection, etc.)
             this.state.reset();
             
-            // Reset security manager
-            await this.state.securityManager.reset();
+            // Reset security manager (client-side only)
+            this.state.securityManager.resetClientState();
             
-            // Reset action handler and feedback
-            await this.actionHandler.reset();
+            // Reset action handler and feedback (client-side only)
+            this.actionHandler.resetClientState();
             
             // Reset completion tracker
             this.completionTracker.reset();
@@ -410,7 +410,7 @@ export class EmailApp extends WindowBase {
             // Refresh the UI
             this.updateContent();
             
-            console.log('Email app state reset completed');
+            console.log('Email app CLIENT-SIDE state reset completed (server data preserved)');
         } catch (error) {
             console.error('Failed to reset email app:', error);
         }

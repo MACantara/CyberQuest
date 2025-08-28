@@ -472,12 +472,36 @@ export class EmailSessionSummary {
         // Set fresh start flag for next email app instance
         localStorage.setItem('cyberquest_level_2_fresh_start', 'true');
         
+        // Start new session (preserve previous attempt data for analytics)
+        this.startNewSession();
+        
         // Reset the email app to allow retry
         if (this.emailApp && this.emailApp.reset) {
             this.emailApp.reset();
         }
         
-        console.log('Training session reset for retry');
+        console.log('Training session reset for retry (previous data preserved)');
+    }
+
+    async startNewSession() {
+        try {
+            // Start a new session without clearing previous attempts
+            const response = await fetch('/api/level/2/new-session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+                }
+            });
+
+            if (response.ok) {
+                console.log('New Level 2 retry session started');
+            } else {
+                console.warn('Failed to start new Level 2 retry session');
+            }
+        } catch (error) {
+            console.warn('Failed to start new Level 2 retry session:', error);
+        }
     }
 
     reviewMistakes() {

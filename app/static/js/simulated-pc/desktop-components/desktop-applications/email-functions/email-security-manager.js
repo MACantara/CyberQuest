@@ -416,4 +416,11 @@ export class EmailSecurityManager {
         this.isLoaded = false;
         console.log('EmailSecurityManager reset completed');
     }
+
+    // Reset CLIENT-SIDE security state only (preserve server analytics)
+    resetClientState() {
+        console.log('Resetting client-side security state (preserving server analytics)...');
+        this.isLoaded = false;
+        console.log('Client-side security state reset completed');
+    }
 }

@@ -300,6 +300,13 @@ export class EmailReadTracker {
         return hadEmails;
     }
 
+    // Clear CLIENT-SIDE read status only (preserve server analytics)
+    clearClientState() {
+        console.log('Clearing client-side read status (preserving server analytics)...');
+        this.readEmails.clear();
+        console.log('Client-side read status cleared');
+    }
+
     // Force reload from server (for debugging/testing)
     async forceReload() {
         this.isLoaded = false;
