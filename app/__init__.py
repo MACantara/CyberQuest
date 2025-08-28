@@ -1,4 +1,4 @@
-from flask import Flask, session, request, jsonify
+from flask import Flask, session, request, jsonify, render_template
 from flask_mailman import Mail
 from config import config, get_config
 from flask_login import LoginManager
@@ -170,5 +170,79 @@ def create_app(config_name=None):
     # Make hCaptcha available in templates
     from app.utils.hcaptcha_utils import hcaptcha, is_hcaptcha_enabled
     app.jinja_env.globals.update(hcaptcha=hcaptcha, hcaptcha_enabled=is_hcaptcha_enabled)
+    
+    # Error handlers
+    @app.errorhandler(400)
+    def bad_request(error):
+        return render_template('error.html', 
+                             error_code=400, 
+                             error_title='Bad Request'), 400
+    
+    @app.errorhandler(401)
+    def unauthorized(error):
+        return render_template('error.html', 
+                             error_code=401, 
+                             error_title='Unauthorized'), 401
+    
+    @app.errorhandler(403)
+    def forbidden(error):
+        return render_template('error.html', 
+                             error_code=403, 
+                             error_title='Forbidden'), 403
+    
+    @app.errorhandler(404)
+    def not_found(error):
+        return render_template('error.html', 
+                             error_code=404, 
+                             error_title='Page Not Found'), 404
+    
+    @app.errorhandler(405)
+    def method_not_allowed(error):
+        return render_template('error.html', 
+                             error_code=405, 
+                             error_title='Method Not Allowed'), 405
+    
+    @app.errorhandler(408)
+    def request_timeout(error):
+        return render_template('error.html', 
+                             error_code=408, 
+                             error_title='Request Timeout'), 408
+    
+    @app.errorhandler(413)
+    def payload_too_large(error):
+        return render_template('error.html', 
+                             error_code=413, 
+                             error_title='Payload Too Large'), 413
+    
+    @app.errorhandler(429)
+    def rate_limit_exceeded(error):
+        return render_template('error.html', 
+                             error_code=429, 
+                             error_title='Too Many Requests'), 429
+    
+    @app.errorhandler(500)
+    def internal_server_error(error):
+        app.logger.error(f'Server Error: {error}')
+        return render_template('error.html', 
+                             error_code=500, 
+                             error_title='Internal Server Error'), 500
+    
+    @app.errorhandler(502)
+    def bad_gateway(error):
+        return render_template('error.html', 
+                             error_code=502, 
+                             error_title='Bad Gateway'), 502
+    
+    @app.errorhandler(503)
+    def service_unavailable(error):
+        return render_template('error.html', 
+                             error_code=503, 
+                             error_title='Service Unavailable'), 503
+    
+    @app.errorhandler(504)
+    def gateway_timeout(error):
+        return render_template('error.html', 
+                             error_code=504, 
+                             error_title='Gateway Timeout'), 504
     
     return app
