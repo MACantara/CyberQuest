@@ -68,7 +68,7 @@ export class EmailCompletionTracker {
         }
     }
 
-    triggerLevelCompletion() {
+    async triggerLevelCompletion() {
         if (this.hasTriggeredCompletion) return;
         
         this.hasTriggeredCompletion = true;
@@ -80,14 +80,11 @@ export class EmailCompletionTracker {
         }
 
         // Calculate completion score based on session performance
-        const completionScore = this.calculateLevelScore();
+        const completionScore = await this.calculateLevelScore();
         
         // Mark level as completed on server
-        this.markLevelCompletedOnServer(completionScore);
+        await this.markLevelCompletedOnServer(completionScore);
 
-        // Mark email training as completed (local backup)
-        localStorage.setItem('cyberquest_email_training_completed', 'true');
-        localStorage.setItem('cyberquest_level2_score', completionScore.toString());
         
         // Delay before showing completion dialogue
         setTimeout(() => {
@@ -153,7 +150,7 @@ export class EmailCompletionTracker {
      * Mark Level 2 as completed and store completion data
      * @param {Object} sessionStats - Session statistics
      */
-    markLevel2Complete(sessionStats) {
+    async markLevel2Complete(sessionStats) {
         const completionData = {
             levelId: 2,
             completed: true,
@@ -164,15 +161,12 @@ export class EmailCompletionTracker {
             completionMethod: 'email-training'
         };
         
-        // Store completion data in localStorage
-        localStorage.setItem('cyberquest_level_2_completed', 'true');
-        localStorage.setItem('cyberquest_level_2_completion', JSON.stringify(completionData));
-        localStorage.setItem('cyberquest_email_training_completed', 'true');
-        localStorage.setItem('cyberquest_email_training_score', sessionStats.accuracy.toString());
+        // Store completion data on server
+        await this.markLevelCompletedOnServer(sessionStats.accuracy);
         
         console.log('Level 2 marked as completed via EmailCompletionTracker:', {
-            level_completed: localStorage.getItem('cyberquest_level_2_completed'),
-            completion_data: localStorage.getItem('cyberquest_level_2_completion')
+            score: sessionStats.accuracy,
+            completionData: completionData
         });
         
         // Emit completion event for other systems
@@ -256,18 +250,12 @@ export class EmailCompletionTracker {
     }
 
     /**
-     * Load previous session data if available
+     * Load previous session data
      */
     loadPreviousSessionData() {
-        const previousCompletion = localStorage.getItem('cyberquest_level_2_completion');
-        if (previousCompletion) {
-            try {
-                const completionData = JSON.parse(previousCompletion);
-                console.log('Previous Level 2 completion found:', completionData);
-            } catch (error) {
-                console.warn('Error parsing previous completion data:', error);
-            }
-        }
+        // Completion data is now stored server-side and loaded via the main dashboard
+        // This method is kept for compatibility but no longer uses localStorage
+        console.log('Completion data is now managed server-side');
     }
 
     /**
@@ -284,11 +272,8 @@ export class EmailCompletionTracker {
         document.addEventListener('navigate-to-level', (event) => {
             const { levelId } = event.detail;
             if (levelId === 3) {
-                // User wants to go to level 3, ensure level 2 is marked complete
-                const level2Complete = localStorage.getItem('cyberquest_level_2_completed');
-                if (level2Complete !== 'true') {
-                    console.warn('Attempting to access Level 3 without completing Level 2');
-                }
+                // User wants to go to level 3 - completion validation now handled server-side
+                console.log('Navigation to Level 3 requested - completion checked server-side');
             }
         });
     }
@@ -311,8 +296,9 @@ export class EmailCompletionTracker {
                 const emailId = email.id;
                 const isPhishing = email.tags && email.tags.includes('phishing');
                 
-                // Get the action taken on this email from localStorage or sessionData
-                const emailStatus = localStorage.getItem(`email_${emailId}_status`) || 'unread';
+                // Get the action taken on this email from server-side email actions
+                // For now, get from sessionSummary which tracks email interactions
+                const emailStatus = this.getEmailActionStatus(emailId);
                 
                 totalEmails++;
                 
@@ -393,6 +379,24 @@ export class EmailCompletionTracker {
         // In a real implementation, you'd track actual time spent
         const emailsProcessed = ALL_EMAILS.length;
         return emailsProcessed * 180; // 3 minutes per email average
+    }
+
+    /**
+     * Get email action status from server-side tracking or session data
+     */
+    getEmailActionStatus(emailId) {
+        // Try to get from EmailSecurityManager if available
+        if (window.emailSecurityManager) {
+            const emailData = window.emailSecurityManager.getEmailData(emailId);
+            if (emailData) {
+                if (emailData.reportedAsPhishing) return 'reported_phishing';
+                if (emailData.markedAsSpam) return 'spam';
+                if (emailData.markedAsLegitimate) return 'inbox';
+            }
+        }
+        
+        // Default to unread if no action found
+        return 'unread';
     }
 
     /**
