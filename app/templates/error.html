@@ -1,15 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ error_title }} - CyberQuest</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
-</head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
-    <div class="max-w-md mx-auto bg-white rounded-lg shadow-lg p-8 text-center">
+{% extends "base.html" %}
+
+{% block title %}
+    {% if error_title %}{{ error_title }}{% else %}{{ error_code }} Error{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 text-center border dark:border-gray-700">
         <!-- Error Icon -->
         <div class="mb-6">
             {% if error_title == 'Missing URL' %}
@@ -27,7 +24,7 @@
             {% elif error_code == 403 %}
                 <i class="bi bi-shield-x text-6xl text-red-500"></i>
             {% elif error_code == 404 %}
-                <i class="bi bi-file-earmark-x text-6xl text-gray-500"></i>
+                <i class="bi bi-file-earmark-x text-6xl text-gray-500 dark:text-gray-400"></i>
             {% elif error_code == 405 %}
                 <i class="bi bi-x-circle text-6xl text-orange-500"></i>
             {% elif error_code == 408 %}
@@ -50,12 +47,12 @@
         </div>
         
         <!-- Error Title -->
-        <h1 class="text-2xl font-bold text-gray-800 mb-4">
+        <h1 class="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4">
             {% if error_title %}{{ error_title }}{% else %}{{ error_code }} Error{% endif %}
         </h1>
         
         <!-- Error Message -->
-        <div class="text-gray-600 mb-6">
+        <div class="text-gray-600 dark:text-gray-400 mb-6">
             {% if error_message %}
                 <p>{{ error_message }}</p>
             {% elif error_code == 400 %}
@@ -89,17 +86,17 @@
         
         <!-- Additional Information -->
         {% if error_title == 'Domain Not Allowed' %}
-            <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6 text-left">
+            <div class="bg-blue-50 dark:bg-blue-900/30 border-l-4 border-blue-400 dark:border-blue-600 p-4 mb-6 text-left">
                 <div class="flex">
                     <div class="flex-shrink-0">
-                        <i class="bi bi-info-circle text-blue-400"></i>
+                        <i class="bi bi-info-circle text-blue-400 dark:text-blue-500"></i>
                     </div>
                     <div class="ml-3">
-                        <p class="text-sm text-blue-700">
+                        <p class="text-sm text-blue-700 dark:text-blue-300">
                             For security reasons, only whitelisted domains can be fetched. 
                             Allowed domains include:
                         </p>
-                        <ul class="list-disc list-inside text-sm text-blue-700 mt-2">
+                        <ul class="list-disc list-inside text-sm text-blue-700 dark:text-blue-300 mt-2">
                             <li>example.com</li>
                             <li>httpbin.org</li>
                             <li>jsonplaceholder.typicode.com</li>
@@ -110,45 +107,45 @@
                 </div>
             </div>
         {% elif error_code == 404 %}
-            <div class="bg-gray-50 border-l-4 border-gray-400 p-4 mb-6 text-left">
+            <div class="bg-gray-50 dark:bg-gray-700/50 border-l-4 border-gray-400 dark:border-gray-500 p-4 mb-6 text-left">
                 <div class="flex">
                     <div class="flex-shrink-0">
-                        <i class="bi bi-lightbulb text-gray-400"></i>
+                        <i class="bi bi-lightbulb text-gray-400 dark:text-gray-500"></i>
                     </div>
                     <div class="ml-3">
-                        <p class="text-sm text-gray-700">
+                        <p class="text-sm text-gray-700 dark:text-gray-300">
                             Try checking the URL for typos or browse our available pages:
                         </p>
-                        <ul class="list-disc list-inside text-sm text-gray-700 mt-2">
-                            <li><a href="{{ url_for('main.home') }}" class="text-blue-600 hover:text-blue-800">Home</a></li>
-                            <li><a href="{{ url_for('main.about') }}" class="text-blue-600 hover:text-blue-800">About</a></li>
-                            <li><a href="{{ url_for('levels.levels_overview') }}" class="text-blue-600 hover:text-blue-800">Levels</a></li>
-                            <li><a href="{{ url_for('contact.contact_page') }}" class="text-blue-600 hover:text-blue-800">Contact</a></li>
+                        <ul class="list-disc list-inside text-sm text-gray-700 dark:text-gray-300 mt-2">
+                            <li><a href="{{ url_for('main.home') }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">Home</a></li>
+                            <li><a href="{{ url_for('main.about') }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">About</a></li>
+                            <li><a href="{{ url_for('levels.levels_overview') }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">Levels</a></li>
+                            <li><a href="{{ url_for('contact.contact_page') }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">Contact</a></li>
                         </ul>
                     </div>
                 </div>
             </div>
         {% elif error_code == 500 %}
-            <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-6 text-left">
+            <div class="bg-red-50 dark:bg-red-900/30 border-l-4 border-red-400 dark:border-red-600 p-4 mb-6 text-left">
                 <div class="flex">
                     <div class="flex-shrink-0">
-                        <i class="bi bi-exclamation-triangle text-red-400"></i>
+                        <i class="bi bi-exclamation-triangle text-red-400 dark:text-red-500"></i>
                     </div>
                     <div class="ml-3">
-                        <p class="text-sm text-red-700">
+                        <p class="text-sm text-red-700 dark:text-red-300">
                             Our team has been notified about this issue. If the problem persists, please contact support.
                         </p>
                     </div>
                 </div>
             </div>
         {% elif error_code == 429 %}
-            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6 text-left">
+            <div class="bg-yellow-50 dark:bg-yellow-900/30 border-l-4 border-yellow-400 dark:border-yellow-600 p-4 mb-6 text-left">
                 <div class="flex">
                     <div class="flex-shrink-0">
-                        <i class="bi bi-clock text-yellow-400"></i>
+                        <i class="bi bi-clock text-yellow-400 dark:text-yellow-500"></i>
                     </div>
                     <div class="ml-3">
-                        <p class="text-sm text-yellow-700">
+                        <p class="text-sm text-yellow-700 dark:text-yellow-300">
                             You've made too many requests in a short period. Please wait a few minutes before trying again.
                         </p>
                     </div>
@@ -159,29 +156,29 @@
         <!-- Action Buttons -->
         <div class="space-y-3">
             <button onclick="window.history.back()" 
-                    class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors cursor-pointer">
+                    class="w-full bg-blue-600 dark:bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors cursor-pointer">
                 <i class="bi bi-arrow-left mr-2"></i>Go Back
             </button>
             
             <a href="{{ url_for('main.home') }}" 
-               class="block w-full bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700 transition-colors cursor-pointer">
+               class="block w-full bg-gray-600 dark:bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
                 <i class="bi bi-house mr-2"></i>Return to Home
             </a>
             
             {% if error_code in [500, 502, 503, 504] %}
             <button onclick="window.location.reload()" 
-                    class="w-full bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors cursor-pointer">
+                    class="w-full bg-green-600 dark:bg-green-700 text-white px-4 py-2 rounded hover:bg-green-700 dark:hover:bg-green-600 transition-colors cursor-pointer">
                 <i class="bi bi-arrow-clockwise mr-2"></i>Try Again
             </button>
             {% elif error_code == 429 %}
-            <div class="w-full bg-gray-400 text-white px-4 py-2 rounded cursor-not-allowed">
+            <div class="w-full bg-gray-400 dark:bg-gray-600 text-white px-4 py-2 rounded cursor-not-allowed">
                 <i class="bi bi-clock mr-2"></i>Please Wait
             </div>
             {% endif %}
         </div>
         
         <!-- Footer -->
-        <div class="mt-8 text-xs text-gray-500">
+        <div class="mt-8 text-xs text-gray-500 dark:text-gray-400">
             <p>CyberQuest</p>
             <p class="mt-1">
                 <i class="bi bi-shield-check mr-1"></i>
@@ -189,10 +186,5 @@
             </p>
         </div>
     </div>
-
-    <!-- Background Pattern -->
-    <div class="fixed inset-0 -z-10 opacity-5">
-        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23000000\" fill-opacity=\"0.1\"%3E%3Ccircle cx=\"30\" cy=\"30\" r=\"2\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
-    </div>
-</body>
-</html>
+</div>
+{% endblock %}
