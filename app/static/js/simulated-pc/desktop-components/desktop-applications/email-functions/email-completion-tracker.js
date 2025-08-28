@@ -283,54 +283,33 @@ export class EmailCompletionTracker {
      */
     calculateLevelScore() {
         try {
-            // Get current email security performance data
-            const sessionData = this.sessionSummary.getSessionStats();
+            // Get current email security performance data from the feedback system
+            const sessionStats = this.emailApp.actionHandler.feedback.getSessionStats();
             
-            // Calculate score based on correct phishing detection and email handling
-            let score = 0;
-            let totalEmails = 0;
-            let correctActions = 0;
+            // Use the accuracy from the feedback system which already calculates correct actions
+            let score = sessionStats.accuracy || 0;
             
-            // Check each email's handling status
-            for (const email of ALL_EMAILS) {
-                const emailId = email.id;
-                const isPhishing = email.tags && email.tags.includes('phishing');
-                
-                // Get the action taken on this email from server-side email actions
-                // For now, get from sessionSummary which tracks email interactions
-                const emailStatus = this.getEmailActionStatus(emailId);
-                
-                totalEmails++;
-                
-                if (isPhishing) {
-                    // For phishing emails, correct action is reporting as phishing
-                    if (emailStatus === 'reported_phishing' || emailStatus === 'spam') {
-                        correctActions++;
-                    }
-                } else {
-                    // For legitimate emails, correct action is keeping in inbox or moving to appropriate folder
-                    if (emailStatus === 'inbox' || emailStatus === 'moved_to_folder') {
-                        correctActions++;
-                    }
-                }
+            // If feedback system doesn't have an accuracy score, calculate it manually
+            if (score === 0 && sessionStats.totalActions > 0) {
+                score = Math.round((sessionStats.correctActions / sessionStats.totalActions) * 100);
             }
             
-            // Calculate percentage score
-            if (totalEmails > 0) {
-                score = Math.round((correctActions / totalEmails) * 100);
-            } else {
-                score = 85; // Default score if no emails processed
+            // Default to 70% if no feedback data available
+            if (score === 0) {
+                score = 70;
             }
             
             // Ensure score is within bounds
             score = Math.max(0, Math.min(100, score));
             
-            console.log(`Level 2 completion score: ${score}% (${correctActions}/${totalEmails} emails handled correctly)`);
+            console.log(`Level 2 completion score: ${score}% based on feedback system`);
+            console.log('Session stats:', sessionStats);
+            
             return score;
             
         } catch (error) {
             console.error('Error calculating Level 2 score:', error);
-            return 85; // Default score on error
+            return 70; // Default score on error
         }
     }
 
@@ -345,7 +324,7 @@ export class EmailCompletionTracker {
                 time_spent: this.getTotalTimeSpent(),
                 xp_earned: 150, // Level 2 XP reward
                 completion_data: {
-                    sessionData: this.sessionSummary.getSessionStats(),
+                    sessionData: this.emailApp.actionHandler.feedback.getSessionStats(),
                     overallScore: score,
                     timestamp: new Date().toISOString()
                 }
@@ -385,9 +364,9 @@ export class EmailCompletionTracker {
      * Get email action status from server-side tracking or session data
      */
     getEmailActionStatus(emailId) {
-        // Try to get from EmailSecurityManager if available
-        if (window.emailSecurityManager) {
-            const emailData = window.emailSecurityManager.getEmailData(emailId);
+        // Try to get from EmailSecurityManager through the email app
+        if (this.emailApp && this.emailApp.state && this.emailApp.state.securityManager) {
+            const emailData = this.emailApp.state.securityManager.getEmailData(emailId);
             if (emailData) {
                 if (emailData.reportedAsPhishing) return 'reported_phishing';
                 if (emailData.markedAsSpam) return 'spam';
