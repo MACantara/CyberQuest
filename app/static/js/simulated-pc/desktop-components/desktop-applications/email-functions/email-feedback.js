@@ -1,9 +1,13 @@
+import { EmailServerAPI } from './email-server-api.js';
+
 export class EmailFeedback {
     constructor(emailApp) {
         this.emailApp = emailApp;
         this.feedbackHistory = [];
         this.sessionScore = 0;
         this.totalActions = 0;
+        this.emailServerAPI = new EmailServerAPI();
+        this.dataLoaded = false;
     }
 
     /**
@@ -12,7 +16,7 @@ export class EmailFeedback {
      * @param {string} action - Player action: 'report', 'trust', 'delete', 'ignore'
      * @param {string} reasoning - Optional reasoning for the action
      */
-    evaluateAction(email, action, reasoning = '') {
+    async evaluateAction(email, action, reasoning = '') {
         const isCorrectAction = this.isActionCorrect(email, action);
         const feedbackData = {
             emailId: email.id,
@@ -26,7 +30,7 @@ export class EmailFeedback {
             feedback: this.generateFeedback(email, action, isCorrectAction)
         };
 
-        this.recordFeedback(feedbackData);
+        await this.recordFeedback(feedbackData);
         this.showFeedbackModal(feedbackData);
         
         return feedbackData;
@@ -181,7 +185,7 @@ export class EmailFeedback {
      * Record feedback for session tracking
      * @param {Object} feedbackData - Feedback data to record
      */
-    recordFeedback(feedbackData) {
+    async recordFeedback(feedbackData) {
         this.feedbackHistory.push(feedbackData);
         this.totalActions++;
         
@@ -189,10 +193,8 @@ export class EmailFeedback {
             this.sessionScore++;
         }
 
-        // Store in localStorage for persistence
-        localStorage.setItem('cyberquest_email_feedback_history', JSON.stringify(this.feedbackHistory));
-        localStorage.setItem('cyberquest_email_session_score', this.sessionScore.toString());
-        localStorage.setItem('cyberquest_email_total_actions', this.totalActions.toString());
+        // Store in server-side session data
+        await this.saveSessionData();
     }
 
     /**
@@ -304,32 +306,65 @@ export class EmailFeedback {
     /**
      * Reset session data
      */
-    resetSession() {
+    async resetSession() {
         this.feedbackHistory = [];
         this.sessionScore = 0;
         this.totalActions = 0;
         
-        localStorage.removeItem('cyberquest_email_feedback_history');
-        localStorage.removeItem('cyberquest_email_session_score');
-        localStorage.removeItem('cyberquest_email_total_actions');
+        // Clear server-side session data
+        await this.emailServerAPI.saveSessionData({
+            feedback_history: [],
+            session_score: 0,
+            total_actions: 0
+        });
     }
 
     /**
-     * Load session data from localStorage
+     * Load session data from server
      */
-    loadSessionData() {
-        const history = localStorage.getItem('cyberquest_email_feedback_history');
-        const score = localStorage.getItem('cyberquest_email_session_score');
-        const total = localStorage.getItem('cyberquest_email_total_actions');
+    async loadSessionData() {
+        if (this.dataLoaded) return;
         
-        if (history) {
-            this.feedbackHistory = JSON.parse(history);
+        try {
+            const sessionData = await this.emailServerAPI.loadSessionData();
+            
+            if (sessionData.feedback_history) {
+                this.feedbackHistory = Array.isArray(sessionData.feedback_history) 
+                    ? sessionData.feedback_history 
+                    : JSON.parse(sessionData.feedback_history);
+            }
+            
+            if (sessionData.session_score !== undefined) {
+                this.sessionScore = parseInt(sessionData.session_score) || 0;
+            }
+            
+            if (sessionData.total_actions !== undefined) {
+                this.totalActions = parseInt(sessionData.total_actions) || 0;
+            }
+            
+            this.dataLoaded = true;
+        } catch (error) {
+            console.warn('Could not load session data from server:', error);
+            // Initialize with defaults
+            this.feedbackHistory = [];
+            this.sessionScore = 0;
+            this.totalActions = 0;
+            this.dataLoaded = true;
         }
-        if (score) {
-            this.sessionScore = parseInt(score);
-        }
-        if (total) {
-            this.totalActions = parseInt(total);
+    }
+
+    /**
+     * Save session data to server
+     */
+    async saveSessionData() {
+        try {
+            await this.emailServerAPI.saveSessionData({
+                feedback_history: this.feedbackHistory,
+                session_score: this.sessionScore,
+                total_actions: this.totalActions
+            });
+        } catch (error) {
+            console.error('Failed to save session data:', error);
         }
     }
 
