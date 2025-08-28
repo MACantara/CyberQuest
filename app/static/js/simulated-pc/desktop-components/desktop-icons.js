@@ -29,7 +29,7 @@ export class DesktopIcons {
         const levelIconMap = {
             1: ['browser'], // Level 1: Misinformation Maze
             2: ['email'], // Level 2: Shadow in the Inbox
-            3: ['malware-scanner', 'process-monitor', 'logs', 'files'], // Level 3: Malware Mayhem
+            3: ['malware-scanner', 'process-monitor'], // Level 3: Malware Mayhem
             4: ['vulnerability-scanner', 'wireshark', 'terminal', 'browser'], // Level 4: White Hat Test
             5: ['files', 'terminal', 'logs', 'wireshark', 'browser'] // Level 5: Hunt for The Null
         };
