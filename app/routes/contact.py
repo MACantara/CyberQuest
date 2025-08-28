@@ -100,7 +100,7 @@ def contact_page():
         from app.utils.hcaptcha_utils import is_hcaptcha_enabled
         if is_hcaptcha_enabled() and not verify_hcaptcha():
             flash('Please complete the captcha verification.', 'error')
-            return render_template('contact.html')
+            return redirect(url_for('contact.contact_page'))
         
         # Validation
         errors = []
