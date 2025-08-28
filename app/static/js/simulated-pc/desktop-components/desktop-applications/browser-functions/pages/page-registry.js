@@ -5,18 +5,11 @@ import { PhishingBankPage } from './bank.js';
 import { NewsSitePage } from './news-site.js';
 
 // Import Level 1 Challenge Pages
-import { Challenge1Page } from './level-one/challenge1/challenge1-page.js';
+import { Challenge1Page } from '../../../levels/level-one/tools/challenge1/challenge1-page.js';
 
 // Import Level 1 Tool Pages
-import { CrossReferenceToolPage } from './level-one/cross-reference-tool.js';
-import { ReverseImageSearchPage } from './level-one/reverse-image-search.js';
-
-// Import Level 2 Pages
-import { CyberQuestPasswordResetPage } from './level-two/cyberquest-password-reset.js';
-import { TechCorpDocumentPortalPage } from './level-two/techcorp-document-portal.js';
-import { SecureBankVerificationPage } from './level-two/secure-bank-verification.js';
-import { MicrosoftAccountVerifyPage } from './level-two/microsoft-account-verify.js';
-import { PayPalAccountConfirmPage } from './level-two/paypal-account-confirm.js';
+import { CrossReferenceToolPage } from '../../../levels/level-one/tools/cross-reference-tool.js';
+import { ReverseImageSearchPage } from '../../../levels/level-one/tools/reverse-image-search.js';
 
 export class PageRegistry {
     constructor() {
@@ -38,13 +31,6 @@ export class PageRegistry {
         // Register Level 1 Tool Pages
         this.registerPage(CrossReferenceToolPage);
         this.registerPage(ReverseImageSearchPage);
-        
-        // Register Level 2 Pages
-        this.registerPage(CyberQuestPasswordResetPage);
-        this.registerPage(TechCorpDocumentPortalPage);
-        this.registerPage(SecureBankVerificationPage);
-        this.registerPage(MicrosoftAccountVerifyPage);
-        this.registerPage(PayPalAccountConfirmPage);
     }
 
     registerPage(pageConfig) {
