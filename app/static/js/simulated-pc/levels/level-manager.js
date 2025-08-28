@@ -2,11 +2,6 @@
  * Level Manager - Centralized loading and management of all levels
  */
 
-import { Level1Config } from './level-one/level-config.js';
-import { Level2Config } from './level-two/level-config.js';
-import { Level3Config } from './level-three/level-config.js';
-import { Level4Config } from './level-four/level-config.js';
-import { Level5Config } from './level-five/level-config.js';
 
 export class LevelManager {
     constructor() {
@@ -14,12 +9,48 @@ export class LevelManager {
         this.currentLevel = null;
         this.loadedModules = new Map();
         
-        // Register all levels
-        this.registerLevel(Level1Config);
-        this.registerLevel(Level2Config);
-        this.registerLevel(Level3Config);
-        this.registerLevel(Level4Config);
-        this.registerLevel(Level5Config);
+        // Level configs will be loaded dynamically when needed
+    }
+
+    async loadLevelConfig(levelId) {
+        if (this.loadedModules.has(levelId)) {
+            return this.loadedModules.get(levelId);
+        }
+
+        let levelConfig;
+        try {
+            switch (levelId) {
+                case 1:
+                    const level1Module = await import('./level-one/level-config.js');
+                    levelConfig = level1Module.Level1Config;
+                    break;
+                case 2:
+                    const level2Module = await import('./level-two/level-config.js');
+                    levelConfig = level2Module.Level2Config;
+                    break;
+                case 3:
+                    const level3Module = await import('./level-three/level-config.js');
+                    levelConfig = level3Module.Level3Config;
+                    break;
+                case 4:
+                    const level4Module = await import('./level-four/level-config.js');
+                    levelConfig = level4Module.Level4Config;
+                    break;
+                case 5:
+                    const level5Module = await import('./level-five/level-config.js');
+                    levelConfig = level5Module.Level5Config;
+                    break;
+                default:
+                    throw new Error(`Unknown level ID: ${levelId}`);
+            }
+            
+            this.loadedModules.set(levelId, levelConfig);
+            this.registerLevel(levelConfig);
+            return levelConfig;
+        } catch (error) {
+            console.error(`Failed to load level ${levelId} config:`, error);
+            throw error;
+        }
     }
     
     registerLevel(config) {
@@ -27,9 +58,10 @@ export class LevelManager {
     }
     
     async loadLevel(levelId) {
-        const config = this.levels.get(levelId);
+        // First load the config if not already loaded
+        let config = this.levels.get(levelId);
         if (!config) {
-            throw new Error(`Level ${levelId} not found`);
+            config = await this.loadLevelConfig(levelId);
         }
         
         console.log(`Loading Level ${levelId}: ${config.name}`);
