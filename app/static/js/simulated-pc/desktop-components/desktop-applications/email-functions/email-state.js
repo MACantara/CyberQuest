@@ -58,8 +58,8 @@ export class EmailState {
     }
 
     // Persistence methods - delegate to security manager
-    loadFromLocalStorage() {
-        this.securityManager.loadFromLocalStorage();
+    async loadFromServer() {
+        await this.securityManager.loadFromServer();
     }
 
     // Statistics methods
