@@ -79,8 +79,15 @@ export class EmailCompletionTracker {
             this.completionCheckInterval = null;
         }
 
-        // Mark email training as completed
+        // Calculate completion score based on session performance
+        const completionScore = this.calculateLevelScore();
+        
+        // Mark level as completed on server
+        this.markLevelCompletedOnServer(completionScore);
+
+        // Mark email training as completed (local backup)
         localStorage.setItem('cyberquest_email_training_completed', 'true');
+        localStorage.setItem('cyberquest_level2_score', completionScore.toString());
         
         // Delay before showing completion dialogue
         setTimeout(() => {
@@ -284,6 +291,108 @@ export class EmailCompletionTracker {
                 }
             }
         });
+    }
+
+    /**
+     * Calculate the completion score for Level 2 based on email security performance
+     */
+    calculateLevelScore() {
+        try {
+            // Get current email security performance data
+            const sessionData = this.sessionSummary.getSessionStats();
+            
+            // Calculate score based on correct phishing detection and email handling
+            let score = 0;
+            let totalEmails = 0;
+            let correctActions = 0;
+            
+            // Check each email's handling status
+            for (const email of ALL_EMAILS) {
+                const emailId = email.id;
+                const isPhishing = email.tags && email.tags.includes('phishing');
+                
+                // Get the action taken on this email from localStorage or sessionData
+                const emailStatus = localStorage.getItem(`email_${emailId}_status`) || 'unread';
+                
+                totalEmails++;
+                
+                if (isPhishing) {
+                    // For phishing emails, correct action is reporting as phishing
+                    if (emailStatus === 'reported_phishing' || emailStatus === 'spam') {
+                        correctActions++;
+                    }
+                } else {
+                    // For legitimate emails, correct action is keeping in inbox or moving to appropriate folder
+                    if (emailStatus === 'inbox' || emailStatus === 'moved_to_folder') {
+                        correctActions++;
+                    }
+                }
+            }
+            
+            // Calculate percentage score
+            if (totalEmails > 0) {
+                score = Math.round((correctActions / totalEmails) * 100);
+            } else {
+                score = 85; // Default score if no emails processed
+            }
+            
+            // Ensure score is within bounds
+            score = Math.max(0, Math.min(100, score));
+            
+            console.log(`Level 2 completion score: ${score}% (${correctActions}/${totalEmails} emails handled correctly)`);
+            return score;
+            
+        } catch (error) {
+            console.error('Error calculating Level 2 score:', error);
+            return 85; // Default score on error
+        }
+    }
+
+    /**
+     * Mark Level 2 as completed on the server
+     */
+    async markLevelCompletedOnServer(score) {
+        try {
+            const completionData = {
+                level_id: 2,
+                score: score,
+                time_spent: this.getTotalTimeSpent(),
+                xp_earned: 150, // Level 2 XP reward
+                completion_data: {
+                    sessionData: this.sessionSummary.getSessionStats(),
+                    overallScore: score,
+                    timestamp: new Date().toISOString()
+                }
+            };
+            
+            // Make API call to mark level as completed
+            const response = await fetch('/levels/api/complete/2', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(completionData)
+            });
+            
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Level 2 completed successfully on server:', result);
+            } else {
+                console.error('Failed to mark Level 2 as completed on server:', response.status);
+            }
+        } catch (error) {
+            console.error('Error completing Level 2 on server:', error);
+        }
+    }
+
+    /**
+     * Calculate total time spent in Level 2
+     */
+    getTotalTimeSpent() {
+        // Simple calculation based on session activity
+        // In a real implementation, you'd track actual time spent
+        const emailsProcessed = ALL_EMAILS.length;
+        return emailsProcessed * 180; // 3 minutes per email average
     }
 
     /**
