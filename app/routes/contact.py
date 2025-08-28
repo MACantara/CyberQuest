@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
-from flask_mail import Message
+from flask_mailman import EmailMessage
 from app import mail
 from app.models.contact import Contact
 from app.utils.hcaptcha_utils import verify_hcaptcha
@@ -21,33 +21,33 @@ def send_contact_notification(contact_submission):
     
     try:
         # Email to admin
-        admin_msg = Message(
+        admin_msg = EmailMessage(
             subject=f'[Contact Form Submission] {contact_submission.subject}',
-            sender=current_app.config.get('MAIL_USERNAME'),
-            recipients=[current_app.config.get('MAIL_USERNAME')],  # Send to admin
-            reply_to=contact_submission.email  # Add reply-to parameter
+            body=f"""
+{contact_submission.message}
+""",
+            from_email=current_app.config.get('MAIL_USERNAME'),
+            to=[current_app.config.get('MAIL_USERNAME')],  # Send to admin
+            reply_to=[contact_submission.email]  # Add reply-to parameter
         )
         
+        admin_msg.content_subtype = 'html'
         admin_msg.body = f"""
-{contact_submission.message}
-"""
-        
-        admin_msg.html = f"""
 <html>
 <body>
+    <h3>New Contact Form Submission</h3>
+    <p><strong>From:</strong> {contact_submission.name} &lt;{contact_submission.email}&gt;</p>
+    <p><strong>Subject:</strong> {contact_submission.subject}</p>
+    <p><strong>Message:</strong></p>
     <p>{contact_submission.message.replace(chr(10), '<br>')}</p>
 </body>
 </html>
 """
         
         # Auto-reply to user
-        user_msg = Message(
+        user_msg = EmailMessage(
             subject='Thank you for contacting us - CyberQuest',
-            sender=current_app.config.get('MAIL_USERNAME'),
-            recipients=[contact_submission.email]
-        )
-        
-        user_msg.body = f"""Hello {contact_submission.name},
+            body=f"""Hello {contact_submission.name},
 
 Thank you for contacting us! We have received your message regarding "{contact_submission.subject}" and will get back to you as soon as possible.
 
@@ -58,9 +58,13 @@ We typically respond within 24-48 hours.
 
 Best regards,
 CyberQuest Team
-"""
+""",
+            from_email=current_app.config.get('MAIL_USERNAME'),
+            to=[contact_submission.email]
+        )
         
-        user_msg.html = f"""
+        user_msg.content_subtype = 'html'
+        user_msg.body = f"""
 <html>
 <body>
     <h2>Thank you for contacting us!</h2>
@@ -79,8 +83,8 @@ CyberQuest Team
 """
         
         # Send both emails
-        mail.send(admin_msg)
-        mail.send(user_msg)
+        admin_msg.send()
+        user_msg.send()
         return True
         
     except Exception as e:

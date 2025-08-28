@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app, jsonify
 from flask_login import current_user
-from flask_mail import Message
+from flask_mailman import EmailMessage
 from flask_wtf.csrf import validate_csrf
 from app import mail
 from app.models.user import User
@@ -18,13 +18,9 @@ def send_verification_email(user, verification):
     try:
         verification_url = url_for('email_verification.verify_email', token=verification.token, _external=True)
         
-        msg = Message(
+        msg = EmailMessage(
             subject='Verify Your Email Address - CyberQuest',
-            sender=current_app.config.get('MAIL_USERNAME'),
-            recipients=[user.email]
-        )
-        
-        msg.body = f"""Hello {user.username},
+            body=f"""Hello {user.username},
 
 Thank you for registering with CyberQuest! To complete your registration, please verify your email address by clicking the link below:
 
@@ -36,9 +32,13 @@ If you didn't create an account, you can safely ignore this email.
 
 Best regards,
 CyberQuest Team
-"""
+""",
+            from_email=current_app.config.get('MAIL_USERNAME'),
+            to=[user.email]
+        )
         
-        msg.html = f"""
+        msg.content_subtype = 'html'
+        msg.body = f"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -276,7 +276,7 @@ CyberQuest Team
 </html>
 """
 
-        mail.send(msg)
+        msg.send()
         return True
         
     except Exception as e:

@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
 from flask_login import current_user
-from flask_mail import Message
+from flask_mailman import EmailMessage
 from app import mail
 from app.models.user import User, PasswordResetToken
 from app.utils.hcaptcha_utils import verify_hcaptcha
@@ -20,13 +20,9 @@ def send_reset_email(user, token):
     try:
         reset_url = url_for('password_reset.reset_password', token=token, _external=True)
         
-        msg = Message(
+        msg = EmailMessage(
             subject='Password Reset Request - CyberQuest',
-            sender=current_app.config.get('MAIL_USERNAME'),
-            recipients=[user.email]
-        )
-        
-        msg.body = f"""Hello {user.username},
+            body=f"""Hello {user.username},
 
 You requested a password reset for your CyberQuest account.
 
@@ -39,9 +35,13 @@ If you didn't request this password reset, please ignore this email.
 
 Best regards,
 CyberQuest Team
-"""
+""",
+            from_email=current_app.config.get('MAIL_USERNAME'),
+            to=[user.email]
+        )
         
-        msg.html = f"""
+        msg.content_subtype = 'html'
+        msg.body = f"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -280,7 +280,7 @@ CyberQuest Team
 </html>
 """
 
-        mail.send(msg)
+        msg.send()
         return True
         
     except Exception as e:
