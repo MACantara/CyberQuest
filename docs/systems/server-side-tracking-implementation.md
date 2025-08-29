@@ -30,11 +30,10 @@ CyberQuest now features comprehensive server-side tracking of levels, level comp
 
 ### Backend Files
 
-#### `app/models/user_progress.py` (NEW)
-- **UserProgress** class with methods for tracking completion and stats
-- **LearningAnalytics** class for detailed action logging
-- **SkillAssessment** class for skill-specific tracking
-- Complete CRUD operations for all progress-related data
+Note: The original `app/models/user_progress.py` implementation has been consolidated into the adaptive learning model set to avoid duplication and better integrate analytic features. The adaptive learning models now handle user progress, analytics, and skill assessments.
+
+#### Adaptive progress models (adaptive learning)
+- **AdaptiveUserProgress / LearningAnalytics / SkillAssessment** classes (now part of the adaptive learning models) provide methods for tracking completion, stats, and detailed action logging
 
 #### `app/routes/levels.py` (ENHANCED)
 - Updated `levels_overview()` to include user progress data
