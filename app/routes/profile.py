@@ -108,12 +108,22 @@ def dashboard():
         return redirect(url_for('main.home'))
     
     from app.routes.levels import CYBERSECURITY_LEVELS
-    from app.models.user_progress import UserProgress
+    # Server-side progress model removed; use adaptive system or placeholders
     
-    # Get user statistics from UserProgress
-    user_stats = UserProgress.get_user_stats(current_user.id)
+    # Attempt to get user statistics from adaptive learning system as a fallback
+    try:
+        from app.models.adaptive_learning import UserProgress as AdaptiveUserProgress
+        user_stats = AdaptiveUserProgress.get_user_progress_summary(current_user.id)
+    except Exception:
+        # Fallback to safe defaults if progress model isn't available
+        user_stats = {
+            'completed_levels': 0,
+            'total_xp': 0,
+            'learning_streak': 0,
+            'user_rank': 'Novice'
+        }
     
-    # Use real data from user progress system
+    # Use real data from available progress system or defaults
     total_levels = len(CYBERSECURITY_LEVELS)
     completed_levels = user_stats.get('completed_levels', 0)
     total_xp = user_stats.get('total_xp', 0)
@@ -126,14 +136,19 @@ def dashboard():
     for level in CYBERSECURITY_LEVELS:
         level_data = level.copy()
         
-        # Get actual progress from database
-        user_progress = UserProgress.get_level_progress(current_user.id, level['id'])
-        if user_progress and user_progress.get('status') == 'completed':
+        # Attempt to get per-level progress from adaptive learning models as fallback
+        try:
+            from app.models.adaptive_learning import UserProgress as AdaptiveUserProgress
+            user_progress = AdaptiveUserProgress.get_by_user_and_level(current_user.id, level['id'])
+        except Exception:
+            user_progress = None
+
+        if user_progress and getattr(user_progress, 'status', None) == 'completed':
             level_data['completed'] = True
-            level_data['score'] = user_progress.get('score', 0)
-            level_data['attempts'] = user_progress.get('attempts', 0)
-            level_data['time_spent'] = user_progress.get('time_spent', 0)
-            level_data['xp_earned'] = user_progress.get('xp_earned', 0)
+            level_data['score'] = getattr(user_progress, 'score', 0)
+            level_data['attempts'] = getattr(user_progress, 'attempts', 0)
+            level_data['time_spent'] = getattr(user_progress, 'time_spent', 0)
+            level_data['xp_earned'] = getattr(user_progress, 'xp_earned', 0)
         else:
             level_data['completed'] = False
             level_data['score'] = 0
