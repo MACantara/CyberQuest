@@ -101,8 +101,8 @@
     "screen_design_ref": "Figure 14.9: Adaptive Learning Data Integration",
     "description": "Verify dashboard integrates properly with adaptive learning system data",
     "scenario": "Dashboard displays real user progress data from adaptive learning models",
-    "expected_results": "All dashboard metrics reflect actual user data from UserProgress, SkillAssessment, and LearningRecommendation models",
-    "procedure": "1. Navigate to dashboard with user who has completed levels\n2. Verify total_xp matches UserProgress.get_user_progress_summary()\n3. Check completed_levels reflects actual completion status\n4. Verify learning_streak shows correct streak data\n5. Check user_rank displays appropriate rank\n6. Verify skill_analysis shows real SkillAssessment data\n7. Check recommendations display actual LearningRecommendation data\n8. Test progress_percentage calculation accuracy",
+  "expected_results": "All dashboard metrics reflect actual user data from AdaptiveUserProgress, SkillAssessment, and LearningRecommendation models",
+  "procedure": "1. Navigate to dashboard with user who has completed levels\n2. Verify total_xp matches AdaptiveUserProgress.get_user_progress_summary()\n3. Check completed_levels reflects actual completion status\n4. Verify learning_streak shows correct streak data\n5. Check user_rank displays appropriate rank\n6. Verify skill_analysis shows real SkillAssessment data\n7. Check recommendations display actual LearningRecommendation data\n8. Test progress_percentage calculation accuracy",
     "test_status": "pending",
     "priority": "critical",
     "category": "integration"
@@ -126,7 +126,7 @@
     "description": "Verify Blue Team vs Red Team mode integration and unlock status",
     "scenario": "User views Blue Team vs Red Team progress and unlock requirements",
     "expected_results": "Blue Team mode shows proper unlock status and progress data",
-    "procedure": "1. Navigate to dashboard with user who has completed first level\n2. Check blue_team_unlocked status (should be true after completing first simulation level)\n3. Verify blue_team_progress data if user has played Blue Team mode\n4. Check Blue Team progress display in dashboard\n5. Test with user who hasn't completed first level (should be locked)\n6. Verify unlock requirement messaging\n7. Check Blue Team navigation if unlocked\n8. Test progress data integration with UserProgress model",
+  "procedure": "1. Navigate to dashboard with user who has completed first level\n2. Check blue_team_unlocked status (should be true after completing first simulation level)\n3. Verify blue_team_progress data if user has played Blue Team mode\n4. Check Blue Team progress display in dashboard\n5. Test with user who hasn't completed first level (should be locked)\n6. Verify unlock requirement messaging\n7. Check Blue Team navigation if unlocked\n8. Test progress data integration with AdaptiveUserProgress model",
     "test_status": "pending",
     "priority": "medium",
     "category": "functional"
