@@ -174,8 +174,8 @@
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Server-side data tracking with localStorage fallback for offline compatibility
-    const userStats = {{ user_stats | tojson | safe }};
+    // Server-side data tracking moved to adaptive learning system; use injected user_stats if present
+    const userStats = (typeof window !== 'undefined' && window.__USER_STATS__) ? window.__USER_STATS__ : ({{ user_stats | tojson | safe }} || { completed_levels: 0, total_levels: 5, total_xp: 0, completion_percentage: 0 });
     
     function updateProgressDisplay() {
         // Update progress display with server data
