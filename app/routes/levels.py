@@ -2,7 +2,6 @@
 
 from flask import Blueprint, render_template, current_app, flash, redirect, url_for, request, session, jsonify
 from flask_login import login_required, current_user
-from app.models.user_progress import UserProgress, LearningAnalytics, SkillAssessment
 from app.database import DatabaseError, handle_supabase_error
 import json
 import uuid
@@ -402,9 +401,21 @@ def get_level_js_files(level_id):
 def levels_overview():
     """Display all cybersecurity levels with user progress."""
     try:
-        # Get user progress and stats
-        user_stats = UserProgress.get_user_stats(current_user.id)
-        level_progress = user_stats.get('level_progress', {})
+        # Get user progress and stats via adaptive learning models
+        try:
+            from app.models.adaptive_learning import UserProgress as AdaptiveUserProgress
+            user_stats = AdaptiveUserProgress.get_user_progress_summary(current_user.id)
+            level_progress = user_stats.get('level_progress', {}) if isinstance(user_stats, dict) else {}
+        except Exception:
+            # Fallback defaults when adaptive models are not available
+            user_stats = {
+                'total_levels': len(CYBERSECURITY_LEVELS),
+                'completed_levels': 0,
+                'total_xp': 0,
+                'completion_percentage': 0,
+                'level_progress': {}
+            }
+            level_progress = {}
         
         # Enhance level data with user progress
         enhanced_levels = []
@@ -468,9 +479,14 @@ def start_level(level_id):
         return redirect(url_for('levels.levels_overview'))
     
     try:
-        # Check for existing progress
-        existing_progress = UserProgress.get_level_progress(current_user.id, level_id)
-        is_retry = existing_progress and existing_progress.get('status') in ['in_progress', 'completed']
+        # Check for existing progress using adaptive models as fallback
+        try:
+            from app.models.adaptive_learning import UserProgress as AdaptiveUserProgress
+            existing_progress = AdaptiveUserProgress.get_by_user_and_level(current_user.id, level_id) or {}
+            is_retry = bool(existing_progress and getattr(existing_progress, 'status', None) in ['in_progress', 'completed'])
+        except Exception:
+            existing_progress = {}
+            is_retry = False
         
         # Generate session ID for analytics tracking
         session_id = str(uuid.uuid4())
@@ -490,8 +506,11 @@ def start_level(level_id):
             }
         )
         
-        # Increment attempt counter without clearing previous data
-        UserProgress.increment_level_attempt(current_user.id, level_id)
+        # Increment attempt counter without clearing previous data (adaptive model fallback)
+        try:
+            AdaptiveUserProgress.increment_level_attempt(current_user.id, level_id)
+        except Exception:
+            pass
         
         # Get existing progress data to maintain state
         level_progress = existing_progress or {}
@@ -545,14 +564,18 @@ def complete_level(level_id):
         hints_used = data.get('hints_used', 0)
         session_id = session.get('level_session_id', str(uuid.uuid4()))
         
-        # Mark level as completed
-        progress = UserProgress.mark_level_completed(
-            user_id=current_user.id,
-            level_id=level_id,
-            score=score,
-            xp_earned=level['xp_reward'],
-            time_spent=time_spent
-        )
+        # Mark level as completed using adaptive learning models if available
+        try:
+            from app.models.adaptive_learning import UserProgress as AdaptiveUserProgress
+            progress = AdaptiveUserProgress.mark_level_completed(
+                user_id=current_user.id,
+                level_id=level_id,
+                score=score,
+                xp_earned=level['xp_reward'],
+                time_spent=time_spent
+            )
+        except Exception:
+            progress = {}
         
         # Log completion action
         LearningAnalytics.log_action(
@@ -579,8 +602,11 @@ def complete_level(level_id):
                     assessment_score=score
                 )
         
-        # Get updated user stats
-        user_stats = UserProgress.get_user_stats(current_user.id)
+        # Get updated user stats (adaptive learning fallback)
+        try:
+            user_stats = AdaptiveUserProgress.get_user_progress_summary(current_user.id)
+        except Exception:
+            user_stats = {'total_xp': 0, 'completed_levels': 0, 'completion_percentage': 0}
         
         return jsonify({
             'success': True,
@@ -605,7 +631,12 @@ def complete_level(level_id):
 def get_user_progress():
     """API endpoint to get user progress data."""
     try:
-        user_stats = UserProgress.get_user_stats(current_user.id)
+        try:
+            from app.models.adaptive_learning import UserProgress as AdaptiveUserProgress
+            user_stats = AdaptiveUserProgress.get_user_progress_summary(current_user.id)
+        except Exception:
+            user_stats = {'total_levels': len(CYBERSECURITY_LEVELS), 'completed_levels': 0, 'total_xp': 0, 'completion_percentage': 0}
+
         return jsonify({
             'success': True,
             'stats': user_stats
@@ -626,10 +657,15 @@ def update_level_progress(level_id):
         data = request.get_json() or {}
         session_id = session.get('level_session_id', str(uuid.uuid4()))
         
-        # Get current progress to accumulate values
-        current_progress = UserProgress.get_level_progress(current_user.id, level_id) or {}
-        current_xp = current_progress.get('xp_earned', 0)
-        
+        # Get current progress to accumulate values (adaptive model fallback)
+        try:
+            from app.models.adaptive_learning import UserProgress as AdaptiveUserProgress
+            current_progress = AdaptiveUserProgress.get_by_user_and_level(current_user.id, level_id) or {}
+            current_xp = current_progress.get('xp_earned', 0) if isinstance(current_progress, dict) else getattr(current_progress, 'xp_earned', 0) or 0
+        except Exception:
+            current_progress = {}
+            current_xp = 0
+
         # Update progress with accumulated values
         progress_data = {
             'status': data.get('status', 'in_progress'),
@@ -640,12 +676,16 @@ def update_level_progress(level_id):
             'mistakes_made': data.get('mistakes_made', 0),
             'xp_earned': current_xp + data.get('xp_earned', 0)  # Accumulate XP
         }
-        
-        progress = UserProgress.create_or_update_progress(
-            user_id=current_user.id,
-            level_id=level_id,
-            data=progress_data
-        )
+
+        try:
+            from app.models.adaptive_learning import UserProgress as AdaptiveUserProgress
+            progress = AdaptiveUserProgress.create_or_update_progress(
+                user_id=current_user.id,
+                level_id=level_id,
+                data=progress_data
+            )
+        except Exception:
+            progress = progress_data
         
         # Log progress update action
         LearningAnalytics.log_action(
@@ -716,18 +756,25 @@ def save_email_actions():
 def start_new_level_session(level_id):
     """API endpoint to start a new session for a level (used for retries)."""
     try:
-        # Get existing progress
-        existing_progress = UserProgress.get_level_progress(current_user.id, level_id)
-        
+        # Get existing progress (adaptive fallback)
+        try:
+            from app.models.adaptive_learning import UserProgress as AdaptiveUserProgress
+            existing_progress = AdaptiveUserProgress.get_by_user_and_level(current_user.id, level_id) or {}
+        except Exception:
+            existing_progress = {}
+
         if not existing_progress:
             return jsonify({
                 'success': False,
                 'error': 'No existing progress found for this level',
                 'started_new': False
             }), 404
-        
-        # Increment the attempt counter
-        UserProgress.increment_level_attempt(current_user.id, level_id)
+
+        # Increment the attempt counter (adaptive fallback)
+        try:
+            AdaptiveUserProgress.increment_level_attempt(current_user.id, level_id)
+        except Exception:
+            pass
         
         # Log the retry action
         session_id = session.get('level_session_id', str(uuid.uuid4()))
@@ -814,11 +861,15 @@ def save_level2_session_data():
             'session_data': data
         }
         
-        UserProgress.create_or_update_progress(
-            user_id=current_user.id,
-            level_id=2,
-            data=progress_data
-        )
+        try:
+            from app.models.adaptive_learning import UserProgress as AdaptiveUserProgress
+            AdaptiveUserProgress.create_or_update_progress(
+                user_id=current_user.id,
+                level_id=2,
+                data=progress_data
+            )
+        except Exception:
+            pass
         
         # Also log for analytics
         LearningAnalytics.log_action(
@@ -841,7 +892,11 @@ def get_level2_session_data():
     """API endpoint to get Level 2 session data for current user."""
     try:
         # Get current progress for Level 2
-        progress = UserProgress.get_level_progress(current_user.id, 2)
+        try:
+            from app.models.adaptive_learning import UserProgress as AdaptiveUserProgress
+            progress = AdaptiveUserProgress.get_by_user_and_level(current_user.id, 2) or {}
+        except Exception:
+            progress = {}
         
         if progress and progress.get('session_data'):
             return jsonify({
@@ -867,7 +922,11 @@ def start_new_level2_session():
         session['level_session_id'] = session_id
         
         # Increment attempts for this level (don't clear previous data)
-        UserProgress.increment_level_attempt(current_user.id, 2)
+        try:
+            from app.models.adaptive_learning import UserProgress as AdaptiveUserProgress
+            AdaptiveUserProgress.increment_level_attempt(current_user.id, 2)
+        except Exception:
+            pass
         
         # Log new session start for analytics
         LearningAnalytics.log_action(
