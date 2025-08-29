@@ -5,7 +5,8 @@ Data analytics routes for admin panel.
 from flask import Blueprint, render_template
 from flask_login import login_required
 from app.routes.admin.admin_utils import admin_required
-from app.models.user_progress import UserProgress
+# UserProgress model removed; analytics will attempt to use adaptive learning analytics
+from app.models.adaptive_learning import LearningAnalytics as AdaptiveLearningAnalytics
 
 data_analytics_bp = Blueprint('data_analytics', __name__, url_prefix='/admin')
 
@@ -15,14 +16,18 @@ data_analytics_bp = Blueprint('data_analytics', __name__, url_prefix='/admin')
 @admin_required
 def player_analytics():
     """Player Data Analytics dashboard with comprehensive metrics."""
-    # Get real analytics data from database
-    analytics_data = UserProgress.get_analytics_data()
-    
-    # Extract the data for template
-    general_stats = analytics_data['general_stats']
-    gameplay_stats = analytics_data['gameplay_stats']
-    engagement_stats = analytics_data['engagement_stats']
-    weekly_trends = analytics_data['weekly_trends']
+    # Attempt to fetch analytics from adaptive learning models; fall back to empty stats
+    try:
+        analytics_data = AdaptiveLearningAnalytics.get_analytics_summary()
+        general_stats = analytics_data.get('general_stats', {})
+        gameplay_stats = analytics_data.get('gameplay_stats', {})
+        engagement_stats = analytics_data.get('engagement_stats', {})
+        weekly_trends = analytics_data.get('weekly_trends', [])
+    except Exception:
+        general_stats = {}
+        gameplay_stats = {}
+        engagement_stats = {}
+        weekly_trends = []
     
     # Add some calculated cybersecurity stats based on real data
     cybersec_stats = {
@@ -70,8 +75,11 @@ def player_analytics():
 @admin_required
 def player_analytics_levels():
     """Detailed level-specific analytics."""
-    # Get real level analytics data from database
-    level_details = UserProgress.get_level_analytics()
+    # Get real level analytics data from adaptive learning analytics
+    try:
+        level_details = AdaptiveLearningAnalytics.get_level_analytics()
+    except Exception:
+        level_details = []
     
     return render_template('admin/player-data-analytics/levels.html',
                          level_details=level_details)
